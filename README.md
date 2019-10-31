@@ -1,3 +1,3 @@
-##NetPlanner
+# NetPlanner
 
-contact me: farzad.mohammadi87@gmail.com
+contact to KNTU GUI Team: farzad.mohammadi87@gmail.com
