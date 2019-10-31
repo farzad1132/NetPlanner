@@ -1339,7 +1339,7 @@ class Ui_MainWindow(object):
                 Data["Nodes"][node]["Client_Services"]["data"]["3"] = {}
                 Data["Nodes"][node]["Client_Services"]["data"]["4"] = {}
 
-                Data["Nodes"][node]["Client_Services"]["flag"] = {}  # by this flag we make sure just one time we scaping TM data into Client_Service section
+                Data["Nodes"][node]["Client_Services"]["flag"] = {}  # by this flag we make sure just one time we inserting TM data into Client_Service section
                 Data["Nodes"][node]["Client_Services"]["flag"]["1"] = False
                 Data["Nodes"][node]["Client_Services"]["flag"]["2"] = False
                 Data["Nodes"][node]["Client_Services"]["flag"]["3"] = False
