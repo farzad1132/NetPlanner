@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>823</width>
+    <height>608</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>50</y>
+     <width>257</width>
+     <height>193</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="GroupingLayout">
+    <item row="0" column="0" colspan="4">
+     <widget class="QPushButton" name="SetGatewayNode_button">
+      <property name="text">
+       <string>Set Node as Gateway</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
+     <widget class="QLabel" name="GroupName">
+      <property name="text">
+       <string>Group Name:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2" colspan="2">
+     <widget class="QLineEdit" name="GroupName_edit"/>
+    </item>
+    <item row="2" column="2" colspan="2">
+     <widget class="QLineEdit" name="GroupId_edit"/>
+    </item>
+    <item row="3" column="0" colspan="2">
+     <widget class="QLabel" name="GroupColor">
+      <property name="text">
+       <string>Group Color:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="2" colspan="2">
+     <widget class="QPushButton" name="SelectColor_button">
+      <property name="text">
+       <string>Select Color</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0" colspan="2">
+     <widget class="QPushButton" name="SelectSubNode_button">
+      <property name="text">
+       <string>Select Sub Nodes</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="3">
+     <widget class="QLabel" name="SelectSubNode">
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1" colspan="2">
+     <widget class="QPushButton" name="Cancel_button">
+      <property name="text">
+       <string>Cancel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="3">
+     <widget class="QPushButton" name="OK_button">
+      <property name="text">
+       <string>Ok</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0" colspan="2">
+     <widget class="QLabel" name="GroupID">
+      <property name="text">
+       <string>Group ID:</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
