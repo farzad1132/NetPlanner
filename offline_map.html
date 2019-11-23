@@ -1,0 +1,20 @@
+<!DOCTYPE html> 
+<html> 
+	<head> 
+		<title>Leaflet offline map</title>
+		<link rel="stylesheet" charset="utf-8" href="leaflet.css" />
+	<script type="text/javascript" charset="utf-8" src="leaflet.js"></script>
+		<script>
+			function onLoad() {
+
+				var mymap = L.map('mapid').setView([50.08748, 14.42132], 16);
+
+				L.tileLayer('atlasName/{z}/{x}/{y}.png',
+				{    maxZoom: 16  }).addTo(mymap);
+			}
+		</script>	
+	</head>
+	<body onload="onLoad();"> 
+		<div id="mapid" style="height: 500px;"></div>
+	</body>
+</html>

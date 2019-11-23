@@ -23,6 +23,8 @@ from add_node import Ui_add_node_window
 
 from data import Data
 from Node_View_Data import Panel_Data
+
+
 from BLANK_panel.BLANK_panel import BLANK_panel
 from SC_panel_final.SC_panel import SC_panel
 from BAF3_panel.BAF3_panel import BAF3_panel
@@ -1142,7 +1144,7 @@ class Ui_MainWindow(object):
 
         self.m.save("map.html")
 
-        # adding js events on markers
+        # adding js events and settings on map
 
         Fig = self.m.get_root()
         Figtext = Fig.render()

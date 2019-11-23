@@ -5,6 +5,7 @@ import folium
 import geocoder
 from data import Data
 from Node_View_Data import Panel_Data
+import os,sys
 
 
 
@@ -267,7 +268,8 @@ class Ui_add_node_window(object):
                         popup = "ID: %s" %str(Data["Last_Node_ID"]+1)
                         ).add_to(m)
         m.save("map.html")
-        webengine.load(QUrl("file:///C:/Users/Acer/Desktop/pyqt codes/project/map.html"))
+        #webengine.load(QUrl("file:///C:/Users/Acer/Desktop/pyqt codes/project/map.html"))
+        webengine.load(QUrl.fromLocalFile(os.path.abspath('map.html')))
         webengine.show()
 
         name = self.place_name_edit.text()
