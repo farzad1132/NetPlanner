@@ -26,7 +26,7 @@ class Network:
             self.ClusterDict.append(self.Cluster(Id,GatewayId, SubNodesId,Color))
 
         class Node:
-            ReferenceId = 2
+            ReferenceId = 1
             # Id must be an int number
             # Location format must be (lat,lng) in int
             def __init__(self, Location, Type = "not declared"):
@@ -53,7 +53,7 @@ class Network:
                 self.InNode = InNode
                 self.OutNode = OutNode
                 self.NumSpan = NumSpan
-                self.SpanObjList = [Span(self.InNode,self.OutNode) for i in range(NumSpan)]
+                self.SpanObjList = [self.Span(self.InNode,self.OutNode) for i in range(NumSpan)]
 
                 self.WaveLengthList = []
                 self.LightPathList = {}    # in  { service : Type of lightpath } format
@@ -312,4 +312,5 @@ class Network:
 n = Network(20)
 n.PhysicalTopology.add_node((2,3))
 n.PhysicalTopology.add_node((4,3))
+n.PhysicalTopology.add_link(1,2,3)
 print(n.PhysicalTopology.Node.ReferenceId)
