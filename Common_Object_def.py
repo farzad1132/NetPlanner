@@ -1,6 +1,5 @@
 class Network:
-    def __init__(self,NumWaveLength):
-        self.NumWaveLength = NumWaveLength
+    def __init__(self):
 
         self.PhysicalTopology = self.Topology()
         self.TrafficMatrix = self.Traffic()
@@ -9,7 +8,7 @@ class Network:
     class Topology:
 
         def __init__(self):
-
+            # RId
             self.NodeDict = {}
             self.LinkDict = {}
             self.ClusterDict = {}
@@ -17,20 +16,20 @@ class Network:
         def add_node(self, Location, Type = "Not Declared"):
             Id = self.Node.ReferenceId
             self.NodeDict[Id] = self.Node(Location, Type)
-            self.Node.ReferenceId += 1
         
         def add_link(self, InNode, OutNode, NumSpan):
             self.LinkDict[(InNode , OutNode)] = self.Link(InNode,OutNode,NumSpan);
 
-        def add_cluster(self,Id,GatewayId, SubNodesId,Color):
+        def add_cluster(self,Id,GatewayId, SubNodesId, Color):
             self.ClusterDict.append(self.Cluster(Id,GatewayId, SubNodesId,Color))
 
         class Node:
-            ReferenceId = 1
+            ReferenceId = 0
             # Id must be an int number
             # Location format must be (lat,lng) in int
             def __init__(self, Location, Type = "not declared"):
-                self.Id = self.ReferenceId
+                self.Id = Network.PhysicalTopology.Node.ReferenceId
+                Network.PhysicalTopology.Node.ReferenceId += 1
                 self.Location = Location
                 self.Type = Type
                 self.degrees = []
@@ -101,6 +100,7 @@ class Network:
 
 
     class Traffic:
+
         def __init__(self):
             self.DemandDict = {}    # in { id : DemandObj } format
         
@@ -112,7 +112,7 @@ class Network:
             # this class is one row of Traffic Matrix
             def __init__(self, Id, Source, Destination, Type):
 
-                self.ServiceId = 1 
+                self.ServiceId = 0
                 self.Id = Id
                 self.Source = Source
                 self.Destination = Destination
@@ -149,22 +149,11 @@ class Network:
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
-
-            
-            class G_1:
-                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
-                    self.Id = Id
-                    self.Granularity = Granularity
-                    self.WaveLength = WaveLength
-                    self.Sla = Sla
-                    self.DemandId = DemandId
-                    self.IgnoringNodes = IgnoringNodes
-                    self.LightPathId = LightPathId
-
-                    self.BW = 1.244
                 
             
             class G_1:
+                BW = 1.244
+
                 def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
                     self.Id = Id
                     self.Granularity = Granularity
@@ -174,9 +163,11 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
-                    self.BW = 1.244
+                    BW = 1.244
             
             class FE:
+                BW = 0.1
+
                 def __init__(self, Id, Granularity_vc12 ,Granularity_vc4, Sla,DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
                     self.Id = Id
                     self.Granularity_vc12 = Granularity_vc12
@@ -187,10 +178,12 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
-                    self.BW = 1
+                    BW = 0.1
                 
             
             class STM_64:
+                BW = 9.95
+
                 def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
                     self.Id = Id
                     self.WaveLength = WaveLength
@@ -199,21 +192,26 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
-                    self.BW = 9.95
+                    BW = 9.95
             
             class STM_16:
-                def __init__(self, Id, Sla,DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
+                BW = 2.49
+
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
                     self.Id = Id
                     self.WaveLength = WaveLength
-                    self.Sla
+                    self.Sla = Sla
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
-                    self.BW = 2.49
+                    
 
 
             class STM_4:
+                # BW : Band WIdth
+                BW = 622.08 / 1024
+
                 def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
                     self.Id = Id
                     self.WaveLength = WaveLength
@@ -223,10 +221,11 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
-                    # BW : Band WIdth
-                    self.BW = 622.08 / 1000
 
             class STM_1_Optical:
+                # BW : Band WIdth in Gb/s
+                BW = 155.52 / 1024
+
                 def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
                     self.Id = Id
                     self.WaveLength = WaveLength
@@ -236,10 +235,13 @@ class Network:
                     self.LightPathId = LightPathId
 
                     # BW : Band WIdth in Gb/s
-                    self.BW = 155.52 / 1000
+                    BW = 155.52 / 1024
                 
             
             class STM_1_Electrical:
+                # BW = Band WIdth in Gb/s
+                BW = 155.52 / 1024
+
                 def __init__(self, Id, Sla, DemandId, IgnoringNodes, LightPathId = None):
                     self.Id = Id
                     self.Sla = Sla
@@ -247,11 +249,13 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
-                    # BW = Band WIdth in Gb/s
-                    self.BW = 155.52 / 1000
+                    
                 
             
             class E1:
+                # BW : Band WIdth in Gb/s
+                BW = 58.84 / 1024
+
                 def __init__(self, Id, Sla,DemandId, IgnoringNodes, LightPathId = None):
                     self.Id = Id
                     self.Sla = Sla
@@ -259,14 +263,13 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
-                    # BW : Band WIdth in Gb/s
-                    self.BW = 58.84 / 1000
+                    
             
             def GenerateId(self):
                 self.ServiceId += 1
                 return ( self.ServiceId - 1 )
             
-            def add_service(self, ServiceType, Sla, IgnoringNodes, WaveLength = None, Granularity = None, Granularity_vc12 = None,
+            def add_service(self, ServiceType, Sla, IgnoringNodes = None, WaveLength = None, Granularity = None, Granularity_vc12 = None,
             Granularity_vc4 = None, LightPathId = None):
 
                 ServiceId = self.GenerateId()
@@ -303,14 +306,19 @@ class Network:
 
                 elif ServiceType == "100GE":
                     self.ServiceDict[ServiceId] = self.G_100(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
+        
+    class Lightpath:
+                ReferenceId = 0
 
+                def __init__(self, Capacity, ServiceIdList, Type, MandatoryNodesIdList, DemandId):
+                    self.id = Network.Lightpath.ReferenceId
+                    Network.Lightpath.ReferenceId += 1
+                    self.DemandId = DemandId
+                    self.Capacity = Capacity
+                    self.ServiceIdList = ServiceIdList
+                    self.Type = Type
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
 
-
-#class Lightpath(object):
-    #def __init__(self, capacity, services_Id_list, Type, mandatory_nodes_Id, ):
-
-n = Network(20)
-n.PhysicalTopology.add_node((2,3))
-n.PhysicalTopology.add_node((4,3))
-n.PhysicalTopology.add_link(1,2,3)
-print(n.PhysicalTopology.Node.ReferenceId)
+n = Network()
+d1 = n.TrafficMatrix.add_demand(1, 'tehran', 'karaj', 'working')
+n.TrafficMatrix.DemandDict[1].add_service('STM_16','x')

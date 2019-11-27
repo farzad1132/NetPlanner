@@ -1418,18 +1418,8 @@ class Ui_MainWindow(object):
             Panel_Data["1"+str(shelfnum)+str(i)].show()
 
 
-    # TODO: modify this method to receive an id ( and everything you want ) so that creates entire mdi area and its sub windows
-
+    # obsoleted 
     def shelf_1_rack_1(self):
-
-        '''self.panel_111 = QMdiSubWindow()         # panel_111: rack 1 shelf 1 panel 1
-        Panel_Data["111"] = ui.panel_111
-        self.panel_112 = QMdiSubWindow()            # panel_112: rack 1 shelf 1 panel 2
-        self.panel_113 = QMdiSubWindow()            # ...
-        self.panel_114 = QMdiSubWindow()
-        self.panel_115 = QMdiSubWindow()
-        self.panel_116 = QMdiSubWindow()
-        self.panel_117 = QMdiSubWindow()'''
 
         for i in range(1,15):
             setattr(self,"panel_11"+str(i),QMdiSubWindow())
@@ -1440,42 +1430,6 @@ class Ui_MainWindow(object):
             Panel_Data["mdi_11"].addSubWindow(Panel_Data["11"+str(i)])              
 
             Panel_Data["11"+str(i)].show()
-
-        '''self.panel_111.setWindowFlag(Qt.FramelessWindowHint)
-        self.panel_112.setWindowFlag(Qt.FramelessWindowHint)
-        self.panel_113.setWindowFlag(Qt.FramelessWindowHint)
-        self.panel_114.setWindowFlag(Qt.FramelessWindowHint)
-        self.panel_115.setWindowFlag(Qt.FramelessWindowHint)
-        self.panel_116.setWindowFlag(Qt.FramelessWindowHint)
-        self.panel_117.setWindowFlag(Qt.FramelessWindowHint)'''
-
-        '''self.panel_111.setWidget(paneldemo(111))
-        self.mdi_11.addSubWindow(self.panel_111)
-        self.panel_111.show()
-
-        self.panel_112.setWidget(paneldemo(112))
-        self.mdi_11.addSubWindow(self.panel_112)
-        self.panel_112.show()
-
-        self.panel_113.setWidget(paneldemo(113))
-        self.mdi_11.addSubWindow(self.panel_113)
-        self.panel_113.show()
-
-        self.panel_114.setWidget(paneldemo(114))
-        self.mdi_11.addSubWindow(self.panel_114)
-        self.panel_114.show()
-
-        self.panel_115.setWidget(paneldemo(115))
-        self.mdi_11.addSubWindow(self.panel_115)
-        self.panel_115.show()
-
-        self.panel_116.setWidget(paneldemo(116))
-        self.mdi_11.addSubWindow(self.panel_116)
-        self.panel_116.show()
-
-        self.panel_117.setWidget(paneldemo(117))
-        self.mdi_11.addSubWindow(self.panel_117)
-        self.panel_117.show()'''
     
     
 
