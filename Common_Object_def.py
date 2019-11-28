@@ -14,14 +14,102 @@ class Network:
             self.ClusterDict = {}
         
         def add_node(self, Location, Type = "Not Declared"):
-            Id = self.Node.ReferenceId
+            Id = Network.Topology.Node.ReferenceId
             self.NodeDict[Id] = self.Node(Location, Type)
         
         def add_link(self, InNode, OutNode, NumSpan):
-            self.LinkDict[(InNode , OutNode)] = self.Link(InNode,OutNode,NumSpan);
+            self.LinkDict[(InNode , OutNode)] = self.Link(InNode,OutNode,NumSpan)
 
-        def add_cluster(self,Id,GatewayId, SubNodesId, Color):
-            self.ClusterDict.append(self.Cluster(Id,GatewayId, SubNodesId,Color))
+            # updating Neighbor Property in InNode and OutNode
+            self.NodeDict[InNode].Neighbors.append(OutNode)
+            self.NodeDict[OutNode].Neighbors.append(InNode)
+
+        def add_cluster(self, GatewayId, SubNodesId, Color):
+            Id = Network.Topology.Cluster.ReferenceId
+            self.ClusterDict[Id] = self.Cluster(GatewayId, SubNodesId, Color)
+        
+        def del_node(self, NodeId):
+            # this method deletes a Node and Corrects NodeDict , LinkDict and ClusterDict
+
+            if not( NodeId in self.NodeDict):
+                pass
+                # TODO: Raise Error
+            
+
+            # deleting object from memory
+            del self.NodeDict[NodeId]
+
+            # deleting node from NodeDict
+            self.NodeDict.pop(NodeId)
+
+            # correcting Node ReferenceId
+            Network.Topology.Node -= 1
+
+            # Correcting other Nodes Id
+            # finding Nodes that need Correction
+            Nodes = list(self.NodeDict.items())
+            UpperNodes = list(filter(lambda x : x[0] > NodeId, Nodes))
+            UpperNodes = list(map(lambda x : x[0], UpperNodes))
+            UpperNodes.sort()
+
+            
+            for id in UpperNodes:
+                # Correcting NodeDict Ids
+                self.NodeDict[id-1] = self.NodeDict.pop(id)
+
+                # Correcting Nodes id Property
+                self.NodeDict[id - 1].id = id - 1
+            
+            # finding links
+            links = list(self.LinkDict.items())
+            links = list(filter(lambda x : x[0][0] == NodeId or x[0][1] == NodeId, links))
+
+            for link in links:
+                link_tuple = link[0]
+
+                # deleting links objects
+                del self.LinkDict[link_tuple]
+
+                # deleting link from LinkDict
+                self.LinkDict.pop(link_tuple)
+            
+            # finding containing cluster
+            clusters = list(self.ClusterDict.items())
+            ContainingCluster = list(filter(lambda x :  NodeId in x[1].SubNodesId , clusters))
+
+            IndexOfNode = self.ClusterDict[ContainingCluster].SubNodesId.index(NodeId)
+            
+            # deleting Node Id from SubNodesId List
+            self.ClusterDict[ContainingCluster].SubNodesId.pop(IndexOfNode)
+        
+        def del_link(self, InNode, OutNode):
+
+            links = list(self.LinkDict.items())
+            # finding link in LinkDict
+            if (InNode, OutNode) in self.LinkDict:
+                link_tuple = (InNode, OutNode)
+            elif (OutNode, InNode) in self.LinkDict:
+                link_tuple = (OutNode, InNode)
+            else:
+                pass
+                # TODO: Raise Error
+
+            # deleting Link Object from memory
+            del self.LinkDict[link_tuple]
+
+            # deleting Link from LinkDict
+            self.LinkDict.pop(link_tuple)
+
+            # Correcting neighbor Property in InNode and OutNode
+            index = self.NodeDict[InNode].Neighbor.index(OutNode)
+            self.NodeDict[InNode].Neighbor.pop(index)
+
+            index = self.NodeDict[OutNode].Neighbor.index(InNode)
+            self.NodeDict[OutNode].Neighbor.pop(index)
+            
+
+        
+
 
         class Node:
             ReferenceId = 0
@@ -32,9 +120,13 @@ class Network:
                 Network.PhysicalTopology.Node.ReferenceId += 1
                 self.Location = Location
                 self.Type = Type
+                self.Neighbors = []
                 self.degrees = []
                 self.services = []
                 self.AmplifierList = []
+            
+            def __del__(self):
+                pass
             
             def add_amplifier(self,nf):
                 self.AmplifierList.append(self.Amplifier(nf))
@@ -89,9 +181,11 @@ class Network:
                     self.Snr
             
         class Cluster:
-            def __init__(self, Id, GatewayId, SubNodesId, Color):
-                # the Id can be whether gateway node Id or user-defined Id ( in GUI )
-                self.Id = Id
+            ReferenceId = 0
+            def __init__(self, GatewayId, SubNodesId, Color):
+                self.Id = Network.Topology.Cluster.ReferenceId
+                Network.Topology.Cluster.ReferenceId += 1
+
                 self.GatewayId = GatewayId 
 
                 # SubNodesId is a list of Ids
