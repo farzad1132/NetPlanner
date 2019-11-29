@@ -106,6 +106,30 @@ class Network:
 
             index = self.NodeDict[OutNode].Neighbor.index(InNode)
             self.NodeDict[OutNode].Neighbor.pop(index)
+        
+        def del_cluster(self, GatewayId):
+
+            Clusters = list(self.ClusterDict.items())
+            cluster = list(filter(lambda x : x[1].GatewayId == GatewayId, Clusters))
+
+            id = cluster[0]
+
+            # deleting cluster object from memory 
+            del self.ClusterDict[id]
+
+            # deleting cluster from ClusterDict 
+            self.ClusterDict.pop(id)
+
+            # correcting Cluster ReferenceId 
+            Network.Topology.Cluster.ReferenceId -= 1
+
+            UpperClusters = list(filter(lambda x : x[0] > id, Clusters))
+            UpperClusters = list(map(lambda x : x[0] , UpperClusters))
+            UpperClusters.sort()
+
+            # correcting other Clusters Id
+            for id in UpperClusters:
+                self.ClusterDict[id - 1] = self.ClusterDict.pop(id)
             
 
         
@@ -200,6 +224,11 @@ class Network:
         
         def add_demand(self, Id, Source, Destination, Type):
             self.DemandDict[Id] = self.Demand(Id, Source, Destination, Type)
+        
+        def del_demand(self, Id):
+            del self.DemandDict[Id]
+
+            self.DemandDict.pop(Id)
 
         class Demand:
             
