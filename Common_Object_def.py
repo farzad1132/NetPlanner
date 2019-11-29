@@ -8,7 +8,6 @@ class Network:
     class Topology:
 
         def __init__(self):
-            # RId
             self.NodeDict = {}
             self.LinkDict = {}
             self.ClusterDict = {}
@@ -30,12 +29,7 @@ class Network:
         
         def del_node(self, NodeId):
             # this method deletes a Node and Corrects NodeDict , LinkDict and ClusterDict
-
-            if not( NodeId in self.NodeDict):
-                pass
-                # TODO: Raise Error
             
-
             # deleting object from memory
             del self.NodeDict[NodeId]
 
@@ -43,7 +37,7 @@ class Network:
             self.NodeDict.pop(NodeId)
 
             # correcting Node ReferenceId
-            Network.Topology.Node -= 1
+            Network.Topology.Node.ReferenceId -= 1
 
             # Correcting other Nodes Id
             # finding Nodes that need Correction
@@ -88,11 +82,8 @@ class Network:
             # finding link in LinkDict
             if (InNode, OutNode) in self.LinkDict:
                 link_tuple = (InNode, OutNode)
-            elif (OutNode, InNode) in self.LinkDict:
+            else: 
                 link_tuple = (OutNode, InNode)
-            else:
-                pass
-                # TODO: Raise Error
 
             # deleting Link Object from memory
             del self.LinkDict[link_tuple]
@@ -140,8 +131,8 @@ class Network:
             # Id must be an int number
             # Location format must be (lat,lng) in int
             def __init__(self, Location, Type = "not declared"):
-                self.Id = Network.PhysicalTopology.Node.ReferenceId
-                Network.PhysicalTopology.Node.ReferenceId += 1
+                self.Id = Network.Topology.Node.ReferenceId
+                Network.Topology.Node.ReferenceId += 1
                 self.Location = Location
                 self.Type = Type
                 self.Neighbors = []
@@ -149,8 +140,6 @@ class Network:
                 self.services = []
                 self.AmplifierList = []
             
-            def __del__(self):
-                pass
             
             def add_amplifier(self,nf):
                 self.AmplifierList.append(self.Amplifier(nf))
@@ -171,7 +160,7 @@ class Network:
                 self.SpanObjList = [self.Span(self.InNode,self.OutNode) for i in range(NumSpan)]
 
                 self.WaveLengthList = []
-                self.LightPathList = {}    # in  { service : Type of lightpath } format
+                self.LightPathDict = {}    # in  { id : LightPath Object } format
 
             def put_fiber_Type(self,SpanPosition, Length, Loss, Dispersion, Beta,Gamma, PositionInLink, Snr):
                 self.SpanObjList[SpanPosition].put_fiber_Type(Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr)
@@ -191,7 +180,7 @@ class Network:
                     # Snr is a vector ---> size = NumWaveLength
                     self.Snr = Snr
 
-                    # 0 value for this variable means first and so on ...
+                    # 0 for this variable means first span in link and so on ...
                     self.PositionInLink = PositionInLink
 
                 def put_fiber_Type(self, Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr):
@@ -431,13 +420,28 @@ class Network:
                     self.ServiceDict[ServiceId] = self.G_100(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
         
     class Lightpath:
-                ReferenceId = 0
+        ReferenceId = 0
 
-                def __init__(self, Capacity, ServiceIdList, Type, MandatoryNodesIdList, DemandId):
-                    self.id = Network.Lightpath.ReferenceId
-                    Network.Lightpath.ReferenceId += 1
-                    self.DemandId = DemandId
-                    self.Capacity = Capacity
-                    self.ServiceIdList = ServiceIdList
-                    self.Type = Type
-                    self.MandatoryNodesIdList = MandatoryNodesIdList
+        def __init__(self, Capacity, ServiceIdList, Type, MandatoryNodesIdList, DemandId):
+            self.id = Network.Lightpath.ReferenceId
+            Network.Lightpath.ReferenceId += 1
+            self.DemandId = DemandId
+            self.Capacity = Capacity
+            self.ServiceIdList = ServiceIdList
+            self.Type = Type
+            self.MandatoryNodesIdList = MandatoryNodesIdList
+
+
+# text code
+n = Network()
+
+# adding some Node
+n.PhysicalTopology.add_node((2,3))
+n.PhysicalTopology.add_node((4,7))
+n.PhysicalTopology.add_node((14,5))
+
+print(n.PhysicalTopology.NodeDict)
+
+# adding link
+n.PhysicalTopology.add_link(0,2,2)
+print(n.PhysicalTopology.LinkDict)
