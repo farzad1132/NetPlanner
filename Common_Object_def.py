@@ -441,7 +441,3 @@ class Network:
                     self.ServiceIdList = ServiceIdList
                     self.Type = Type
                     self.MandatoryNodesIdList = MandatoryNodesIdList
-
-n = Network()
-d1 = n.TrafficMatrix.add_demand(1, 'tehran', 'karaj', 'working')
-n.TrafficMatrix.DemandDict[1].add_service('STM_16','x')
