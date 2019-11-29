@@ -275,7 +275,6 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
-                    BW = 1.244
             
             class FE:
                 BW = 0.1
@@ -290,7 +289,6 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
-                    BW = 0.1
                 
             
             class STM_64:
@@ -304,7 +302,6 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
-                    BW = 9.95
             
             class STM_16:
                 BW = 2.49
@@ -321,7 +318,7 @@ class Network:
 
 
             class STM_4:
-                # BW : Band WIdth
+                # BW : Band Width
                 BW = 622.08 / 1024
 
                 def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
@@ -335,7 +332,7 @@ class Network:
 
 
             class STM_1_Optical:
-                # BW : Band WIdth in Gb/s
+                # BW : Band Width in Gb/s
                 BW = 155.52 / 1024
 
                 def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
@@ -346,12 +343,10 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
-                    # BW : Band WIdth in Gb/s
-                    BW = 155.52 / 1024
                 
             
             class STM_1_Electrical:
-                # BW = Band WIdth in Gb/s
+                # BW = Band Width in Gb/s
                 BW = 155.52 / 1024
 
                 def __init__(self, Id, Sla, DemandId, IgnoringNodes, LightPathId = None):
@@ -365,7 +360,7 @@ class Network:
                 
             
             class E1:
-                # BW : Band WIdth in Gb/s
+                # BW : Band Width in Gb/s
                 BW = 58.84 / 1024
 
                 def __init__(self, Id, Sla,DemandId, IgnoringNodes, LightPathId = None):
@@ -435,7 +430,7 @@ class Network:
 # text code
 n = Network()
 
-# adding some Node
+# adding Node
 n.PhysicalTopology.add_node((2,3))
 n.PhysicalTopology.add_node((4,7))
 n.PhysicalTopology.add_node((14,5))
