@@ -18,6 +18,7 @@ import xlrd
 import xlsxwriter
 from pandas import ExcelWriter 
 from newcheck import  Ui_checking
+from Common_Object_def import Network
 
 from add_node import Ui_add_node_window
 
@@ -534,6 +535,8 @@ class Ui_MainWindow(object):
         Panel_Data["TabWidget"] = self.tabWidget
 
         Panel_Data["SelectNodeCombo"] = self.SelectNode_combo
+
+        network = Network()
 
         #TODO: edited
         self.listWidget.clicked['QModelIndex'].connect(self.list_click)
@@ -1053,6 +1056,37 @@ class Ui_MainWindow(object):
                             Data[m]["DataSection"][l1[k][j]][keys] = text
 
             #Data.update(Temp_data)
+    
+    def TrafficMatrixToObject(self):
+        RowsNumber = list(Data["General"]["DataSection"]["0"].keys())
+        ServiceTypes = ["E1", "STM_1_Electrical", "STM_1_Optical", "STM_4", "STM_16", "STM_64", "FE", "1GE", "10GE",
+                           "40GE", "100GE"]
+
+        SubHeaders = [["Quantity", "SLA"], ["Quantity", "SLA"], ["Quantity", "λ", "SLA"],
+                  ["Quantity", "λ", "concat.", "SLA"], ["Quantity", "λ", "concat.", "SLA"],
+                  ["Quantity", "λ", "concat.", "SLA"],
+                  ["Quantity", "Granularity_xVC12", "Granularity_xVC4", "λ", "SLA"],
+                  ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"],
+                  ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"]]
+
+        for Row in RowsNumber:
+            Source = Data["General"]["DataSection"]["1"][Row]
+            Destination = Data["General"]["DataSection"]["2"][Row]
+            i = 0
+            ServiceDict = {}
+            for service in ServiceTypes:
+                PropertyDict = {}
+                for prop in range(0,len(SubHeaders[i])):
+                    PropertyDict[prop] = Data[service]["DataSection"][prop][Row]
+                i += 1
+                ServiceDict[service] = PropertyDict
+            
+            
+
+                
+
+
+
 
     def TM_CellChange_fun(self):
         row = self.Traffic_matrix.currentRow()
