@@ -43,7 +43,7 @@ class Network:
             self.NodeDict.pop(NodeId)
 
             # correcting Node ReferenceId
-            Network.Topology.Node -= 1
+            Network.Topology.Node.ReferenceId -= 1
 
             # Correcting other Nodes Id
             # finding Nodes that need Correction

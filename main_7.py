@@ -536,7 +536,7 @@ class Ui_MainWindow(object):
 
         Panel_Data["SelectNodeCombo"] = self.SelectNode_combo
 
-        network = Network()
+        self.network = Network()
 
         #TODO: edited
         self.listWidget.clicked['QModelIndex'].connect(self.list_click)
@@ -1070,17 +1070,56 @@ class Ui_MainWindow(object):
                   ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"]]
 
         for Row in RowsNumber:
+            id = Data["General"]["DataSection"]["0"][Row]
             Source = Data["General"]["DataSection"]["1"][Row]
             Destination = Data["General"]["DataSection"]["2"][Row]
+
+            # TODO: find Type in Traffic Matrix
+            Type = None
             i = 0
             ServiceDict = {}
+            ServiceCount = 0
             for service in ServiceTypes:
                 PropertyDict = {}
-                for prop in range(0,len(SubHeaders[i])):
-                    PropertyDict[prop] = Data[service]["DataSection"][prop][Row]
+                for PropNum in range(0,len(SubHeaders[i])):
+                    Prop = SubHeaders[i][PropNum]
+                    if PropNum == 0:
+                        ServiceCount += Data[service]["DataSection"][Prop][Row]
+                        PropertyDict[Prop] = ServiceCount
+                    else:
+                        PropertyDict[Prop] = Data[service]["DataSection"][Prop][Row]
                 i += 1
                 ServiceDict[service] = PropertyDict
-            
+            self.network.TrafficMatrix.add_demand(id,Source,Destination,Type)
+            for service in list(ServiceDict.keys()):
+
+                Sla = ServiceDict[service["SLA"]]
+
+                if "λ" in ServiceDict[service]:
+                    Wavelength = ServiceDict[service]["λ"]
+                else:
+                    Wavelength = None
+                
+                if "Granularity_xVC12" in ServiceDict[service]:
+                    Granularity_xVC12 = ServiceDict[service]["Granularity_xVC12"]
+                else:
+                    Granularity_xVC12 = None
+                
+                if "Granularity_xVC4" in ServiceDict[service]:
+                    Granularity_xVC4 = ServiceDict[service]["Granularity_xVC4"]
+                else:
+                    Granularity_xVC4 = None
+                
+                if "Granularity" in ServiceDict[service]:
+                    Granularity = ServiceDict[service]["Granularity"]
+                else:
+                    Granularity = None
+                
+                IgnoringNodes = None
+
+                for i in range(ServiceDict[service]["Quantity"]):
+                    self.network.TrafficMatrix.DemandDict[id].add_service(service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
+                    
             
 
                 
