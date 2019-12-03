@@ -1207,11 +1207,22 @@ class Ui_MainWindow(object):
             destination = Data["Links"][id]["Destination"]
             source_cor = Data["Nodes"][source]["Coordinate"]
             destination_cor = Data["Nodes"][destination]["Coordinate"]
-            source_flag = Data["Nodes"][source]["CityFlag"]
-            destination_flag = Data["Nodes"][destination]["CityFlag"]
-            link_flag = Data["Links"][id]["CityFlag"]
             loc = [source_cor,destination_cor]
-            if source_flag == 0:
+
+            # drawing nodes and links on map
+            folium.Marker(source_cor,icon=folium.Icon(color="red"), popup=  "<h2>%s</h2>" %source).add_to(self.m)
+            added.append(source)
+            folium.Marker(destination_cor,icon=folium.Icon(color="red"),popup= "<h2>%s</h2>" %destination).add_to(self.m)
+            added.append(destination)
+            folium.PolyLine(loc ,weight = 3,popup = "Link ID: %s"%(id),color = "black",opacity = 0.8).add_to(self.m)
+
+            # TODO: obsoleted codes ( will be removed in next version )
+
+            #source_flag = Data["Nodes"][source]["CityFlag"]
+            #destination_flag = Data["Nodes"][destination]["CityFlag"]
+            #link_flag = Data["Links"][id]["CityFlag"]
+            
+            '''if source_flag == 0:
                 #folium.Marker(source_cor ,color = "blue", popup = "%s" %source).add_to(self.m)
                 #print(folium.Marker(source_cor,color = "blue", popup = "%s" %source))
                 if added.count(source) == 0:
@@ -1223,7 +1234,8 @@ class Ui_MainWindow(object):
                     folium.Marker(destination_cor,icon=folium.Icon(color="red"),popup= "<h2>%s</h2>" %destination).add_to(self.m)
                     added.append(destination)
             if link_flag == 0:
-                folium.PolyLine(loc ,weight = 3,popup = "Link ID: %s"%(id),color = "black",opacity = 0.8).add_to(self.m)
+                folium.PolyLine(loc ,weight = 3,popup = "Link ID: %s"%(id),color = "black",opacity = 0.8).add_to(self.m)'''
+            
 
         self.m.save("map.html")
 
@@ -1339,11 +1351,11 @@ class Ui_MainWindow(object):
         self.webengine.show()
 
     
-
+    # TODO: method is will be removed from Program
     def link_analysis(self):
-        # this function finds all links and fills link data section in backend
+        None
 
-        rows = list(Data["General"]["DataSection"]["0"].keys())
+        '''rows = list(Data["General"]["DataSection"]["0"].keys())
         for row in rows:
             id = Data["General"]["DataSection"]["0"][row]
             if not(id in Data["Links"]):
@@ -1365,12 +1377,12 @@ class Ui_MainWindow(object):
 
                 # completing Node DataBase
 
-                '''source_key = Data["Nodes"][source]["Degree"] 
+                source_key = Data["Nodes"][source]["Degree"] 
                 destination_key = Data["Nodes"][destination]["Degree"] 
                 source_key += 1
                 destination_key += 1
                 Data["Nodes"][source]["Degree_List"][str(source_key)] = source
-                Data["Nodes"][destination]["Degree_List"][str(destination_key)] = destination'''
+                Data["Nodes"][destination]["Degree_List"][str(destination_key)] = destination
 
                 if degree in degree_list:
                      Data["Nodes"][source]["Degree"][degree][destination] = row
@@ -1380,6 +1392,7 @@ class Ui_MainWindow(object):
 
 
         print("links done")
+        '''
 
 
 
@@ -1387,7 +1400,57 @@ class Ui_MainWindow(object):
     
     def node_analysis(self):
 
-        # this function finds all nodes and fill the node data section in our Backend
+        # this function adds some sections to Nodes DataBase
+        for node in Data["Nodes"].values():
+
+            Data["Nodes"][node]["Degree"] = {}
+            Data["Nodes"][node]["Client_Services"] = {}
+            Data["Nodes"][node]["Client_Services"]["data"] = {}
+            Data["Nodes"][node]["Client_Services"]["data"]["1"] = {}
+            Data["Nodes"][node]["Client_Services"]["data"]["2"] = {}
+            Data["Nodes"][node]["Client_Services"]["data"]["3"] = {}
+            Data["Nodes"][node]["Client_Services"]["data"]["4"] = {}
+
+            Data["Nodes"][node]["Client_Services"]["flag"] = {}  # by this flag we make sure just one time we inserting TM data into Client_Service section
+            Data["Nodes"][node]["Client_Services"]["flag"]["1"] = False
+            Data["Nodes"][node]["Client_Services"]["flag"]["2"] = False
+            Data["Nodes"][node]["Client_Services"]["flag"]["3"] = False
+            Data["Nodes"][node]["Client_Services"]["flag"]["4"] = False
+
+            Data["Nodes"][node]["Line_Services"] = {}
+            Data["Nodes"][node]["Line_Services"]["1"] = {}
+            Data["Nodes"][node]["Line_Services"]["1"]["OTU2"] = 0
+            Data["Nodes"][node]["Line_Services"]["1"]["OTU4"] = 0
+            Data["Nodes"][node]["Line_Services"]["1"]["2*OTU4"] = 0
+            Data["Nodes"][node]["Line_Services"]["1"]["STM_64"] = 0
+
+            Data["Nodes"][node]["Line_Services"]["2"] = {}
+            Data["Nodes"][node]["Line_Services"]["2"]["OTU2"] = 0
+            Data["Nodes"][node]["Line_Services"]["2"]["OTU4"] = 0
+            Data["Nodes"][node]["Line_Services"]["2"]["2*OTU4"] = 0
+            Data["Nodes"][node]["Line_Services"]["2"]["STM_64"] = 0
+
+            Data["Nodes"][node]["Line_Services"]["3"] = {}
+            Data["Nodes"][node]["Line_Services"]["3"]["OTU2"] = 0
+            Data["Nodes"][node]["Line_Services"]["3"]["OTU4"] = 0
+            Data["Nodes"][node]["Line_Services"]["3"]["2*OTU4"] = 0
+            Data["Nodes"][node]["Line_Services"]["3"]["STM_64"] = 0
+
+            Data["Nodes"][node]["Line_Services"]["4"] = {}
+            Data["Nodes"][node]["Line_Services"]["4"]["OTU2"] = 0
+            Data["Nodes"][node]["Line_Services"]["4"]["OTU4"] = 0
+            Data["Nodes"][node]["Line_Services"]["4"]["2*OTU4"] = 0
+            Data["Nodes"][node]["Line_Services"]["4"]["STM_64"] = 0
+
+            Data["Nodes"][node]["Panels"] = {}
+            Data["Nodes"][node]["Panels"]["1"] = {} # 0: North
+            Data["Nodes"][node]["Panels"]["2"] = {}
+            Data["Nodes"][node]["Panels"]["3"] = {}
+            Data["Nodes"][node]["Panels"]["4"] = {} # 3 : West
+
+        # TODO: will be removed in next version
+
+        '''
         self.nodes = []
         self.source_list = list(Data["General"]["DataSection"]["1"].values())
         self.destination_list = list(Data["General"]["DataSection"]["2"].values())
@@ -1456,10 +1519,10 @@ class Ui_MainWindow(object):
                 Data["Nodes"][node]["Line_Services"]["4"]["STM_64"] = 0
 
                 Data["Nodes"][node]["Panels"] = {}
-                '''Data["Nodes"][node]["Panels"]["1"] = {} # 0: North
+                Data["Nodes"][node]["Panels"]["1"] = {} # 0: North
                 Data["Nodes"][node]["Panels"]["2"] = {}
                 Data["Nodes"][node]["Panels"]["3"] = {}
-                Data["Nodes"][node]["Panels"]["4"] = {} # 3 : West '''
+                Data["Nodes"][node]["Panels"]["4"] = {} # 3 : West 
 
                 if flag == '2':
                     Data["Nodes"][node]["CityFlag"] = 1
@@ -1468,7 +1531,7 @@ class Ui_MainWindow(object):
                 #Data["Nodes"][node]["Degree_List"] = {}
                 Data["Last_Node_ID"] += 1
         #print(Data["Nodes"]["Tehran-1"])
-        print("Nodes done")
+        print("Nodes done") '''
         
     def panelList_fun(self):
         for panel in self.panels_name:
