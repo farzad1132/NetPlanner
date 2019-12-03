@@ -1121,7 +1121,17 @@ class Ui_MainWindow(object):
                     self.network.TrafficMatrix.DemandDict[id].add_service(service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
                     
             
+    def PhysicalTopologyToObject(self):
+        for NodeData in Data["Nodes"].values():
+            self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["Type"])
+        
+        for LinkId , LinkData in Data["Links"]:
+            self.network.PhysicalTopology.add_link(LinkId[0], LinkId[1], LinkData["NumSpan"])
 
+            for i in range(LinkData["NumSpan"]):
+                self.network.PhysicalTopology.LinkDict[(LinkId[0], LinkId[1])].put_fiber_Type(LinkId[0], LinkId[1],
+                 LinkData["Length"][i], LinkData["Loss"][i], LinkData["Dispersion"][i], LinkData["Beta"][i], LinkData["Gamma"][i], 
+                 i, LinkData["Snr"][i])
                 
 
 
