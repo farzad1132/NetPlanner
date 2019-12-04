@@ -127,3 +127,11 @@ Data["100GE"]["DataSection"]["Quantity"] = {}
 Data["100GE"]["DataSection"]["Granularity"] = {}
 Data["100GE"]["DataSection"]["\u03bb"]={}
 Data["100GE"]["DataSection"]["SLA"]={}
+
+
+DemandTabDataBase = {}
+DemandTabDataBase["Services"] = {}
+# format: 
+#       {(Tehran, karaj): ['2 * 100G ', ...]}
+DemandTabDataBase["Lightpathes"] = {}
+DemandTabDataBase["Panels"] = {}
