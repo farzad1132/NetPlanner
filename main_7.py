@@ -818,14 +818,15 @@ class Ui_MainWindow(object):
 
     def main_tab_clicked(self,index):
         if index == 3:
-            #Panel_Data["width"] = MainWindow.geometry().width()
-            #Panel_Data["height"] = MainWindow.geometry().height()
             if Panel_Data["first_run_flag"] == False:
                 for i in range(1,5):
                     self.shelfset(i)
                     Panel_Data["mdi_1"+str(i)+"_flag"] = True
 
             Panel_Data["first_run_flag"] = True
+        if index == 4:
+            pass
+            # TODO: run shelf set function for Demand Tab and turn its relevant flag on
     
 
     def Shelf_tab_clicked(self,index):
