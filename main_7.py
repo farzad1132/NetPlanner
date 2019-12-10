@@ -530,8 +530,6 @@ class Ui_MainWindow(object):
 
         #self.ShelfTab.setStyleSheet("QTabBar::tab:selected {background-color: #4FA600}")
 
-        self.filter.clicked.connect(self.printev)
-
         Panel_Data["TabWidget"] = self.tabWidget
 
         Panel_Data["SelectNodeCombo"] = self.SelectNode_combo
