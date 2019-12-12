@@ -82,8 +82,8 @@ class Backend_map(QObject):
     @Slot(str)
     def change_tab_to4(self,degreename):
         print(">>>>>>",degreename)
-        Panel_Data["TabWidget"].setCurrentIndex(3)
-        Panel_Data["SelectNodeCombo"].setCurrentText(degreename.strip())
+        Data["TabWidget"].setCurrentIndex(3)
+        Data["SelectNodeCombo"].setCurrentText(degreename.strip())
         ui.SelectNode_combo_change()
 
 
@@ -465,8 +465,8 @@ class Ui_MainWindow(object):
         self.add_node_button.clicked.connect(self.add_node_button_fun)
         self.m = folium.Map(location=[35.6892,51.3890],zoom_start=6)
         self.m.save("map.html")
-        Panel_Data["Map_Var"] = self.m
-        Panel_Data["Web_Engine"] = self.webengine
+        Data["Map_Var"] = self.m
+        Data["Web_Engine"] = self.webengine
         self.webengine.load(QUrl.fromLocalFile(os.path.abspath('map.html')))
         self.webengine.show()
 
@@ -510,29 +510,30 @@ class Ui_MainWindow(object):
 
         self.OpenTopology_button.clicked.connect(self.OpenTopology_fun)
 
-        Panel_Data["mdi_11"] = self.mdi_11
-        Panel_Data["mdi_11_flag"] = False
-        Panel_Data["mdi_12"] = self.mdi_12
-        Panel_Data["mdi_12_flag"] = False
-        Panel_Data["mdi_13"] = self.mdi_13
-        Panel_Data["mdi_13_flag"] = False
-        Panel_Data["mdi_14"] = self.mdi_14
-        Panel_Data["mdi_14_flag"] = False
+        Data["mdi_11"] = self.mdi_11
+        Data["mdi_11_flag"] = False
+        Data["mdi_12"] = self.mdi_12
+        Data["mdi_12_flag"] = False
+        Data["mdi_13"] = self.mdi_13
+        Data["mdi_13_flag"] = False
+        Data["mdi_14"] = self.mdi_14
+        Data["mdi_14_flag"] = False
 
         self.ShelfTab.currentChanged["int"].connect(self.Shelf_tab_clicked)
 
         self.SelectNode_combo.currentIndexChanged["int"].connect(self.SelectNode_combo_change)
 
-        Panel_Data["first_run_flag"] = False
+        Data["first_run_flag"] = False
+        Data["demand_first_run_flag"] = False
 
-        Panel_Data["ClientList"] = self.ClientList
-        Panel_Data["LineList"] = self.LineList
+        Data["ClientList"] = self.ClientList
+        Data["LineList"] = self.LineList
 
         #self.ShelfTab.setStyleSheet("QTabBar::tab:selected {background-color: #4FA600}")
 
-        Panel_Data["TabWidget"] = self.tabWidget
+        Data["TabWidget"] = self.tabWidget
 
-        Panel_Data["SelectNodeCombo"] = self.SelectNode_combo
+        Data["SelectNodeCombo"] = self.SelectNode_combo
 
         self.network = Network()
 
@@ -714,7 +715,7 @@ class Ui_MainWindow(object):
 
     def SelectNode_combo_change(self):
         self.ShelfTab.setCurrentIndex(0)
-        if Panel_Data["first_run_flag"] == True:
+        if Data["first_run_flag"] == True:
             self.set_panels()
 
         # degree 1 Grooming
@@ -744,40 +745,40 @@ class Ui_MainWindow(object):
                 if "1"+str(i)+str(j) in Data["Nodes"][nodename]["Panels"]:
                     panel = Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Name"]
                     if panel == "SC":
-                        Panel_Data["1"+str(i)+str(j)].setWidget(SC_panel("1"+str(i)+str(j),nodename))
+                        Data["1"+str(i)+str(j)].setWidget(SC_panel("1"+str(i)+str(j),nodename))
                     elif panel == "BAF3":
-                        Panel_Data["1"+str(i)+str(j)].setWidget(BAF3_panel("1"+str(i)+str(j),nodename))
+                        Data["1"+str(i)+str(j)].setWidget(BAF3_panel("1"+str(i)+str(j),nodename))
                     elif panel == "LAF3":
-                        Panel_Data["1"+str(i)+str(j)].setWidget(LAF3_panel("1"+str(i)+str(j),nodename))
+                        Data["1"+str(i)+str(j)].setWidget(LAF3_panel("1"+str(i)+str(j),nodename))
                     elif panel == "PAF3":
-                        Panel_Data["1"+str(i)+str(j)].setWidget(PAF3_panel("1"+str(i)+str(j),nodename))
+                        Data["1"+str(i)+str(j)].setWidget(PAF3_panel("1"+str(i)+str(j),nodename))
                     elif panel == "MP2X":
-                        Panel_Data["1"+str(i)+str(j)].setWidget(MP2X_panel("1"+str(i)+str(j),nodename))
+                        Data["1"+str(i)+str(j)].setWidget(MP2X_panel("1"+str(i)+str(j),nodename))
                     elif panel == "MP2D":
                         position = Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Position"]
                         if position == "L":
 
-                            Panel_Data["1"+str(i)+str(j)].setWidget(MP2D_panel_L("1"+str(i)+str(j),nodename))
+                            Data["1"+str(i)+str(j)].setWidget(MP2D_panel_L("1"+str(i)+str(j),nodename))
                             if Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Client1"] == "green":
-                                Panel_Data["1"+str(i)+str(j)].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
+                                Data["1"+str(i)+str(j)].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
                             elif Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Client1"] == "red":
-                                Panel_Data["1"+str(i)+str(j)].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_red.png")))
+                                Data["1"+str(i)+str(j)].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_red.png")))
 
                             if Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Client2"] == "green":
-                                Panel_Data["1"+str(i)+str(j)].widget().label_client2.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
+                                Data["1"+str(i)+str(j)].widget().label_client2.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
                             elif Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Client2"] == "red":
-                                Panel_Data["1"+str(i)+str(j)].widget().label_client2.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_red.png")))
+                                Data["1"+str(i)+str(j)].widget().label_client2.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_red.png")))
 
                             if Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Line"] == 2:
-                                Panel_Data["1"+str(i)+str(j)].widget().label_line.setPixmap(QPixmap(os.path.join("MP2D_panel", "line_green.png")))
+                                Data["1"+str(i)+str(j)].widget().label_line.setPixmap(QPixmap(os.path.join("MP2D_panel", "line_green.png")))
                         
                         elif position == "R":
-                            Panel_Data["1"+str(i)+str(j)].setWidget(MP2D_panel_R("1"+str(i)+str(j),nodename))
+                            Data["1"+str(i)+str(j)].setWidget(MP2D_panel_R("1"+str(i)+str(j),nodename))
 
                     elif panel == "TP2X":
-                        Panel_Data["1"+str(i)+str(j)].setWidget(TP2X_panel("1"+str(i)+str(j),nodename))
+                        Data["1"+str(i)+str(j)].setWidget(TP2X_panel("1"+str(i)+str(j),nodename))
                 else:
-                    Panel_Data["1"+str(i)+str(j)].setWidget(BLANK_panel("1"+str(i)+str(j), nodename))
+                    Data["1"+str(i)+str(j)].setWidget(BLANK_panel("1"+str(i)+str(j), nodename))
         
 
 
@@ -816,20 +817,20 @@ class Ui_MainWindow(object):
 
     def main_tab_clicked(self,index):
         if index == 3:
-            if Panel_Data["first_run_flag"] == False:
+            if Data["first_run_flag"] == False:
                 for i in range(1,5):
                     self.shelfset(i)
-                    Panel_Data["mdi_1"+str(i)+"_flag"] = True
+                    Data["mdi_1"+str(i)+"_flag"] = True
 
-            Panel_Data["first_run_flag"] = True
+            Data["first_run_flag"] = True
         if index == 4:
             pass
             # TODO: run shelf set function for Demand Tab and turn its relevant flag on
     
 
     def Shelf_tab_clicked(self,index):
-        Panel_Data["width"] = MainWindow.geometry().width()
-        Panel_Data["height"] = MainWindow.geometry().height()
+        Data["width"] = MainWindow.geometry().width()
+        Data["height"] = MainWindow.geometry().height()
 
         # TODO: Update Light Path list
                     
@@ -1308,13 +1309,13 @@ class Ui_MainWindow(object):
         print("nodename:",nodename)
         for i in range(1,15):
             setattr(self,"panel_1" + str(shelfnum) + str(i),QMdiSubWindow())
-            Panel_Data["1"+str(shelfnum)+str(i)] = getattr(ui,"panel_1"+str(shelfnum)+str(i))
-            Panel_Data["1"+str(shelfnum)+str(i)].setWindowFlag(Qt.FramelessWindowHint)
-            Panel_Data["1"+str(shelfnum)+str(i)].setWidget(BLANK_panel("1"+str(shelfnum)+str(i), nodename))
+            Data["1"+str(shelfnum)+str(i)] = getattr(ui,"panel_1"+str(shelfnum)+str(i))
+            Data["1"+str(shelfnum)+str(i)].setWindowFlag(Qt.FramelessWindowHint)
+            Data["1"+str(shelfnum)+str(i)].setWidget(BLANK_panel("1"+str(shelfnum)+str(i), nodename))
             
-            Panel_Data["mdi_1"+str(shelfnum)].addSubWindow(Panel_Data["1"+str(shelfnum)+str(i)])              
+            Data["mdi_1"+str(shelfnum)].addSubWindow(Data["1"+str(shelfnum)+str(i)])              
 
-            Panel_Data["1"+str(shelfnum)+str(i)].show()
+            Data["1"+str(shelfnum)+str(i)].show()
 
 
     # obsoleted 
@@ -1322,13 +1323,13 @@ class Ui_MainWindow(object):
 
         for i in range(1,15):
             setattr(self,"panel_11"+str(i),QMdiSubWindow())
-            Panel_Data["11"+str(i)] = getattr(ui,"panel_11"+str(i))
-            Panel_Data["11"+str(i)].setWindowFlag(Qt.FramelessWindowHint)
-            Panel_Data["11"+str(i)].setWidget(BLANK_panel("11"+str(i)))
+            Data["11"+str(i)] = getattr(ui,"panel_11"+str(i))
+            Data["11"+str(i)].setWindowFlag(Qt.FramelessWindowHint)
+            Data["11"+str(i)].setWidget(BLANK_panel("11"+str(i)))
             
-            Panel_Data["mdi_11"].addSubWindow(Panel_Data["11"+str(i)])              
+            Data["mdi_11"].addSubWindow(Data["11"+str(i)])              
 
-            Panel_Data["11"+str(i)].show()
+            Data["11"+str(i)].show()
     
     
 
