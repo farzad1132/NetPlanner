@@ -22,8 +22,8 @@ class BLANK_panel(QWidget):
         super(BLANK_panel, self).__init__()
         self.id = str(Panel_ID)
         self.nodename = nodename
-        width = int (Panel_Data["width"] / 17.6 )
-        height = int(Panel_Data["height"] / 1.235)
+        width = 109
+        height = 810
 
         self.setMinimumSize(width,height)
 
