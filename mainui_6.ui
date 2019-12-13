@@ -71,7 +71,7 @@ QTabBar::tab:!selected {
 }</string>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="TopologyTab">
         <attribute name="title">
@@ -204,7 +204,7 @@ QPushButton:default {
                   </widget>
                  </item>
                  <item row="2" column="1" colspan="2">
-                  <widget class="QFontComboBox" name="fontComboBox">
+                  <widget class="QFontComboBox" name="cluster_type_combobox">
                    <property name="maximumSize">
                     <size>
                      <width>126</width>
@@ -1624,6 +1624,12 @@ QPushButton:default {
             <layout class="QGridLayout" name="gridLayout_9">
              <item row="0" column="0">
               <widget class="QTabWidget" name="ShelfTab">
+               <property name="minimumSize">
+                <size>
+                 <width>805</width>
+                 <height>620</height>
+                </size>
+               </property>
                <property name="tabPosition">
                 <enum>QTabWidget::West</enum>
                </property>
@@ -1631,7 +1637,7 @@ QPushButton:default {
                 <enum>QTabWidget::Rounded</enum>
                </property>
                <property name="currentIndex">
-                <number>3</number>
+                <number>0</number>
                </property>
                <property name="iconSize">
                 <size>
@@ -1649,6 +1655,12 @@ QPushButton:default {
                 <layout class="QGridLayout" name="Shelf1_grid">
                  <item row="0" column="0">
                   <widget class="QMdiArea" name="mdi_11">
+                   <property name="minimumSize">
+                    <size>
+                     <width>805</width>
+                     <height>620</height>
+                    </size>
+                   </property>
                    <property name="background">
                     <brush brushstyle="SolidPattern">
                      <color alpha="255">
@@ -1672,6 +1684,12 @@ QPushButton:default {
                 <layout class="QGridLayout" name="Shelf2_grid">
                  <item row="0" column="0">
                   <widget class="QMdiArea" name="mdi_12">
+                   <property name="minimumSize">
+                    <size>
+                     <width>805</width>
+                     <height>620</height>
+                    </size>
+                   </property>
                    <property name="background">
                     <brush brushstyle="SolidPattern">
                      <color alpha="255">
@@ -1692,6 +1710,12 @@ QPushButton:default {
                 <layout class="QGridLayout" name="Shelf3_grid">
                  <item row="0" column="0">
                   <widget class="QMdiArea" name="mdi_13">
+                   <property name="minimumSize">
+                    <size>
+                     <width>805</width>
+                     <height>620</height>
+                    </size>
+                   </property>
                    <property name="background">
                     <brush brushstyle="SolidPattern">
                      <color alpha="255">
@@ -1712,6 +1736,12 @@ QPushButton:default {
                 <layout class="QGridLayout" name="Shelf4_grid">
                  <item row="0" column="0">
                   <widget class="QMdiArea" name="mdi_14">
+                   <property name="minimumSize">
+                    <size>
+                     <width>805</width>
+                     <height>620</height>
+                    </size>
+                   </property>
                    <property name="background">
                     <brush brushstyle="SolidPattern">
                      <color alpha="255">
