@@ -2271,6 +2271,7 @@ class Ui_MainWindow(object):
 
             Data["first_run_flag"] = True
         if index == 4:
+            print(self.Demand_mdi.geometry())
             pass
             # TODO: run shelf set function for Demand Tab and turn its relevant flag on
     
