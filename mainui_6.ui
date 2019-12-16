@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1149</width>
+    <width>1219</width>
     <height>841</height>
    </rect>
   </property>
@@ -31,44 +31,12 @@
          <bold>true</bold>
         </font>
        </property>
+       <property name="accessibleName">
+        <string>maintab</string>
+       </property>
        <property name="styleSheet">
-        <string notr="true">QTabWidget::pane { /* The tab widget frame */
-    border-top: 2px solid #C2C7CB;
-}
-
-QTabWidget::tab-bar {
-    left: 5px; /* move to the right by 5px */
-}
-
-/* Style the tab using the tab sub-control. Note that
-    it reads QTabBar _not_ QTabWidget */
-QTabBar::tab {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
-                                stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
-    border: 2px solid #C4C4C3;
-    border-bottom-color: #C2C7CB; /* same as the pane color */
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    min-width: 8ex;
-    padding: 2px;
-}
-
-QTabBar::tab:selected, QTabBar::tab:hover {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #fafafa, stop: 0.4 #f4f4f4,
-                                stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);
-	background-color : lightgreen;
-}
-
-QTabBar::tab:selected {
-    border-color: #9B9B9B;
-    border-bottom-color: #C2C7CB; /* same as pane color */
-}
-
-QTabBar::tab:!selected {
-    margin-top: 2px; /* make non-selected tabs look smaller */
-}</string>
+        <string notr="true">
+</string>
        </property>
        <property name="currentIndex">
         <number>3</number>
@@ -1182,7 +1150,7 @@ for Network Plan </string>
             <item row="1" column="0" colspan="2">
              <widget class="QTabWidget" name="List_tab">
               <property name="currentIndex">
-               <number>0</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="tab_4">
                <attribute name="title">
@@ -1611,6 +1579,9 @@ QPushButton:default {
         <layout class="QGridLayout" name="gridLayout_8">
          <item row="1" column="1">
           <widget class="QTabWidget" name="RackTab">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
            <property name="tabPosition">
             <enum>QTabWidget::North</enum>
            </property>
@@ -1626,8 +1597,8 @@ QPushButton:default {
               <widget class="QTabWidget" name="ShelfTab">
                <property name="minimumSize">
                 <size>
-                 <width>805</width>
-                 <height>620</height>
+                 <width>1530</width>
+                 <height>810</height>
                 </size>
                </property>
                <property name="tabPosition">
@@ -1637,7 +1608,7 @@ QPushButton:default {
                 <enum>QTabWidget::Rounded</enum>
                </property>
                <property name="currentIndex">
-                <number>0</number>
+                <number>3</number>
                </property>
                <property name="iconSize">
                 <size>
@@ -1657,8 +1628,8 @@ QPushButton:default {
                   <widget class="QMdiArea" name="mdi_11">
                    <property name="minimumSize">
                     <size>
-                     <width>805</width>
-                     <height>620</height>
+                     <width>1530</width>
+                     <height>810</height>
                     </size>
                    </property>
                    <property name="background">
@@ -1686,8 +1657,8 @@ QPushButton:default {
                   <widget class="QMdiArea" name="mdi_12">
                    <property name="minimumSize">
                     <size>
-                     <width>805</width>
-                     <height>620</height>
+                     <width>1530</width>
+                     <height>810</height>
                     </size>
                    </property>
                    <property name="background">
@@ -1712,8 +1683,8 @@ QPushButton:default {
                   <widget class="QMdiArea" name="mdi_13">
                    <property name="minimumSize">
                     <size>
-                     <width>805</width>
-                     <height>620</height>
+                     <width>1530</width>
+                     <height>810</height>
                     </size>
                    </property>
                    <property name="background">
@@ -1738,8 +1709,8 @@ QPushButton:default {
                   <widget class="QMdiArea" name="mdi_14">
                    <property name="minimumSize">
                     <size>
-                     <width>805</width>
-                     <height>620</height>
+                     <width>1530</width>
+                     <height>810</height>
                     </size>
                    </property>
                    <property name="background">
@@ -2013,9 +1984,15 @@ QListWidget::item:hover {
            </item>
            <item>
             <widget class="QLabel" name="SelectNode_Label">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
              <property name="font">
               <font>
-               <pointsize>10</pointsize>
+               <pointsize>8</pointsize>
                <weight>75</weight>
                <bold>true</bold>
               </font>
@@ -2038,7 +2015,13 @@ QListWidget::item:hover {
              <property name="minimumSize">
               <size>
                <width>119</width>
-               <height>30</height>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
               </size>
              </property>
              <property name="styleSheet">
