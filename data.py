@@ -130,8 +130,58 @@ Data["100GE"]["DataSection"]["SLA"]={}
 
 
 DemandTabDataBase = {}
+DemandTabDataBase["Source_Destination"] = {}
+# format:
+#       { source :  [ Destinations ]}
 DemandTabDataBase["Services"] = {}
 # format: 
 #       {(Tehran, karaj): ['2 * 100G ', ...]}
 DemandTabDataBase["Lightpathes"] = {}
 DemandTabDataBase["Panels"] = {}
+
+class MP2D:
+    def init(self, ClientsCapacity = [0, 0], LineCapacity = 0, LineType = "200GE"):
+        self.ClientsCapacity = ClientsCapacity
+        self.LineCapacity = LineCapacity
+        self.LineType = LineType
+    
+    def add_client(self, ClientNum , LineCapacity):
+        self.ClientsCapacity[ClientNum] = "100GE"
+        self.LineCapacity = LineCapacity
+
+    def del_client(self, ClientNum, LineCapacity):
+        self.self.ClientsCapacity[ClientNum] = 0
+        self.LineCapacity = LineCapacity
+    
+    def set_line_type(self, Type):
+        self.LineType = Type
+
+class MP2X:
+    def init(self, ClientsType = [0 for i in range(16)], LinesCapacity = [0, 0]):
+        self.ClientsType = ClientsType
+        self.LinesCapacity = LinesCapacity
+    
+    def add_client(self, ClientNum, Type, LineCapacity):
+        self.ClientsType[ClientNum] = Type
+        self.LinesCapacity = LineCapacity
+    
+    def del_client(self, ClientNum, LineCapacity):
+        self.ClientsType[ClientNum] = 0
+        self.LinesCapacity = LineCapacity
+
+class MP1H:
+    def init(self, ClientsCapacity = [0 for i in range(10)], LineCapacity = 0):
+        self.ClientsCapacity = ClientsCapacity
+        self.LineCapacity = LineCapacity
+    
+    def add_client(self, ClientNum, LineCapacity):
+        self.ClientsCapacity[ClientNum] = "10GE"
+        self.LineCapacity = LineCapacity
+    
+    def del_client(self, ClientNum, LineCapacity):
+        self.ClientsCapacity[ClientNum] = 0
+        self.LineCapacity = LineCapacity
+
+class TP1H:
+    def init(self):
+        pass

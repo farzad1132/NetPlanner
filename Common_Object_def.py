@@ -39,8 +39,6 @@ class Network:
             # deleting object from memory
             del self.NodeDict[NodeId]
 
-            # deleting node from NodeDict
-            self.NodeDict.pop(NodeId)
 
             # correcting Node ReferenceId
             Network.Topology.Node.ReferenceId -= 1
@@ -70,17 +68,17 @@ class Network:
                 # deleting links objects
                 del self.LinkDict[link_tuple]
 
-                # deleting link from LinkDict
-                self.LinkDict.pop(link_tuple)
             
             # finding containing cluster
             clusters = list(self.ClusterDict.items())
             ContainingCluster = list(filter(lambda x :  NodeId in x[1].SubNodesId , clusters))
+            print(self.ClusterDict[ContainingCluster[0][0]].SubNodesId)
+            if ContainingCluster != []:
 
-            IndexOfNode = self.ClusterDict[ContainingCluster].SubNodesId.index(NodeId)
-            
-            # deleting Node Id from SubNodesId List
-            self.ClusterDict[ContainingCluster].SubNodesId.pop(IndexOfNode)
+                IndexOfNode = self.ClusterDict[ContainingCluster[0][0]].SubNodesId.index(NodeId)
+                
+                # deleting Node Id from SubNodesId List
+                self.ClusterDict[ContainingCluster[0][0]].SubNodesId.pop(IndexOfNode)
         
         def del_link(self, InNode, OutNode):
 
@@ -97,15 +95,13 @@ class Network:
             # deleting Link Object from memory
             del self.LinkDict[link_tuple]
 
-            # deleting Link from LinkDict
-            self.LinkDict.pop(link_tuple)
 
             # Correcting neighbor Property in InNode and OutNode
-            index = self.NodeDict[InNode].Neighbor.index(OutNode)
-            self.NodeDict[InNode].Neighbor.pop(index)
+            index = self.NodeDict[InNode].Neighbors.index(OutNode)
+            self.NodeDict[InNode].Neighbors.pop(index)
 
-            index = self.NodeDict[OutNode].Neighbor.index(InNode)
-            self.NodeDict[OutNode].Neighbor.pop(index)
+            index = self.NodeDict[OutNode].Neighbors.index(InNode)
+            self.NodeDict[OutNode].Neighbors.pop(index)
         
         def del_cluster(self, GatewayId):
 
@@ -140,8 +136,8 @@ class Network:
             # Id must be an int number
             # Location format must be (lat,lng) in int
             def __init__(self, Location, Type = "not declared"):
-                self.Id = Network.PhysicalTopology.Node.ReferenceId
-                Network.PhysicalTopology.Node.ReferenceId += 1
+                self.Id = Network.Topology.Node.ReferenceId
+                Network.Topology.Node.ReferenceId += 1
                 self.Location = Location
                 self.Type = Type
                 self.Neighbors = []
@@ -441,3 +437,24 @@ class Network:
                     self.ServiceIdList = ServiceIdList
                     self.Type = Type
                     self.MandatoryNodesIdList = MandatoryNodesIdList
+
+if __name__ == "__main__":
+
+    n = Network()
+    n.PhysicalTopology.add_node((2,3))
+    n.PhysicalTopology.add_node((6,7))
+    n.PhysicalTopology.add_node((17,-3))
+    n.PhysicalTopology.add_link(0,1,4)
+    n.PhysicalTopology.add_link(1,2,1)
+    n.PhysicalTopology.add_cluster(1,[2,0],"blue")
+    print(n.PhysicalTopology.NodeDict[1].Neighbors)
+    print("LinkDict: ",n.PhysicalTopology.LinkDict)
+    print("NodeDict: ",n.PhysicalTopology.NodeDict)
+    print("ClusterDict: ",n.PhysicalTopology.ClusterDict)
+    n.PhysicalTopology.del_node(2)
+    print("NodeDict after deleting a Node: ",n.PhysicalTopology.NodeDict)
+
+    n.TrafficMatrix.add_demand(1,"Tehran","Mashhad","X")
+    n.TrafficMatrix.DemandDict[1].add_service("100GE",2)
+    print("DemandDict: ",n.TrafficMatrix.DemandDict)
+    print("Demand 1: ",n.TrafficMatrix.DemandDict[1].ServiceDict)

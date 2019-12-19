@@ -1888,6 +1888,11 @@ class Ui_MainWindow(object):
         self.NodeType_combobox.clear()
         self.Demand_Source_combobox.clear()
         self.Demand_Destination_combobox.clear()
+        self.cluster_type_combobox.clear()
+
+        DemandTabPanels = ["MP2X", "PS6X", "MP1H", "TP1H"]
+        self.Demand_PanelList.addItems(DemandTabPanels)
+        self.Demand_PanelList.setDragEnabled(True)
 
         self.tabWidget.setCurrentIndex(0)
 
@@ -1975,6 +1980,12 @@ class Ui_MainWindow(object):
 
         self.SelectSubNode_button.clicked.connect(self.SelectSubNode_button_fun)
         self.CurrentDegreename = None
+
+        self.Demand_Source_combobox.currentTextChanged.connect(self.Demand_Source_combobox_Change)
+        self.Demand_Destination_combobox.currentTextChanged.connect(self.Demand_Destination_combobox_change)
+
+        Data["Demand_mdi"] = self.Demand_mdi
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -2271,8 +2282,9 @@ class Ui_MainWindow(object):
 
             Data["first_run_flag"] = True
         if index == 4:
-            print(self.Demand_mdi.geometry())
-            pass
+
+            self.UpdateDemand_ServiceList()
+
             # TODO: run shelf set function for Demand Tab and turn its relevant flag on
     
 
@@ -2454,10 +2466,12 @@ class Ui_MainWindow(object):
                         else:
                             Data[m]["DataSection"][l1[k][j]][keys] = text
 
+
             #Data.update(Temp_data)
     
     def TrafficMatrixToObject(self):
         RowsNumber = list(Data["General"]["DataSection"]["0"].keys())
+        RowsNumber = list(filter(lambda x : isinstance(x,int),RowsNumber))
         ServiceTypes = ["E1", "STM_1_Electrical", "STM_1_Optical", "STM_4", "STM_16", "STM_64", "FE", "1GE", "10GE",
                            "40GE", "100GE"]
 
@@ -2477,16 +2491,16 @@ class Ui_MainWindow(object):
             Type = None
             i = 0
             ServiceDict = {}
-            ServiceCount = 0
             for service in ServiceTypes:
                 PropertyDict = {}
+                ServiceCount = 0
                 for PropNum in range(0,len(SubHeaders[i])):
                     Prop = SubHeaders[i][PropNum]
                     if PropNum == 0:
-                        ServiceCount += Data[service]["DataSection"][Prop][Row]
+                        ServiceCount += int(Data[service]["DataSection"][Prop].get(Row, 0))
                         PropertyDict[Prop] = ServiceCount
                     else:
-                        PropertyDict[Prop] = Data[service]["DataSection"][Prop][Row]
+                        PropertyDict[Prop] = Data[service]["DataSection"][Prop].get(Row, None)
                 i += 1
                 ServiceDict[service] = PropertyDict
             self.network.TrafficMatrix.add_demand(id,Source,Destination,Type)
@@ -2495,7 +2509,7 @@ class Ui_MainWindow(object):
 
             for service in list(ServiceDict.keys()):
 
-                Sla = ServiceDict[service["SLA"]]
+                Sla = ServiceDict[service]["SLA"]
 
                 if "λ" in ServiceDict[service]:
                     Wavelength = ServiceDict[service]["λ"]
@@ -2523,14 +2537,53 @@ class Ui_MainWindow(object):
                     self.network.TrafficMatrix.DemandDict[id].add_service(service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
                     
     def FillDemandTabDataBase_Services(self, Source, Destination, ServiceDict):
+        
+        ServiceList = []
+        for Service in ServiceDict.keys():
+            Quantity = ServiceDict[Service]["Quantity"]
+            if Quantity !=0:
+                item = str(Quantity) + " * " + str(Service)
+                ServiceList.append(item)
+        DemandTabDataBase["Services"][(Source,Destination)] = ServiceList
+    
+    def Fill_Demand_SourceandDestination_combobox(self):
 
-        DemandTabDataBase["Services"][(Source,Destination)] = []
-        for Service in ServiceDict.values():
-            Quantity = ServiceDict[Service]
-            item = str(Quantity) + " * " + str(Service)
-            DemandTabDataBase["Services"][(Source,Destination)].append(item)
+        SourceList = list(Data["General"]["DataSection"]["1"].values())
+        DestinationList = list(Data["General"]["DataSection"]["2"].values())
 
-        DemandTabDataBase["Services"][(Source,Destination)] = DemandTabDataBase["Services"][(Destination,Source)]
+        for Source in SourceList :
+            if (Source in DemandTabDataBase["Source_Destination"] ) == False:
+                DemandTabDataBase["Source_Destination"][Source] = []
+        
+        for i in range(len(SourceList)):
+            Destination = DestinationList[i]
+            Source = SourceList[i]
+            DemandTabDataBase["Source_Destination"][Source].append(Destination)
+
+        self.Demand_Source_combobox.clear()
+        self.Demand_Source_combobox.addItems(list(DemandTabDataBase["Source_Destination"].keys()))
+    
+    def UpdateDemand_ServiceList(self):
+
+        Source = self.Demand_Source_combobox.currentText()
+        Destination = self.Demand_Destination_combobox.currentText()
+        ServiceList = list(DemandTabDataBase["Services"][(Source,Destination)])
+        self.Demand_ServiceList.clear()
+        self.Demand_ServiceList.addItems(ServiceList)
+    
+    def Demand_Source_combobox_Change(self):
+        Source = self.Demand_Source_combobox.currentText()
+
+        if Source != '':
+            self.Demand_Destination_combobox.clear()
+            self.Demand_Destination_combobox.addItems(DemandTabDataBase["Source_Destination"][Source])
+    
+    def Demand_Destination_combobox_change(self):
+
+        if self.Demand_Destination_combobox.currentText() != '':
+            self.UpdateDemand_ServiceList()
+        
+        Destination = self.Demand_Destination_combobox.currentText()
             
 
 
@@ -2745,10 +2798,10 @@ class Ui_MainWindow(object):
         self.SelectNode_combo.addItems(nodesname)
 
     def SaveChanges_button_fun(self):
-
         # filling Network Object
         self.PhysicalTopologyToObject()
         self.TrafficMatrixToObject()
+        self.Fill_Demand_SourceandDestination_combobox()
 
         self.SelectNode_combo_fun()
 
@@ -2764,6 +2817,19 @@ class Ui_MainWindow(object):
             Data["mdi_1"+str(shelfnum)].addSubWindow(Data["1"+str(shelfnum)+str(i)])              
 
             Data["1"+str(shelfnum)+str(i)].show()
+    
+    def Demand_Shelf_set(self):
+        # TODO: add this method to Demand tab initializer 
+        Source = self.Demand_Source_combobox.currentText()
+        Destination = self.Demand_Destination_combobox.currentText()
+        for i in range(1,15):
+            setattr(self, "DemandPanel_" + str(i),QMdiSubWindow())
+            Data["DemandPanel_" + str(i)] = getattr(ui, "DemandPanel_" + str(i))
+            Data["DemandPanel_" + str(i)].setWindowFlag(Qt.FramelessWindowHint)
+            #Data["DemandPanel_" + str(i)].setWidget(Demand_blank_panel(str(i), Source, Destination))
+
+            Data["Demand_mdi"].addSubWindow(Data["DemandPanel_" + str(i)])
+            Data["DemandPanel_" + str(i)].show()
 
 
     # obsoleted 
