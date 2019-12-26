@@ -169,8 +169,8 @@ class Network:
                 self.WaveLengthList = []
                 self.LightPathList = {}    # in  { service : Type of lightpath } format
 
-            def put_fiber_Type(self,SpanPosition, Length, Loss, Dispersion, Beta,Gamma, PositionInLink, Snr):
-                self.SpanObjList[SpanPosition].put_fiber_Type(Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr)
+            def put_fiber_Type(self, Length, Loss, Dispersion, Beta,Gamma, PositionInLink, Snr):
+                self.SpanObjList[PositionInLink].put_fiber_Type(Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr)
             
             class Span:
                 def __init__(self, InNode, OutNode, Length = None, Loss = None, Dispersion = None, Beta = None,
@@ -456,5 +456,17 @@ if __name__ == "__main__":
 
     n.TrafficMatrix.add_demand(1,"Tehran","Mashhad","X")
     n.TrafficMatrix.DemandDict[1].add_service("100GE",2)
+
+    n.TrafficMatrix.add_demand(2,"Tehran", "Shiraz", "")
+    n.TrafficMatrix.DemandDict[2].add_service("100GE",2)
+    n.TrafficMatrix.DemandDict[2].add_service("10GE",2)
+    n.TrafficMatrix.DemandDict[2].add_service("STM_64",2)
+
+    n.TrafficMatrix.add_demand(3, "Tabriz", "Karaj", "")
+    n.TrafficMatrix.DemandDict[3].add_service("FE",2)
+    n.TrafficMatrix.DemandDict[3].add_service("1GE",2)
+    
     print("DemandDict: ",n.TrafficMatrix.DemandDict)
     print("Demand 1: ",n.TrafficMatrix.DemandDict[1].ServiceDict)
+    print("Demand 2: ",n.TrafficMatrix.DemandDict[2].ServiceDict)
+    print("Demand 3: ",n.TrafficMatrix.DemandDict[3].ServiceDict)

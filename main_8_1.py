@@ -1986,6 +1986,8 @@ class Ui_MainWindow(object):
 
         Data["Demand_mdi"] = self.Demand_mdi
 
+        self.pushButton_4.clicked.connect(self.open_links_fun)
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -2251,16 +2253,81 @@ class Ui_MainWindow(object):
             handle.close()
     
     def OpenTopology_fun(self):
+        # this method imports Nodes Information
         name = QFileDialog.getOpenFileName(MainWindow, "Open Topology")
-        TOD = {}
 
         if name[0] != 0 :
-            with open(name[0],'rb') as handle:
-                Temp_data = pickle.load(handle)
+            with pd.ExcelFile(name[0]) as handle:
+                Temp_data = handle.parse(header=0, skipfooter=0)
+            temp_dic ={}
+            handle.close() 
+            headers = ['ID','Node','Location','Type'] 
+
+            for pointer in headers:
+                temp_dic[pointer] = {}
+                temp_dic[pointer].update(Temp_data[pointer])
+            
+            ProperDict = {}
+            for Row in temp_dic["ID"].keys():
+                Id = temp_dic["ID"][Row]
+                Node = temp_dic["Node"][Row]
+                Location = str(temp_dic["Location"][Row]).split(',')
+                Location = list(map(lambda x : float(x), Location))
+
+                Type = temp_dic["Type"][Row]
+
+                ProperDict[Id] = {"Node": Node, "Location": Location, "Type":Type}
+
+            Data["Nodes"].update(ProperDict)
+            
+            
+    
+    def open_links_fun(self): 
+        name = QFileDialog.getOpenFileName(MainWindow, "Open Topology")
+        
+
+        if name[0] != 0 :
+            with pd.ExcelFile(name[0]) as handle:
+                Temp_data = handle.parse(header=0, skipfooter=0)
+            temp_dic ={}
             handle.close()
-        TOD.update(Temp_data)
-        Data["Nodes"].update(TOD["Nodes"])
-        Data["Links"].update(TOD["Links"])
+            headers = ["ID", "Source", "Destination", "Distance", "Fiber Type", "Loss Coefficient", "Beta", "Gamma", "Dispersion", "Snr"]
+            
+            for pointer in headers:
+                temp_dic[pointer] = {}
+                temp_dic[pointer].update(Temp_data[pointer])
+            
+            ProperDict = {}
+            for Row in temp_dic["ID"].keys():
+                id = temp_dic["ID"][Row]
+                Source = temp_dic["Source"][Row]
+                Destination = temp_dic["Destination"][Row]
+                Distance = str(temp_dic["Distance"][Row]).split("+")
+                Distance = list(map(lambda x : int(x), Distance))
+
+                Fiber_Type = str(temp_dic["Fiber Type"][Row]).split("+")
+
+                Loss = str(temp_dic["Loss Coefficient"][Row]).split("+")
+                Loss = list(map(lambda x : float(x), Loss))
+
+                Beta = str(temp_dic["Beta"][Row]).split('+')
+                Beta = list(map(lambda x : float(x), Beta))
+
+                Gamma = str(temp_dic["Gamma"][Row]).split('+')
+                Gamma = list(map(lambda x : float(x), Gamma))
+
+                Dispersion = str(temp_dic["Dispersion"][Row]).split('+')
+                Dispersion = list(map(lambda x : float(x), Dispersion))
+
+                Snr = str(temp_dic["Snr"][Row]).split(',')
+                Snr = list(map(lambda x : float(x), Snr))
+                
+                # TODO: Some Data doesn't exist in Link Dictionary
+                ProperDict[(Source, Destination)] = {"NumSpan": len(Distance), "Length": Distance, "Loss":Loss, "Type":Fiber_Type, "Beta":Beta, "Gamma": Gamma,
+                "Dispersion": Dispersion, "Snr":Snr}
+
+            Data["Links"].update(ProperDict)
+        
 
 
 
@@ -2588,16 +2655,19 @@ class Ui_MainWindow(object):
 
 
     def PhysicalTopologyToObject(self):
+        self.NodeIdDict = {}
+
         for NodeData in Data["Nodes"].values():
+            self.NodeIdDict[NodeData["Node"]] = self.network.Topology.Node.ReferenceId
             self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["Type"])
         
-        for LinkId , LinkData in Data["Links"]:
-            self.network.PhysicalTopology.add_link(LinkId[0], LinkId[1], LinkData["NumSpan"])
+        for LinkId , LinkData in Data["Links"].items():
+            self.network.PhysicalTopology.add_link(self.NodeIdDict[LinkId[0]], self.NodeIdDict[LinkId[1]], LinkData["NumSpan"])
 
             for i in range(LinkData["NumSpan"]):
-                self.network.PhysicalTopology.LinkDict[(LinkId[0], LinkId[1])].put_fiber_Type(LinkId[0], LinkId[1],
-                 LinkData["Length"][i], LinkData["Loss"][i], LinkData["Dispersion"][i], LinkData["Beta"][i], LinkData["Gamma"][i], 
-                 i, LinkData["Snr"][i])
+                self.network.PhysicalTopology.LinkDict[(self.NodeIdDict[LinkId[0]], self.NodeIdDict[LinkId[1]])].put_fiber_Type(LinkData["Length"],
+                 LinkData["Loss"], LinkData["Dispersion"], LinkData["Beta"], LinkData["Gamma"], i, LinkData["Snr"])
+        
                 
 
 
@@ -2656,8 +2726,8 @@ class Ui_MainWindow(object):
         self.addnode_dialog.show()
     
     def insert_link_fun(self):
-        added = []
-        for id in list(Data["Links"].keys()):
+        NodeCorDict = {}
+        """ for id in list(Data["Links"].keys()):
             source = id[0]
             destination = id[1]
             source_cor = Data["Nodes"][source]["Coordinate"]
@@ -2669,8 +2739,18 @@ class Ui_MainWindow(object):
             added.append(source)
             folium.Marker(destination_cor,icon=folium.Icon(color="red"),popup= "<h2>%s</h2>" %destination).add_to(self.m)
             added.append(destination)
+            folium.PolyLine(loc ,weight = 3,popup = "Link ID: %s"%(id),color = "black",opacity = 0.8).add_to(self.m) """
+        for Node, data in Data["Nodes"].items():
+            NodeName = data["Node"]
+            Node_cor = data["Location"]
+            NodeCorDict[NodeName] = Node_cor
+            folium.Marker(Node_cor ,icon=folium.Icon(color="red"), popup=  "<h2>%s</h2>" %NodeName).add_to(self.m)
+        
+        for link in Data["Links"].keys():
+            Source_cor = NodeCorDict[link[0]]
+            DesTination_cor = NodeCorDict[link[1]]
+            loc = [Source_cor, DesTination_cor]
             folium.PolyLine(loc ,weight = 3,popup = "Link ID: %s"%(id),color = "black",opacity = 0.8).add_to(self.m)
-            
 
         self.m.save("map.html")
 
