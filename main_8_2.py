@@ -37,6 +37,7 @@ from MP2D_panel.MP2D_panel_L import MP2D_panel_L
 from MP2D_panel.MP2D_panel_R import MP2D_panel_R
 from TP2X_panel.TP2X_panel import TP2X_panel
 
+
 class Backend_map(QObject):
 
     @Slot(str)
@@ -48,7 +49,7 @@ class Backend_map(QObject):
         print("we are grouping")
         Data["Grouping"][text] = {}
         Data["Grouping"][text]["Color"] = ui.lastgroup_color
-        Data["Grouping"][text]["ID"] = ui.lastgroup_id
+        Data["Grouping"][text]["Type"] = ui.lastgroup_type
         Data["Grouping"][text]["SubNodes"] = {}
 
 
@@ -103,50 +104,228 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.tabWidget.setFont(font)
-        '''self.tabWidget.setStyleSheet("QTabWidget#tabWidget::pane{ /* The tab widget frame */\n"
-"    border-top: 2px solid #C2C7CB;\n"
-"}\n"
-"\n"
-"QTabWidget#tabWidget::tab-bar{\n"
-"    left: 5px; /* move to the right by 5px */\n"
-"}\n"
-"\n"
-"/* Style the tab using the tab sub-control. Note that\n"
-"    it reads QTabBar _not_ QTabWidget */\n"
-"QTabBar::tab {\n"
-"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,\n"
-"                                stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);\n"
-"    border: 2px solid #C4C4C3;\n"
-"    border-bottom-color: #C2C7CB; /* same as the pane color */\n"
-"    border-top-left-radius: 4px;\n"
-"    border-top-right-radius: 4px;\n"
-"    min-width: 8ex;\n"
-"    padding: 2px;\n"
-"}\n"
-"\n"
-"QTabBar::tab:selected , QTabBar::tab:hover{\n"
-"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                stop: 0 #fafafa, stop: 0.4 #f4f4f4,\n"
-"                                stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);\n"
-"    background-color : lightgreen;\n"
-"}\n"
-"\n"
-"QTabBar::tab:selected {\n"
-"    border-color: #9B9B9B;\n"
-"    border-bottom-color: #C2C7CB; /* same as pane color */\n"
-"}\n"
-"\n"
-"QTabBar::tab:!selected {\n"
-"    margin-top: 2px; /* make non-selected tabs look smaller */\n"
-"}")'''
+        self.tabWidget.setStyleSheet("")
         self.tabWidget.setObjectName("tabWidget")
         self.TopologyTab = QtWidgets.QWidget()
         self.TopologyTab.setObjectName("TopologyTab")
-        self.gridLayout_3 = QtWidgets.QGridLayout(self.TopologyTab)
+        self.gridLayout_19 = QtWidgets.QGridLayout(self.TopologyTab)
+        self.gridLayout_19.setObjectName("gridLayout_19")
+        self.gridLayout_3 = QtWidgets.QGridLayout()
         self.gridLayout_3.setObjectName("gridLayout_3")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.OpenTopology_button = QtWidgets.QPushButton(self.TopologyTab)
+        self.OpenTopology_button.setMaximumSize(QtCore.QSize(81, 50))
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.OpenTopology_button.setFont(font)
+        self.OpenTopology_button.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"    border-color: dark-orange;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.OpenTopology_button.setObjectName("OpenTopology_button")
+        self.horizontalLayout_2.addWidget(self.OpenTopology_button)
+        self.SaveTopology_button = QtWidgets.QPushButton(self.TopologyTab)
+        self.SaveTopology_button.setMaximumSize(QtCore.QSize(81, 50))
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.SaveTopology_button.setFont(font)
+        self.SaveTopology_button.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"    border-color: dark-orange;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.SaveTopology_button.setObjectName("SaveTopology_button")
+        self.horizontalLayout_2.addWidget(self.SaveTopology_button)
+        self.add_node_button = QtWidgets.QPushButton(self.TopologyTab)
+        self.add_node_button.setMaximumSize(QtCore.QSize(81, 50))
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.add_node_button.setFont(font)
+        self.add_node_button.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"    border-color: dark-orange;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.add_node_button.setObjectName("add_node_button")
+        self.horizontalLayout_2.addWidget(self.add_node_button)
+        self.OpenLinks_pushbutton = QtWidgets.QPushButton(self.TopologyTab)
+        self.OpenLinks_pushbutton.setMinimumSize(QtCore.QSize(84, 30))
+        self.OpenLinks_pushbutton.setMaximumSize(QtCore.QSize(81, 50))
+        font = QtGui.QFont()
+        font.setFamily("IRANSans")
+        font.setPointSize(8)
+        font.setBold(True)
+        font.setWeight(75)
+        self.OpenLinks_pushbutton.setFont(font)
+        self.OpenLinks_pushbutton.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"    border-color: dark-orange;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.OpenLinks_pushbutton.setObjectName("OpenLinks_pushbutton")
+        self.horizontalLayout_2.addWidget(self.OpenLinks_pushbutton)
+        self.pushButton_5 = QtWidgets.QPushButton(self.TopologyTab)
+        self.pushButton_5.setMinimumSize(QtCore.QSize(84, 30))
+        self.pushButton_5.setMaximumSize(QtCore.QSize(81, 50))
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushButton_5.setFont(font)
+        self.pushButton_5.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.pushButton_5.setObjectName("pushButton_5")
+        self.horizontalLayout_2.addWidget(self.pushButton_5)
+        self.pushButton_7 = QtWidgets.QPushButton(self.TopologyTab)
+        self.pushButton_7.setMinimumSize(QtCore.QSize(84, 28))
+        self.pushButton_7.setMaximumSize(QtCore.QSize(81, 50))
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushButton_7.setFont(font)
+        self.pushButton_7.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.pushButton_7.setObjectName("pushButton_7")
+        self.horizontalLayout_2.addWidget(self.pushButton_7)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem)
+        self.gridLayout_3.addLayout(self.horizontalLayout_2, 0, 0, 1, 1)
+        self.pushButton_6 = QtWidgets.QPushButton(self.TopologyTab)
+        self.pushButton_6.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.pushButton_6.setObjectName("pushButton_6")
+        self.gridLayout_3.addWidget(self.pushButton_6, 0, 1, 1, 1)
+
+        # TODO: edited
+        self.webengine = QtWebEngineWidgets.QWebEngineView()
+        self.webengine.setObjectName("webengine")
+        self.gridLayout_3.addWidget(self.webengine, 1, 0, 1, 1)
+
         self.T_groupbox = QtWidgets.QGroupBox(self.TopologyTab)
         self.T_groupbox.setEnabled(True)
+        self.T_groupbox.setMaximumSize(QtCore.QSize(300, 16777215))
         self.T_groupbox.setStyleSheet("QGroupBox {\n"
 "    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                      stop: 0 #E0E0E0, stop: 1 #FFFFFF);\n"
@@ -166,6 +345,131 @@ class Ui_MainWindow(object):
         self.T_groupbox.setObjectName("T_groupbox")
         self.gridLayout_14 = QtWidgets.QGridLayout(self.T_groupbox)
         self.gridLayout_14.setObjectName("gridLayout_14")
+        self.Planning_groupbox = QtWidgets.QGroupBox(self.T_groupbox)
+        self.Planning_groupbox.setObjectName("Planning_groupbox")
+        self.gridLayout_11 = QtWidgets.QGridLayout(self.Planning_groupbox)
+        self.gridLayout_11.setObjectName("gridLayout_11")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.PanelThreshold_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
+        font = QtGui.QFont()
+        font.setPointSize(-1)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.PanelThreshold_pushbutton.setFont(font)
+        self.PanelThreshold_pushbutton.setStyleSheet("background-color: rgb(255, 129, 131);\n"
+"border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: dark-orange;\n"
+"    font: bold 14px;\n"
+"    min-width: 10em;\n"
+"    padding: 6px;\n"
+"")
+        self.PanelThreshold_pushbutton.setObjectName("PanelThreshold_pushbutton")
+        self.verticalLayout_2.addWidget(self.PanelThreshold_pushbutton)
+        self.Grooming_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
+        font = QtGui.QFont()
+        font.setPointSize(-1)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.Grooming_pushbutton.setFont(font)
+        self.Grooming_pushbutton.setStyleSheet("\n"
+"background-color: rgb(255, 85, 88);\n"
+"border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: dark-orange;\n"
+"    font: bold 14px;\n"
+"    min-width: 10em;\n"
+"    padding: 6px;")
+        self.Grooming_pushbutton.setCheckable(False)
+        self.Grooming_pushbutton.setObjectName("Grooming_pushbutton")
+        self.verticalLayout_2.addWidget(self.Grooming_pushbutton)
+        self.RWA_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
+        font = QtGui.QFont()
+        font.setPointSize(-1)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.RWA_pushbutton.setFont(font)
+        self.RWA_pushbutton.setStyleSheet("\n"
+"background-color: rgb(255, 44, 47);\n"
+"border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: dark-orange;\n"
+"    font: bold 14px;\n"
+"    min-width: 10em;\n"
+"    padding: 6px;")
+        self.RWA_pushbutton.setObjectName("RWA_pushbutton")
+        self.verticalLayout_2.addWidget(self.RWA_pushbutton)
+        self.FinalPlan_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
+        font = QtGui.QFont()
+        font.setPointSize(-1)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.FinalPlan_pushbutton.setFont(font)
+        self.FinalPlan_pushbutton.setStyleSheet("\n"
+"background-color: rgb(255, 0, 4);\n"
+"border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: dark-orange;\n"
+"    font: bold 14px;\n"
+"    min-width: 10em;\n"
+"    padding: 6px;")
+        self.FinalPlan_pushbutton.setObjectName("FinalPlan_pushbutton")
+        self.verticalLayout_2.addWidget(self.FinalPlan_pushbutton)
+        self.gridLayout_11.addLayout(self.verticalLayout_2, 0, 0, 1, 1)
+        self.gridLayout_14.addWidget(self.Planning_groupbox, 1, 0, 1, 1)
+        self.ViewGroupbox = QtWidgets.QGroupBox(self.T_groupbox)
+        self.ViewGroupbox.setObjectName("ViewGroupbox")
+        self.gridLayout_18 = QtWidgets.QGridLayout(self.ViewGroupbox)
+        self.gridLayout_18.setObjectName("gridLayout_18")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.NormalMode_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setFamily("IRANSans")
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.NormalMode_checkbox.setFont(font)
+        self.NormalMode_checkbox.setStyleSheet("")
+        self.NormalMode_checkbox.setObjectName("NormalMode_checkbox")
+        self.verticalLayout_3.addWidget(self.NormalMode_checkbox)
+        self.Working_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setFamily("IRANSans")
+        font.setBold(True)
+        font.setWeight(75)
+        self.Working_checkbox.setFont(font)
+        self.Working_checkbox.setObjectName("Working_checkbox")
+        self.verticalLayout_3.addWidget(self.Working_checkbox)
+        self.Protection_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setFamily("IRANSans")
+        font.setBold(True)
+        font.setWeight(75)
+        self.Protection_checkbox.setFont(font)
+        self.Protection_checkbox.setObjectName("Protection_checkbox")
+        self.verticalLayout_3.addWidget(self.Protection_checkbox)
+        self.Restoration_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setFamily("IRANSans")
+        font.setBold(True)
+        font.setWeight(75)
+        self.Restoration_checkbox.setFont(font)
+        self.Restoration_checkbox.setObjectName("Restoration_checkbox")
+        self.verticalLayout_3.addWidget(self.Restoration_checkbox)
+        self.gridLayout_18.addLayout(self.verticalLayout_3, 0, 0, 1, 1)
+        self.gridLayout_14.addWidget(self.ViewGroupbox, 2, 0, 1, 1)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_14.addItem(spacerItem1, 3, 0, 1, 1)
         self.Grouping_groupbox = QtWidgets.QGroupBox(self.T_groupbox)
         self.Grouping_groupbox.setObjectName("Grouping_groupbox")
         self.gridLayout_17 = QtWidgets.QGridLayout(self.Grouping_groupbox)
@@ -293,35 +597,59 @@ class Ui_MainWindow(object):
 "}")
         self.GroupColor.setObjectName("GroupColor")
         self.gridLayout_16.addWidget(self.GroupColor, 3, 0, 1, 1)
-        self.SelectColor_button = QtWidgets.QPushButton(self.Grouping_groupbox)
-        self.SelectColor_button.setMinimumSize(QtCore.QSize(84, 30))
-        font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
-        self.SelectColor_button.setFont(font)
-        self.SelectColor_button.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
+        self.Clustercolor_combobox = QtWidgets.QFontComboBox(self.Grouping_groupbox)
+        self.Clustercolor_combobox.setMaximumSize(QtCore.QSize(126, 22))
+        self.Clustercolor_combobox.setStyleSheet("QComboBox {\n"
+"    border: 1px solid gray;\n"
+"    border-radius: 3px;\n"
+"    padding: 1px 18px 1px 3px;\n"
+"    min-width: 6em;\n"
 "}\n"
 "\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"QComboBox:editable {\n"
+"    background: white;\n"
 "}\n"
 "\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
+"QComboBox:!editable, QComboBox::drop-down:editable {\n"
+"     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,\n"
+"                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);\n"
 "}\n"
 "\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
+"/* QComboBox gets the \"on\" state when the popup is open */\n"
+"QComboBox:!editable:on, QComboBox::drop-down:editable:on {\n"
+"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,\n"
+"                                stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);\n"
+"}\n"
+"\n"
+"QComboBox:on { /* shift the text when the popup opens */\n"
+"    padding-top: 3px;\n"
+"    padding-left: 4px;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    subcontrol-origin: padding;\n"
+"    subcontrol-position: top right;\n"
+"    width: 15px;\n"
+"\n"
+"    border-left-width: 1px;\n"
+"    border-left-color: darkgray;\n"
+"    border-left-style: solid; /* just a single line */\n"
+"    border-top-right-radius: 3px; /* same radius as the QComboBox */\n"
+"    border-bottom-right-radius: 3px;\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow {\n"
+"    image: url(/usr/share/icons/crystalsvg/16x16/actions/1downarrow.png);\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
+"    top: 1px;\n"
+"    left: 1px;\n"
 "}")
-        self.SelectColor_button.setObjectName("SelectColor_button")
-        self.gridLayout_16.addWidget(self.SelectColor_button, 3, 1, 1, 2)
+        self.Clustercolor_combobox.setObjectName("Clustercolor_combobox")
+        self.gridLayout_16.addWidget(self.Clustercolor_combobox, 3, 1, 1, 2)
         self.SelectSubNode_button = QtWidgets.QPushButton(self.Grouping_groupbox)
         self.SelectSubNode_button.setMinimumSize(QtCore.QSize(84, 30))
         font = QtGui.QFont()
@@ -432,325 +760,8 @@ class Ui_MainWindow(object):
         self.gridLayout_16.addWidget(self.ShowSubNodes, 6, 0, 1, 2)
         self.gridLayout_17.addLayout(self.gridLayout_16, 0, 0, 1, 1)
         self.gridLayout_14.addWidget(self.Grouping_groupbox, 0, 0, 1, 1)
-        self.Planning_groupbox = QtWidgets.QGroupBox(self.T_groupbox)
-        self.Planning_groupbox.setObjectName("Planning_groupbox")
-        self.gridLayout_11 = QtWidgets.QGridLayout(self.Planning_groupbox)
-        self.gridLayout_11.setObjectName("gridLayout_11")
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.PanelThreshold_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
-        font = QtGui.QFont()
-        font.setPointSize(-1)
-        font.setBold(True)
-        font.setItalic(False)
-        font.setWeight(75)
-        self.PanelThreshold_pushbutton.setFont(font)
-        self.PanelThreshold_pushbutton.setStyleSheet("background-color: green;\n"
-"border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: dark-orange;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"    padding: 6px;")
-        self.PanelThreshold_pushbutton.setObjectName("PanelThreshold_pushbutton")
-        self.verticalLayout_2.addWidget(self.PanelThreshold_pushbutton)
-        self.Grooming_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
-        font = QtGui.QFont()
-        font.setPointSize(-1)
-        font.setBold(True)
-        font.setItalic(False)
-        font.setWeight(75)
-        self.Grooming_pushbutton.setFont(font)
-        self.Grooming_pushbutton.setStyleSheet("background-color: red;\n"
-"border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: dark-orange;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"    padding: 6px;")
-        self.Grooming_pushbutton.setCheckable(False)
-        self.Grooming_pushbutton.setObjectName("Grooming_pushbutton")
-        self.verticalLayout_2.addWidget(self.Grooming_pushbutton)
-        self.RWA_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
-        font = QtGui.QFont()
-        font.setPointSize(-1)
-        font.setBold(True)
-        font.setItalic(False)
-        font.setWeight(75)
-        self.RWA_pushbutton.setFont(font)
-        self.RWA_pushbutton.setStyleSheet("background-color: RGB(107,115,213);\n"
-"border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: dark-orange;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"    padding: 6px;")
-        self.RWA_pushbutton.setObjectName("RWA_pushbutton")
-        self.verticalLayout_2.addWidget(self.RWA_pushbutton)
-        self.FinalPlan_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
-        font = QtGui.QFont()
-        font.setPointSize(-1)
-        font.setBold(True)
-        font.setItalic(False)
-        font.setWeight(75)
-        self.FinalPlan_pushbutton.setFont(font)
-        self.FinalPlan_pushbutton.setStyleSheet("background-color: yellow;\n"
-"border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: dark-orange;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"    padding: 6px;")
-        self.FinalPlan_pushbutton.setObjectName("FinalPlan_pushbutton")
-        self.verticalLayout_2.addWidget(self.FinalPlan_pushbutton)
-        self.gridLayout_11.addLayout(self.verticalLayout_2, 0, 0, 1, 1)
-        self.gridLayout_14.addWidget(self.Planning_groupbox, 1, 0, 1, 1)
-        self.ViewGroupbox = QtWidgets.QGroupBox(self.T_groupbox)
-        self.ViewGroupbox.setObjectName("ViewGroupbox")
-        self.gridLayout_18 = QtWidgets.QGridLayout(self.ViewGroupbox)
-        self.gridLayout_18.setObjectName("gridLayout_18")
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.NormalMode_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setBold(True)
-        font.setItalic(False)
-        font.setWeight(75)
-        self.NormalMode_checkbox.setFont(font)
-        self.NormalMode_checkbox.setStyleSheet("")
-        self.NormalMode_checkbox.setObjectName("NormalMode_checkbox")
-        self.verticalLayout_3.addWidget(self.NormalMode_checkbox)
-        self.Working_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setBold(True)
-        font.setWeight(75)
-        self.Working_checkbox.setFont(font)
-        self.Working_checkbox.setObjectName("Working_checkbox")
-        self.verticalLayout_3.addWidget(self.Working_checkbox)
-        self.Protection_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setBold(True)
-        font.setWeight(75)
-        self.Protection_checkbox.setFont(font)
-        self.Protection_checkbox.setObjectName("Protection_checkbox")
-        self.verticalLayout_3.addWidget(self.Protection_checkbox)
-        self.Restoration_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setBold(True)
-        font.setWeight(75)
-        self.Restoration_checkbox.setFont(font)
-        self.Restoration_checkbox.setObjectName("Restoration_checkbox")
-        self.verticalLayout_3.addWidget(self.Restoration_checkbox)
-        self.gridLayout_18.addLayout(self.verticalLayout_3, 0, 0, 1, 1)
-        self.gridLayout_14.addWidget(self.ViewGroupbox, 2, 0, 1, 1)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout_14.addItem(spacerItem, 3, 0, 1, 1)
-        self.gridLayout_3.addWidget(self.T_groupbox, 2, 6, 1, 1)
-        self.pushButton_6 = QtWidgets.QPushButton(self.TopologyTab)
-        self.pushButton_6.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.pushButton_6.setObjectName("pushButton_6")
-        self.gridLayout_3.addWidget(self.pushButton_6, 0, 6, 1, 1)
-        self.pushButton_4 = QtWidgets.QPushButton(self.TopologyTab)
-        self.pushButton_4.setMinimumSize(QtCore.QSize(84, 30))
-        font = QtGui.QFont()
-        font.setBold(False)
-        font.setWeight(50)
-        self.pushButton_4.setFont(font)
-        self.pushButton_4.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.pushButton_4.setObjectName("pushButton_4")
-        self.gridLayout_3.addWidget(self.pushButton_4, 0, 3, 1, 1)
-        self.pushButton_5 = QtWidgets.QPushButton(self.TopologyTab)
-        self.pushButton_5.setMinimumSize(QtCore.QSize(84, 30))
-        font = QtGui.QFont()
-        font.setBold(False)
-        font.setWeight(50)
-        self.pushButton_5.setFont(font)
-        self.pushButton_5.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.pushButton_5.setObjectName("pushButton_5")
-        self.gridLayout_3.addWidget(self.pushButton_5, 0, 4, 1, 1)
-        self.add_node_button = QtWidgets.QPushButton(self.TopologyTab)
-        font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
-        self.add_node_button.setFont(font)
-        self.add_node_button.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.add_node_button.setObjectName("add_node_button")
-        self.gridLayout_3.addWidget(self.add_node_button, 0, 2, 1, 1)
-        self.SaveTopology_button = QtWidgets.QPushButton(self.TopologyTab)
-        font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
-        self.SaveTopology_button.setFont(font)
-        self.SaveTopology_button.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.SaveTopology_button.setObjectName("SaveTopology_button")
-        self.gridLayout_3.addWidget(self.SaveTopology_button, 0, 1, 1, 1)
-        self.OpenTopology_button = QtWidgets.QPushButton(self.TopologyTab)
-        font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
-        self.OpenTopology_button.setFont(font)
-        self.OpenTopology_button.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.OpenTopology_button.setObjectName("OpenTopology_button")
-        self.gridLayout_3.addWidget(self.OpenTopology_button, 0, 0, 1, 1)
-        self.pushButton_7 = QtWidgets.QPushButton(self.TopologyTab)
-        self.pushButton_7.setMinimumSize(QtCore.QSize(84, 30))
-        font = QtGui.QFont()
-        font.setBold(False)
-        font.setWeight(50)
-        self.pushButton_7.setFont(font)
-        self.pushButton_7.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.pushButton_7.setObjectName("pushButton_7")
-        self.gridLayout_3.addWidget(self.pushButton_7, 0, 5, 1, 1)
-
-        # TODO: edited
-        self.webengine = QtWebEngineWidgets.QWebEngineView()
-        self.webengine.setObjectName("webengine")
-        self.gridLayout_3.addWidget(self.webengine, 2, 0, 1, 6)
-
+        self.gridLayout_3.addWidget(self.T_groupbox, 1, 1, 1, 1)
+        self.gridLayout_19.addLayout(self.gridLayout_3, 0, 0, 1, 1)
         self.tabWidget.addTab(self.TopologyTab, "")
         self.TrafficMatrixTab = QtWidgets.QWidget()
         self.TrafficMatrixTab.setObjectName("TrafficMatrixTab")
@@ -1099,7 +1110,7 @@ class Ui_MainWindow(object):
         self.gridLayout_9 = QtWidgets.QGridLayout(self.Rack1)
         self.gridLayout_9.setObjectName("gridLayout_9")
         self.ShelfTab = QtWidgets.QTabWidget(self.Rack1)
-        self.ShelfTab.setMinimumSize(QtCore.QSize(1530, 820))
+        self.ShelfTab.setMinimumSize(QtCore.QSize(1530, 810))
         self.ShelfTab.setTabPosition(QtWidgets.QTabWidget.West)
         self.ShelfTab.setTabShape(QtWidgets.QTabWidget.Rounded)
         self.ShelfTab.setIconSize(QtCore.QSize(20, 20))
@@ -1123,7 +1134,7 @@ class Ui_MainWindow(object):
         self.Shelf2_grid = QtWidgets.QGridLayout(self.Shelf2)
         self.Shelf2_grid.setObjectName("Shelf2_grid")
         self.mdi_12 = QtWidgets.QMdiArea(self.Shelf2)
-        self.mdi_12.setMinimumSize(QtCore.QSize(805, 810))
+        self.mdi_12.setMinimumSize(QtCore.QSize(1530, 810))
         brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
         brush.setStyle(QtCore.Qt.SolidPattern)
         self.mdi_12.setBackground(brush)
@@ -1325,11 +1336,12 @@ class Ui_MainWindow(object):
         self.gridLayout_8.addLayout(self.gridLayout_7, 0, 0, 2, 1)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem1)
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem2)
         self.SelectNode_Label = QtWidgets.QLabel(self.NodeViewTab)
+        self.SelectNode_Label.setMaximumSize(QtCore.QSize(16777215, 20))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(8)
         font.setBold(True)
         font.setWeight(75)
         self.SelectNode_Label.setFont(font)
@@ -1343,7 +1355,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.SelectNode_Label)
         self.SelectNode_combo = QtWidgets.QFontComboBox(self.NodeViewTab)
         self.SelectNode_combo.setMinimumSize(QtCore.QSize(119, 20))
-        self.SelectNode_combo.setMaximumSize(QtCore.QSize(119, 20))
+        self.SelectNode_combo.setMaximumSize(QtCore.QSize(16777215, 20))
         self.SelectNode_combo.setStyleSheet("QComboBox {\n"
 "    border: 1px solid gray;\n"
 "    border-radius: 3px;\n"
@@ -1421,7 +1433,7 @@ class Ui_MainWindow(object):
         self.formLayout_4.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.SelectNode_Label_13)
         self.Demand_Source_combobox = QtWidgets.QFontComboBox(self.tab)
         self.Demand_Source_combobox.setMinimumSize(QtCore.QSize(119, 30))
-        self.Demand_Source_combobox.setMaximumSize(QtCore.QSize(226, 16777215))
+        self.Demand_Source_combobox.setMaximumSize(QtCore.QSize(226, 30))
         self.Demand_Source_combobox.setStyleSheet("QComboBox {\n"
 "    border: 1px solid gray;\n"
 "    border-radius: 3px;\n"
@@ -1478,7 +1490,7 @@ class Ui_MainWindow(object):
         self.formLayout.setObjectName("formLayout")
         self.label_8 = QtWidgets.QLabel(self.tab)
         self.label_8.setMinimumSize(QtCore.QSize(120, 0))
-        self.label_8.setMaximumSize(QtCore.QSize(62, 16777215))
+        self.label_8.setMaximumSize(QtCore.QSize(62, 30))
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setBold(True)
@@ -1494,7 +1506,7 @@ class Ui_MainWindow(object):
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label_8)
         self.Demand_Destination_combobox = QtWidgets.QFontComboBox(self.tab)
         self.Demand_Destination_combobox.setMinimumSize(QtCore.QSize(119, 30))
-        self.Demand_Destination_combobox.setMaximumSize(QtCore.QSize(743, 16777215))
+        self.Demand_Destination_combobox.setMaximumSize(QtCore.QSize(743, 30))
         self.Demand_Destination_combobox.setStyleSheet("QComboBox {\n"
 "    border: 1px solid gray;\n"
 "    border-radius: 3px;\n"
@@ -1839,6 +1851,7 @@ class Ui_MainWindow(object):
         self.gridLayout_13 = QtWidgets.QGridLayout(self.tab_8)
         self.gridLayout_13.setObjectName("gridLayout_13")
         self.Demand_mdi = QtWidgets.QMdiArea(self.tab_8)
+        self.Demand_mdi.setMinimumSize(QtCore.QSize(1575, 521))
         self.Demand_mdi.setObjectName("Demand_mdi")
         self.gridLayout_13.addWidget(self.Demand_mdi, 0, 0, 1, 1)
         self.Demand_tab.addTab(self.tab_8, "")
@@ -1867,15 +1880,15 @@ class Ui_MainWindow(object):
         self.Demand_map.setObjectName("Demand_map")
         self.gridLayout_15.addWidget(self.Demand_map, 0, 0, 1, 1)
         self.gridLayout_12.addLayout(self.gridLayout_15, 3, 1, 1, 2)
-        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_12.addItem(spacerItem2, 0, 1, 1, 1)
+        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_12.addItem(spacerItem3, 0, 1, 1, 1)
         self.tabWidget.addTab(self.tab, "")
         self.gridLayout_10.addWidget(self.tabWidget, 0, 0, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_10, 0, 0, 1, 1)
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
-        self.List_tab.setCurrentIndex(1)
+        self.List_tab.setCurrentIndex(0)
         self.RackTab.setCurrentIndex(0)
         self.ShelfTab.setCurrentIndex(3)
         self.Demand_tab.setCurrentIndex(0)
@@ -1889,6 +1902,14 @@ class Ui_MainWindow(object):
         self.Demand_Source_combobox.clear()
         self.Demand_Destination_combobox.clear()
         self.cluster_type_combobox.clear()
+        self.Clustercolor_combobox.clear()
+        
+        ClusterColors = ["green", "blue", "black", "orange", "yellow"]
+        self.Clustercolor_combobox.addItems(ClusterColors)
+
+        ClusterTypes = ["100GE", "10GE", "100GE and 10GE"]
+        self.cluster_type_combobox.addItems(ClusterTypes)
+
 
         DemandTabPanels = ["MP2X", "PS6X", "MP1H", "TP1H"]
         self.Demand_PanelList.addItems(DemandTabPanels)
@@ -1986,24 +2007,27 @@ class Ui_MainWindow(object):
 
         Data["Demand_mdi"] = self.Demand_mdi
 
-        self.pushButton_4.clicked.connect(self.open_links_fun)
+        self.OpenLinks_pushbutton.clicked.connect(self.open_links_fun)
+
+        self.OK_button.clicked.connect(self.OK_button_fun)
 
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
         self.tabWidget.setAccessibleName(_translate("MainWindow", "maintab"))
-        self.Grouping_groupbox.setTitle(_translate("MainWindow", "Clustering"))
-        self.SetGatewayNode_button.setText(_translate("MainWindow", "Set Node as Gateway"))
-        self.GroupName.setText(_translate("MainWindow", "Cluster Name:"))
-        self.GroupID.setText(_translate("MainWindow", "Cluster Type :"))
-        self.GroupColor.setText(_translate("MainWindow", "Cluster Color:"))
-        self.SelectColor_button.setText(_translate("MainWindow", "Select Color"))
-        self.SelectSubNode_button.setText(_translate("MainWindow", "Select Sub Nodes"))
-        self.SelectSubNode.setText(_translate("MainWindow", "Off"))
-        self.Cancel_button.setText(_translate("MainWindow", "Cancel"))
-        self.OK_button.setText(_translate("MainWindow", "Ok"))
-        self.ShowSubNodes.setText(_translate("MainWindow", "Show Sub Nodes"))
+        self.OpenTopology_button.setText(_translate("MainWindow", "Open\n"
+" Nodes"))
+        self.SaveTopology_button.setText(_translate("MainWindow", "Save\n"
+" Topology"))
+        self.add_node_button.setText(_translate("MainWindow", "Add\n"
+" Node"))
+        self.OpenLinks_pushbutton.setText(_translate("MainWindow", "Open\n"
+" Links"))
+        self.pushButton_5.setText(_translate("MainWindow", "PushButton"))
+        self.pushButton_7.setText(_translate("MainWindow", "PushButton"))
+        self.pushButton_6.setText(_translate("MainWindow", "Help\n"
+" Ctrl + H"))
         self.Planning_groupbox.setTitle(_translate("MainWindow", "Planning"))
         self.PanelThreshold_pushbutton.setText(_translate("MainWindow", "Enter Panels Threshold"))
         self.Grooming_pushbutton.setText(_translate("MainWindow", "Grooming"))
@@ -2014,17 +2038,16 @@ class Ui_MainWindow(object):
         self.Working_checkbox.setText(_translate("MainWindow", "Working View"))
         self.Protection_checkbox.setText(_translate("MainWindow", "Protection View"))
         self.Restoration_checkbox.setText(_translate("MainWindow", "Restoration View"))
-        self.pushButton_6.setText(_translate("MainWindow", "Help\n"
-" Ctrl + H"))
-        self.pushButton_4.setText(_translate("MainWindow", "PushButton"))
-        self.pushButton_5.setText(_translate("MainWindow", "PushButton"))
-        self.add_node_button.setText(_translate("MainWindow", "Add Node\n"
-" Ctrl + ?"))
-        self.SaveTopology_button.setText(_translate("MainWindow", "Save Topology\n"
-" Ctrl + S"))
-        self.OpenTopology_button.setText(_translate("MainWindow", "Open Topology\n"
-"Ctrl + O"))
-        self.pushButton_7.setText(_translate("MainWindow", "PushButton"))
+        self.Grouping_groupbox.setTitle(_translate("MainWindow", "Clustering"))
+        self.SetGatewayNode_button.setText(_translate("MainWindow", "Set Node as Gateway"))
+        self.GroupName.setText(_translate("MainWindow", "Cluster Name:"))
+        self.GroupID.setText(_translate("MainWindow", "Cluster Type :"))
+        self.GroupColor.setText(_translate("MainWindow", "Cluster Color:"))
+        self.SelectSubNode_button.setText(_translate("MainWindow", "Select Sub Nodes"))
+        self.SelectSubNode.setText(_translate("MainWindow", "Off"))
+        self.Cancel_button.setText(_translate("MainWindow", "Cancel"))
+        self.OK_button.setText(_translate("MainWindow", "Ok"))
+        self.ShowSubNodes.setText(_translate("MainWindow", "Show Sub Nodes"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.TopologyTab), _translate("MainWindow", "Topology Tab"))
         self.Traffic_matrix.setSortingEnabled(False)
         item = self.General_TM.horizontalHeaderItem(0)
@@ -2130,6 +2153,17 @@ class Ui_MainWindow(object):
         self.ClientLabel_25.setText(_translate("MainWindow", "Map:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
     
+    def OK_button_fun(self):
+        SubNodes = []
+        for node in Data["Grouping"][self.backend_map.LastGateWay]["SubNodes"].keys():
+            SubNodes.append(self.NodeIdDict[node])
+        
+        self.network.PhysicalTopology.add_cluster(self.NodeIdDict[self.backend_map.LastGateWay], SubNodes, Data["Grouping"][self.backend_map.LastGateWay]["Color"])
+        self.SelectSubNode_button_fun()
+        print(self.network.PhysicalTopology.ClusterDict[0].SubNodesId)
+
+
+    
     def SetNode_flag_javascript(self,text):
         self.webengine.page().runJavaScript('SetNode_flag_fun(\'%s\')' %text)
     
@@ -2158,9 +2192,9 @@ class Ui_MainWindow(object):
         self.backend_map.SetNode_flag_fun("False")
         self.SetNode_flag_javascript("False")
         self.lastgroup_name = self.GroupName_edit.text()
-        self.lastgroup_id = self.GroupId_edit.text()
-        self.lastgroup_color = self.SelectColor_edit.text()
-        if self.lastgroup_name == "" and self.lastgroup_id == "" and self.lastgroup_color == "":
+        self.lastgroup_type = self.cluster_type_combobox.currentText()
+        self.lastgroup_color = self.Clustercolor_combobox.currentText()
+        if self.lastgroup_name == "":
 
 
             #TODO: make a popup window for this
