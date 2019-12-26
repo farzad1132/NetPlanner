@@ -139,6 +139,10 @@ DemandTabDataBase["Services"] = {}
 DemandTabDataBase["Lightpathes"] = {}
 DemandTabDataBase["Panels"] = {}
 
+GroomingTabDataBase = {}
+GroomingTabDataBase["LightPathes"] = {}
+GroomingTabDataBase["Panels"] = {}
+
 class MP2D:
     def init(self, ClientsCapacity = [0, 0], LineCapacity = 0, LineType = "200GE"):
         self.ClientsCapacity = ClientsCapacity
