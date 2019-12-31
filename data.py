@@ -145,8 +145,12 @@ GroomingTabDataBase = {}
 GroomingTabDataBase["LightPathes"] = {}
 GroomingTabDataBase["Panels"] = {}
 
+GroomingTabDataBase = {}
+GroomingTabDataBase["LightPathes"] = {}
+GroomingTabDataBase["Panels"] = {}
+
 class MP2D_L:
-    def __init__(self, ClientsCapacity = [0, 0], LineCapacity = 0, LineType = "200GE"):
+    def init(self, ClientsCapacity = [0, 0], LineCapacity = 0, LineType = "200GE"):
         self.ClientsCapacity = ClientsCapacity
         self.LineCapacity = LineCapacity
         self.LineType = LineType

@@ -2282,7 +2282,7 @@ class Ui_MainWindow(object):
             
             
     
-    def open_links_fun(self):
+    def open_links_fun(self): 
         name = QFileDialog.getOpenFileName(MainWindow, "Open Topology")
         
 

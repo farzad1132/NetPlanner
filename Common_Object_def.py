@@ -169,7 +169,7 @@ class Network:
                 self.WaveLengthList = []
                 self.LightPathList = {}    # in  { service : Type of lightpath } format
 
-            def put_fiber_Type(self, Length, Loss, Dispersion, Beta,Gamma, PositionInLink, Snr = None):
+            def put_fiber_Type(self, Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr = None):
                 self.SpanObjList[PositionInLink].put_fiber_Type(Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr)
             
             class Span:
