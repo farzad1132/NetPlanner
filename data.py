@@ -138,13 +138,15 @@ DemandTabDataBase["Services"] = {}
 #       {(Tehran, karaj): ['2 * 100G ', ...]}
 DemandTabDataBase["Lightpathes"] = {}
 DemandTabDataBase["Panels"] = {}
+# format:
+#       { Tehran:{1: MP2X, 2: MP1H, ..} , Karaj:{}, ...}
 
 GroomingTabDataBase = {}
 GroomingTabDataBase["LightPathes"] = {}
 GroomingTabDataBase["Panels"] = {}
 
-class MP2D:
-    def init(self, ClientsCapacity = [0, 0], LineCapacity = 0, LineType = "200GE"):
+class MP2D_L:
+    def __init__(self, ClientsCapacity = [0, 0], LineCapacity = 0, LineType = "200GE"):
         self.ClientsCapacity = ClientsCapacity
         self.LineCapacity = LineCapacity
         self.LineType = LineType
@@ -160,32 +162,69 @@ class MP2D:
     def set_line_type(self, Type):
         self.LineType = Type
 
-class MP2X:
-    def init(self, ClientsType = [0 for i in range(16)], LinesCapacity = [0, 0]):
+class MP2D_R:
+    def __init__(self, LeftId):
+        self.LeftId = LeftId
+
+class MP2X_L:
+    def __init__(self, ClientsType = [0 for i in range(16)], LinesCapacity = [0, 0]):
         self.ClientsType = ClientsType
         self.LinesCapacity = LinesCapacity
     
-    def add_client(self, ClientNum, Type, LineCapacity):
+    def add_client(self, ClientNum, Type):
         self.ClientsType[ClientNum] = Type
-        self.LinesCapacity = LineCapacity
     
-    def del_client(self, ClientNum, LineCapacity):
+    def del_client(self, ClientNum):
         self.ClientsType[ClientNum] = 0
-        self.LinesCapacity = LineCapacity
 
-class MP1H:
-    def init(self, ClientsCapacity = [0 for i in range(10)], LineCapacity = 0):
+class MP2X_R:
+    def __init__(self, LeftId):
+        self.LeftId = LeftId
+
+class MP1H_L:
+    def __init__(self, ClientsCapacity = [0 for i in range(10)], LineCapacity = 0):
         self.ClientsCapacity = ClientsCapacity
         self.LineCapacity = LineCapacity
     
-    def add_client(self, ClientNum, LineCapacity):
-        self.ClientsCapacity[ClientNum] = "10GE"
+    def add_client(self, ClientNum, Type, LineCapacity):
+        # type can be 10GE or stm64
+        self.ClientsCapacity[ClientNum] = Type
         self.LineCapacity = LineCapacity
     
     def del_client(self, ClientNum, LineCapacity):
         self.ClientsCapacity[ClientNum] = 0
         self.LineCapacity = LineCapacity
 
-class TP1H:
-    def init(self):
+class MP1H_R:
+    def __init__(self, LeftId):
+        self.LeftId = LeftId
+
+class TP1H_L:
+    def __init__(self):
+        pass
+
+class TP1H_R:
+    def __init__(self, LeftId):
+        self.LeftId = LeftId
+
+class SC:
+    def __init__(self):
+        pass
+
+class BAF3:
+    def __init__(self):
+        pass
+
+class PAF3:
+    def __init__(self):
+        pass
+
+class LAF3:
+    def __init__(self):
+        pass
+
+
+# TODO: this class is uncompleted
+class TP2X:
+    def __init__(self):
         pass

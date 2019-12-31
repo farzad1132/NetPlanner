@@ -4,7 +4,7 @@ from PySide2.QtGui import *
 import sys
 import os
 from Node_View_Data import Panel_Data
-from data import Data
+from data import *
 
 
 class SC_panel(QWidget):
@@ -102,9 +102,9 @@ class SC_panel(QWidget):
         action = ContextMenu.exec_(self.mapToGlobal(event.pos()))
 
         if action == CloseAction:
-            Panel_Data[self.id].setWidget(BLANK_panel(self.id ,  self.nodename))
+            Data[self.id].setWidget(BLANK_panel(self.id ,  self.nodename))
 
-        Data["Nodes"][self.nodename]["Panels"].pop(str(self.id))
-
+        #Data["Nodes"][self.nodename]["Panels"].pop(str(self.id)
+        GroomingTabDataBase["Panels"][self.nodename].pop(self.id)
 
 

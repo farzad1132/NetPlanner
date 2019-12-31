@@ -148,7 +148,7 @@ class Network:
             def __del__(self):
                 pass
             
-            def add_amplifier(self,nf):
+            def add_amplifier(self, nf):
                 self.AmplifierList.append(self.Amplifier(nf))
 
 
@@ -169,7 +169,7 @@ class Network:
                 self.WaveLengthList = []
                 self.LightPathList = {}    # in  { service : Type of lightpath } format
 
-            def put_fiber_Type(self, Length, Loss, Dispersion, Beta,Gamma, PositionInLink, Snr):
+            def put_fiber_Type(self, Length, Loss, Dispersion, Beta,Gamma, PositionInLink, Snr = None):
                 self.SpanObjList[PositionInLink].put_fiber_Type(Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr)
             
             class Span:
@@ -190,7 +190,7 @@ class Network:
                     # 0 value for this variable means first and so on ...
                     self.PositionInLink = PositionInLink
 
-                def put_fiber_Type(self, Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr):
+                def put_fiber_Type(self, Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr = None):
 
                     self.Length = Length
                     self.Loss = Loss
@@ -227,7 +227,7 @@ class Network:
             self.DemandDict.pop(Id)
 
         class Demand:
-            
+            ServiceReferencedId = 0
             # this class is one row of Traffic Matrix
             def __init__(self, Id, Source, Destination, Type):
 
@@ -385,8 +385,8 @@ class Network:
                     
             
             def GenerateId(self):
-                self.ServiceId += 1
-                return ( self.ServiceId - 1 )
+                Network.Traffic.Demand.ServiceReferencedId += 1
+                return ( Network.Traffic.Demand.ServiceReferencedId - 1 )
             
             def add_service(self, ServiceType, Sla, IgnoringNodes = None, WaveLength = None, Granularity = None, Granularity_vc12 = None,
             Granularity_vc4 = None, LightPathId = None):
@@ -427,16 +427,19 @@ class Network:
                     self.ServiceDict[ServiceId] = self.G_100(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
         
     class Lightpath:
-                ReferenceId = 0
+        ReferenceId = 0
 
-                def __init__(self, Capacity, ServiceIdList, Type, MandatoryNodesIdList, DemandId):
-                    self.id = Network.Lightpath.ReferenceId
-                    Network.Lightpath.ReferenceId += 1
-                    self.DemandId = DemandId
-                    self.Capacity = Capacity
-                    self.ServiceIdList = ServiceIdList
-                    self.Type = Type
-                    self.MandatoryNodesIdList = MandatoryNodesIdList
+        def __init__(self, Source, Destination, Capacity, ServiceIdList, Type, MandatoryNodesIdList, DemandId,
+         WorkingPath = None, ProtectionPath = None, Wavelength = None, RegeneratorNode = None):
+
+            self.id = Network.Lightpath.ReferenceId
+            Network.Lightpath.ReferenceId += 1
+            
+            self.DemandId = DemandId
+            self.Capacity = Capacity
+            self.ServiceIdList = ServiceIdList
+            self.Type = Type
+            self.MandatoryNodesIdList = MandatoryNodesIdList
 
 if __name__ == "__main__":
 
