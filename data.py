@@ -135,8 +135,10 @@ DemandTabDataBase["Source_Destination"] = {}
 #       { source :  [ Destinations ]}
 DemandTabDataBase["Services"] = {}
 # format: 
-#       {(Tehran, karaj): ['2 * 100G ', ...]}
+#       {(Tehran, karaj): ['[1 , 3] # 100G ', ...]}         [1 , 3] ---> 1 : Demand Id , 3 : Service Id
 DemandTabDataBase["Lightpathes"] = {}
+# format:
+#       {(Tehran, Karaj): [ Lightpath Id # 100GE , ...]}
 DemandTabDataBase["Panels"] = {}
 # format:
 #       { Tehran:{1: MP2X, 2: MP1H, ..} , Karaj:{}, ...}
@@ -146,7 +148,7 @@ GroomingTabDataBase["LightPathes"] = {}
 GroomingTabDataBase["Panels"] = {}
 
 GroomingTabDataBase = {}
-GroomingTabDataBase["LightPathes"] = {}
+GroomingTabDataBase["LightPathes"] = {} 
 GroomingTabDataBase["Panels"] = {}
 
 class MP2D_L:
@@ -186,7 +188,12 @@ class MP2X_R:
         self.LeftId = LeftId
 
 class MP1H_L:
-    def __init__(self, ClientsCapacity = [0 for i in range(10)], LineCapacity = 0):
+    def __init__(self, ClientsCapacity = [0 for i in range(10)], LineCapacity = 0, ServiceIdList = [None for i in range(10)], 
+    DemandIdList = [None for i in range(10)], LightPathId = None):
+
+        self.ServiceIdList = ServiceIdList
+        self.DemandIdList = DemandIdList
+        self.LightPathId = LightPathId
         self.ClientsCapacity = ClientsCapacity
         self.LineCapacity = LineCapacity
     
@@ -204,8 +211,11 @@ class MP1H_R:
         self.LeftId = LeftId
 
 class TP1H_L:
-    def __init__(self):
-        pass
+    def __init__(self, DemandId = None, ServiceId = None, Line = 0, LightPathId = None):
+        self.LightPathId = LightPathId
+        self.DemandId = DemandId
+        self.ServiceId = ServiceId
+        self.Line = Line
 
 class TP1H_R:
     def __init__(self, LeftId):

@@ -37,6 +37,11 @@ from MP2D_panel.MP2D_panel_L import MP2D_panel_L
 from MP2D_panel.MP2D_panel_R import MP2D_panel_R
 from TP2X_panel.TP2X_panel import TP2X_panel
 
+from TP1H_Grooming.TP1H_L_Grooming import TP1H_L_Grooming
+from TP1H_Grooming.TP1H_R_Grooming import TP1H_R_Grooming
+from MP1H_Grooming.MP1H_L_Grooming import MP1H_L_Grooming
+from MP1H_Grooming.MP1H_R_Grooming import MP1H_R_Grooming
+
 from BLANK_Demand.BLANK_Demand import BLANK_Demand
 from MP2X_Demand.MP2X_L_Demand import MP2X_L_Demand
 from MP2X_Demand.MP2X_R_Demand import MP2X_R_Demand
@@ -2007,6 +2012,7 @@ class Ui_MainWindow(object):
 
         self.network = Network()
 
+
         #TODO: edited
         self.listWidget.clicked['QModelIndex'].connect(self.list_click)
 
@@ -2031,6 +2037,11 @@ class Ui_MainWindow(object):
 
         Data["Demand_LightPath_list"] = self.Demand_LineList
         Data["Demand_Service_list"] = self.Demand_ServiceList
+
+        Data["DemandTab_firststart_flag"] = False
+
+        self.Demand_ServiceList.setDragEnabled(True)
+        self.Demand_LineList.setDragEnabled(True)
 
 
 
@@ -2184,6 +2195,14 @@ class Ui_MainWindow(object):
         self.SelectSubNode_button_fun()
         print(self.network.PhysicalTopology.ClusterDict[0].SubNodesId)
 
+    #TODO: complete this method
+    def working_view_fun(self):
+        for key in Data["Links"].keys():
+            InNodeName = key[0]
+            OutNodeName = key[1]
+            InNodeId = self.NodeIdDict[key[0]]
+            OutNodeId = self.NodeIdDict[key[1]]
+            
 
     
     def SetNode_flag_javascript(self,text):
@@ -2290,10 +2309,22 @@ class Ui_MainWindow(object):
 
                     elif isinstance(panel, TP2X):
                         Data["1"+str(i)+str(j)].setWidget(TP2X_panel("1"+str(i)+str(j),nodename))
+                    
+                    elif isinstance(panel, TP1H_L):
+                        Data["1"+str(i)+str(j)].setWidget(TP1H_L_Grooming("1"+str(i)+str(j),nodename))
+
+                    elif isinstance(panel, TP1H_R):
+                        Data["1"+str(i)+str(j)].setWidget(TP1H_R_Grooming("1"+str(i)+str(j),nodename))
+
+                    elif isinstance(panel, MP1H_L):
+                        Data["1"+str(i)+str(j)].setWidget(MP1H_L_Grooming("1"+str(i)+str(j),nodename))
+                           
+                    elif isinstance(panel, MP1H_R):
+                        Data["1"+str(i)+str(j)].setWidget(MP1H_R_Grooming("1"+str(i)+str(j),nodename))
                 else:
                     Data["1"+str(i)+str(j)].setWidget(BLANK_panel("1"+str(i)+str(j), nodename))
     
-    # TODO: add this method to Demand Source Combo Change function
+    
     def set_demand_panels(self):
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
@@ -2311,18 +2342,29 @@ class Ui_MainWindow(object):
                 
                 elif isinstance(panel, MP1H_L):
                     Data["DemandPanel_" + str(i)].setWidget(MP1H_L_Demand(str(i), Source, Destination))
-                    for client in panel.ClientsCapacity:
-                        if client != 0:
-                            pass
-                            # TODO: change client color to green
+                    widget = Data["DemandPanel_" + str(i)].widget()
+                        
+                    for i in range(10):
+                        if panel.ClientsCapacity[i] != 0:
+                            text = "client" + str( i + 1 )
+                            clientvar = getattr(widget, text)
+                            clientvar.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
+
                 elif isinstance(panel, MP1H_R):
                     Data["DemandPanel_" + str(i)].setWidget(MP1H_R_Demand(str(i), Source))
                 
                 elif isinstance(panel, TP1H_L):
                     Data["DemandPanel_" + str(i)].setWidget(TP1H_L_Demand(str(i), Source, Destination))
+
+                    if panel.Line == "100GE":
+                        # TODO: change client color to green
+                        pass
                 
                 elif isinstance(panel, TP1H_R):
                     Data["DemandPanel_" + str(i)].setWidget(TP1H_R_Demand(str(i), Source))
+            
+            else:
+                Data["DemandPanel_" + str(i)].setWidget(BLANK_Demand(str(i), Source, Destination))
 
                          
 
@@ -2436,7 +2478,10 @@ class Ui_MainWindow(object):
 
             Data["first_run_flag"] = True
         if index == 4:
-            self.Demand_Shelf_set()
+            if Data["DemandTab_firststart_flag"] == False:
+                self.Demand_Shelf_set()
+                Data["DemandTab_firststart_flag"] = True
+
             self.UpdateDemand_ServiceList()
             
 
@@ -2692,6 +2737,15 @@ class Ui_MainWindow(object):
                     self.network.TrafficMatrix.DemandDict[id].add_service(service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
                 
             self.FillDemandTabDataBase_Services(id ,Source, Destination, ServiceDict)
+            self.initialize_DemandTabDataBase_LightpathPart(Source, Destination)
+            self.initialize_DemandTabDataBase_PanelsPart(Source)
+            
+    def initialize_DemandTabDataBase_LightpathPart(self, Source, Destination):
+        DemandTabDataBase["Lightpathes"][(Source, Destination)] = {}
+    
+    def initialize_DemandTabDataBase_PanelsPart(self, Source):
+        DemandTabDataBase["Panels"][Source] = {}
+
     def FillDemandTabDataBase_Services(self, id, Source, Destination, ServiceDict):
         
         ServiceDict_2 = {}
@@ -2711,43 +2765,43 @@ class Ui_MainWindow(object):
                 ServiceDict_2[(id, serviceId)] = servicetitle
 
             elif isinstance(service, Network.Traffic.Demand.STM_1_Electrical):
-                servicetitle = "[%s , %s]  %s" %(id, serviceId, "STM_1_Electrical")
+                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_1_Electrical")
                 ServiceDict_2[(id, serviceId)] = servicetitle
 
             elif isinstance(service, Network.Traffic.Demand.STM_1_Optical):
-                servicetitle = "[%s , %s]  %s" %(id, serviceId, "STM_1_Optical")
+                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_1_Optical")
                 ServiceDict_2[(id, serviceId)] = servicetitle
 
             elif isinstance(service, Network.Traffic.Demand.STM_4):
-                servicetitle = "[%s , %s]  %s" %(id, serviceId, "STM_4")
+                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_4")
                 ServiceDict_2[(id, serviceId)] = servicetitle
 
             elif isinstance(service, Network.Traffic.Demand.STM_16):
-                servicetitle = "[%s , %s]  %s" %(id, serviceId, "STM_16")
+                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_16")
                 ServiceDict_2[(id, serviceId)] = servicetitle
 
             elif isinstance(service, Network.Traffic.Demand.STM_64):
-                servicetitle = "[%s , %s]  %s" %(id, serviceId, "STM_64")
+                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_64")
                 ServiceDict_2[(id, serviceId)] = servicetitle
 
             elif isinstance(service, Network.Traffic.Demand.FE):
-                servicetitle = "[%s , %s]  %s" %(id, serviceId, "FE")
+                servicetitle = "[%s , %s] # %s" %(id, serviceId, "FE")
                 ServiceDict_2[(id, serviceId)] = servicetitle
 
             elif isinstance(service, Network.Traffic.Demand.G_1):
-                servicetitle = "[%s , %s]  %s" %(id, serviceId, "1GE")
+                servicetitle = "[%s , %s] # %s" %(id, serviceId, "1GE")
                 ServiceDict_2[(id, serviceId)] = servicetitle
 
             elif isinstance(service, Network.Traffic.Demand.G_10):
-                servicetitle = "[%s , %s]  %s" %(id, serviceId, "10GE")
+                servicetitle = "[%s , %s] # %s" %(id, serviceId, "10GE")
                 ServiceDict_2[(id, serviceId)] = servicetitle
 
             elif isinstance(service, Network.Traffic.Demand.G_40):
-                servicetitle = "[%s , %s]  %s" %(id, serviceId, "40GE")
+                servicetitle = "[%s , %s] # %s" %(id, serviceId, "40GE")
                 ServiceDict_2[(id, serviceId)] = servicetitle
 
             elif isinstance(service, Network.Traffic.Demand.G_100):
-                servicetitle = "[%s , %s]  %s" %(id, serviceId, "100GE")
+                servicetitle = "[%s , %s] # %s" %(id, serviceId, "100GE")
                 ServiceDict_2[(id, serviceId)] = servicetitle
 
         DemandTabDataBase["Services"][(Source,Destination)] = ServiceDict_2
@@ -2788,6 +2842,8 @@ class Ui_MainWindow(object):
 
         if self.Demand_Destination_combobox.currentText() != '':
             self.UpdateDemand_ServiceList()
+            self.update_Demand_lightpath_list()
+            self.set_demand_panels()
         
         Destination = self.Demand_Destination_combobox.currentText()
             
@@ -2804,18 +2860,17 @@ class Ui_MainWindow(object):
             self.network.PhysicalTopology.add_link(self.NodeIdDict[LinkId[0]], self.NodeIdDict[LinkId[1]], LinkData["NumSpan"])
 
             for i in range(LinkData["NumSpan"]):
-                self.network.PhysicalTopology.LinkDict[(self.NodeIdDict[LinkId[0]], self.NodeIdDict[LinkId[1]])].put_fiber_Type(LinkData["Length"],
-                 LinkData["Loss"], LinkData["Dispersion"], LinkData["Beta"], LinkData["Gamma"], i)
+                self.network.PhysicalTopology.LinkDict[(self.NodeIdDict[LinkId[0]], self.NodeIdDict[LinkId[1]])].put_fiber_Type(LinkData["Length"][i],
+                 LinkData["Loss"][i], LinkData["Dispersion"][i], LinkData["Beta"][i], LinkData["Gamma"][i], i)
     
-    # TODO: add this to Demand_Source Combobox and Demand_Destination Combobox
     def update_Demand_lightpath_list(self):
-        if Data["Stage_flag"] == "Grooming":
-            Source = self.Demand_Source_combobox.currentText()
-            Destination = self.Demand_Destination_combobox.currentText()
+        #if Data["Stage_flag"] == "Grooming":
+        Source = self.Demand_Source_combobox.currentText()
+        Destination = self.Demand_Destination_combobox.currentText()
 
-            lightpath_list = DemandTabDataBase["Lightpathes"][(Source, Destination)]
-            self.Demand_LineList.clear()
-            self.Demand_LineList.addItems(lightpath_list)
+        lightpath_list = list(DemandTabDataBase["Lightpathes"][(Source, Destination)].values())
+        self.Demand_LineList.clear()
+        self.Demand_LineList.addItems(lightpath_list)
         
                 
 
@@ -3099,5 +3154,6 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QWidget()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+    Data["ui"] = ui
     MainWindow.show()
     sys.exit(app.exec_())

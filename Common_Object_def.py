@@ -4,6 +4,19 @@ class Network:
         self.PhysicalTopology = self.Topology()
         self.TrafficMatrix = self.Traffic()
         
+        self.LightPathDict = {}
+
+    def add_lightpath(self, Source, Destination, Capacity, ServiceIdList, Type, DemandId,
+     MandatoryNodesIdList = None, IgnoringNodesIdList = None):
+
+        self.LightPathDict[Network.Lightpath.get_id()] = self.Lightpath(Source, Destination, Capacity, ServiceIdList, Type, DemandId, 
+        MandatoryNodesIdList= MandatoryNodesIdList, IgnoringNodesIdList= IgnoringNodesIdList)
+    
+    def put_results(self, id, WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p,
+                    SNR_th, LaunchPower, ModulationType, SNR):
+        
+        self.LightPathDict[id].set_results(WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p, SNR_th, LaunchPower, ModulationType, SNR)
+
 
     class Topology:
 
@@ -429,17 +442,59 @@ class Network:
     class Lightpath:
         ReferenceId = 0
 
-        def __init__(self, Source, Destination, Capacity, ServiceIdList, Type, MandatoryNodesIdList, DemandId,
-         WorkingPath = None, ProtectionPath = None, Wavelength = None, RegeneratorNode = None):
+        
+        @classmethod
+        def get_id(cls):
+            cls.ReferenceId += 1
+            return ( cls.ReferenceId - 1 )
+        
+
+        @classmethod
+        def update_id(cls, Num):
+            # this method usage is when a bunch of instances from this class has been imported and we want to update
+            # our ReferencedId ( class variable )
+            cls.ReferenceId += Num
+
+
+        def __init__(self, Source, Destination, Capacity, ServiceIdList, Type,  DemandId, WorkingPath = None, ProtectionPath = None,
+                        WaveLength = None, RegeneratorNode_w = None, RegeneratorNode_p = None, IgnoringNodesIdList = None,
+                        SNR_th = None, LaunchPower = None, ModulationType = None, SNR = None, MandatoryNodesIdList = None):
 
             self.id = Network.Lightpath.ReferenceId
             Network.Lightpath.ReferenceId += 1
             
+            self.Source = Source
+            self.Destination = Destination
+            self.WorkingPath = WorkingPath
+            self.ProtectionPath = ProtectionPath
+            self.RegeneratorNode_w = RegeneratorNode_w
+            self.RegeneratorNode_p = RegeneratorNode_p
+            self.SNR_th = SNR_th
+            self.WaveLength = WaveLength
             self.DemandId = DemandId
             self.Capacity = Capacity
+            self.LaunchPower = LaunchPower
             self.ServiceIdList = ServiceIdList
+            self.ModulationType = ModulationType
             self.Type = Type
+            self.SNR = SNR
             self.MandatoryNodesIdList = MandatoryNodesIdList
+            self.IgnoringNodesIdList = IgnoringNodesIdList
+        
+        def set_results(self, WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p,
+         SNR_th, LaunchPower, ModulationType, SNR):
+
+            self.WorkingPath = WorkingPath
+            self.ProtectionPath = ProtectionPath
+            self.WaveLength = WaveLength
+            self.RegeneratorNode_p = RegeneratorNode_p
+            self.RegeneratorNode_w = RegeneratorNode_w
+            self.SNR_th = SNR_th
+            self.LaunchPower = LaunchPower
+            self.ModulationType = ModulationType
+            self.SNR = SNR
+
+
 
 if __name__ == "__main__":
 

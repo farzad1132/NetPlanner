@@ -13,6 +13,8 @@ from MP2D_panel.MP2D_panel_L import MP2D_panel_L
 from MP2D_panel.MP2D_panel_R import MP2D_panel_R
 from TP2X_panel.TP2X_panel import TP2X_panel
 
+from TP1H_Grooming.TP1H_L_Grooming import TP1H_L_Grooming
+from TP1H_Grooming.TP1H_R_Grooming import TP1H_R_Grooming
 
 class BLANK_panel(QWidget):
 
@@ -111,18 +113,25 @@ class BLANK_panel(QWidget):
             #Data["Nodes"][self.nodename]["Panels"][uppernum] = {"Name":"MP2D","Position":"R"}
             GroomingTabDataBase["Panels"][self.nodename][uppernum] = MP2D_R(self.id)
 
-            # change above format into bellow format
-
-
-            '''Data["Nodes"][self.nodename]["Panels"][str(self.id)] = {}
-            dic = {}
-            dic.update(MP2D)
-            Data["Nodes"][self.nodename]["Panels"][str(self.id)].update(dic)'''
 
         elif text == "TP2X":
             Data[self.id].setWidget(TP2X_panel(self.id,self.nodename))
             #Data["Nodes"][self.nodename]["Panels"][str(self.id)] = {"Name":"TP2X"} # this is uncompleted
             GroomingTabDataBase["Panels"][self.nodename][self.id] = TP2X()
+        
+        elif text == "TP1H":
+            
+            Data[self.id].setWidget(TP1H_L_Grooming(self.id, self.nodename))
+            GroomingTabDataBase["Panels"][self.nodename][self.id] = TP1H_L()
+            if len(self.id) == 4:
+                uppernum = str(int(self.id) + 1)
+            else:
+                panelnum = self.id[2]
+                uppanelnum = str(int(panelnum) + 1)
+                uppernum = self.id[0] + self.id[1] + uppanelnum
+
+            Data[uppernum].setWidget(TP1H_R_Grooming(self.id, self.nodename))
+            GroomingTabDataBase["Panels"][self.nodename][uppernum] = TP1H_R(self.id)
         
         super(BLANK_panel,self).dropEvent(event)
 

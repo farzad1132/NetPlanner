@@ -4,6 +4,7 @@ from PySide2.QtGui import *
 import sys
 import os
 from data import *
+from Common_Object_def import *
 
 
 class MP2X_L_Demand(QWidget):
@@ -165,16 +166,19 @@ class MP2X_L_Demand(QWidget):
 
         if action == CloseAction:
 
-            Data[self.id].setWidget(BLANK_Demand(self.id ,  self.nodename))
-            Data[self.uppernum].setWidget(BLANK_Demand(self.id ,  self.nodename))
+            Data["DemandPanel_" + self.id].setWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
+            Data["DemandPanel_" + self.uppernum].setWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
 
             # TODO: undo every service or lightpath that is created in this panel
             DemandTabDataBase["Panels"][self.nodename].pop(self.id)
             DemandTabDataBase["Panels"][self.nodename].pop(self.uppernum)
         
         if action == TurnOnAction:
-            customlabel.Stateflag = 1 # this flag show that either this panel is on or off
-            # TODO: create line signals
+            customlabel.Stateflag = 1   # this flag show that wheather this panel is on or off
+
+
+            # TODO: complete this
+            #for client in DemandTabDataBase["Panels"][self.nodename][self.id].ClientsType:
         
         if action == TurnOffAction:
             customlabel.Stateflag = 0
@@ -182,12 +186,12 @@ class MP2X_L_Demand(QWidget):
 
 
 class customlabel(QLabel):
-    Stateflag = 0
+    Stateflag = 0           # this flag shows that this panel is on or off
     def __init__(self, parent, nodename, ID, ClientNum):
         super().__init__(parent)
         self.nodename = nodename
         self.id = ID
-        self.ClientNum = ClientNum
+        self.ClientNum = ClientNum - 1  # because list indices starts with 0
         self.setAcceptDrops(True)
     
     def dragEnterEvent(self, event):
@@ -224,15 +228,17 @@ class customlabel(QLabel):
         model.dropMimeData(event.mimeData(), Qt.CopyAction, 0,0, QModelIndex())
         dragtext = model.item(0,0).text()
 
-        servicetype = dragtext[1].strip()
+        dragtext = dragtext.split("#")
+        servicetype = dragtext[1].strip()   # service type = 100Ge , 10GE , ....
         ids = list(dragtext[0].strip())
-        ids = [ids[1], ids[-2]]
+        ids = [ids[1], ids[-2]]        # [ Demand Number, Service Number]
 
         if servicetype in self.allowedservices:
             DemandTabDataBase["Panels"][self.nodename][self.id].add_client(self.ClientNum, servicetype)
             self.flag = 1           # this flag means that this client is full
-
-            # TODO: modify Demand Tab Service List ( deleteing some service )
+            self.servicetype = servicetype
+            self.ids = [ids[0], ids[1]]
+            self.modify_ServiceList(ids, self.nodename, self.Destination)
 
             # TODO: be Careful !!!!!
             self.setAcceptDrops(False)  
@@ -251,18 +257,27 @@ class customlabel(QLabel):
                     DemandTabDataBase["Panels"][self.nodename][self.id].del_client(self.ClientNum)
                     self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client.png")))
                     self.setAcceptDrops(True)
-                    # TODO: modify Demand Tab Service List ( adding some service )
+                    self.modify_ServiceList(self.ids, self.nodename, self.Destination, mode = "add", type = servicetype)
+
             else:
                 print("Please First Turn off Panel")
     
 
-    def modify_ServiceList(self, ids, source, destination, mode = "delete"):
+    def modify_ServiceList(self, ids, source, destination, mode = "delete", Type = None):
+        from main_8_2 import ui
+
+        key = (ids[0] , ids[1])
         if mode == "delete":
-            key = ()
+            DemandTabDataBase["Services"][(source, destination)].pop(key)
+            
+        elif mode == "add":
+            DemandTabDataBase["Services"][(source, destination)][key] = "[%s , %s] # %s" % (ids[0], ids[1], Type)
+            
+        ui.UpdateDemand_ServiceList()
 
 
 
-    def countdown_fun(self,nodename,header,value):
+    """ def countdown_fun(self,nodename,header,value):
         degree = self.id[1]
         Data["Nodes"][nodename]["Client_Services"]["data"][degree][header] += value
         Data["ClientList"].clear()
@@ -276,4 +291,4 @@ class customlabel(QLabel):
         Data["LineList"].clear()
         for service in list(Data["Nodes"][nodename]["Line_Services"][degree].keys()):
             if Data["Nodes"][nodename]["Line_Services"][degree][service] != 0:
-                Data["LineList"].addItem(str(Data["Nodes"][nodename]["Line_Services"][degree][service]) + " * "+service)
+                Data["LineList"].addItem(str(Data["Nodes"][nodename]["Line_Services"][degree][service]) + " * "+service) """

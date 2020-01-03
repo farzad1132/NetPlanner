@@ -25,15 +25,16 @@ class BLANK_Demand(QWidget):
          
         self.setFixedSize(112, 521)
 
-        self.label_Blank = QLabel(self)
-        self.label_Blank.setGeometry(QRect(0, 0, 111, 531))
-        self.label_Blank.setText("")
-        self.label_Blank.setPixmap(QPixmap(os.path.join("BLANK_Demand", "BLANK4.png")))
-        self.label_Blank.setObjectName("label")
+        self.label = QLabel(self)
+        self.label.setGeometry(QRect(0, 0, 121, 521))
+        self.label.setText("")
+        self.label.setPixmap(QPixmap(os.path.join("blank_Demand", "BLANK.png")))
+        self.label.setObjectName("label")
 
         _translate = QCoreApplication.translate
 
         self.setAcceptDrops(True)
+        self.setStyleSheet("border: 3px solid black")
         
 
     def dragEnterEvent(self, event):
@@ -88,7 +89,7 @@ class BLANK_Demand(QWidget):
         
         elif text == "TP1H":
             Data["DemandPanel_" + str(self.id)].setWidget(TP1H_L_Demand(self.id , self.nodename, self.Destination))
-            DemandTabDataBase["Panels"][self.nodename][self.id] = MP1H_L()
+            DemandTabDataBase["Panels"][self.nodename][self.id] = TP1H_L()
 
             Data["DemandPanel_" + self.uppernum].setWidget(TP1H_R_Demand(self.id, self.nodename))
             DemandTabDataBase["Panels"][self.nodename][self.uppernum] = TP1H_R(self.uppernum)
