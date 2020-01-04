@@ -19,6 +19,7 @@ import xlsxwriter
 from pandas import ExcelWriter 
 from newcheck import  Ui_checking
 from Common_Object_def import Network
+from math import ceil
 
 from add_node import Ui_add_node_window
 
@@ -2043,6 +2044,8 @@ class Ui_MainWindow(object):
         self.Demand_ServiceList.setDragEnabled(True)
         self.Demand_LineList.setDragEnabled(True)
 
+        self.Grooming_pushbutton.clicked.connect(self.grooming_fun)
+        self.FinalPlan_pushbutton.clicked.connect(self.print_r)
 
 
     def retranslateUi(self, MainWindow):
@@ -2349,14 +2352,20 @@ class Ui_MainWindow(object):
                             text = "client" + str( i + 1 )
                             clientvar = getattr(widget, text)
                             clientvar.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
+                            # TODO: after creating an database for services un comment bellow
+                            #clientvar.setToolTip(DemandTabDataBase["Services"][(Source, Destination)][(panel.DemandIdList[i],panel.ServiceIdList[i])])
 
                 elif isinstance(panel, MP1H_R):
                     Data["DemandPanel_" + str(i)].setWidget(MP1H_R_Demand(str(i), Source))
                 
                 elif isinstance(panel, TP1H_L):
                     Data["DemandPanel_" + str(i)].setWidget(TP1H_L_Demand(str(i), Source, Destination))
+                    widget = Data["DemandPanel_" + str(i)].widget()
 
                     if panel.Line == "100GE":
+                        clientvar = getattr(widget, "client")
+                        # TODO: after creating an database for services un comment bellow
+                        #clientvar.setToolTip(DemandTabDataBase["Services"][(Source, Destination)][(panel.DemandId, panel.ServiceId)])
                         # TODO: change client color to green
                         pass
                 
@@ -3146,6 +3155,86 @@ class Ui_MainWindow(object):
             Data["mdi_11"].addSubWindow(Data["11"+str(i)])              
 
             Data["11"+str(i)].show()
+    
+    def put_demandtab_results(self):
+        pass
+    
+    def put_groomingtab_results(self):
+        pass
+
+    def grooming_fun(self):
+
+        MP1H_th = 7
+
+        for demand, demandobj in self.network.TrafficMatrix.DemandDict.items():
+            ServiceList =list(demandobj.ServiceDict.items())
+
+            STM_64_List = list(filter(lambda x : isinstance( x[1] , Network.Traffic.Demand.STM_64 ) , ServiceList))
+            STM_64_List = list(map(lambda x : x[0] , STM_64_List ))
+            NumSTM_64 = len(STM_64_List)
+
+            G10_List = list(filter(lambda x : isinstance( x[1] , Network.Traffic.Demand.G_10 ) , ServiceList))
+            G10_List = list(map(lambda x : x[0] , G10_List ))
+            NumG10 = len(G10_List)
+
+            G100_List = list(filter(lambda x : isinstance( x[1] , Network.Traffic.Demand.G_100 ) , ServiceList))
+            G100_List = list(map(lambda x : x[0] , G100_List ))
+            NumG100 = len(G100_List)
+
+            # Number Of MP1H Calculation
+
+            NumClientPorts_MP1H = NumSTM_64 + NumG10
+            MP1H_servicelist = G10_List + STM_64_List
+            NumFullLightPath = NumClientPorts_MP1H // 10
+            RemClients_MP1H = NumClientPorts_MP1H % 10
+            NumMP1H = ceil(NumClientPorts_MP1H / 10)
+
+            for no in range(NumFullLightPath):
+                self.network.add_lightpath(demandobj.Source, demandobj.Destination, "100GE", MP1H_servicelist[0:10]
+                ,"100GE", demand)
+                for i in reversed(range(10)) :
+                    DemandTabDataBase["Services"][(demandobj.Source, demandobj.Destination)][(demand, str(MP1H_servicelist[i]))]
+                    MP1H_servicelist.pop(i)
+
+            
+            if RemClients_MP1H >= MP1H_th:
+                print("th_List:" , MP1H_servicelist)
+                x = list(MP1H_servicelist)
+                for i in range(10-len(MP1H_servicelist)):
+                    x.append(None)
+                self.network.add_lightpath(demandobj.Source, demandobj.Destination, "100GE", x, "100GE", demand)
+
+                for i in reversed(range(len(MP1H_servicelist))):
+                    DemandTabDataBase["Services"][(demandobj.Source, demandobj.Destination)][(demand, str(MP1H_servicelist[i]))]
+                    MP1H_servicelist.pop(i)
+            
+            # Number Of TP1H Calculation
+            NumTP1H = NumG100
+
+
+            for no in reversed(range(NumG100)):
+                if isinstance(G100_List, int):
+                    x = [G100_List]
+                    for i in range(9):
+                        x.append(None)
+                else:
+                    x = [G100_List[no]]
+                    for i in range(9):
+                        x.append(None)
+                self.network.add_lightpath(demandobj.Source, demandobj.Destination, "100GE", x, "100GE", demand)
+                DemandTabDataBase["Services"][(demandobj.Source, demandobj.Destination)][(demand, str(G100_List[no]))]
+                G100_List.pop(no)
+
+
+
+
+    def print_r(self):
+        for id, lightpath in self.network.LightPathDict.items():
+                print("##################################")
+                print("ID: ", lightpath.id)
+                print("Source:" , lightpath.Source)
+                print("Destination:" , lightpath.Destination)
+                print("ServiceIdList: ", lightpath.ServiceIdList)
 
 
 if __name__ == "__main__":

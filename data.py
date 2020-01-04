@@ -135,7 +135,7 @@ DemandTabDataBase["Source_Destination"] = {}
 #       { source :  [ Destinations ]}
 DemandTabDataBase["Services"] = {}
 # format: 
-#       {(Tehran, karaj): ['[1 , 3] # 100G ', ...]}         [1 , 3] ---> 1 : Demand Id , 3 : Service Id
+#       {(Tehran, karaj): { (1,3) : '[1 , 3] # 100G ' , ... }, ...}         (1 , 3) ---> 1 : Demand Id , 3 : Service Id
 DemandTabDataBase["Lightpathes"] = {}
 # format:
 #       {(Tehran, Karaj): [ Lightpath Id # 100GE , ...]}
@@ -152,7 +152,7 @@ GroomingTabDataBase["LightPathes"] = {}
 GroomingTabDataBase["Panels"] = {}
 
 class MP2D_L:
-    def init(self, ClientsCapacity = [0, 0], LineCapacity = 0, LineType = "200GE"):
+    def __init__(self, ClientsCapacity = [0, 0], LineCapacity = 0, LineType = "200GE"):
         self.ClientsCapacity = ClientsCapacity
         self.LineCapacity = LineCapacity
         self.LineType = LineType
@@ -188,13 +188,27 @@ class MP2X_R:
         self.LeftId = LeftId
 
 class MP1H_L:
-    def __init__(self, ClientsCapacity = [0 for i in range(10)], LineCapacity = 0, ServiceIdList = [None for i in range(10)], 
-    DemandIdList = [None for i in range(10)], LightPathId = None):
+    def __init__(self, ClientsCapacity = None, LineCapacity = 0, ServiceIdList = None, 
+    DemandIdList = None, LightPathId = None, LightPath_flag = 0):
 
-        self.ServiceIdList = ServiceIdList
-        self.DemandIdList = DemandIdList
+        if ClientsCapacity is None:
+            self.ClientsCapacity = [0 for i in range(10)]
+        else:
+            self.ClientsCapacity = ClientsCapacity
+        
+        if ServiceIdList is None:
+            self.ServiceIdList = [None for i in range(10)]
+        else:
+            self.ServiceIdList = ServiceIdList
+        
+        if DemandIdList is None:
+            self.DemandIdList = [None for i in range(10)]
+        else:
+            self.DemandIdList = DemandIdList
+        
+
+        self.LightPath_flag = LightPath_flag
         self.LightPathId = LightPathId
-        self.ClientsCapacity = ClientsCapacity
         self.LineCapacity = LineCapacity
     
     def add_client(self, ClientNum, Type, LineCapacity):

@@ -103,12 +103,16 @@ class TP1H_L_Demand(QWidget):
         
 
 class customlabel(QLabel):
-    def __init__(self, parent, nodename, Destination, ID):
+    def __init__(self, parent, nodename, Destination, ID, tooltip = None):
         super().__init__(parent)
         self.nodename = nodename
         self.id = ID
         self.Destination = Destination
+        self.tooltip = tooltip
         self.setAcceptDrops(True)
+
+        if tooltip != None:
+            self.setToolTip(tooltip)
     
     def dragEnterEvent(self, event):
         e = event.mimeData()
@@ -146,14 +150,16 @@ class customlabel(QLabel):
         model.dropMimeData(event.mimeData(), Qt.CopyAction, 0,0, QModelIndex())
         dragtext = model.item(0,0).text()
 
-        dragtext = dragtext.split("#")
-        servicetype = dragtext[1].strip()   # service type = 100Ge , 10GE , ....
-        ids = list(dragtext[0].strip())
+        text = dragtext
+        text = dragtext.split("#")
+        servicetype = text[1].strip()   # service type = 100Ge , 10GE , ....
+        ids = list(text[0].strip())
         ids = [ids[1], ids[-2]]        # [ Demand Number, Service Number]
 
         if servicetype in self.allowedservices:
             
             self.servicetype = servicetype
+            self.setToolTip(dragtext)
             self.ids = [ids[0], ids[1]]
 
             DemandTabDataBase["Panels"][self.nodename][self.id].Line = "100GE"
@@ -180,6 +186,7 @@ class customlabel(QLabel):
 
         if action == ClearAction:
             if DemandTabDataBase["Panels"][self.nodename][self.id].Line == "100GE":
+                self.setToolTip("")
                 
                 DemandTabDataBase["Panels"][self.nodename][self.id].Line = 0
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None

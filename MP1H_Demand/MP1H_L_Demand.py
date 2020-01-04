@@ -7,6 +7,7 @@ from data import *
 from Common_Object_def import Network
 
 
+
 class MP1H_L_Demand(QWidget):
     def __init__(self, Panel_ID, nodename, Destination):
         super(MP1H_L_Demand, self).__init__()
@@ -106,7 +107,6 @@ class MP1H_L_Demand(QWidget):
         self.retranslateUi()
         QMetaObject.connectSlotsByName(self)
 
-    lightpath_flag = 0
 
     def retranslateUi(self):
         _translate = QCoreApplication.translate
@@ -168,7 +168,7 @@ class MP1H_L_Demand(QWidget):
         Data["ui"].UpdateDemand_ServiceList()
 
 class customlabel(QLabel):
-    def __init__(self, parent, nodename, Destination, ID, ClientNum):
+    def __init__(self, parent, nodename, Destination, ID, ClientNum, tooltip = None):
         super().__init__(parent)
         self.STM_64_BW = 9.95
         self.GE_10_BW = 10
@@ -176,7 +176,13 @@ class customlabel(QLabel):
         self.id = ID
         self.ClientNum  = ClientNum - 1          # because list indices starts with 0
         self.Destination = Destination
+        self.tooltip = tooltip
         self.setAcceptDrops(True)
+
+        if tooltip != None:
+            self.setToolTip(tooltip)
+
+
     
     def dragEnterEvent(self, event):
         e = event.mimeData()
@@ -211,14 +217,15 @@ class customlabel(QLabel):
         model.dropMimeData(event.mimeData(), Qt.CopyAction, 0,0, QModelIndex())
         dragtext = model.item(0,0).text()
 
-        dragtext = dragtext.split("#")
-        servicetype = dragtext[1].strip()   # service type = 100Ge , 10GE , ....
-        ids = list(dragtext[0].strip())
-        ids = [ids[1], ids[-2]]        # [ Demand Number, Service Number]
+        text = dragtext
+        text = text.split("#")
+        servicetype = text[1].strip()   # service type = 100Ge , 10GE , ....
+        ids = list(text[0].strip())
+        ids = [ids[1], ids[-2]]        # [ Demand Number, Service Number ]
 
         if servicetype in self.allowedservices:
 
-            
+            self.setToolTip(dragtext)
             self.servicetype = servicetype
             self.ids = [ids[0], ids[1]]
             if servicetype == "10GE":
@@ -231,13 +238,14 @@ class customlabel(QLabel):
             DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = ids[0]
             self.modify_ServiceList(ids, self.nodename, self.Destination)
 
-            if MP1H_L_Demand.lightpath_flag == 0:
+            if DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag == 0:
 
-                self.LightPathId = Network.Lightpath.get_id()
-                DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = self.LightPathId
+                #self.LightPathId = Network.Lightpath.get_id()
+                DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = Network.Lightpath.get_id()
+                #DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = self.LightPathId
 
-                self.modify_LightPathList(self.LightPathId, self.nodename, self.Destination, mode= "add", type="100GE")
-                MP1H_L_Demand.lightpath_flag = 1
+                self.modify_LightPathList(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId, self.nodename, self.Destination, mode= "add", type="100GE")
+                DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 1
 
 
             # TODO: be Careful !!!!!
@@ -261,27 +269,28 @@ class customlabel(QLabel):
 
         if action == ClearAction:
             if DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] != 0:
+                self.setToolTip("")
                 if self.servicetype == "10GE":
                     DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity -= self.GE_10_BW
                 else:
                     DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity -= self.STM_64_BW
                 #DemandTabDataBase["Panels"][self.nodename][self.id].Line = 0
                 DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = 0
-                DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None
+                
                 DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = None
                 self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client.png")))
                 self.setAcceptDrops(True)
 
-                
+
                 self.modify_ServiceList(self.ids, self.nodename, self.Destination, mode = "add", type = self.servicetype)
                 x = check_clients(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity)
 
                 if x == 0:
                     
-                    self.modify_LightPathList(self.LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
+                    self.modify_LightPathList(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
+                    DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None
                     Network.Lightpath.update_id(-1)
-                    MP1H_L_Demand.lightpath_flag = 0
-            
+                    DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 0
             
     
 

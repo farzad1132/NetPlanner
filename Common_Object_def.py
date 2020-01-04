@@ -461,7 +461,6 @@ class Network:
                         SNR_th = None, LaunchPower = None, ModulationType = None, SNR = None, MandatoryNodesIdList = None):
 
             self.id = Network.Lightpath.ReferenceId
-            Network.Lightpath.ReferenceId += 1
             
             self.Source = Source
             self.Destination = Destination
@@ -528,3 +527,8 @@ if __name__ == "__main__":
     print("Demand 1: ",n.TrafficMatrix.DemandDict[1].ServiceDict)
     print("Demand 2: ",n.TrafficMatrix.DemandDict[2].ServiceDict)
     print("Demand 3: ",n.TrafficMatrix.DemandDict[3].ServiceDict)
+
+    n.add_lightpath("Tehran", "Mashhad", "20GE", [1 ,2], "100GE", 2)
+    n.put_results(0, [1 , 3 , 7], [1 ,4 ,7], 27, [5], [9], 25, 14, "111", 14)
+
+    print("LightpathDict: ", n.LightPathDict)
