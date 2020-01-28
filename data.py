@@ -15,8 +15,8 @@ Data["General"] = {}
 Data["RowCount"] = 20
 Data["Last_Node_ID"] = 0
 Data["Last_Link_ID"] = 0
-Data["Nodes"] = {}  # nodes keys are their name
-Data["Links"] = {}  # links keys are general id
+Data["Nodes"] = {}  # TODO: write this parts structure
+Data["Links"] = {}  # TODO: write this parts structure
 Data["Grouping"] = {}
 
 # keys are row numbers except nodes and links
@@ -145,11 +145,19 @@ DemandTabDataBase["Panels"] = {}
 
 GroomingTabDataBase = {}
 GroomingTabDataBase["LightPathes"] = {}
+# format:
+#        { ( <SourceName> , <DestinationName> ) : { <Id> : { Working: <WorkingList> , Protection: <ProtectionList> }}}
+# <WorkingList> and <DestinationList> are List of Ids
 GroomingTabDataBase["Panels"] = {}
+# format:
+#       { <NodeName> : { ( <DegreeName>, <DegreeId> ): { <PanelId> : <PanelObject>}}}
+# <DegreeName> : by this Node LightPath exits from the Source
 
-GroomingTabDataBase = {}
-GroomingTabDataBase["LightPathes"] = {} 
-GroomingTabDataBase["Panels"] = {}
+GroomingTabDataBase["Links"] = {}
+# format:
+#       { ( <InNodeName> , <OutNodeName> ) : <LambdaList> }
+# <LambdaList> : list of lambda ids
+
 
 class MP2D_L:
     def __init__(self, ClientsCapacity = [0, 0], LineCapacity = 0, LineType = "200GE"):

@@ -9,17 +9,21 @@ from PySide2 import QtWebEngineWidgets
 import folium,random
 from PySide2.QtCore import QUrl,Qt,QModelIndex
 from PySide2.QtGui import QStandardItemModel
-from geopy.geocoders import Nominatim
 import re
 from PySide2.QtWebChannel import QWebChannel
 import branca
 from branca.element import Element
-import xlrd 
+import xlrd
 import xlsxwriter
 from pandas import ExcelWriter 
 from newcheck import  Ui_checking
 from Common_Object_def import Network
 from math import ceil
+import requests
+import json
+import socketio  
+import time
+import copy , math
 
 from add_node import Ui_add_node_window
 
@@ -50,6 +54,19 @@ from MP1H_Demand.MP1H_L_Demand import MP1H_L_Demand
 from MP1H_Demand.MP1H_R_Demand import MP1H_R_Demand
 from TP1H_Demand.TP1H_L_Demand import TP1H_L_Demand
 from TP1H_Demand.TP1H_R_Demand import TP1H_R_Demand
+
+#from mapwidget import MapWidget
+from mapwidget import MapWidget
+
+from  matplotlib.backends.backend_qt5agg  import  FigureCanvas
+from  matplotlib.figure  import  Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+#from mpl_toolkits.basemap import Basemap
+import matplotlib.pyplot as plt
+import networkx as nx
+from numpy import cos, sin
+
 
 class Backend_map(QObject):
 
@@ -104,12 +121,11 @@ class Backend_map(QObject):
             Data["TabWidget"].setCurrentIndex(4)
             Data["Demand_Source_combo"].setCurrentText(degreename.strip())
 
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
 
-        # TODO: commented
+        #TODO: commented
         #MainWindow.resize(1219, 841)
 
         self.gridLayout = QtWidgets.QGridLayout(MainWindow)
@@ -337,7 +353,7 @@ class Ui_MainWindow(object):
         self.pushButton_6.setObjectName("pushButton_6")
         self.gridLayout_3.addWidget(self.pushButton_6, 0, 1, 1, 1)
 
-        # TODO: edited
+        #TODO: edited
         self.webengine = QtWebEngineWidgets.QWebEngineView()
         self.webengine.setObjectName("webengine")
         self.gridLayout_3.addWidget(self.webengine, 1, 0, 1, 1)
@@ -616,9 +632,9 @@ class Ui_MainWindow(object):
 "}")
         self.GroupColor.setObjectName("GroupColor")
         self.gridLayout_16.addWidget(self.GroupColor, 3, 0, 1, 1)
-        self.Clustercolor_combobox = QtWidgets.QFontComboBox(self.Grouping_groupbox)
-        self.Clustercolor_combobox.setMaximumSize(QtCore.QSize(126, 22))
-        self.Clustercolor_combobox.setStyleSheet("QComboBox {\n"
+        self.ClusterColor_combobox = QtWidgets.QFontComboBox(self.Grouping_groupbox)
+        self.ClusterColor_combobox.setMaximumSize(QtCore.QSize(126, 22))
+        self.ClusterColor_combobox.setStyleSheet("QComboBox {\n"
 "    border: 1px solid gray;\n"
 "    border-radius: 3px;\n"
 "    padding: 1px 18px 1px 3px;\n"
@@ -667,8 +683,8 @@ class Ui_MainWindow(object):
 "    top: 1px;\n"
 "    left: 1px;\n"
 "}")
-        self.Clustercolor_combobox.setObjectName("Clustercolor_combobox")
-        self.gridLayout_16.addWidget(self.Clustercolor_combobox, 3, 1, 1, 2)
+        self.ClusterColor_combobox.setObjectName("ClusterColor_combobox")
+        self.gridLayout_16.addWidget(self.ClusterColor_combobox, 3, 1, 1, 2)
         self.SelectSubNode_button = QtWidgets.QPushButton(self.Grouping_groupbox)
         self.SelectSubNode_button.setMinimumSize(QtCore.QSize(84, 30))
         font = QtGui.QFont()
@@ -1894,10 +1910,10 @@ class Ui_MainWindow(object):
         self.gridLayout_12.addWidget(self.ClientLabel_25, 2, 1, 1, 1)
         self.gridLayout_15 = QtWidgets.QGridLayout()
         self.gridLayout_15.setObjectName("gridLayout_15")
-        self.Demand_map = QtWidgets.QWidget(self.tab)
-        self.Demand_map.setMinimumSize(QtCore.QSize(821, 259))
-        self.Demand_map.setObjectName("Demand_map")
-        self.gridLayout_15.addWidget(self.Demand_map, 0, 0, 1, 1)
+        self.MapWidget = MapWidget(self.tab)
+        self.MapWidget.setMinimumSize(QtCore.QSize(821, 259))
+        self.MapWidget.setObjectName("MapWidget")
+        self.gridLayout_15.addWidget(self.MapWidget, 0, 0, 1, 1)
         self.gridLayout_12.addLayout(self.gridLayout_15, 3, 1, 1, 2)
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_12.addItem(spacerItem3, 0, 1, 1, 1)
@@ -1906,12 +1922,13 @@ class Ui_MainWindow(object):
         self.gridLayout.addLayout(self.gridLayout_10, 0, 0, 1, 1)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(4)
         self.List_tab.setCurrentIndex(0)
         self.RackTab.setCurrentIndex(0)
         self.ShelfTab.setCurrentIndex(3)
         self.Demand_tab.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
 
 
         # TODO: added
@@ -1921,10 +1938,10 @@ class Ui_MainWindow(object):
         self.Demand_Source_combobox.clear()
         self.Demand_Destination_combobox.clear()
         self.cluster_type_combobox.clear()
-        self.Clustercolor_combobox.clear()
+        self.ClusterColor_combobox.clear()
         
         ClusterColors = ["green", "blue", "black", "orange", "yellow"]
-        self.Clustercolor_combobox.addItems(ClusterColors)
+        self.ClusterColor_combobox.addItems(ClusterColors)
 
         ClusterTypes = ["100GE", "10GE", "100GE and 10GE"]
         self.cluster_type_combobox.addItems(ClusterTypes)
@@ -2044,9 +2061,11 @@ class Ui_MainWindow(object):
         self.Demand_ServiceList.setDragEnabled(True)
         self.Demand_LineList.setDragEnabled(True)
 
-        self.Grooming_pushbutton.clicked.connect(self.grooming_fun)
+        self.Grooming_pushbutton.clicked.connect(self.grooming_button_fun)
+        self.RWA_pushbutton.clicked.connect(self.RWA_button_fun)
         self.FinalPlan_pushbutton.clicked.connect(self.print_r)
 
+        self.window = MainWindow
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -2189,12 +2208,186 @@ class Ui_MainWindow(object):
         self.ClientLabel_25.setText(_translate("MainWindow", "Map:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
     
+    def loc_dict_init(self):
+        R = 6371 
+        self.loc_dict={}
+        for id, node in Data["Nodes"].items():
+            node_name = node["Node"]
+            location = node["Location"]
+            lat = location[0]
+            lon = location[1]
+            x = R * cos(lat) * cos(lon)
+            y = R * cos(lat) * sin(lon)
+            self.loc_dict[node_name] = [x, y]
+
+
+    def map_plot(self):
+        #ax = self.figure.add_subplot(111)
+        map = Basemap(projection='mill',llcrnrlat=+25,urcrnrlat=40,\
+        llcrnrlon=+44,urcrnrlon=64,resolution="l",ax = self.MapWidget.canvas.axes)
+        map.drawcoastlines()
+        map.fillcontinents(color='w',lake_color='aqua')
+        map.drawcountries(linewidth=2,color="b")
+
+        map.drawmapboundary(fill_color='aqua')
+        Tlat,Tlng = 51.3890,35.6892
+        Slat,Slng = 52.5836,29.5926
+        Tx,Ty = map(Tlat,Tlng)
+        Sx,Sy = map(Slat,Slng)
+        xs = [Tx,Sx]
+        ys = [Ty,Sy]
+        #self.MapWidget.canvas.axes.clear()
+        self.MapWidget.canvas.axes.plot(Tx,Ty,marker ="o",markersize = 12,color = "blue",alpha = 0.8)
+        self.MapWidget.canvas.axes.plot(Sx,Sy,marker ="o",markersize = 12,color = "red",alpha = 0.8) 
+        #self.MapWidget.canvas.axes.draw()
+        #plt.show()
+        self.MapWidget.canvas.axes.plot(xs,ys)
+
+    def Set_DemandMap(self):
+        R = 6371 
+        self.loc_dict={}
+        for id, node in Data["Nodes"].items():
+            node_name = node["Node"]
+            location = node["Location"]
+            lat = location[0]
+            lon = location[1]
+            x = R * cos(lat) * cos(lon)
+            y = R * cos(lat) * sin(lon)
+            self.loc_dict[node_name] = [x, y]
+           # self.MapWidget.canvas.axes.annotate(node_name, xy=(1, 1), xytext=(x+0.1, y+0.1))
+            self.MapWidget.canvas.axes.text(x + 80, y - 100, node_name, {'color': 'blueviolet'})
+            self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
+
+        for key in Data["Links"].keys():
+            loc_source = key[0]
+            loc_destination = key[1]
+
+            source_node_loc = self.loc_dict[loc_source]
+            destination_node_loc = self.loc_dict[loc_destination]
+            xl = [source_node_loc[0], destination_node_loc[0]]
+            yl = [source_node_loc[1], destination_node_loc[1]]
+            self.MapWidget.canvas.axes.plot(xl,yl, c='black')
+
+        #self.MapWidget.canvas.axes.plot(G)
+        self.MapWidget.canvas.axes.get_xaxis().set_visible(False)
+        self.MapWidget.canvas.axes.get_yaxis().set_visible(False)
+        self.MapWidget.canvas.axes.set_frame_on(False)
+        #self.MapWidget.canvas.figure.clf()
+        #self.MapWidget.canvas.axes.cla()
+        #trick for legend!!!!!!
+        self.MapWidget.canvas.axes.plot(0, 0, ms=0.000000001, color = 'blue')
+        self.MapWidget.canvas.axes.legend(loc = 'best')
+        self.MapWidget.canvas.axes.plot(0, 0, ms=0.000000001, color = 'red')
+        self.MapWidget.canvas.axes.legend(loc = 'best')
+        #trick for legend!!!!!!
+
+    def DemandMap_Change(self, Working = None, Protection = None):
+        self.MapWidget.canvas.axes.cla()
+        ####
+        R = 6371 
+        self.loc_dict={}
+        for id, node in Data["Nodes"].items():
+            node_name = node["Node"]
+            location = node["Location"]
+            lat = location[0]
+            lon = location[1]
+            x = R * cos(lat) * cos(lon)
+            y = R * cos(lat) * sin(lon)
+            self.loc_dict[node_name] = [x, y]
+           # self.MapWidget.canvas.axes.annotate(node_name, xy=(1, 1), xytext=(x+0.1, y+0.1))
+            self.MapWidget.canvas.axes.text(x + 80, y - 100, node_name, {'color': 'blueviolet'})
+            self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
+
+        for key in Data["Links"].keys():
+            loc_source = key[0]
+            loc_destination = key[1]
+
+            source_node_loc = self.loc_dict[loc_source]
+            destination_node_loc = self.loc_dict[loc_destination]
+            xl = [source_node_loc[0], destination_node_loc[0]]
+            yl = [source_node_loc[1], destination_node_loc[1]]
+            self.MapWidget.canvas.axes.plot(xl,yl, c='black')
+
+        #self.MapWidget.canvas.axes.plot(G)
+        self.MapWidget.canvas.axes.get_xaxis().set_visible(False)
+        self.MapWidget.canvas.axes.get_yaxis().set_visible(False)
+        self.MapWidget.canvas.axes.set_frame_on(False)
+        #self.MapWidget.canvas.figure.clf()
+        #self.MapWidget.canvas.axes.cla()
+        #trick for legend!!!!!!
+        self.MapWidget.canvas.axes.plot(0, 0, ms=0.000000001, color = 'blue')
+        self.MapWidget.canvas.axes.legend(loc = 'best')
+        self.MapWidget.canvas.axes.plot(0, 0, ms=0.000000001, color = 'red')
+        self.MapWidget.canvas.axes.legend(loc = 'best')
+        #trick for legend!!!!!!
+        ####
+        Source = self.Demand_Source_combobox.currentText()
+        Destination = self.Demand_Destination_combobox.currentText()
+        R = 6371 
+        self.loc_dict={}
+        for id, node in Data["Nodes"].items():
+            node_name = node["Node"]
+            location = node["Location"]
+            lat = location[0]
+            lon = location[1]
+            x = R * cos(lat) * cos(lon)
+            y = R * cos(lat) * sin(lon)
+            self.loc_dict[node_name] = [x, y]
+           # self.MapWidget.canvas.axes.annotate(node_name, xy=(1, 1), xytext=(x+0.1, y+0.1))
+            if node_name == Source or node_name == Destination:
+                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'gold')
+            else:
+                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
+
+            #self.setupUi(MainWindow)
+            #setMinimumSize(QtCore.QSize(1125, 817))
+            #self.MapWidget.canvas.figure.subplots_adjust()
+            #FigureCanvas.resize(255,0,0)
+
+
+        x_list_W = []
+        y_list_W = []
+        
+        if Working != None:
+            for key in Working:
+                x1 = self.loc_dict[key][0]
+                x_list_W.append(x1)
+                y1 = self.loc_dict[key][1]
+                y_list_W.append(y1)
+
+            
+            self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.3, linewidth=6, label="Working")
+            
+            #self.MapWidget.canvas.axes.legend(loc = 'best')
+
+        x_list_P = []
+        y_list_P = []
+        if Protection != None:
+            for key in Protection:
+                x1 = self.loc_dict[key][0]
+                x_list_P.append(x1)
+                y1 = self.loc_dict[key][1]
+                y_list_P.append(y1)
+        #shutup    
+            self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.3, linewidth=6, label="Protection")
+            #self.MapWidget.canvas.axes.legend(loc = 'best')
+        
+        
+        self.window.resize(1919, 1000)
+        #print(self.window.geometry())
+        self.window.resize(1920, 1000)
+        #print(self.window.geometry())
+        #plt.pause(0.0005)
+        #plt.ion()
+        #self.MapWidget.canvas.axes.plot.update()
+        #self.MapWidget.canvas.update()
+    
     def OK_button_fun(self):
         SubNodes = []
         for node in Data["Grouping"][self.backend_map.LastGateWay]["SubNodes"].keys():
-            SubNodes.append(self.NodeIdDict[node])
+            SubNodes.append(self.NodeIdMap[node])
         
-        self.network.PhysicalTopology.add_cluster(self.NodeIdDict[self.backend_map.LastGateWay], SubNodes, Data["Grouping"][self.backend_map.LastGateWay]["Color"])
+        self.network.PhysicalTopology.add_cluster(self.NodeIdMap[self.backend_map.LastGateWay], SubNodes, Data["Grouping"][self.backend_map.LastGateWay]["Color"])
         self.SelectSubNode_button_fun()
         print(self.network.PhysicalTopology.ClusterDict[0].SubNodesId)
 
@@ -2203,8 +2396,8 @@ class Ui_MainWindow(object):
         for key in Data["Links"].keys():
             InNodeName = key[0]
             OutNodeName = key[1]
-            InNodeId = self.NodeIdDict[key[0]]
-            OutNodeId = self.NodeIdDict[key[1]]
+            InNodeId = self.NodeIdMap[key[0]]
+            OutNodeId = self.NodeIdMap[key[1]]
             
 
     
@@ -2272,30 +2465,45 @@ class Ui_MainWindow(object):
             if Data["Nodes"][nodename]["Line_Services"]["1"][service] != 0:
                 self.LineList.addItem(str(Data["Nodes"][nodename]["Line_Services"]["1"][service]) + " * "+service)'''
 
-
+    # FIXME: this code 
     def set_panels(self):
-        nodename = self.SelectNode_combo.currentText()
-        #self.reset_panels()
-        #for id,panel in list(Data["Nodes"][nodename]["Panels"].items()):
-        for i in range(1,5):
-            for j in range(1,15):
-                if "1"+str(i)+str(j) in GroomingTabDataBase["Panels"][nodename]:
-                    panel = GroomingTabDataBase["Panels"][nodename]["1"+str(i)+str(j)]
-                    if isinstance(panel , SC):
-                        Data["1"+str(i)+str(j)].setWidget(SC_panel("1"+str(i)+str(j),nodename))
-                    elif isinstance(panel, BAF3):
-                        Data["1"+str(i)+str(j)].setWidget(BAF3_panel("1"+str(i)+str(j),nodename))
-                    elif isinstance(panel , LAF3):
-                        Data["1"+str(i)+str(j)].setWidget(LAF3_panel("1"+str(i)+str(j),nodename))
-                    elif isinstance(panel , PAF3):
-                        Data["1"+str(i)+str(j)].setWidget(PAF3_panel("1"+str(i)+str(j),nodename))
-                    elif isinstance(panel, MP1H_L):
-                        Data["1"+str(i)+str(j)].setWidget(MP2X_panel("1"+str(i)+str(j),nodename))
-                    elif isinstance(panel, MP2D_L):
+        Source = self.SelectNode_combo.currentText()
+        
+        # getting tuple keys
+        DegreeList = list(self.GroomingTabDataBase["Panels"].keys())
 
-                        Data["1"+str(i)+str(j)].setWidget(MP2D_panel_L("1"+str(i)+str(j),nodename))
-                        if Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Client1"] == "green":
-                            Data["1"+str(i)+str(j)].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
+        # getting ids list
+        DegreeIdList = list(map(lambda x : x[1], DegreeList))
+
+        for DegreeId in DegreeIdList:
+
+        #for i in range(1, 5):
+            for j in range(1, 15):
+                id = "1" + str( DegreeId ) + str(j)
+                if id in GroomingTabDataBase["Panels"][nodename]:
+                    panel = GroomingTabDataBase["Panels"][nodename][id]
+
+                    if isinstance(panel , SC):
+                        Data[id].setWidget(SC_panel(id,nodename))
+
+                    elif isinstance(panel, BAF3):
+                        Data[id].setWidget(BAF3_panel(id,nodename))
+
+                    elif isinstance(panel , LAF3):
+                        Data[id].setWidget(LAF3_panel(id,nodename))
+
+                    elif isinstance(panel , PAF3):
+                        Data[id].setWidget(PAF3_panel(id,nodename))
+
+                    elif isinstance(panel, MP1H_L):
+                        Data[id].setWidget(MP2X_panel(id,nodename))
+
+                    elif isinstance(panel, MP2D_L):
+                        # FIXME: this block needs correction
+                        # from here
+                        Data[id].setWidget(MP2D_panel_L(id,nodename))
+                        if Data["Nodes"][nodename]["Panels"][id]["Sockets"]["Client1"] == "green":
+                            Data[id].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
                         elif Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Client1"] == "red":
                             Data["1"+str(i)+str(j)].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_red.png")))
 
@@ -2307,25 +2515,29 @@ class Ui_MainWindow(object):
                         if Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Line"] == 2:
                             Data["1"+str(i)+str(j)].widget().label_line.setPixmap(QPixmap(os.path.join("MP2D_panel", "line_green.png")))
                         
+                        # to here
+
                     elif isinstance(panel, MP2D_R):
-                        Data["1"+str(i)+str(j)].setWidget(MP2D_panel_R("1"+str(i)+str(j),nodename))
+                        Data[id].setWidget(MP2D_panel_R(id, nodename))
 
                     elif isinstance(panel, TP2X):
-                        Data["1"+str(i)+str(j)].setWidget(TP2X_panel("1"+str(i)+str(j),nodename))
+                        Data[id].setWidget(TP2X_panel(id, nodename))
                     
                     elif isinstance(panel, TP1H_L):
-                        Data["1"+str(i)+str(j)].setWidget(TP1H_L_Grooming("1"+str(i)+str(j),nodename))
+                        Data[id].setWidget(TP1H_L_Grooming(id, nodename))
+                        # TODO: change color
 
                     elif isinstance(panel, TP1H_R):
-                        Data["1"+str(i)+str(j)].setWidget(TP1H_R_Grooming("1"+str(i)+str(j),nodename))
+                        Data[id].setWidget(TP1H_R_Grooming(id, nodename))
 
                     elif isinstance(panel, MP1H_L):
-                        Data["1"+str(i)+str(j)].setWidget(MP1H_L_Grooming("1"+str(i)+str(j),nodename))
+                        Data[id].setWidget(MP1H_L_Grooming(id, nodename))
+                        # TODO: change color
                            
                     elif isinstance(panel, MP1H_R):
-                        Data["1"+str(i)+str(j)].setWidget(MP1H_R_Grooming("1"+str(i)+str(j),nodename))
+                        Data[id].setWidget(MP1H_R_Grooming(id, nodename))
                 else:
-                    Data["1"+str(i)+str(j)].setWidget(BLANK_panel("1"+str(i)+str(j), nodename))
+                    Data[id].setWidget(BLANK_panel(id, nodename))
     
     
     def set_demand_panels(self):
@@ -2352,8 +2564,7 @@ class Ui_MainWindow(object):
                             text = "client" + str( i + 1 )
                             clientvar = getattr(widget, text)
                             clientvar.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
-                            # TODO: after creating an database for services un comment bellow
-                            #clientvar.setToolTip(DemandTabDataBase["Services"][(Source, Destination)][(panel.DemandIdList[i],panel.ServiceIdList[i])])
+                            clientvar.setToolTip(DemandTabDataBase["Services"][(Source, Destination)][(panel.DemandIdList[i],panel.ServiceIdList[i])])
 
                 elif isinstance(panel, MP1H_R):
                     Data["DemandPanel_" + str(i)].setWidget(MP1H_R_Demand(str(i), Source))
@@ -2364,8 +2575,7 @@ class Ui_MainWindow(object):
 
                     if panel.Line == "100GE":
                         clientvar = getattr(widget, "client")
-                        # TODO: after creating an database for services un comment bellow
-                        #clientvar.setToolTip(DemandTabDataBase["Services"][(Source, Destination)][(panel.DemandId, panel.ServiceId)])
+                        clientvar.setToolTip(DemandTabDataBase["Services"][(Source, Destination)][(panel.DemandId, panel.ServiceId)])
                         # TODO: change client color to green
                         pass
                 
@@ -2524,6 +2734,13 @@ class Ui_MainWindow(object):
                 cell_data = Data[item]["DataSection"][column_name][row]
                 self.Traffic_matrix.setCurrentCell(int(row),i)
                 self.Traffic_matrix.setItem(int(row),i,QTableWidgetItem(cell_data))
+    
+    def Demand_LineList_fun(self):
+        CurrentText = str(self.Demand_LineList.currentItem())
+
+        # detecting Lightpath id, working path and protection path
+
+        # calling Demand map change function
             
 
     # MHA EDITION:
@@ -2692,9 +2909,12 @@ class Ui_MainWindow(object):
                   ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"]]
 
         for Row in RowsNumber:
-            id = Data["General"]["DataSection"]["0"][Row]
+            #id = Data["General"]["DataSection"]["0"][Row]
+            
             Source = Data["General"]["DataSection"]["1"][Row]
             Destination = Data["General"]["DataSection"]["2"][Row]
+            SourceId = int(self.NodeIdMap[Source])
+            DestinationId = int(self.NodeIdMap[Destination])
 
             # TODO: find Type in Traffic Matrix
             Type = None
@@ -2712,10 +2932,10 @@ class Ui_MainWindow(object):
                         PropertyDict[Prop] = Data[service]["DataSection"][Prop].get(Row, None)
                 i += 1
                 ServiceDict[service] = PropertyDict
-            self.network.TrafficMatrix.add_demand(id,Source,Destination,Type)
+            self.network.TrafficMatrix.add_demand(SourceId,DestinationId,Type)
 
             
-
+            id = self.network.Traffic.Demand.DemandReferenceId - 1 
             for service in list(ServiceDict.keys()):
 
                 Sla = ServiceDict[service]["SLA"]
@@ -2744,16 +2964,23 @@ class Ui_MainWindow(object):
 
                 for i in range(ServiceDict[service]["Quantity"]):
                     self.network.TrafficMatrix.DemandDict[id].add_service(service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
-                
-            self.FillDemandTabDataBase_Services(id ,Source, Destination, ServiceDict)
-            self.initialize_DemandTabDataBase_LightpathPart(Source, Destination)
-            self.initialize_DemandTabDataBase_PanelsPart(Source)
             
-    def initialize_DemandTabDataBase_LightpathPart(self, Source, Destination):
+            # initializing DataBases 
+            self.FillDemandTabDataBase_Services(id ,Source, Destination, ServiceDict)
+            self.initialize_DemandTabDataBase(Source, Destination)
+            self.initialize_GroomingTabDataBase(Source, Destination)
+            
+    def initialize_DemandTabDataBase(self, Source, Destination):
         DemandTabDataBase["Lightpathes"][(Source, Destination)] = {}
-    
-    def initialize_DemandTabDataBase_PanelsPart(self, Source):
         DemandTabDataBase["Panels"][Source] = {}
+
+    def initialize_GroomingTabDataBase(self, Source, Destination):
+        GroomingTabDataBase["LightPathes"][(Source, Destination)] = {}
+        GroomingTabDataBase["Panels"][Source] = {}
+        GroomingTabDataBase["Links"][(Source, Destination)] = []
+        
+    
+
 
     def FillDemandTabDataBase_Services(self, id, Source, Destination, ServiceDict):
         
@@ -2764,11 +2991,11 @@ class Ui_MainWindow(object):
                 item = "["+ str(id) + " - " + str ( Serviceid ) + "]" + "    " + str(Service)
                 ServiceList.append(item)
         DemandTabDataBase["Services"][(Source,Destination)] = ServiceList """
-        Servicedict = self.network.TrafficMatrix.DemandDict[str(id)].ServiceDict
+        Servicedict = self.network.TrafficMatrix.DemandDict[id].ServiceDict
         #for servic
         # check wheather ServiceId is int or str
         for serviceId, service in Servicedict.items():
-            serviceId = str(serviceId)
+            serviceId = int(serviceId)
             if isinstance(service, Network.Traffic.Demand.E1):
                 servicetitle = "[%s , %s] # %s" %(id, serviceId, "E1")
                 ServiceDict_2[(id, serviceId)] = servicetitle
@@ -2846,6 +3073,8 @@ class Ui_MainWindow(object):
         if Source != '':
             self.Demand_Destination_combobox.clear()
             self.Demand_Destination_combobox.addItems(DemandTabDataBase["Source_Destination"][Source])
+
+        self.DemandMap_Change(Working=['Tehran', 'Karaj', 'Qom'], Protection=['Qom', 'Tehran',  'Damavand'])
     
     def Demand_Destination_combobox_change(self):
 
@@ -2853,23 +3082,28 @@ class Ui_MainWindow(object):
             self.UpdateDemand_ServiceList()
             self.update_Demand_lightpath_list()
             self.set_demand_panels()
+
+        self.DemandMap_Change(Working=['Tehran', 'Karaj', 'Qom'], Protection=['Qom', 'Tehran',  'Damavand'])
         
         Destination = self.Demand_Destination_combobox.currentText()
             
 
 
     def PhysicalTopologyToObject(self):
-        self.NodeIdDict = {}
+
+        self.NodeIdMap = {}        # { name: id }
+        self.IdNodeMap = {}        # {id : name}
 
         for NodeData in Data["Nodes"].values():
-            self.NodeIdDict[NodeData["Node"]] = self.network.Topology.Node.ReferenceId
+            self.NodeIdMap[NodeData["Node"]] = self.network.Topology.Node.ReferenceId
+            self.IdNodeMap[self.network.Topology.Node.ReferenceId] = NodeData["Node"]
             self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["Type"])
         
         for LinkId , LinkData in Data["Links"].items():
-            self.network.PhysicalTopology.add_link(self.NodeIdDict[LinkId[0]], self.NodeIdDict[LinkId[1]], LinkData["NumSpan"])
+            self.network.PhysicalTopology.add_link(self.NodeIdMap[LinkId[0]], self.NodeIdMap[LinkId[1]], LinkData["NumSpan"])
 
             for i in range(LinkData["NumSpan"]):
-                self.network.PhysicalTopology.LinkDict[(self.NodeIdDict[LinkId[0]], self.NodeIdDict[LinkId[1]])].put_fiber_Type(LinkData["Length"][i],
+                self.network.PhysicalTopology.LinkDict[(self.NodeIdMap[LinkId[0]], self.NodeIdMap[LinkId[1]])].put_fiber_Type(LinkData["Length"][i],
                  LinkData["Loss"][i], LinkData["Dispersion"][i], LinkData["Beta"][i], LinkData["Gamma"][i], i)
     
     def update_Demand_lightpath_list(self):
@@ -2957,7 +3191,8 @@ class Ui_MainWindow(object):
             NodeName = data["Node"]
             Node_cor = data["Location"]
             NodeCorDict[NodeName] = Node_cor
-            folium.Marker(Node_cor ,icon=folium.Icon(color="red"), popup=  "<h2>%s</h2>" %NodeName).add_to(self.m)
+            Icon = folium.features.CustomIcon('server_v5.png',icon_size=(30, 30),icon_anchor=(20,30))
+            folium.Marker(Node_cor ,icon = Icon, popup=  "<h2>%s</h2>" %NodeName).add_to(self.m)
         
         for link in Data["Links"].keys():
             Source_cor = NodeCorDict[link[0]]
@@ -3160,7 +3395,18 @@ class Ui_MainWindow(object):
         pass
     
     def put_groomingtab_results(self):
-        pass
+        for id, lightpath in self.network.LightPathDict.items():
+            working = lightpath.WorkingPath
+            protection = lightpath.ProtectionPath
+
+            for i in range(0, len(working), 2):
+                innode = self.NodeIdMap[working[i]]
+                outnode = self.NodeIdMap[working[i+1]]
+
+                #if (innode, outnode) 
+
+
+
 
     def grooming_fun(self):
 
@@ -3200,8 +3446,9 @@ class Ui_MainWindow(object):
             if RemClients_MP1H >= MP1H_th:
                 print("th_List:" , MP1H_servicelist)
                 x = list(MP1H_servicelist)
+                """
                 for i in range(10-len(MP1H_servicelist)):
-                    x.append(None)
+                    x.append(None) """
                 self.network.add_lightpath(demandobj.Source, demandobj.Destination, "100GE", x, "100GE", demand)
 
                 for i in reversed(range(len(MP1H_servicelist))):
@@ -3221,7 +3468,8 @@ class Ui_MainWindow(object):
                     x = [G100_List[no]]
                     for i in range(9):
                         x.append(None)
-                self.network.add_lightpath(demandobj.Source, demandobj.Destination, "100GE", x, "100GE", demand)
+                self.network.add_lightpath(demandobj.Source, demandobj.Destination, "100GE", G100_List[no], "100GE", demand)
+
                 DemandTabDataBase["Services"][(demandobj.Source, demandobj.Destination)][(demand, str(G100_List[no]))]
                 G100_List.pop(no)
 
@@ -3229,12 +3477,292 @@ class Ui_MainWindow(object):
 
 
     def print_r(self):
+        self.fill_lightpath()
         for id, lightpath in self.network.LightPathDict.items():
                 print("##################################")
-                print("ID: ", lightpath.id)
-                print("Source:" , lightpath.Source)
-                print("Destination:" , lightpath.Destination)
-                print("ServiceIdList: ", lightpath.ServiceIdList)
+                print(lightpath.__dict__)
+    
+    def fill_lightpath(self):
+        for i in range(4):
+            path = [0, 1]
+            self.network.put_results(i, list(path), list(path), [i + 1], "x", "x", "x", "x", "x", "x")
+        
+        for i in range(4, 9):
+            path = [0 ,2]
+            self.network.put_results(i, list(path), list(path), [i - 3], "x", "x", "x", "x", "x", "x")
+        for i in range(9, 11):
+            path = [2, 1]
+            self.network.put_results(i, list(path), list(path), [i - 8], "x", "x", "x", "x", "x", "x")
+        
+        for i in range(11, 13):
+            path = [0 ,3]
+            self.network.put_results(i, list(path), list(path), [i - 10], "x", "x", "x", "x", "x", "x")
+        
+        path = [3, 0, 1]
+        self.network.put_results(13, list(path), list(path), [5], "x", "x", "x", "x", "x", "x")
+
+        path = [3, 0 ,2]
+        self.network.put_results(14, list(path), list(path), [6], "x", "x", "x", "x", "x", "x")
+    
+    def fill_DemandTabDataBase(self, netobj):
+
+        def get_panel_num(Source):
+            IdList = list[DemandTabDataBase["Panels"][Source]].keys()
+            
+            # if shelf is empty this method must return 1 in ## string ##
+            if not IdList:
+                return "1"
+            IdList = list(map(lambda x : int(x), IdList))
+            MaxId = max(IdList)
+            return str(MaxId + 1)
+        
+        def create_ClientsCapacityList(DemandId, ServiceIdList):
+            OutputList = []
+            for ServiceId in ServiceIdList:
+                ServiceObj = netobj.TrafficMatrix.DemandDict[DemandId].ServiceDict[ServiceId]
+                if isinstance(ServiceObj, Network.Traffic.Demand.G_10):
+                    OutputList.append("10GE")
+                else:
+                    OutputList.append("STM_64")
+            
+            return OutputList
+
+        # lightpath and panel part
+        for id, lightpath in netobj.LightPathDict.items():
+            print("lightpath : ", lightpath.__dict__)
+            Source = self.IdNodeMap[lightpath.Source]
+            Destination = self.IdNodeMap[lightpath.Destination]
+            type = lightpath.Type
+            DemandId = lightpath.DemandId
+            DemandTabDataBase["Lightpathes"][(Source, Destination)] = "%s # %s" %(id, type)
+            
+            # checking wheather lightpath is created by tp1h or not
+            print(lightpath.ServiceIdList, type(lightpath.ServiceIdList))
+            if len(lightpath.ServiceIdList) == 1:
+                panelid = get_panel_num(Source)
+                DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
+                DemandTabDataBase["Panels"][Source][panelid + 1] = TP1H_R(panelid)
+
+                # omitting handeled services from DemandTabDataBase
+                DemandTabDataBase["Services"][(Source, Destination)].pop((DemandId, lightpath.ServiceIdList[0]))
+            else:
+                panelid = get_panel_num(Source)
+                ClientCapacity = create_ClientsCapacityList(lightpath.ServiceIdList)
+                DemandTabDataBase["Panels"][Source][panelid] = MP1H_L(ClientCapacity, "100GE", lightpath.ServiceIdList, [DemandId for i in range(10)], id)
+                DemandTabDataBase["Panels"][Source][panelid + 1] = MP1H_R(panelid)
+
+                # omitting handeled services from DemandTabDataBase
+                for serviceId in lightpath.ServiceIdList:
+                    DemandTabDataBase["Services"][(Source, Destination)].pop((DemandId, ServiceId))
+    
+    def fill_GroomingTabDataBase(self, netobj):
+
+        def get_panel_num(Source):
+            IdList = list[DemandTabDataBase["Panels"][Source]].keys()
+            
+            # if shelf is empty this method must return 1 in ## string ##
+            if not IdList:
+                return "1"
+            IdList = list(map(lambda x : int(x), IdList))
+            MaxId = max(IdList)
+            return str(MaxId + 1)
+        
+        def create_ClientsCapacityList(DemandId, ServiceIdList):
+            OutputList = []
+            for ServiceId in ServiceIdList:
+                ServiceObj = netobj.TrafficMatrix.DemandDict[DemandId].ServiceDict[ServiceId]
+                if isinstance(ServiceObj, Network.Traffic.Demand.G_10):
+                    OutputList.append("10GE")
+                else:
+                    OutputList.append("STM_64")
+            
+            return OutputList
+        
+        
+        for id, lightpath in netobj.items():
+            Source = self.IdNodeMap[lightpath.Source]
+            Destination = self.IdNodeMap[lightpath.Destination]
+            Working = lightpath.WorkingPath
+            Protection = lightpath.ProtectionPath
+            WaveLength = lightpath.WaveLength
+
+            # adding pathes to to GroomingTabDataBase
+            GroomingTabDataBase["Lightpathes"][(Source, Destination)][id] = {}
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["Working"] = Working
+            GroomingTabDataBase["Lightpathes"][(Source, Destination)][id]["Protection"] = Protection
+
+            # Detecting Degrees and Filling GroomingTabDataBase ( Panels Part )
+
+            DegreeNode = self.IdNodeMap[Working[1]]     # second node of each lightpath
+
+            # BUG: be careful here we are calculating degrees based on working path only
+            if not( DegreeNode in GroomingTabDataBase["Panels"]):
+                DegreeId = len(GroomingTabDataBase["Panels"][Source]) + 1   
+                GroomingTabDataBase["Panels"][( DegreeNode, DegreeId )] = {}
+            
+            # TODO: separate lightpathes based on their degree
+            PanelId = get_panel_num(Source)
+
+            # checking the lightpath is TP1H or MP1H
+            if len(lightpath.ServiceIdList) == 1:
+                DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
+                DemandTabDataBase["Panels"][Source][panelid + 1] = TP1H_R(panelid)
+
+            else:
+                ClientCapacity = create_ClientsCapacityList(lightpath.ServiceIdList)
+                DemandTabDataBase["Panels"][Source][panelid] = MP1H_L(ClientCapacity, "100GE", lightpath.ServiceIdList, [DemandId for i in range(10)], id)
+                DemandTabDataBase["Panels"][Source][panelid + 1] = MP1H_R(panelid)
+
+            # filling GroomingTabDataBase ( Links or lambdas part )
+            for i in range(len(Working) - 1):
+                InNodeName = self.IdNodeMap[Working[ i ]]
+                OutNodeName = self.IdNodeMap[Working[ i + 1 ]]
+
+                if WaveLength in GroomingTabDataBase["Links"][( InNodeName , OutNodeName)]:
+                    # TODO: raise error --> this wavelength has been used
+                    pass
+                else:
+                    GroomingTabDataBase["Links"][( InNodeName , OutNodeName)].append(WaveLength)
+            
+            for i in range(len(Protection) - 1):
+                InNodeName = self.IdNodeMap[Protection[ i ]]
+                OutNodeName = self.IdNodeMap[Protection[ i + 1 ]]
+
+                if WaveLength in GroomingTabDataBase["Links"][( InNodeName , OutNodeName)]:
+                    pass
+                    # TODO: raise error --> this wavelength has been used
+                else:
+                    GroomingTabDataBase["Links"][( InNodeName , OutNodeName)].append(WaveLength)
+                
+            
+
+    def grooming_fun(self, n):
+        # n: network object
+    
+        service_lower10=[]
+        service_lower100=[]
+        output_10=[]                                            #(DemandId,Service)
+        output_100=[]
+        remain=[]
+        threshold=70
+        for i in n.TrafficMatrix.DemandDict:
+            y=[]
+            z=[]
+            for j in n.TrafficMatrix.DemandDict[i].ServiceDict:
+                if (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW < 10):
+                    y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
+                elif (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW == 10):
+                    z.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
+                else:
+                    n.add_lightpath(n.TrafficMatrix.DemandDict[i].Source, n.TrafficMatrix.DemandDict[i].Destination, 100, n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id, 100, i)
+            if z:
+                service_lower100.append((i,z))
+            
+        for i in range(0,len(service_lower100)):
+            NO_LP= math.ceil(len(service_lower100[i][1])/10)
+            for j in range(0,NO_LP):
+                list_of_service=[]
+                cap=0
+                for k in range(j*10,(j+1)*10):
+                    if (k < len(service_lower100[i][1])):
+                        list_of_service.append(service_lower100[i][1][k][0])
+                        cap=cap+service_lower100[i][1][k][1]
+    #          print(service_lower100[2][0])
+                if cap ==10:
+                    typee="10GE"
+                else:
+                    typee="100GE"
+                if cap < threshold:
+                    remain.append((i,list_of_service))
+                else:
+                    n.add_lightpath(n.TrafficMatrix.DemandDict[service_lower100[i][0]].Source, n.TrafficMatrix.DemandDict[service_lower100[i][0]].Destination, cap, list_of_service, typee, service_lower100[i][0])    
+    #         
+        return remain
+         
+        
+    
+    def grooming_button_fun(self):
+        RemainServices = self.grooming_fun(self.network)
+        print("Remain services with algorithm:", RemainServices)
+        print("############################")
+
+        self.fill_DemandTabDataBase(self.network)
+        print("our database remains : " , DemandTabDataBase["Services"])
+
+        
+
+    def RWA_button_fun(self):
+
+        net = copy.copy(self.network)
+        
+        # Convert keys to String
+        tuple_keys = list(net.PhysicalTopology.LinkDict.keys())
+        for key in tuple_keys:
+            net.PhysicalTopology.LinkDict[str(key)] = net.PhysicalTopology.LinkDict.pop(key)
+        
+            
+        ##############################################
+        # Convert the Network object to JSON message
+        data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
+        # print(data)
+        
+        decoded_network = Network.from_json(json.loads(data)) 
+        str_keys = list(decoded_network.PhysicalTopology.LinkDict.keys())
+        for key in str_keys:
+            Lkey = list(key)
+            ActualKey =( int(Lkey[1]) , int(Lkey[-2]) )
+            decoded_network.PhysicalTopology.LinkDict[ActualKey] = decoded_network.PhysicalTopology.LinkDict.pop(key)
+        
+        # assert False
+        # This line tests whether the JSON encoded common object is reconstructable!
+        decoded_n = Network.from_json(json.loads(data)) 
+        assert(isinstance(decoded_n, Network))
+        
+        # Establishing a socket.io connection for logging purposes
+        sio.connect('http://localhost:5000')
+        
+        ##Run the grooming function on the server
+        # print('####################################################')
+        # print('Transmitting data to server for client side grooming.')
+        # res = requests.get('http://localhost:5000/grooming/', json = data)
+        
+        # if res.ok:
+            # print(res.json())
+            # print('Grooming finished successfully!')
+            
+        print('####################################################')
+        print('Transmitting data to server to solve RWA planning.') 
+        # Run the RWA planner on the server
+        res = requests.get('http://localhost:5000/RWA/', json = data)
+        
+        if res.ok:
+            # print('####################################################')
+            # print(json.dumps(res.json()))
+            decoded_network = Network.from_json(json.loads(json.dumps(res.json())))
+            # Converting keys to original version ( Server Side )
+            str_keys = list(decoded_network.PhysicalTopology.LinkDict.keys())
+            for key in str_keys:
+                n_key = ''.join(key.split())
+                Lkey = n_key[1:-1].split(',')
+                ActualKey =( int(Lkey[1]) , int(Lkey[-2]) )
+                decoded_network.PhysicalTopology.LinkDict[ActualKey] = decoded_network.PhysicalTopology.LinkDict.pop(key)
+                
+            str_keys = decoded_network.LightPathDict.keys()
+            for key in str_keys:
+                decoded_network.LightPathDict[int(key)] = decoded_network.LightPathDict.pop(key)
+            
+        
+        sio.disconnect()
+        time.sleep(3)
+        print('RWA finished successfully and data received in client') 
+        print('Sample WaveLength output', decoded_network.LightPathDict[0].WaveLength)
+        print('Sample Path output', decoded_network.LightPathDict[0].WorkingPath)
+    
+
+        self.fill_GroomingTabDataBase(decoded_network)
+        
+
+
 
 
 if __name__ == "__main__":
@@ -3243,7 +3771,7 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QWidget()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
-    # NOTE: dont forget this 
+    # NOTE: dont forget this
     Data["ui"] = ui
     MainWindow.show()
     sys.exit(app.exec_())

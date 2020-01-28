@@ -184,6 +184,7 @@ class Network:
 
             def put_fiber_Type(self, Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr = None):
                 self.SpanObjList[PositionInLink].put_fiber_Type(Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr)
+                # self.SpanObjList[PositionInLink].Length = 
             
             class Span:
                 def __init__(self, InNode, OutNode, Length = None, Loss = None, Dispersion = None, Beta = None,
@@ -231,16 +232,22 @@ class Network:
         def __init__(self):
             self.DemandDict = {}    # in { id : DemandObj } format
         
-        def add_demand(self, Id, Source, Destination, Type):
+        def add_demand(self, Source, Destination, Type):
+            Id = self.GenerateDemandId()
             self.DemandDict[Id] = self.Demand(Id, Source, Destination, Type)
         
         def del_demand(self, Id):
             del self.DemandDict[Id]
 
             self.DemandDict.pop(Id)
+        
+        def GenerateDemandId(self):
+                Network.Traffic.Demand.DemandReferenceId += 1
+                return ( Network.Traffic.Demand.DemandReferenceId - 1 )
 
         class Demand:
             ServiceReferencedId = 0
+            DemandReferenceId = 0
             # this class is one row of Traffic Matrix
             def __init__(self, Id, Source, Destination, Type):
 
@@ -251,7 +258,10 @@ class Network:
                 self.Type = Type            # Type must be a string
                 self.ServiceDict = {}
             
+            
+            
             class G_100:
+                BW = 100
                 def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
                     self.Id = Id
                     self.Granularity = Granularity
@@ -262,6 +272,7 @@ class Network:
                     self.LightPathId = LightPathId
             
             class G_40:
+                BW = 40
                 def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
                     self.Id = Id
                     self.Granularity = Granularity
@@ -273,6 +284,7 @@ class Network:
 
             
             class G_10:
+                BW = 10
                 def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
                     self.Id = Id
                     self.Granularity = Granularity
@@ -314,7 +326,7 @@ class Network:
                 
             
             class STM_64:
-                BW = 9.95
+                BW = 10
 
                 def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
                     self.Id = Id
@@ -511,22 +523,25 @@ if __name__ == "__main__":
     n.PhysicalTopology.del_node(2)
     print("NodeDict after deleting a Node: ",n.PhysicalTopology.NodeDict)
 
-    n.TrafficMatrix.add_demand(1,"Tehran","Mashhad","X")
-    n.TrafficMatrix.DemandDict[1].add_service("100GE",2)
+    n.TrafficMatrix.add_demand("Tehran","Mashhad","X")
+    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+    n.TrafficMatrix.DemandDict[LastId].add_service("100GE",2)
 
-    n.TrafficMatrix.add_demand(2,"Tehran", "Shiraz", "")
-    n.TrafficMatrix.DemandDict[2].add_service("100GE",2)
-    n.TrafficMatrix.DemandDict[2].add_service("10GE",2)
-    n.TrafficMatrix.DemandDict[2].add_service("STM_64",2)
+    n.TrafficMatrix.add_demand("Tehran", "Shiraz", "")
+    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+    n.TrafficMatrix.DemandDict[LastId].add_service("100GE",2)
+    n.TrafficMatrix.DemandDict[LastId].add_service("10GE",2)
+    n.TrafficMatrix.DemandDict[LastId].add_service("STM_64",2)
 
-    n.TrafficMatrix.add_demand(3, "Tabriz", "Karaj", "")
-    n.TrafficMatrix.DemandDict[3].add_service("FE",2)
-    n.TrafficMatrix.DemandDict[3].add_service("1GE",2)
+    n.TrafficMatrix.add_demand("Tabriz", "Karaj", "")
+    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+    n.TrafficMatrix.DemandDict[LastId].add_service("FE",2)
+    n.TrafficMatrix.DemandDict[LastId].add_service("1GE",2)
     
     print("DemandDict: ",n.TrafficMatrix.DemandDict)
     print("Demand 1: ",n.TrafficMatrix.DemandDict[1].ServiceDict)
     print("Demand 2: ",n.TrafficMatrix.DemandDict[2].ServiceDict)
-    print("Demand 3: ",n.TrafficMatrix.DemandDict[3].ServiceDict)
+    print("Demand 0: ",n.TrafficMatrix.DemandDict[0].ServiceDict)
 
     n.add_lightpath("Tehran", "Mashhad", "20GE", [1 ,2], "100GE", 2)
     n.put_results(0, [1 , 3 , 7], [1 ,4 ,7], 27, [5], [9], 25, 14, "111", 14)

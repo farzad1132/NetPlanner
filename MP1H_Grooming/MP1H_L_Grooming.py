@@ -8,7 +8,7 @@ from data import *
 
 class MP1H_L_Grooming(QWidget):
 
-    def __init__(self,Panel_ID,nodename):
+    def __init__(self, Panel_ID, nodename):
 
         self.id = Panel_ID
         self.nodename = nodename

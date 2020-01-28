@@ -297,7 +297,7 @@ class customlabel(QLabel):
     def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
         
 
-        key = (ids[0] , ids[1])
+        key = (int(ids[0]) , int(ids[1]))
         if mode == "delete":
             DemandTabDataBase["Services"][(source, destination)].pop(key)
             
