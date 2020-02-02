@@ -672,7 +672,6 @@ QPushButton:default {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
                      </property>
                      <property name="text">
@@ -700,7 +699,6 @@ QPushButton:default {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
                      </property>
                      <property name="text">
@@ -779,7 +777,6 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
                      </property>
                      <property name="text">
@@ -911,7 +908,6 @@ QPushButton:default {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
                      </property>
                      <property name="text">
@@ -1880,7 +1876,6 @@ QListWidget::item:hover {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
              </property>
              <property name="text">
@@ -1902,7 +1897,6 @@ QListWidget::item:hover {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
              </property>
              <property name="text">
@@ -2000,7 +1994,6 @@ QListWidget::item:hover {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
              </property>
              <property name="text">
@@ -2091,7 +2084,6 @@ QListWidget::item:hover {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
              </property>
              <property name="text">
@@ -2203,7 +2195,6 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
              </property>
              <property name="text">
@@ -2308,7 +2299,6 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
              </property>
              <property name="text">
@@ -2511,7 +2501,6 @@ QListWidget::item:hover {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
              </property>
              <property name="text">
@@ -2594,7 +2583,6 @@ QListWidget::item:hover {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
              </property>
              <property name="text">
@@ -2628,7 +2616,6 @@ QListWidget::item:hover {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
              </property>
              <property name="text">
@@ -2729,7 +2716,6 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
              </property>
              <property name="text">
@@ -2885,7 +2871,6 @@ QListWidget::item:hover {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
-    background-image: url(images/welcome.png);
 }</string>
            </property>
            <property name="text">

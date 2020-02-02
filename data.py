@@ -133,9 +133,10 @@ DemandTabDataBase = {}
 DemandTabDataBase["Source_Destination"] = {}
 # format:
 #       { source :  [ Destinations ]}
-DemandTabDataBase["Services"] = {}
+DemandTabDataBase["Services"] = {} # dynamic one : changes with user actions
 # format: 
 #       {(Tehran, karaj): { (1,3) : '[1 , 3] # 100G ' , ... }, ...}         (1 , 3) ---> 1 : Demand Id , 3 : Service Id
+DemandTabDataBase["Services_static"] = {}   # same as Services part but difference is that its not changing with user actions
 DemandTabDataBase["Lightpathes"] = {}
 # format:
 #       {(Tehran, Karaj): [ Lightpath Id # 100GE , ...]}

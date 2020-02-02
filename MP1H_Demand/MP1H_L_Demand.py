@@ -127,7 +127,7 @@ class MP1H_L_Demand(QWidget):
             # TODO: undo every service or lightpath that is created in this panel
             if DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity != 0:
 
-                for i in range(10):
+                for i in range(len(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity)):
                     if DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[i] != 0:
                         ids = [DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[i], DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[i]]
                         type = DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[i]
@@ -152,7 +152,9 @@ class MP1H_L_Demand(QWidget):
             DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
         
         if mode == "delete":
-            DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
+            for Des in DemandTabDataBase["Source_Destination"][Source]:
+                if id in DemandTabDataBase["Lightpathes"][(Source, Destination)]:
+                    DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
         
         Data["ui"].update_Demand_lightpath_list()
     
@@ -170,7 +172,7 @@ class MP1H_L_Demand(QWidget):
 class customlabel(QLabel):
     def __init__(self, parent, nodename, Destination, ID, ClientNum, tooltip = None):
         super().__init__(parent)
-        self.STM_64_BW = 9.95
+        self.STM_64_BW = 10
         self.GE_10_BW = 10
         self.nodename = nodename
         self.id = ID
@@ -192,19 +194,24 @@ class customlabel(QLabel):
         
 
         self.allowedservices = ["10GE", "STM_64"]
-        dragtext = dragtext.split("#")
-        servicetype = dragtext[1].strip()
-        ids = list(dragtext[0].strip())
-        ids = [ids[1], ids[-2]]
-        if servicetype in self.allowedservices:
-            self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
-            
-        else:
-            self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_red.png")))
+        text = dragtext
+        # FIXME: why we need this if ????
+        if text != "MP1H":
+            text = text.split("#")
+            n_key = "".join(text[0].split())
+            ids = n_key[1:-1].split(',')
+            ids = list(map(lambda x : int(x), ids))          # [ Demand Number, Service Number ]
+            servicetype = text[1].strip()   # service type = 100Ge , 10GE , ....
 
-        event.accept()
+            if servicetype in self.allowedservices:
+                self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
+                
+            else:
+                self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_red.png")))
 
-        super(customlabel,self).dragEnterEvent(event)
+            event.accept()
+
+            super(customlabel,self).dragEnterEvent(event)
     
 
     def dragLeaveEvent(self, event):
@@ -219,9 +226,10 @@ class customlabel(QLabel):
 
         text = dragtext
         text = text.split("#")
+        n_key = "".join(text[0].split())
+        ids = n_key[1:-1].split(',')
+        ids = list(map(lambda x : int(x), ids))          # [ Demand Number, Service Number ]
         servicetype = text[1].strip()   # service type = 100Ge , 10GE , ....
-        ids = list(text[0].strip())
-        ids = [ids[1], ids[-2]]        # [ Demand Number, Service Number ]
 
         if servicetype in self.allowedservices:
 
@@ -240,16 +248,20 @@ class customlabel(QLabel):
 
             if DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag == 0:
 
-                #self.LightPathId = Network.Lightpath.get_id()
-                DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = Network.Lightpath.get_id()
-                #DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = self.LightPathId
+                #DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = Network.Lightpath.get_id()
+
+                # updating networkobj
+                ServiceIdList = [ids[1]]
+                Data["NetworkObj"].add_lightpath(self.nodename, self.Destination, 10, ServiceIdList, "100GE", ids[0])
+                LightPathId = max(Data["NetworkObj"].LightPathDict.keys())
+                DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = LightPathId
 
                 self.modify_LightPathList(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId, self.nodename, self.Destination, mode= "add", type="100GE")
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 1
 
 
             # TODO: be Careful !!!!!
-            self.setAcceptDrops(False)  
+            self.setAcceptDrops(False)
         else:
             self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client.png")))
 
@@ -288,9 +300,14 @@ class customlabel(QLabel):
                 if x == 0:
                     
                     self.modify_LightPathList(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
+
+
                     DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None
-                    Network.Lightpath.update_id(-1)
+                    #Network.Lightpath.update_id(-1)
                     DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 0
+
+                    # deleting lightpath object from network obj
+                    Data["NetworkObj"].del_lightpath(list(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsList))
             
     
 
@@ -312,6 +329,8 @@ class customlabel(QLabel):
             DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
         
         if mode == "delete":
-            DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
+            for Des in DemandTabDataBase["Source_Destination"][Source]:
+                if id in DemandTabDataBase["Lightpathes"][(Source, Destination)]:
+                    DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
         
         Data["ui"].update_Demand_lightpath_list()

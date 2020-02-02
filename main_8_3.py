@@ -23,7 +23,7 @@ import requests
 import json
 import socketio  
 import time
-import copy , math
+import copy , math, warnings
 
 from add_node import Ui_add_node_window
 
@@ -66,6 +66,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 import matplotlib.pyplot as plt
 import networkx as nx
 from numpy import cos, sin
+import numpy
 
 
 class Backend_map(QObject):
@@ -546,7 +547,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.GroupName.setObjectName("GroupName")
         self.gridLayout_16.addWidget(self.GroupName, 1, 0, 1, 1)
@@ -565,7 +566,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.GroupID.setObjectName("GroupID")
         self.gridLayout_16.addWidget(self.GroupID, 2, 0, 1, 1)
@@ -628,7 +629,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.GroupColor.setObjectName("GroupColor")
         self.gridLayout_16.addWidget(self.GroupColor, 3, 0, 1, 1)
@@ -726,7 +727,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.SelectSubNode.setAlignment(QtCore.Qt.AlignCenter)
         self.SelectSubNode.setObjectName("SelectSubNode")
@@ -1251,7 +1252,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.ClientLabel.setObjectName("ClientLabel")
         self.gridLayout_7.addWidget(self.ClientLabel, 0, 0, 1, 2)
@@ -1265,7 +1266,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.PanelLabel.setObjectName("PanelLabel")
         self.gridLayout_7.addWidget(self.PanelLabel, 4, 0, 1, 2)
@@ -1328,7 +1329,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.LineLabel.setObjectName("LineLabel")
         self.gridLayout_7.addWidget(self.LineLabel, 2, 0, 1, 2)
@@ -1384,7 +1385,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.SelectNode_Label.setObjectName("SelectNode_Label")
         self.horizontalLayout.addWidget(self.SelectNode_Label)
@@ -1462,7 +1463,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.SelectNode_Label_13.setObjectName("SelectNode_Label_13")
         self.formLayout_4.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.SelectNode_Label_13)
@@ -1535,7 +1536,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.label_8.setObjectName("label_8")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label_8)
@@ -1680,7 +1681,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.ClientLabel_22.setObjectName("ClientLabel_22")
         self.gridLayout_2.addWidget(self.ClientLabel_22, 2, 0, 1, 1)
@@ -1732,7 +1733,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.ClientLabel_23.setObjectName("ClientLabel_23")
         self.gridLayout_2.addWidget(self.ClientLabel_23, 4, 0, 1, 1)
@@ -1748,7 +1749,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.ClientLabel_20.setObjectName("ClientLabel_20")
         self.gridLayout_2.addWidget(self.ClientLabel_20, 6, 0, 1, 1)
@@ -1818,7 +1819,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.label_9.setObjectName("label_9")
         self.gridLayout_2.addWidget(self.label_9, 8, 0, 1, 1)
@@ -1834,7 +1835,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.ClientLabel_21.setObjectName("ClientLabel_21")
         self.gridLayout_2.addWidget(self.ClientLabel_21, 0, 0, 1, 1)
@@ -1904,7 +1905,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
+"    \n"
 "}")
         self.ClientLabel_25.setObjectName("ClientLabel_25")
         self.gridLayout_12.addWidget(self.ClientLabel_25, 2, 1, 1, 1)
@@ -2066,6 +2067,8 @@ class Ui_MainWindow(object):
         self.FinalPlan_pushbutton.clicked.connect(self.print_r)
 
         self.window = MainWindow
+
+        Data["NetworkObj"] = self.network
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -2315,24 +2318,26 @@ class Ui_MainWindow(object):
         #self.MapWidget.canvas.figure.clf()
         #self.MapWidget.canvas.axes.cla()
         #trick for legend!!!!!!
-        self.MapWidget.canvas.axes.plot(0, 0, ms=0.000000001, color = 'blue')
-        self.MapWidget.canvas.axes.legend(loc = 'best')
-        self.MapWidget.canvas.axes.plot(0, 0, ms=0.000000001, color = 'red')
-        self.MapWidget.canvas.axes.legend(loc = 'best')
+        #self.MapWidget.canvas.axes.plot(0, 0, ms=0.000000001, color = 'blue')
+        #self.MapWidget.canvas.axes.legend(loc = 'best')
+        #self.MapWidget.canvas.axes.plot(0, 0, ms=0.000000001, color = 'red')
+        #self.MapWidget.canvas.axes.legend(loc = 'best')
         #trick for legend!!!!!!
         ####
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
         R = 6371 
         self.loc_dict={}
-        for id, node in Data["Nodes"].items():
-            node_name = node["Node"]
-            location = node["Location"]
+        for node in Data["Nodes"].items():
+            #print(node)
+            node_ID = node[0]
+            node_name = node[1]["Node"]
+            location = node[1]["Location"]
             lat = location[0]
             lon = location[1]
             x = R * cos(lat) * cos(lon)
             y = R * cos(lat) * sin(lon)
-            self.loc_dict[node_name] = [x, y]
+            self.loc_dict[node_ID] = [x, y]
            # self.MapWidget.canvas.axes.annotate(node_name, xy=(1, 1), xytext=(x+0.1, y+0.1))
             if node_name == Source or node_name == Destination:
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'gold')
@@ -2357,8 +2362,7 @@ class Ui_MainWindow(object):
 
             
             self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.3, linewidth=6, label="Working")
-            
-            #self.MapWidget.canvas.axes.legend(loc = 'best')
+            self.MapWidget.canvas.axes.legend(loc = 'best')
 
         x_list_P = []
         y_list_P = []
@@ -2368,9 +2372,9 @@ class Ui_MainWindow(object):
                 x_list_P.append(x1)
                 y1 = self.loc_dict[key][1]
                 y_list_P.append(y1)
-        #shutup    
+           
             self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.3, linewidth=6, label="Protection")
-            #self.MapWidget.canvas.axes.legend(loc = 'best')
+            self.MapWidget.canvas.axes.legend(loc = 'best')
         
         
         self.window.resize(1919, 1000)
@@ -2541,6 +2545,8 @@ class Ui_MainWindow(object):
     
     
     def set_demand_panels(self):
+
+
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
         for i in range(1, 15):
@@ -2557,27 +2563,49 @@ class Ui_MainWindow(object):
                 
                 elif isinstance(panel, MP1H_L):
                     Data["DemandPanel_" + str(i)].setWidget(MP1H_L_Demand(str(i), Source, Destination))
+
+                    # finding panel widget
                     widget = Data["DemandPanel_" + str(i)].widget()
                         
-                    for i in range(10):
+                    for i in range(len(panel.ClientsCapacity)):
                         if panel.ClientsCapacity[i] != 0:
+
+                            # finding object of client customlabel
                             text = "client" + str( i + 1 )
                             clientvar = getattr(widget, text)
+
+                            # filling customlabel attributes
                             clientvar.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
-                            clientvar.setToolTip(DemandTabDataBase["Services"][(Source, Destination)][(panel.DemandIdList[i],panel.ServiceIdList[i])])
+                            clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])])
+                            clientvar.servicetype = panel.ClientsCapacity[i]
+                            clientvar.nodename = Source
+                            clientvar.Destination = Destination
+                            clientvar.ids = [panel.DemandIdList[i], panel.ServiceIdList[i]]
+                            clientvar.setAcceptDrops(False)
 
                 elif isinstance(panel, MP1H_R):
                     Data["DemandPanel_" + str(i)].setWidget(MP1H_R_Demand(str(i), Source))
                 
                 elif isinstance(panel, TP1H_L):
                     Data["DemandPanel_" + str(i)].setWidget(TP1H_L_Demand(str(i), Source, Destination))
+
+                    # finding panel widget
                     widget = Data["DemandPanel_" + str(i)].widget()
 
                     if panel.Line == "100GE":
+
+                        # finding object of client customlabel
                         clientvar = getattr(widget, "client")
-                        clientvar.setToolTip(DemandTabDataBase["Services"][(Source, Destination)][(panel.DemandId, panel.ServiceId)])
+
+                        # filling customlabel attributes 
+                        clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandId, panel.ServiceId)])
+                        clientvar.servicetype = "100GE"
+                        self.nodename = Source
+                        self.Destination = Destination
+                        self.ids = [panel.DemandId, panel.ServiceId]
+                        clientvar.setAcceptDrops(False)
+
                         # TODO: change client color to green
-                        pass
                 
                 elif isinstance(panel, TP1H_R):
                     Data["DemandPanel_" + str(i)].setWidget(TP1H_R_Demand(str(i), Source))
@@ -2739,9 +2767,17 @@ class Ui_MainWindow(object):
         CurrentText = str(self.Demand_LineList.currentItem())
 
         # detecting Lightpath id, working path and protection path
+        LightpathId = CurrentText.split('#')[0]
+        LightpathId = int(LightpathId.strip())
+        Source = self.Demand_Source_combobox.currentText()
+        Destination = self.Demand_Destination_combobox.currentText()
+
+        WorkingPath = GroomingTabDataBase[(Source, Destination)][LightpathId]["Working"]
+        ProtectionPath = GroomingTabDataBase[(Source, Destination)][LightpathId]["Protection"]
 
         # calling Demand map change function
-            
+        # NOTE: after completing Demandmap function un comment below
+        self.DemandMap_Change(WorkingPath, ProtectionPath)
 
     # MHA EDITION:
     def SaveTM_fun(self):
@@ -2966,8 +3002,8 @@ class Ui_MainWindow(object):
                     self.network.TrafficMatrix.DemandDict[id].add_service(service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
             
             # initializing DataBases 
-            self.FillDemandTabDataBase_Services(id ,Source, Destination, ServiceDict)
             self.initialize_DemandTabDataBase(Source, Destination)
+            self.FillDemandTabDataBase_Services(id ,Source, Destination, ServiceDict)
             self.initialize_GroomingTabDataBase(Source, Destination)
             
     def initialize_DemandTabDataBase(self, Source, Destination):
@@ -3039,8 +3075,21 @@ class Ui_MainWindow(object):
             elif isinstance(service, Network.Traffic.Demand.G_100):
                 servicetitle = "[%s , %s] # %s" %(id, serviceId, "100GE")
                 ServiceDict_2[(id, serviceId)] = servicetitle
+        
+        """ def manual_update(ServiceDict):
+            print(f"before adding : {DemandTabDataBase['Services_static'][Source]}")
+            for key, value in ServiceDict.items():
+                DemandTabDataBase["Services_static"][Source][key] = value
+                print(f"key : {key}, value: {value}") """
+                
 
         DemandTabDataBase["Services"][(Source,Destination)] = ServiceDict_2
+        if Source in DemandTabDataBase["Services_static"]:
+            DemandTabDataBase["Services_static"][Source].update(ServiceDict_2.copy())
+        else:
+            DemandTabDataBase["Services_static"][Source] = {}
+            DemandTabDataBase["Services_static"][Source].update(ServiceDict_2.copy())
+
     
     def Fill_Demand_SourceandDestination_combobox(self):
 
@@ -3072,20 +3121,22 @@ class Ui_MainWindow(object):
 
         if Source != '':
             self.Demand_Destination_combobox.clear()
-            self.Demand_Destination_combobox.addItems(DemandTabDataBase["Source_Destination"][Source])
+            self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source])))
 
-        self.DemandMap_Change(Working=['Tehran', 'Karaj', 'Qom'], Protection=['Qom', 'Tehran',  'Damavand'])
+        self.DemandMap_Change()
     
     def Demand_Destination_combobox_change(self):
+        Source = self.Demand_Source_combobox.currentText()
+        Destination = self.Demand_Destination_combobox.currentText()
 
         if self.Demand_Destination_combobox.currentText() != '':
             self.UpdateDemand_ServiceList()
             self.update_Demand_lightpath_list()
             self.set_demand_panels()
 
-        self.DemandMap_Change(Working=['Tehran', 'Karaj', 'Qom'], Protection=['Qom', 'Tehran',  'Damavand'])
+        self.DemandMap_Change()
         
-        Destination = self.Demand_Destination_combobox.currentText()
+        
             
 
 
@@ -3110,7 +3161,6 @@ class Ui_MainWindow(object):
         #if Data["Stage_flag"] == "Grooming":
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
-
         lightpath_list = list(DemandTabDataBase["Lightpathes"][(Source, Destination)].values())
         self.Demand_LineList.clear()
         self.Demand_LineList.addItems(lightpath_list)
@@ -3333,6 +3383,8 @@ class Ui_MainWindow(object):
         self.GroomingTabDataBase_Setup()
         self.Fill_Demand_SourceandDestination_combobox()
 
+
+
         #self.SelectNode_combo_fun()
     
     def DemandTabDataBase_Setup(self):
@@ -3408,7 +3460,7 @@ class Ui_MainWindow(object):
 
 
 
-    def grooming_fun(self):
+    """ def grooming_fun(self):
 
         MP1H_th = 7
 
@@ -3446,9 +3498,8 @@ class Ui_MainWindow(object):
             if RemClients_MP1H >= MP1H_th:
                 print("th_List:" , MP1H_servicelist)
                 x = list(MP1H_servicelist)
-                """
                 for i in range(10-len(MP1H_servicelist)):
-                    x.append(None) """
+                    x.append(None)
                 self.network.add_lightpath(demandobj.Source, demandobj.Destination, "100GE", x, "100GE", demand)
 
                 for i in reversed(range(len(MP1H_servicelist))):
@@ -3471,16 +3522,16 @@ class Ui_MainWindow(object):
                 self.network.add_lightpath(demandobj.Source, demandobj.Destination, "100GE", G100_List[no], "100GE", demand)
 
                 DemandTabDataBase["Services"][(demandobj.Source, demandobj.Destination)][(demand, str(G100_List[no]))]
-                G100_List.pop(no)
+                G100_List.pop(no) """
 
 
 
 
     def print_r(self):
-        self.fill_lightpath()
-        for id, lightpath in self.network.LightPathDict.items():
-                print("##################################")
-                print(lightpath.__dict__)
+        net = copy.copy(self.network)
+        with open('NetworkObj.obj', 'wb') as handle:
+            pickle.dump(net, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        handle.close()
     
     def fill_lightpath(self):
         for i in range(4):
@@ -3507,7 +3558,7 @@ class Ui_MainWindow(object):
     def fill_DemandTabDataBase(self, netobj):
 
         def get_panel_num(Source):
-            IdList = list[DemandTabDataBase["Panels"][Source]].keys()
+            IdList = list(DemandTabDataBase["Panels"][Source].keys())
             
             # if shelf is empty this method must return 1 in ## string ##
             if not IdList:
@@ -3529,36 +3580,57 @@ class Ui_MainWindow(object):
 
         # lightpath and panel part
         for id, lightpath in netobj.LightPathDict.items():
-            print("lightpath : ", lightpath.__dict__)
+            
+            
             Source = self.IdNodeMap[lightpath.Source]
             Destination = self.IdNodeMap[lightpath.Destination]
             type = lightpath.Type
             DemandId = lightpath.DemandId
-            DemandTabDataBase["Lightpathes"][(Source, Destination)] = "%s # %s" %(id, type)
+            DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
+
+            ## debug section
+            print("Source: ", Source)
+            print("Destination:" , Destination)
+            print("DemandId :", DemandId)
+            print("serviceIdList :", lightpath.ServiceIdList)
+
+            ## end of debug section
             
             # checking wheather lightpath is created by tp1h or not
-            print(lightpath.ServiceIdList, type(lightpath.ServiceIdList))
             if len(lightpath.ServiceIdList) == 1:
                 panelid = get_panel_num(Source)
                 DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
-                DemandTabDataBase["Panels"][Source][panelid + 1] = TP1H_R(panelid)
+
+                ## debug section
+                print(DemandTabDataBase["Panels"][Source][panelid].__dict__)
+
+                ## end of debug section
+                DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = TP1H_R(panelid)
 
                 # omitting handeled services from DemandTabDataBase
                 DemandTabDataBase["Services"][(Source, Destination)].pop((DemandId, lightpath.ServiceIdList[0]))
             else:
                 panelid = get_panel_num(Source)
-                ClientCapacity = create_ClientsCapacityList(lightpath.ServiceIdList)
-                DemandTabDataBase["Panels"][Source][panelid] = MP1H_L(ClientCapacity, "100GE", lightpath.ServiceIdList, [DemandId for i in range(10)], id)
-                DemandTabDataBase["Panels"][Source][panelid + 1] = MP1H_R(panelid)
+                ClientCapacity = create_ClientsCapacityList(DemandId, lightpath.ServiceIdList)
+                LineCapacity = len(ClientCapacity) * 10
+                DemandTabDataBase["Panels"][Source][panelid] = MP1H_L(ClientCapacity, LineCapacity, lightpath.ServiceIdList, [DemandId for i in range(10)], id, LightPath_flag= 1)
+
+                ## debug section
+                print(DemandTabDataBase["Panels"][Source][panelid].__dict__)
+
+                ## end of debug section
+                DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = MP1H_R(panelid)
 
                 # omitting handeled services from DemandTabDataBase
-                for serviceId in lightpath.ServiceIdList:
+                for ServiceId in lightpath.ServiceIdList:
                     DemandTabDataBase["Services"][(Source, Destination)].pop((DemandId, ServiceId))
+                print(f"panels part--> Source:{Source} panels:{DemandTabDataBase['Panels'][Source]}")
+                print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
     
     def fill_GroomingTabDataBase(self, netobj):
 
         def get_panel_num(Source):
-            IdList = list[DemandTabDataBase["Panels"][Source]].keys()
+            IdList = list(DemandTabDataBase["Panels"][Source].keys())
             
             # if shelf is empty this method must return 1 in ## string ##
             if not IdList:
@@ -3638,7 +3710,7 @@ class Ui_MainWindow(object):
 
     def grooming_fun(self, n):
         # n: network object
-    
+
         service_lower10=[]
         service_lower100=[]
         output_10=[]                                            #(DemandId,Service)
@@ -3654,7 +3726,7 @@ class Ui_MainWindow(object):
                 elif (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW == 10):
                     z.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                 else:
-                    n.add_lightpath(n.TrafficMatrix.DemandDict[i].Source, n.TrafficMatrix.DemandDict[i].Destination, 100, n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id, 100, i)
+                    n.add_lightpath(n.TrafficMatrix.DemandDict[i].Source, n.TrafficMatrix.DemandDict[i].Destination, 100, [n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id], 100, i)
             if z:
                 service_lower100.append((i,z))
             
@@ -3683,15 +3755,54 @@ class Ui_MainWindow(object):
     
     def grooming_button_fun(self):
         RemainServices = self.grooming_fun(self.network)
-        print("Remain services with algorithm:", RemainServices)
-        print("############################")
 
         self.fill_DemandTabDataBase(self.network)
-        print("our database remains : " , DemandTabDataBase["Services"])
 
         
 
     def RWA_button_fun(self):
+
+        # socketio event handling
+
+        sio = socketio.Client()
+
+        @sio.event
+        def connect():
+            print('connection established')
+            #sio.emit('my_message', {'response': 'Connection on client side'})
+
+        @sio.on('rwa_toClient_message')
+        def message(data):
+            print('Server log (RWA): ', data)
+            sio.emit('rwa_message:', "log received on client")
+            
+        @sio.on('grooming_toClient_message')
+        def message(data):
+            print('Server log (Grooming): ', data)
+            sio.emit('grooming_message:', "log received on client")    
+
+        @sio.event
+        def disconnect():
+            print('disconnected from the server.')
+
+        def convert_to_dict(obj):
+            """
+            A function takes in a custom object and returns a dictionary representation of the object.
+            This dict representation includes meta data such as the object's module and class names.
+            """
+
+            #  Populate the dictionary with object meta data 
+            if isinstance(obj, numpy.int64):
+                obj_dict = int(obj)
+                return obj_dict
+            else:
+                obj_dict = {
+                    "__class__": obj.__class__.__name__,
+                    "__module__": obj.__module__
+                }
+                #  Populate the dictionary with object properties
+                obj_dict.update(obj.__dict__)
+                return obj_dict
 
         net = copy.copy(self.network)
         

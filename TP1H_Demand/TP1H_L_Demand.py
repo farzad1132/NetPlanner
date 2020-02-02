@@ -86,7 +86,9 @@ class TP1H_L_Demand(QWidget):
             DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
         
         if mode == "delete":
-            DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
+            for Des in DemandTabDataBase["Source_Destination"][Source]:
+                if id in DemandTabDataBase["Lightpathes"][(Source, Destination)]:
+                    DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
         
         Data["ui"].update_Demand_lightpath_list()
     
@@ -122,10 +124,14 @@ class customlabel(QLabel):
         
 
         self.allowedservices = ["100GE"]
-        dragtext = dragtext.split("#")
-        servicetype = dragtext[1].strip()
-        ids = list(dragtext[0].strip())
-        ids = [ids[1], ids[-2]]
+        text = dragtext
+
+        text = text.split("#")
+        n_key = "".join(text[0].split())
+        ids = n_key[1:-1].split(',')
+        ids = list(map(lambda x : int(x), ids))          # [ Demand Number, Service Number ]
+        servicetype = text[1].strip()   # service type = 100Ge , 10GE , ....
+
         if servicetype in self.allowedservices:
             #TODO: change client color to green
             #self.setPixmap(QPixmap(os.path.join("TP1H_Demand", "client_green.png")))
@@ -151,10 +157,11 @@ class customlabel(QLabel):
         dragtext = model.item(0,0).text()
 
         text = dragtext
-        text = dragtext.split("#")
+        text = text.split("#")
+        n_key = "".join(text[0].split())
+        ids = n_key[1:-1].split(',')
+        ids = list(map(lambda x : int(x), ids))          # [ Demand Number, Service Number ]
         servicetype = text[1].strip()   # service type = 100Ge , 10GE , ....
-        ids = list(text[0].strip())
-        ids = [ids[1], ids[-2]]        # [ Demand Number, Service Number]
 
         if servicetype in self.allowedservices:
             
@@ -167,7 +174,14 @@ class customlabel(QLabel):
             DemandTabDataBase["Panels"][self.nodename][self.id].DemandId = ids[0]
             self.modify_ServiceList(ids, self.nodename, self.Destination)
 
-            self.LightPathId = Network.Lightpath.get_id()
+
+            # self.LightPathId = Network.Lightpath.get_id()
+
+            # adding lightpath to network obj
+            Data["NetworkObj"].add_lightpath(self.nodename, self.Destination, 100, [ids[1]], "100GE", ids[0])
+            self.LightPathId = max(Data["NetworkObj"].LightPathDict.keys())
+
+            # adding lightpath to internal database
             DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = self.LightPathId
 
             self.modify_LightPathList(self.LightPathId, self.nodename, self.Destination, mode= "add", type="100GE")
@@ -196,7 +210,10 @@ class customlabel(QLabel):
                 self.modify_ServiceList(self.ids, self.nodename, self.Destination, mode = "add", type = "100GE")
                 self.modify_LightPathList(self.LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
                 
-                Network.Lightpath.update_id(-1)
+                #Network.Lightpath.update_id(-1)
+
+                # deleting lightpath from network object
+                Data["NetworkObj"].del_lightpath([self.ids[1]])
     
 
     def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
@@ -217,7 +234,9 @@ class customlabel(QLabel):
             DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
         
         if mode == "delete":
-            DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
+            for Des in DemandTabDataBase["Source_Destination"][Source]:
+                if id in DemandTabDataBase["Lightpathes"][(Source, Destination)]:
+                    DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
         
         Data["ui"].update_Demand_lightpath_list()
         
