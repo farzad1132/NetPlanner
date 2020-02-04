@@ -2070,6 +2070,8 @@ class Ui_MainWindow(object):
 
         Data["NetworkObj"] = self.network
 
+        self.Demand_LineList.clicked['QModelIndex'].connect(self.Demand_LineList_fun)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -2764,19 +2766,27 @@ class Ui_MainWindow(object):
                 self.Traffic_matrix.setItem(int(row),i,QTableWidgetItem(cell_data))
     
     def Demand_LineList_fun(self):
-        CurrentText = str(self.Demand_LineList.currentItem())
+        CurrentText = str(self.Demand_LineList.currentItem().text())
 
         # detecting Lightpath id, working path and protection path
         LightpathId = CurrentText.split('#')[0]
-        LightpathId = int(LightpathId.strip())
+        LightpathId = LightpathId.strip()
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
 
-        WorkingPath = GroomingTabDataBase[(Source, Destination)][LightpathId]["Working"]
-        ProtectionPath = GroomingTabDataBase[(Source, Destination)][LightpathId]["Protection"]
+        if (Source, Destination) in GroomingTabDataBase["LightPathes"]:
+            key = (Source, Destination)
+        elif (Destination, Source) in GroomingTabDataBase["LightPathes"]:
+            key = (Destination, Source)
+        else:
+            print("key not found")
+
+        WorkingPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Working"]
+        ProtectionPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Protection"]
+
+        #print(f"here for calling demand change function <before> ")
 
         # calling Demand map change function
-        # NOTE: after completing Demandmap function un comment below
         self.DemandMap_Change(WorkingPath, ProtectionPath)
 
     # MHA EDITION:
@@ -3144,10 +3154,12 @@ class Ui_MainWindow(object):
 
         self.NodeIdMap = {}        # { name: id }
         self.IdNodeMap = {}        # {id : name}
+        self.IdLocationMap = {}     # {id : [x , y]}
 
         for NodeData in Data["Nodes"].values():
             self.NodeIdMap[NodeData["Node"]] = self.network.Topology.Node.ReferenceId
             self.IdNodeMap[self.network.Topology.Node.ReferenceId] = NodeData["Node"]
+            self.IdLocationMap[self.network.Topology.Node.ReferenceId] = NodeData["Location"]
             self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["Type"])
         
         for LinkId , LinkData in Data["Links"].items():
@@ -3528,10 +3540,8 @@ class Ui_MainWindow(object):
 
 
     def print_r(self):
-        net = copy.copy(self.network)
-        with open('NetworkObj.obj', 'wb') as handle:
-            pickle.dump(net, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        handle.close()
+        print(self.loc_dict)
+        print(f"new map :{self.IdLocationMap}")
     
     def fill_lightpath(self):
         for i in range(4):
@@ -3642,7 +3652,7 @@ class Ui_MainWindow(object):
         def create_ClientsCapacityList(DemandId, ServiceIdList):
             OutputList = []
             for ServiceId in ServiceIdList:
-                ServiceObj = netobj.TrafficMatrix.DemandDict[DemandId].ServiceDict[ServiceId]
+                ServiceObj = self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict[ServiceId]
                 if isinstance(ServiceObj, Network.Traffic.Demand.G_10):
                     OutputList.append("10GE")
                 else:
@@ -3651,17 +3661,18 @@ class Ui_MainWindow(object):
             return OutputList
         
         
-        for id, lightpath in netobj.items():
+        for id, lightpath in netobj.LightPathDict.items():
             Source = self.IdNodeMap[lightpath.Source]
             Destination = self.IdNodeMap[lightpath.Destination]
             Working = lightpath.WorkingPath
             Protection = lightpath.ProtectionPath
+            DemandId = lightpath.DemandId
             WaveLength = lightpath.WaveLength
 
             # adding pathes to to GroomingTabDataBase
-            GroomingTabDataBase["Lightpathes"][(Source, Destination)][id] = {}
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id] = {}
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["Working"] = Working
-            GroomingTabDataBase["Lightpathes"][(Source, Destination)][id]["Protection"] = Protection
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["Protection"] = Protection
 
             # Detecting Degrees and Filling GroomingTabDataBase ( Panels Part )
 
@@ -3677,34 +3688,48 @@ class Ui_MainWindow(object):
 
             # checking the lightpath is TP1H or MP1H
             if len(lightpath.ServiceIdList) == 1:
-                DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
-                DemandTabDataBase["Panels"][Source][panelid + 1] = TP1H_R(panelid)
+                DemandTabDataBase["Panels"][Source][PanelId] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
+                DemandTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = TP1H_R(PanelId)
 
             else:
-                ClientCapacity = create_ClientsCapacityList(lightpath.ServiceIdList)
-                DemandTabDataBase["Panels"][Source][panelid] = MP1H_L(ClientCapacity, "100GE", lightpath.ServiceIdList, [DemandId for i in range(10)], id)
-                DemandTabDataBase["Panels"][Source][panelid + 1] = MP1H_R(panelid)
+                ClientCapacity = create_ClientsCapacityList(DemandId ,lightpath.ServiceIdList)
+                DemandTabDataBase["Panels"][Source][PanelId] = MP1H_L(ClientCapacity, "100GE", lightpath.ServiceIdList, [DemandId for i in range(10)], id)
+                DemandTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = MP1H_R(PanelId)
 
             # filling GroomingTabDataBase ( Links or lambdas part )
             for i in range(len(Working) - 1):
                 InNodeName = self.IdNodeMap[Working[ i ]]
                 OutNodeName = self.IdNodeMap[Working[ i + 1 ]]
 
-                if WaveLength in GroomingTabDataBase["Links"][( InNodeName , OutNodeName)]:
+                if ( InNodeName , OutNodeName) in GroomingTabDataBase["Links"]:
+                    keyW = ( InNodeName , OutNodeName)
+                elif ( OutNodeName , InNodeName ) in GroomingTabDataBase["Links"]:
+                    keyW = ( OutNodeName , InNodeName )
+                else:
+                    print("$$ key not found $$")
+
+                if WaveLength in GroomingTabDataBase["Links"][keyW]:
                     # TODO: raise error --> this wavelength has been used
                     pass
                 else:
-                    GroomingTabDataBase["Links"][( InNodeName , OutNodeName)].append(WaveLength)
+                    GroomingTabDataBase["Links"][keyW].append(WaveLength)
             
             for i in range(len(Protection) - 1):
                 InNodeName = self.IdNodeMap[Protection[ i ]]
                 OutNodeName = self.IdNodeMap[Protection[ i + 1 ]]
 
-                if WaveLength in GroomingTabDataBase["Links"][( InNodeName , OutNodeName)]:
+                if ( InNodeName , OutNodeName) in GroomingTabDataBase["Links"]:
+                    keyP = ( InNodeName , OutNodeName)
+                elif ( OutNodeName , InNodeName ) in GroomingTabDataBase["Links"]:
+                    keyP = ( OutNodeName , InNodeName )
+                else:
+                    print("$$ key not found $$")
+
+                if WaveLength in GroomingTabDataBase["Links"][keyP]:
                     pass
                     # TODO: raise error --> this wavelength has been used
                 else:
-                    GroomingTabDataBase["Links"][( InNodeName , OutNodeName)].append(WaveLength)
+                    GroomingTabDataBase["Links"][keyP].append(WaveLength)
                 
             
 
@@ -3751,6 +3776,16 @@ class Ui_MainWindow(object):
     #         
         return remain
          
+    def failed_grooming_nodes():
+        # detecting node where grooming algorithm has been failed
+
+        # changing their icon based on their cluster
+
+        # NOTE: keep this in mind that you have to change icons againg when ever 
+        #   Service section of that node gets empty ( based on its degree ) 
+        # this should be done in another method ( manual service manipulations method in panels object)
+        pass
+        
         
     
     def grooming_button_fun(self):
@@ -3805,38 +3840,38 @@ class Ui_MainWindow(object):
                 return obj_dict
 
         net = copy.copy(self.network)
-        
+
         # Convert keys to String
         tuple_keys = list(net.PhysicalTopology.LinkDict.keys())
         for key in tuple_keys:
             net.PhysicalTopology.LinkDict[str(key)] = net.PhysicalTopology.LinkDict.pop(key)
-        
+
             
         ##############################################
         # Convert the Network object to JSON message
         data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
         # print(data)
-        
+
         decoded_network = Network.from_json(json.loads(data)) 
         str_keys = list(decoded_network.PhysicalTopology.LinkDict.keys())
         for key in str_keys:
             Lkey = list(key)
             ActualKey =( int(Lkey[1]) , int(Lkey[-2]) )
             decoded_network.PhysicalTopology.LinkDict[ActualKey] = decoded_network.PhysicalTopology.LinkDict.pop(key)
-        
+
         # assert False
         # This line tests whether the JSON encoded common object is reconstructable!
         decoded_n = Network.from_json(json.loads(data)) 
         assert(isinstance(decoded_n, Network))
-        
+
         # Establishing a socket.io connection for logging purposes
         sio.connect('http://localhost:5000')
-        
+
         ##Run the grooming function on the server
         # print('####################################################')
         # print('Transmitting data to server for client side grooming.')
         # res = requests.get('http://localhost:5000/grooming/', json = data)
-        
+
         # if res.ok:
             # print(res.json())
             # print('Grooming finished successfully!')
@@ -3845,7 +3880,7 @@ class Ui_MainWindow(object):
         print('Transmitting data to server to solve RWA planning.') 
         # Run the RWA planner on the server
         res = requests.get('http://localhost:5000/RWA/', json = data)
-        
+
         if res.ok:
             # print('####################################################')
             # print(json.dumps(res.json()))
@@ -3862,15 +3897,18 @@ class Ui_MainWindow(object):
             for key in str_keys:
                 decoded_network.LightPathDict[int(key)] = decoded_network.LightPathDict.pop(key)
             
-        
+
         sio.disconnect()
         time.sleep(3)
-        print('RWA finished successfully and data received in client') 
-        print('Sample WaveLength output', decoded_network.LightPathDict[0].WaveLength)
-        print('Sample Path output', decoded_network.LightPathDict[0].WorkingPath)
+        print('RWA finished and data received in client') 
+        try:
+            print('Sample WaveLength output', decoded_network.LightPathDict[0].WaveLength)
+            print('Sample Path output', decoded_network.LightPathDict[0].WorkingPath)
+        except:
+            pass
     
-
         self.fill_GroomingTabDataBase(decoded_network)
+
         
 
 
