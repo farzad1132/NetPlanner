@@ -3571,9 +3571,7 @@ class Ui_MainWindow(object):
 
 
     def print_r(self, obj):
-        with open("object.obj", 'rb') as handle:
-            pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        handle.close()
+        print(f" panels database : {DemandTabDataBase['Panels']}")
     
     def fill_lightpath(self):
         for i in range(4):
@@ -3734,13 +3732,13 @@ class Ui_MainWindow(object):
 
             # checking the lightpath is TP1H or MP1H
             if len(lightpath.ServiceIdList) == 1:
-                DemandTabDataBase["Panels"][Source][PanelId] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
-                DemandTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = TP1H_R(PanelId)
+                GroomingTabDataBase["Panels"][Source][PanelId] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
+                GroomingTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = TP1H_R(PanelId)
 
             else:
                 ClientCapacity = create_ClientsCapacityList(DemandId ,lightpath.ServiceIdList)
-                DemandTabDataBase["Panels"][Source][PanelId] = MP1H_L(ClientCapacity, "100GE", lightpath.ServiceIdList, [DemandId for i in range(10)], id)
-                DemandTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = MP1H_R(PanelId)
+                GroomingTabDataBase["Panels"][Source][PanelId] = MP1H_L(ClientCapacity, "100GE", lightpath.ServiceIdList, [DemandId for i in range(10)], id)
+                GroomingTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = MP1H_R(PanelId)
 
             # filling GroomingTabDataBase ( Links or lambdas part )
             for i in range(len(Working) - 1):
@@ -3840,10 +3838,6 @@ class Ui_MainWindow(object):
         
     
     def grooming_button_fun(self):
-
-        print("before grooming")
-        for lightpath in self.network.LightPathDict.values():
-            print(lightpath.__dict__)
 
         RemainServices = self.grooming_fun(self.network)
         print(f"remained services : {RemainServices}")
