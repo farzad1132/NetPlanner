@@ -2280,55 +2280,75 @@ class Ui_MainWindow(object):
         #self.MapWidget.canvas.figure.clf()
         #self.MapWidget.canvas.axes.cla()
         #trick for legend!!!!!!
-        self.MapWidget.canvas.axes.plot(0, 0, ms=0.000000001, color = 'blue')
+        """ self.MapWidget.canvas.axes.plot(0, 0, ms=0.000000001, color = 'blue')
         self.MapWidget.canvas.axes.legend(loc = 'best')
         self.MapWidget.canvas.axes.plot(0, 0, ms=0.000000001, color = 'red')
-        self.MapWidget.canvas.axes.legend(loc = 'best')
+        self.MapWidget.canvas.axes.legend(loc = 'best') """
         #trick for legend!!!!!!
 
     def DemandMap_Change(self, Working = None, Protection = None):
         self.MapWidget.canvas.axes.cla()
         ####
         R = 6371 
-        self.loc_dict={}
-        for id, node in Data["Nodes"].items():
-            node_name = node["Node"]
-            location = node["Location"]
-            lat = location[0]
-            lon = location[1]
+        #self.loc_dict={}
+        Source = self.Demand_Source_combobox.currentText()
+        Destination = self.Demand_Destination_combobox.currentText()
+
+        for node in Data["Nodes"].values():
+            #node_name = node["Node"]
+            #location = node["Location"]
+            #lat = location[0]
+            #lon = location[1]
+            #x = R * cos(lat) * cos(lon)
+            #y = R * cos(lat) * sin(lon)
+            #self.loc_dict[node_name] = [x, y]
+           # self.MapWidget.canvas.axes.annotate(node_name, xy=(1, 1), xytext=(x+0.1, y+0.1))
+
+            
+
+            NodeName = node["Node"]
+            id = self.NodeIdMap[NodeName]
+            lat, lon = self.IdLocationMap[id]
+
             x = R * cos(lat) * cos(lon)
             y = R * cos(lat) * sin(lon)
-            self.loc_dict[node_name] = [x, y]
-           # self.MapWidget.canvas.axes.annotate(node_name, xy=(1, 1), xytext=(x+0.1, y+0.1))
-            self.MapWidget.canvas.axes.text(x + 80, y - 100, node_name, {'color': 'blueviolet'})
-            self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
+
+            if NodeName == Source or NodeName == Destination:
+                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'gold')
+            else:
+                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
+
+            self.MapWidget.canvas.axes.text(x + 80, y - 100, NodeName, {'color': 'blueviolet'})
 
         for key in Data["Links"].keys():
-            loc_source = key[0]
-            loc_destination = key[1]
+            InNodeName = key[0]
+            OutNodeName = key[1]
 
-            source_node_loc = self.loc_dict[loc_source]
-            destination_node_loc = self.loc_dict[loc_destination]
-            xl = [source_node_loc[0], destination_node_loc[0]]
-            yl = [source_node_loc[1], destination_node_loc[1]]
+            InNodeId = self.NodeIdMap[InNodeName]
+            OutNodeId = self.NodeIdMap[OutNodeName]
+
+            InNodeLocation = self.IdLocationMap[InNodeId]
+            OutNodeLocation = self.IdLocationMap[OutNodeId]
+
+            xIn = R * cos(InNodeLocation[0]) * cos(InNodeLocation[1])
+            yIn = R * cos(InNodeLocation[0]) * sin(InNodeLocation[1])
+
+            xOut = R * cos(OutNodeLocation[0]) * cos(OutNodeLocation[1])
+            yOut = R * cos(OutNodeLocation[0]) * sin(OutNodeLocation[1])
+
+            xl = [xIn, xOut]
+            yl = [yIn, yOut]
             self.MapWidget.canvas.axes.plot(xl,yl, c='black')
 
         #self.MapWidget.canvas.axes.plot(G)
         self.MapWidget.canvas.axes.get_xaxis().set_visible(False)
         self.MapWidget.canvas.axes.get_yaxis().set_visible(False)
         self.MapWidget.canvas.axes.set_frame_on(False)
-        #self.MapWidget.canvas.figure.clf()
-        #self.MapWidget.canvas.axes.cla()
-        #trick for legend!!!!!!
-        #self.MapWidget.canvas.axes.plot(0, 0, ms=0.000000001, color = 'blue')
-        #self.MapWidget.canvas.axes.legend(loc = 'best')
-        #self.MapWidget.canvas.axes.plot(0, 0, ms=0.000000001, color = 'red')
-        #self.MapWidget.canvas.axes.legend(loc = 'best')
-        #trick for legend!!!!!!
-        ####
-        Source = self.Demand_Source_combobox.currentText()
-        Destination = self.Demand_Destination_combobox.currentText()
-        R = 6371 
+        
+
+
+        
+        """ R = 6371 
         self.loc_dict={}
         for node in Data["Nodes"].items():
             #print(node)
@@ -2339,12 +2359,11 @@ class Ui_MainWindow(object):
             lon = location[1]
             x = R * cos(lat) * cos(lon)
             y = R * cos(lat) * sin(lon)
-            self.loc_dict[node_ID] = [x, y]
+            self.loc_dict[node_ID] = [x, y] """
+
+
            # self.MapWidget.canvas.axes.annotate(node_name, xy=(1, 1), xytext=(x+0.1, y+0.1))
-            if node_name == Source or node_name == Destination:
-                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'gold')
-            else:
-                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
+            
 
             #self.setupUi(MainWindow)
             #setMinimumSize(QtCore.QSize(1125, 817))
@@ -2354,35 +2373,44 @@ class Ui_MainWindow(object):
 
         x_list_W = []
         y_list_W = []
-        
         if Working != None:
             for key in Working:
-                x1 = self.loc_dict[key][0]
+
+                lat = self.IdLocationMap[key][0]
+                lon = self.IdLocationMap[key][1]
+
+                x1 = R * cos(lat) * cos(lon)
+                y1 = R * cos(lat) * sin(lon)
+
                 x_list_W.append(x1)
-                y1 = self.loc_dict[key][1]
                 y_list_W.append(y1)
 
             
-            self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.3, linewidth=6, label="Working")
+            self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.8, linewidth=3, label="Working")
             self.MapWidget.canvas.axes.legend(loc = 'best')
 
         x_list_P = []
         y_list_P = []
         if Protection != None:
             for key in Protection:
-                x1 = self.loc_dict[key][0]
+
+                lat = self.IdLocationMap[key][0]
+                lon = self.IdLocationMap[key][1]
+
+                x1 = R * cos(lat) * cos(lon)
+                y1 = R * cos(lat) * sin(lon)
+
                 x_list_P.append(x1)
-                y1 = self.loc_dict[key][1]
                 y_list_P.append(y1)
            
-            self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.3, linewidth=6, label="Protection")
+            self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.8, linewidth=3, label="Protection")
             self.MapWidget.canvas.axes.legend(loc = 'best')
         
         
         self.window.resize(1919, 1000)
-        #print(self.window.geometry())
+        print(self.window.geometry())
         self.window.resize(1920, 1000)
-        #print(self.window.geometry())
+        print(self.window.geometry())
         #plt.pause(0.0005)
         #plt.ion()
         #self.MapWidget.canvas.axes.plot.update()
@@ -2770,7 +2798,7 @@ class Ui_MainWindow(object):
 
         # detecting Lightpath id, working path and protection path
         LightpathId = CurrentText.split('#')[0]
-        LightpathId = LightpathId.strip()
+        LightpathId =int( LightpathId.strip() )
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
 
@@ -3168,6 +3196,9 @@ class Ui_MainWindow(object):
             for i in range(LinkData["NumSpan"]):
                 self.network.PhysicalTopology.LinkDict[(self.NodeIdMap[LinkId[0]], self.NodeIdMap[LinkId[1]])].put_fiber_Type(LinkData["Length"][i],
                  LinkData["Loss"][i], LinkData["Dispersion"][i], LinkData["Beta"][i], LinkData["Gamma"][i], i)
+        
+        # for using in panels widget
+        Data["NodeIdMap"] = self.NodeIdMap
     
     def update_Demand_lightpath_list(self):
         #if Data["Stage_flag"] == "Grooming":
@@ -3539,9 +3570,10 @@ class Ui_MainWindow(object):
 
 
 
-    def print_r(self):
-        print(self.loc_dict)
-        print(f"new map :{self.IdLocationMap}")
+    def print_r(self, obj):
+        with open("object.obj", 'rb') as handle:
+            pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        handle.close()
     
     def fill_lightpath(self):
         for i in range(4):
@@ -3623,6 +3655,13 @@ class Ui_MainWindow(object):
                 panelid = get_panel_num(Source)
                 ClientCapacity = create_ClientsCapacityList(DemandId, lightpath.ServiceIdList)
                 LineCapacity = len(ClientCapacity) * 10
+                
+                ClientLen = len(ClientCapacity) 
+                if ClientLen != 10:
+                    for i in range(10 - ClientLen):
+                        ClientCapacity.append(0)
+                
+                
                 DemandTabDataBase["Panels"][Source][panelid] = MP1H_L(ClientCapacity, LineCapacity, lightpath.ServiceIdList, [DemandId for i in range(10)], id, LightPath_flag= 1)
 
                 ## debug section
@@ -3652,7 +3691,14 @@ class Ui_MainWindow(object):
         def create_ClientsCapacityList(DemandId, ServiceIdList):
             OutputList = []
             for ServiceId in ServiceIdList:
-                ServiceObj = self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict[ServiceId]
+                
+                # FIXME: very important
+                if ServiceId in self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict:
+                    ServiceObj = self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict[ServiceId]
+                else:
+                    ServiceObj = 0
+                ##
+
                 if isinstance(ServiceObj, Network.Traffic.Demand.G_10):
                     OutputList.append("10GE")
                 else:
@@ -3730,6 +3776,11 @@ class Ui_MainWindow(object):
                     # TODO: raise error --> this wavelength has been used
                 else:
                     GroomingTabDataBase["Links"][keyP].append(WaveLength)
+
+        for tup in GroomingTabDataBase["LightPathes"]:
+            for key in GroomingTabDataBase["LightPathes"][tup]:
+                GroomingTabDataBase["LightPathes"][tup][int(key)] = GroomingTabDataBase["LightPathes"][tup].pop(key)
+
                 
             
 
@@ -3789,13 +3840,25 @@ class Ui_MainWindow(object):
         
     
     def grooming_button_fun(self):
+
+        print("before grooming")
+        for lightpath in self.network.LightPathDict.values():
+            print(lightpath.__dict__)
+
         RemainServices = self.grooming_fun(self.network)
+        print(f"remained services : {RemainServices}")
 
         self.fill_DemandTabDataBase(self.network)
 
         
 
+
+        
+
     def RWA_button_fun(self):
+
+        for lightpath in self.network.LightPathDict.values():
+            print(lightpath.__dict__)
 
         # socketio event handling
 
@@ -3906,8 +3969,12 @@ class Ui_MainWindow(object):
             print('Sample Path output', decoded_network.LightPathDict[0].WorkingPath)
         except:
             pass
-    
+        
+        for lightpath in decoded_network.LightPathDict.values():
+            print(lightpath.__dict__)
+
         self.fill_GroomingTabDataBase(decoded_network)
+        
 
         
 

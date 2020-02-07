@@ -178,7 +178,7 @@ class customlabel(QLabel):
             # self.LightPathId = Network.Lightpath.get_id()
 
             # adding lightpath to network obj
-            Data["NetworkObj"].add_lightpath(self.nodename, self.Destination, 100, [ids[1]], "100GE", ids[0])
+            Data["NetworkObj"].add_lightpath(Data["NodeIdMap"][self.nodename], Data["NodeIdMap"][self.Destination], 100, [ids[1]], "100GE", ids[0])
             self.LightPathId = max(Data["NetworkObj"].LightPathDict.keys())
 
             # adding lightpath to internal database

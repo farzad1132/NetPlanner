@@ -17,6 +17,6 @@ class  MapWidget ( QWidget ):
         
         vertical_layout = QVBoxLayout() 
         vertical_layout.addWidget(self.canvas)
-        self.toolbar = NavigationToolbar(self.canvas, self)
+        #self.toolbar = NavigationToolbar(self.canvas, self)
         self.canvas.axes = self.canvas.figure.add_subplot(111) 
         self.setLayout(vertical_layout)

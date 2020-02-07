@@ -242,7 +242,13 @@ class customlabel(QLabel):
                 DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity += self.STM_64_BW
             #DemandTabDataBase["Panels"][self.nodename][self.id].Line = "100GE"
             DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = servicetype
+
+            ServiceListLen = len(DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList)
+            if self.ClientNum >= ServiceListLen:
+                for i in range(ServiceListLen - self.ClientNum + 1):
+                    DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList.append(None) 
             DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = ids[1]
+            print(f"debug in MP1H--> demandid : {ids[0]}")
             DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = ids[0]
             self.modify_ServiceList(ids, self.nodename, self.Destination)
 
@@ -252,7 +258,7 @@ class customlabel(QLabel):
 
                 # updating networkobj
                 ServiceIdList = [ids[1]]
-                Data["NetworkObj"].add_lightpath(self.nodename, self.Destination, 10, ServiceIdList, "100GE", ids[0])
+                Data["NetworkObj"].add_lightpath(Data["NodeIdMap"][self.nodename], Data["NodeIdMap"][self.Destination], 10, ServiceIdList, "100GE", ids[0])
                 LightPathId = max(Data["NetworkObj"].LightPathDict.keys())
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = LightPathId
 
