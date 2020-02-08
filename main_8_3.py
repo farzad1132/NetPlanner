@@ -26,6 +26,7 @@ import time
 import copy , math, warnings
 
 from add_node import Ui_add_node_window
+from grooming_window import Grooming_Window
 
 from data import *
 from Node_View_Data import Panel_Data
@@ -3782,7 +3783,7 @@ class Ui_MainWindow(object):
                 
             
 
-    def grooming_fun(self, n):
+    def grooming_fun(self, n, MP1H_Threshold):
         # n: network object
 
         service_lower10=[]
@@ -3790,7 +3791,7 @@ class Ui_MainWindow(object):
         output_10=[]                                            #(DemandId,Service)
         output_100=[]
         remain=[]
-        threshold=70
+        threshold = MP1H_Threshold
         for i in n.TrafficMatrix.DemandDict:
             y=[]
             z=[]
@@ -3837,9 +3838,17 @@ class Ui_MainWindow(object):
         
         
     
-    def grooming_button_fun(self):
+    def grooming_button_fun(self):        
 
-        RemainServices = self.grooming_fun(self.network)
+        self.groomingwindow_dialog = QtWidgets.QDialog()
+        self.grooming_window_ui = Grooming_Window()
+        self.grooming_window_ui.setupUi(self.groomingwindow_dialog)
+        self.groomingwindow_dialog.show()
+        
+
+    def grooming_procedure(self, MP1H_Threshold):
+
+        RemainServices = self.grooming_fun(self.network, int(MP1H_Threshold))
         print(f"remained services : {RemainServices}")
 
         self.fill_DemandTabDataBase(self.network)
@@ -3981,7 +3990,8 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QWidget()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
-    # NOTE: dont forget this
+    # NOTE: don't forget this
+    # added
     Data["ui"] = ui
     MainWindow.show()
     sys.exit(app.exec_())
