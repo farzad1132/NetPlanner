@@ -532,12 +532,13 @@ class Network:
         
         @classmethod
         def from_json(cls, data):
-            instance = cls(Source = data['Source'], Destination = data['Destination'], id = data['id'], Capacity = data['Capacity'],
+            instance = cls(Source = data['Source'], Destination = data['Destination'], Capacity = data['Capacity'],
                            ServiceIdList = data['ServiceIdList'], Type = data['Type'], DemandId = data['DemandId'],
                            WorkingPath = data['WorkingPath'], ProtectionPath = data['ProtectionPath'],
                            WaveLength = data['WaveLength'], RegeneratorNode_w = data['RegeneratorNode_w'],
                            RegeneratorNode_p = data['RegeneratorNode_p'], SNR_th = data['SNR_th'], 
                            LaunchPower = data['LaunchPower'], ModulationType = data['ModulationType'], SNR_w = data['SNR_w'], SNR_p = data['SNR_p'])
+            instance.__dict__['id'] = data['id']
             return instance
 
         ReferenceId = 0
