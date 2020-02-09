@@ -2812,6 +2812,10 @@ class Ui_MainWindow(object):
 
         WorkingPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Working"]
         ProtectionPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Protection"]
+        RG_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_w"]
+        RG_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_p"]
+        SNR_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_w"]
+        SNR_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_p"]
 
         #print(f"here for calling demand change function <before> ")
 
@@ -3713,11 +3717,19 @@ class Ui_MainWindow(object):
             Protection = lightpath.ProtectionPath
             DemandId = lightpath.DemandId
             WaveLength = lightpath.WaveLength
+            RG_w = lightpath.RegeneratorNode_w
+            RG_p = lightpath.RegeneratorNode_p
+            SNR_w = lightpath.SNR_w
+            SNR_p = lightpath.SNR_p
 
-            # adding pathes to to GroomingTabDataBase
+            # adding pathes to to GroomingTabDataBase ( lightpath part )
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id] = {}
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["Working"] = Working
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["Protection"] = Protection
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["RG_w"] = RG_w
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["RG_p"] = RG_p
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_w"] = SNR_w
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_p"] = SNR_p
 
             # Detecting Degrees and Filling GroomingTabDataBase ( Panels Part )
 

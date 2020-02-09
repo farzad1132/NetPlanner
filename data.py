@@ -147,7 +147,8 @@ DemandTabDataBase["Panels"] = {}
 GroomingTabDataBase = {}
 GroomingTabDataBase["LightPathes"] = {}
 # format:
-#        { ( <SourceName> , <DestinationName> ) : { <Id> : { Working: <WorkingList> , Protection: <ProtectionList> }}}
+#        { ( <SourceName> , <DestinationName> ) : { <Id> : { Working: <WorkingList> , Protection: <ProtectionList>, SNR_w = <Working SNR list>, SNR_p :<Protection SNR list> 
+#                                                   RG_w = <Working Regenerator list>, RG_w = <Protection Regenerator list> }}}
 # <WorkingList> and <DestinationList> are List of Ids
 GroomingTabDataBase["Panels"] = {}
 # format:
