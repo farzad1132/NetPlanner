@@ -43,9 +43,9 @@ class Network:
         
     
     def put_results(self, id, WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p,
-                    SNR_th, LaunchPower, ModulationType, SNR):
+                    SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p):
         
-        self.LightPathDict[id].set_results(WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p, SNR_th, LaunchPower, ModulationType, SNR)
+        self.LightPathDict[id].set_results(WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p, SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p)
 
 
     class Topology:
@@ -285,7 +285,7 @@ class Network:
                     self.Beta = Beta
                     self.Gamma = Gamma
                     self.PositionInLink = PositionInLink
-                    self.Snr
+                    self.Snr = Snr
             
         class Cluster:
 
@@ -532,12 +532,12 @@ class Network:
         
         @classmethod
         def from_json(cls, data):
-            instance = cls(Source = data['Source'], Destination = data['Destination'], Capacity = data['Capacity'],
+            instance = cls(Source = data['Source'], Destination = data['Destination'], id = data['id'], Capacity = data['Capacity'],
                            ServiceIdList = data['ServiceIdList'], Type = data['Type'], DemandId = data['DemandId'],
                            WorkingPath = data['WorkingPath'], ProtectionPath = data['ProtectionPath'],
                            WaveLength = data['WaveLength'], RegeneratorNode_w = data['RegeneratorNode_w'],
                            RegeneratorNode_p = data['RegeneratorNode_p'], SNR_th = data['SNR_th'], 
-                           LaunchPower = data['LaunchPower'], ModulationType = data['ModulationType'], SNR = data['SNR'])
+                           LaunchPower = data['LaunchPower'], ModulationType = data['ModulationType'], SNR_w = data['SNR_w'], SNR_p = data['SNR_p'])
             return instance
 
         ReferenceId = 0
@@ -558,7 +558,7 @@ class Network:
 
         def __init__(self, Source, Destination, Capacity, ServiceIdList, Type,  DemandId, WorkingPath = None, ProtectionPath = None,
                         WaveLength = None, RegeneratorNode_w = None, RegeneratorNode_p = None, IgnoringNodesIdList = None,
-                        SNR_th = None, LaunchPower = None, ModulationType = None, SNR = None, MandatoryNodesIdList = None):
+                        SNR_th = None, LaunchPower = None, ModulationType = None, SNR_w = None, SNR_p = None, MandatoryNodesIdList = None):
 
             self.id = Network.Lightpath.ReferenceId
             
@@ -576,12 +576,13 @@ class Network:
             self.ServiceIdList = ServiceIdList
             self.ModulationType = ModulationType
             self.Type = Type
-            self.SNR = SNR
+            self.SNR_w = SNR_w
+            self.SNR_p = SNR_p
             self.MandatoryNodesIdList = MandatoryNodesIdList
             self.IgnoringNodesIdList = IgnoringNodesIdList
         
         def set_results(self, WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p,
-         SNR_th, LaunchPower, ModulationType, SNR):
+         SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p):
 
             self.WorkingPath = WorkingPath
             self.ProtectionPath = ProtectionPath
@@ -591,7 +592,8 @@ class Network:
             self.SNR_th = SNR_th
             self.LaunchPower = LaunchPower
             self.ModulationType = ModulationType
-            self.SNR = SNR
+            self.SNR_w = SNR_w
+            self.SNR_p = SNR_p
 
 
 
