@@ -2287,7 +2287,8 @@ class Ui_MainWindow(object):
         self.MapWidget.canvas.axes.legend(loc = 'best') """
         #trick for legend!!!!!!
 
-    def DemandMap_Change(self, Working = None, Protection = None):
+    def DemandMap_Change(self, Working = None, Protection = None, 
+        WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None):
         self.MapWidget.canvas.axes.cla()
         ####
         R = 6371 
@@ -2320,6 +2321,7 @@ class Ui_MainWindow(object):
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
 
             self.MapWidget.canvas.axes.text(x + 80, y - 100, NodeName, {'color': 'blueviolet'})
+
 
         for key in Data["Links"].keys():
             InNodeName = key[0]
@@ -2387,8 +2389,9 @@ class Ui_MainWindow(object):
                 y_list_W.append(y1)
 
             
-            self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.8, linewidth=3, label="Working")
+            self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label="Working")
             self.MapWidget.canvas.axes.legend(loc = 'best')
+
 
         x_list_P = []
         y_list_P = []
@@ -2404,10 +2407,41 @@ class Ui_MainWindow(object):
                 x_list_P.append(x1)
                 y_list_P.append(y1)
            
-            self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.8, linewidth=3, label="Protection")
+            self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label="Protection")
             self.MapWidget.canvas.axes.legend(loc = 'best')
-        
-        
+        ####new edited
+        if WorkingRegeneratorsList != None:
+            for key in WorkingRegeneratorsList:
+
+                lat = self.IdLocationMap[key][0]
+                lon = self.IdLocationMap[key][1]
+
+                x = R * cos(lat) * cos(lon)
+                y = R * cos(lat) * sin(lon)
+
+                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'green')
+
+        if ProtectionRegenaratorsList != None:
+            for key in ProtectionRegenaratorsList:
+
+                lat = self.IdLocationMap[key][0]
+                lon = self.IdLocationMap[key][1]
+
+                x = R * cos(lat) * cos(lon)
+                y = R * cos(lat) * sin(lon)
+
+                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'green')
+
+        if WorkingSNR != None:
+            SNRList = str(WorkingSNR)
+            self.MapWidget.canvas.axes.text(-4810, -1250, "SNR = " + SNRList, ha='left', wrap=True )
+
+
+        if ProtectionSNR != None:
+            SNRList = str(ProtectionSNR)
+            self.MapWidget.canvas.axes.text(-4810, -1550, "SNR = " + SNRList, ha='left', wrap=True )
+
+        #new edited till here
         self.window.resize(1919, 1000)
         print(self.window.geometry())
         self.window.resize(1920, 1000)
@@ -2812,11 +2846,16 @@ class Ui_MainWindow(object):
 
         WorkingPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Working"]
         ProtectionPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Protection"]
+        RG_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_w"]
+        RG_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_p"]
+        SNR_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_w"]
+        SNR_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_p"]
 
         #print(f"here for calling demand change function <before> ")
 
         # calling Demand map change function
-        self.DemandMap_Change(WorkingPath, ProtectionPath)
+        self.DemandMap_Change(WorkingPath, ProtectionPath, WorkingRegeneratorsList = RG_w, ProtectionRegenaratorsList = RG_p
+                                ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p)
 
     # MHA EDITION:
     def SaveTM_fun(self):
@@ -3713,11 +3752,19 @@ class Ui_MainWindow(object):
             Protection = lightpath.ProtectionPath
             DemandId = lightpath.DemandId
             WaveLength = lightpath.WaveLength
+            RG_w = lightpath.RegeneratorNode_w
+            RG_p = lightpath.RegeneratorNode_p
+            SNR_w = lightpath.SNR_w
+            SNR_p = lightpath.SNR_p
 
-            # adding pathes to to GroomingTabDataBase
+            # adding pathes to to GroomingTabDataBase ( lightpath part )
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id] = {}
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["Working"] = Working
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["Protection"] = Protection
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["RG_w"] = RG_w
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["RG_p"] = RG_p
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_w"] = SNR_w
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_p"] = SNR_p
 
             # Detecting Degrees and Filling GroomingTabDataBase ( Panels Part )
 
