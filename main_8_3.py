@@ -2309,6 +2309,8 @@ class Ui_MainWindow(object):
             
 
             NodeName = node["Node"]
+            print(f" here in map change --> nodename :{NodeName}")
+            print(f"working SNR : {WorkingSNR}")
             id = self.NodeIdMap[NodeName]
             lat, lon = self.IdLocationMap[id]
 
@@ -2714,6 +2716,7 @@ class Ui_MainWindow(object):
                 Id = temp_dic["ID"][Row]
                 Node = temp_dic["Node"][Row]
                 Location = str(temp_dic["Location"][Row]).split(',')
+                print(f"bug spot---> location : {Location}")
                 Location = list(map(lambda x : float(x), Location))
 
                 Type = temp_dic["Type"][Row]
@@ -3091,7 +3094,7 @@ class Ui_MainWindow(object):
     def initialize_GroomingTabDataBase(self, Source, Destination):
         GroomingTabDataBase["LightPathes"][(Source, Destination)] = {}
         GroomingTabDataBase["Panels"][Source] = {}
-        GroomingTabDataBase["Links"][(Source, Destination)] = []
+        #GroomingTabDataBase["Links"][(Source, Destination)] = []
         
     
 
@@ -3225,6 +3228,7 @@ class Ui_MainWindow(object):
         self.IdLocationMap = {}     # {id : [x , y]}
 
         for NodeData in Data["Nodes"].values():
+            
             self.NodeIdMap[NodeData["Node"]] = self.network.Topology.Node.ReferenceId
             self.IdNodeMap[self.network.Topology.Node.ReferenceId] = NodeData["Node"]
             self.IdLocationMap[self.network.Topology.Node.ReferenceId] = NodeData["Location"]
@@ -3232,6 +3236,9 @@ class Ui_MainWindow(object):
         
         for LinkId , LinkData in Data["Links"].items():
             self.network.PhysicalTopology.add_link(self.NodeIdMap[LinkId[0]], self.NodeIdMap[LinkId[1]], LinkData["NumSpan"])
+            
+            # NOTE : here we are initializing link part of GroomingTabDataBase
+            GroomingTabDataBase["Links"][(LinkId[0], LinkId[1])] = []
 
             for i in range(LinkData["NumSpan"]):
                 self.network.PhysicalTopology.LinkDict[(self.NodeIdMap[LinkId[0]], self.NodeIdMap[LinkId[1]])].put_fiber_Type(LinkData["Length"][i],
@@ -3611,7 +3618,10 @@ class Ui_MainWindow(object):
 
 
     def print_r(self, obj):
-        print(f" panels database : {DemandTabDataBase['Panels']}")
+        with open('NetworkObj.obj', 'wb') as handle:
+            pickle.dump(self.network, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        handle.close()
+        
     
     def fill_lightpath(self):
         for i in range(4):
@@ -3798,7 +3808,7 @@ class Ui_MainWindow(object):
                 elif ( OutNodeName , InNodeName ) in GroomingTabDataBase["Links"]:
                     keyW = ( OutNodeName , InNodeName )
                 else:
-                    print("$$ key not found $$")
+                    print(f"$$ key not found $$ and key : {( InNodeName , OutNodeName)}")
 
                 if WaveLength in GroomingTabDataBase["Links"][keyW]:
                     # TODO: raise error --> this wavelength has been used
@@ -3815,7 +3825,7 @@ class Ui_MainWindow(object):
                 elif ( OutNodeName , InNodeName ) in GroomingTabDataBase["Links"]:
                     keyP = ( OutNodeName , InNodeName )
                 else:
-                    print("$$ key not found $$")
+                    print(f"$$ key not found $$ and key : {( InNodeName , OutNodeName)}")
 
                 if WaveLength in GroomingTabDataBase["Links"][keyP]:
                     pass
