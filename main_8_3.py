@@ -2309,8 +2309,6 @@ class Ui_MainWindow(object):
             
 
             NodeName = node["Node"]
-            print(f" here in map change --> nodename :{NodeName}")
-            print(f"working SNR : {WorkingSNR}")
             id = self.NodeIdMap[NodeName]
             lat, lon = self.IdLocationMap[id]
 
@@ -2322,8 +2320,14 @@ class Ui_MainWindow(object):
             else:
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
 
-            self.MapWidget.canvas.axes.text(x + 80, y - 100, NodeName, {'color': 'blueviolet'})
-
+            #self.MapWidget.canvas.axes.text(x + 0.02*x, y - 0.05*y, NodeName, {'color': 'blueviolet'})
+            self.MapWidget.canvas.axes.text(x, y, NodeName, {'color': 'blueviolet'}, withdash=True,
+                dashdirection= 1,
+                dashlength= 0.0005,
+                rotation= 30,
+                dashrotation= 30 ,
+                dashpush= 10
+                )
 
         for key in Data["Links"].keys():
             InNodeName = key[0]
@@ -2390,8 +2394,12 @@ class Ui_MainWindow(object):
                 x_list_W.append(x1)
                 y_list_W.append(y1)
 
-            
-            self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label="Working")
+            if WorkingSNR != None:
+                SNRList = str(WorkingSNR)
+                snr_label = "Working SNR = " + SNRList
+                self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label=snr_label)
+            else:
+                self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label="Working")
             self.MapWidget.canvas.axes.legend(loc = 'best')
 
 
@@ -2408,8 +2416,13 @@ class Ui_MainWindow(object):
 
                 x_list_P.append(x1)
                 y_list_P.append(y1)
-           
-            self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label="Protection")
+
+            if ProtectionSNR != None:
+                SNRList = str(ProtectionSNR)
+                snr_label1 = "Protection SNR = " + SNRList          
+                self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label=snr_label1)
+            else:
+                self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label="Protection")
             self.MapWidget.canvas.axes.legend(loc = 'best')
         ####new edited
         if WorkingRegeneratorsList != None:
@@ -2434,19 +2447,33 @@ class Ui_MainWindow(object):
 
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'green')
 
-        if WorkingSNR != None:
+        """ if WorkingSNR != None:
             SNRList = str(WorkingSNR)
-            self.MapWidget.canvas.axes.text(-4810, -1250, "SNR = " + SNRList, ha='left', wrap=True )
+            self.MapWidget.canvas.axes.text(-4810, -1250, "SNR = " + SNRList, ha='left', wrap=True, withdash=True,
+                dashdirection= 1,
+                dashlength= 0.00005,
+                rotation= 0,
+                dashrotation= 30 ,
+                dashpush= 10
+                ) """
+            #self.MapWidget.canvas.axes.text(-4810, -1250, "SNR = " + SNRList, ha='left', wrap=True )
 
 
-        if ProtectionSNR != None:
+        """ if ProtectionSNR != None:
             SNRList = str(ProtectionSNR)
-            self.MapWidget.canvas.axes.text(-4810, -1550, "SNR = " + SNRList, ha='left', wrap=True )
+            self.MapWidget.canvas.axes.text(-4810, -1550, "SNR = " + SNRList, ha='left', wrap=True, withdash=True,
+                dashdirection= 1,
+                dashlength= 0.0005,
+                rotation= 0,
+                dashrotation= 30 ,
+                dashpush= 10
+                )
+            self.MapWidget.canvas.axes.text(-4810, -1550, "SNR = " + SNRList, ha='left', wrap=True ) """
 
         #new edited till here
         self.window.resize(1919, 1000)
         print(self.window.geometry())
-        self.window.resize(1920, 1000)
+        self.window.resize(1920, 1000)  
         print(self.window.geometry())
         #plt.pause(0.0005)
         #plt.ion()
