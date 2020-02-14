@@ -2290,37 +2290,23 @@ class Ui_MainWindow(object):
     def DemandMap_Change(self, Working = None, Protection = None, 
         WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None):
         self.MapWidget.canvas.axes.cla()
-        ####
         R = 6371 
-        #self.loc_dict={}
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
 
         for node in Data["Nodes"].values():
-            #node_name = node["Node"]
-            #location = node["Location"]
-            #lat = location[0]
-            #lon = location[1]
-            #x = R * cos(lat) * cos(lon)
-            #y = R * cos(lat) * sin(lon)
-            #self.loc_dict[node_name] = [x, y]
-           # self.MapWidget.canvas.axes.annotate(node_name, xy=(1, 1), xytext=(x+0.1, y+0.1))
 
-            
 
             NodeName = node["Node"]
             id = self.NodeIdMap[NodeName]
-            lat, lon = self.IdLocationMap[id]
-
-            x = R * cos(lat) * cos(lon)
-            y = R * cos(lat) * sin(lon)
+            x, y = self.IdLocationMap[id]
 
             if NodeName == Source or NodeName == Destination:
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'gold')
             else:
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
+            
 
-            #self.MapWidget.canvas.axes.text(x + 0.02*x, y - 0.05*y, NodeName, {'color': 'blueviolet'})
             self.MapWidget.canvas.axes.text(x, y, NodeName, {'color': 'blueviolet'}, withdash=True,
                 dashdirection= 1,
                 dashlength= 0.0005,
@@ -2336,14 +2322,8 @@ class Ui_MainWindow(object):
             InNodeId = self.NodeIdMap[InNodeName]
             OutNodeId = self.NodeIdMap[OutNodeName]
 
-            InNodeLocation = self.IdLocationMap[InNodeId]
-            OutNodeLocation = self.IdLocationMap[OutNodeId]
-
-            xIn = R * cos(InNodeLocation[0]) * cos(InNodeLocation[1])
-            yIn = R * cos(InNodeLocation[0]) * sin(InNodeLocation[1])
-
-            xOut = R * cos(OutNodeLocation[0]) * cos(OutNodeLocation[1])
-            yOut = R * cos(OutNodeLocation[0]) * sin(OutNodeLocation[1])
+            xIn , yIn = self.IdLocationMap[InNodeId]
+            xOut, yOut = self.IdLocationMap[OutNodeId]
 
             xl = [xIn, xOut]
             yl = [yIn, yOut]
@@ -2355,41 +2335,13 @@ class Ui_MainWindow(object):
         self.MapWidget.canvas.axes.set_frame_on(False)
         
 
-
-        
-        """ R = 6371 
-        self.loc_dict={}
-        for node in Data["Nodes"].items():
-            #print(node)
-            node_ID = node[0]
-            node_name = node[1]["Node"]
-            location = node[1]["Location"]
-            lat = location[0]
-            lon = location[1]
-            x = R * cos(lat) * cos(lon)
-            y = R * cos(lat) * sin(lon)
-            self.loc_dict[node_ID] = [x, y] """
-
-
-           # self.MapWidget.canvas.axes.annotate(node_name, xy=(1, 1), xytext=(x+0.1, y+0.1))
-            
-
-            #self.setupUi(MainWindow)
-            #setMinimumSize(QtCore.QSize(1125, 817))
-            #self.MapWidget.canvas.figure.subplots_adjust()
-            #FigureCanvas.resize(255,0,0)
-
-
         x_list_W = []
         y_list_W = []
         if Working != None:
             for key in Working:
 
-                lat = self.IdLocationMap[key][0]
-                lon = self.IdLocationMap[key][1]
+                x1, y1 = self.IdLocationMap[key]
 
-                x1 = R * cos(lat) * cos(lon)
-                y1 = R * cos(lat) * sin(lon)
 
                 x_list_W.append(x1)
                 y_list_W.append(y1)
@@ -2408,11 +2360,8 @@ class Ui_MainWindow(object):
         if Protection != None:
             for key in Protection:
 
-                lat = self.IdLocationMap[key][0]
-                lon = self.IdLocationMap[key][1]
+                x1, y1 = self.IdLocationMap[key]
 
-                x1 = R * cos(lat) * cos(lon)
-                y1 = R * cos(lat) * sin(lon)
 
                 x_list_P.append(x1)
                 y_list_P.append(y1)
@@ -2424,61 +2373,24 @@ class Ui_MainWindow(object):
             else:
                 self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label="Protection")
             self.MapWidget.canvas.axes.legend(loc = 'best')
-        ####new edited
+
+            
         if WorkingRegeneratorsList != None:
             for key in WorkingRegeneratorsList:
 
-                lat = self.IdLocationMap[key][0]
-                lon = self.IdLocationMap[key][1]
+                x, y = self.IdLocationMap[key]
 
-                x = R * cos(lat) * cos(lon)
-                y = R * cos(lat) * sin(lon)
 
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'green')
 
         if ProtectionRegenaratorsList != None:
             for key in ProtectionRegenaratorsList:
 
-                lat = self.IdLocationMap[key][0]
-                lon = self.IdLocationMap[key][1]
-
-                x = R * cos(lat) * cos(lon)
-                y = R * cos(lat) * sin(lon)
+                x, y = self.IdLocationMap[key]
 
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'green')
 
-        """ if WorkingSNR != None:
-            SNRList = str(WorkingSNR)
-            self.MapWidget.canvas.axes.text(-4810, -1250, "SNR = " + SNRList, ha='left', wrap=True, withdash=True,
-                dashdirection= 1,
-                dashlength= 0.00005,
-                rotation= 0,
-                dashrotation= 30 ,
-                dashpush= 10
-                ) """
-            #self.MapWidget.canvas.axes.text(-4810, -1250, "SNR = " + SNRList, ha='left', wrap=True )
-
-
-        """ if ProtectionSNR != None:
-            SNRList = str(ProtectionSNR)
-            self.MapWidget.canvas.axes.text(-4810, -1550, "SNR = " + SNRList, ha='left', wrap=True, withdash=True,
-                dashdirection= 1,
-                dashlength= 0.0005,
-                rotation= 0,
-                dashrotation= 30 ,
-                dashpush= 10
-                )
-            self.MapWidget.canvas.axes.text(-4810, -1550, "SNR = " + SNRList, ha='left', wrap=True ) """
-
-        #new edited till here
-        self.window.resize(1919, 1000)
-        print(self.window.geometry())
-        self.window.resize(1920, 1000)  
-        print(self.window.geometry())
-        #plt.pause(0.0005)
-        #plt.ion()
-        #self.MapWidget.canvas.axes.plot.update()
-        #self.MapWidget.canvas.update()
+        self.MapWidget.canvas.draw()
     
     def OK_button_fun(self):
         SubNodes = []
@@ -3250,6 +3162,13 @@ class Ui_MainWindow(object):
 
     def PhysicalTopologyToObject(self):
 
+        R = 6371
+        def scale_calculation(lat, lon):
+            x = R * cos(lat) * cos(lon)
+            y = R * cos(lat) * sin(lon)
+            return [x,y]
+
+
         self.NodeIdMap = {}        # { name: id }
         self.IdNodeMap = {}        # {id : name}
         self.IdLocationMap = {}     # {id : [x , y]}
@@ -3258,7 +3177,7 @@ class Ui_MainWindow(object):
             
             self.NodeIdMap[NodeData["Node"]] = self.network.Topology.Node.ReferenceId
             self.IdNodeMap[self.network.Topology.Node.ReferenceId] = NodeData["Node"]
-            self.IdLocationMap[self.network.Topology.Node.ReferenceId] = NodeData["Location"]
+            self.IdLocationMap[self.network.Topology.Node.ReferenceId] = scale_calculation(NodeData["Location"][0], NodeData["Location"][1])
             self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["Type"])
         
         for LinkId , LinkData in Data["Links"].items():
