@@ -2073,6 +2073,8 @@ class Ui_MainWindow(object):
 
         self.Demand_LineList.clicked['QModelIndex'].connect(self.Demand_LineList_fun)
 
+        Data["Demand_first_run"] = False
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -3240,7 +3242,12 @@ class Ui_MainWindow(object):
         if self.Demand_Destination_combobox.currentText() != '':
             self.UpdateDemand_ServiceList()
             self.update_Demand_lightpath_list()
-            self.set_demand_panels()
+
+            if Data["Demand_first_run"] is True:
+                self.set_demand_panels()
+            else:
+                Data["Demand_first_run"] = True
+
 
         self.DemandMap_Change()
         
