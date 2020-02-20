@@ -15,8 +15,8 @@ Data["General"] = {}
 Data["RowCount"] = 20
 Data["Last_Node_ID"] = 0
 Data["Last_Link_ID"] = 0
-Data["Nodes"] = {}  # nodes keys are their name
-Data["Links"] = {}  # links keys are general id
+Data["Nodes"] = {}  # TODO: write this parts structure
+Data["Links"] = {}  # TODO: write this parts structure
 Data["Grouping"] = {}
 
 # keys are row numbers except nodes and links
@@ -127,3 +127,142 @@ Data["100GE"]["DataSection"]["Quantity"] = {}
 Data["100GE"]["DataSection"]["Granularity"] = {}
 Data["100GE"]["DataSection"]["\u03bb"]={}
 Data["100GE"]["DataSection"]["SLA"]={}
+
+
+DemandTabDataBase = {}
+DemandTabDataBase["Source_Destination"] = {}
+# format:
+#       { source :  [ Destinations ]}
+DemandTabDataBase["Services"] = {} # dynamic one : changes with user actions
+# format: 
+#       {(Tehran, karaj): { (1,3) : '[1 , 3] # 100G ' , ... }, ...}         (1 , 3) ---> 1 : Demand Id , 3 : Service Id
+DemandTabDataBase["Services_static"] = {}   # same as Services part but difference is that its not changing with user actions
+DemandTabDataBase["Lightpathes"] = {}
+# format:
+#       {(Tehran, Karaj): [ Lightpath Id # 100GE , ...]}
+DemandTabDataBase["Panels"] = {}
+# format:
+#       { Tehran:{1: MP2X, 2: MP1H, ..} , Karaj:{}, ...}
+
+GroomingTabDataBase = {}
+GroomingTabDataBase["LightPathes"] = {}
+# format:
+#        { ( <SourceName> , <DestinationName> ) : { <Id> : { Working: <WorkingList> , Protection: <ProtectionList>, SNR_w = <Working SNR list>, SNR_p :<Protection SNR list> 
+#                                                   RG_w = <Working Regenerator list>, RG_w = <Protection Regenerator list> }}}
+# <WorkingList> and <DestinationList> are List of Ids
+GroomingTabDataBase["Panels"] = {}
+# format:
+#       { <NodeName> : { ( <DegreeName>, <DegreeId> ): { <PanelId> : <PanelObject>}}}
+# <DegreeName> : by this Node LightPath exits from the Source
+
+GroomingTabDataBase["Links"] = {}
+# format:
+#       { ( <InNodeName> , <OutNodeName> ) : <LambdaList> }
+# <LambdaList> : list of lambda ids
+
+
+class MP2D_L:
+    def __init__(self, ClientsCapacity = [0, 0], LineCapacity = 0, LineType = "200GE"):
+        self.ClientsCapacity = ClientsCapacity
+        self.LineCapacity = LineCapacity
+        self.LineType = LineType
+    
+    def add_client(self, ClientNum , LineCapacity):
+        self.ClientsCapacity[ClientNum] = "100GE"
+        self.LineCapacity = LineCapacity
+
+    def del_client(self, ClientNum, LineCapacity):
+        self.self.ClientsCapacity[ClientNum] = 0
+        self.LineCapacity = LineCapacity
+    
+    def set_line_type(self, Type):
+        self.LineType = Type
+
+class MP2D_R:
+    def __init__(self, LeftId):
+        self.LeftId = LeftId
+
+class MP2X_L:
+    def __init__(self, ClientsType = [0 for i in range(16)], LinesCapacity = [0, 0]):
+        self.ClientsType = ClientsType
+        self.LinesCapacity = LinesCapacity
+    
+    def add_client(self, ClientNum, Type):
+        self.ClientsType[ClientNum] = Type
+    
+    def del_client(self, ClientNum):
+        self.ClientsType[ClientNum] = 0
+
+class MP2X_R:
+    def __init__(self, LeftId):
+        self.LeftId = LeftId
+
+class MP1H_L:
+    def __init__(self, ClientsCapacity = None, LineCapacity = 0, ServiceIdList = None, 
+    DemandIdList = None, LightPathId = None, LightPath_flag = 0):
+
+        if ClientsCapacity is None:
+            self.ClientsCapacity = [0 for i in range(10)]
+        else:
+            self.ClientsCapacity = ClientsCapacity
+        
+        if ServiceIdList is None:
+            self.ServiceIdList = [None for i in range(10)]
+        else:
+            self.ServiceIdList = ServiceIdList
+        
+        if DemandIdList is None:
+            self.DemandIdList = [None for i in range(10)]
+        else:
+            self.DemandIdList = DemandIdList
+        
+
+        self.LightPath_flag = LightPath_flag
+        self.LightPathId = LightPathId
+        self.LineCapacity = LineCapacity
+    
+    def add_client(self, ClientNum, Type, LineCapacity):
+        # type can be 10GE or stm64
+        self.ClientsCapacity[ClientNum] = Type
+        self.LineCapacity = LineCapacity
+    
+    def del_client(self, ClientNum, LineCapacity):
+        self.ClientsCapacity[ClientNum] = 0
+        self.LineCapacity = LineCapacity
+
+class MP1H_R:
+    def __init__(self, LeftId):
+        self.LeftId = LeftId
+
+class TP1H_L:
+    def __init__(self, DemandId = None, ServiceId = None, Line = 0, LightPathId = None):
+        self.LightPathId = LightPathId
+        self.DemandId = DemandId
+        self.ServiceId = ServiceId
+        self.Line = Line
+
+class TP1H_R:
+    def __init__(self, LeftId):
+        self.LeftId = LeftId
+
+class SC:
+    def __init__(self):
+        pass
+
+class BAF3:
+    def __init__(self):
+        pass
+
+class PAF3:
+    def __init__(self):
+        pass
+
+class LAF3:
+    def __init__(self):
+        pass
+
+
+# TODO: this class is uncompleted
+class TP2X:
+    def __init__(self):
+        pass

@@ -3,8 +3,7 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 import sys
 import os
-from Node_View_Data import Panel_Data
-from data import Data
+from data import *
 
 
 
@@ -189,8 +188,8 @@ class MP2D_panel_L(QWidget):
                 uppanelnum = str(int(panelnum) + 1)
                 uppernum = self.id[0] + self.id[1] + uppanelnum
 
-            Panel_Data[self.id].setWidget(BLANK_panel(self.id ,  self.nodename))
-            Panel_Data[uppernum].setWidget(BLANK_panel(self.id ,  self.nodename))
+            Data[self.id].setWidget(BLANK_panel(self.id ,  self.nodename))
+            Data[uppernum].setWidget(BLANK_panel(self.id ,  self.nodename))
             if Data["Nodes"][self.nodename]["Panels"][self.id]["Sockets"]["Line"] == 2:
                 self.countdown_fun(self.nodename,"100GE",2)
                 self.modify_linelist(self.nodename,-1)
@@ -203,18 +202,18 @@ class MP2D_panel_L(QWidget):
     def countdown_fun(self,nodename,header,value):
         degree = self.id[1]
         Data["Nodes"][nodename]["Client_Services"]["data"][degree][header] += value
-        Panel_Data["ClientList"].clear()
+        Data["ClientList"].clear()
         for service in list(Data["Nodes"][nodename]["Client_Services"]["data"][degree].keys()):
             if Data["Nodes"][nodename]["Client_Services"]["data"][degree][service] !=0 :
-                Panel_Data["ClientList"].addItem(str(Data["Nodes"][nodename]["Client_Services"]["data"][degree][service])+" * "+service)
+                Data["ClientList"].addItem(str(Data["Nodes"][nodename]["Client_Services"]["data"][degree][service])+" * "+service)
     
     def modify_linelist(self,nodename,value):
         degree = self.id[1]
         Data["Nodes"][nodename]["Line_Services"][degree]["2*OTU4"] += value
-        Panel_Data["LineList"].clear()
+        Data["LineList"].clear()
         for service in list(Data["Nodes"][nodename]["Line_Services"][degree].keys()):
             if Data["Nodes"][nodename]["Line_Services"][degree][service] != 0:
-                Panel_Data["LineList"].addItem(str(Data["Nodes"][nodename]["Line_Services"][degree][service]) + " * "+service)
+                Data["LineList"].addItem(str(Data["Nodes"][nodename]["Line_Services"][degree][service]) + " * "+service)
 
 # remember to replace default label with custom label
 # 
@@ -265,7 +264,7 @@ class customlabel(QLabel):
             if Data["Nodes"][self.nodename]["Panels"][self.id]["Sockets"]["Line"] == 2:
                 self.modify_linelist(self.nodename,+1)
                 # TODO: doing sth with line socket ( changing its color to green )
-                Panel_Data[self.id].widget().label_line.setPixmap(QPixmap(os.path.join("MP2D_panel", "line_green.png")))
+                Data[self.id].widget().label_line.setPixmap(QPixmap(os.path.join("MP2D_panel", "line_green.png")))
 
             # TODO: be Careful !!!!!
             self.setAcceptDrops(False)  
@@ -290,7 +289,7 @@ class customlabel(QLabel):
                 if Data["Nodes"][self.nodename]["Panels"][self.id]["Sockets"]["Line"] == 1:
                     self.modify_linelist(self.nodename,-1)
                     # TODO: doing sth with line socket ( changing its color to default )
-                    Panel_Data[self.id].widget().label_line.setPixmap(QPixmap(os.path.join("MP2D_panel", "line.png")))
+                    Data[self.id].widget().label_line.setPixmap(QPixmap(os.path.join("MP2D_panel", "line.png")))
                     
 
             elif Data["Nodes"][self.nodename]["Panels"][self.id]["Sockets"][self.text] == "red":
@@ -300,15 +299,15 @@ class customlabel(QLabel):
     def countdown_fun(self,nodename,header,value):
         degree = self.id[1]
         Data["Nodes"][nodename]["Client_Services"]["data"][degree][header] += value
-        Panel_Data["ClientList"].clear()
+        Data["ClientList"].clear()
         for service in list(Data["Nodes"][nodename]["Client_Services"]["data"][degree].keys()):
             if Data["Nodes"][nodename]["Client_Services"]["data"][degree][service] !=0 :
-                Panel_Data["ClientList"].addItem(str(Data["Nodes"][nodename]["Client_Services"]["data"][degree][service])+" * "+service)
+                Data["ClientList"].addItem(str(Data["Nodes"][nodename]["Client_Services"]["data"][degree][service])+" * "+service)
     
     def modify_linelist(self,nodename,value):
         degree = self.id[1]
         Data["Nodes"][nodename]["Line_Services"][degree]["2*OTU4"] += value
-        Panel_Data["LineList"].clear()
+        Data["LineList"].clear()
         for service in list(Data["Nodes"][nodename]["Line_Services"][degree].keys()):
             if Data["Nodes"][nodename]["Line_Services"][degree][service] != 0:
-                Panel_Data["LineList"].addItem(str(Data["Nodes"][nodename]["Line_Services"][degree][service]) + " * "+service)
+                Data["LineList"].addItem(str(Data["Nodes"][nodename]["Line_Services"][degree][service]) + " * "+service)

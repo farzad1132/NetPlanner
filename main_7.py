@@ -18,10 +18,11 @@ import xlrd
 import xlsxwriter
 from pandas import ExcelWriter 
 from newcheck import  Ui_checking
+from Common_Object_def import Network
 
 from add_node import Ui_add_node_window
 
-from data import Data
+from data import Data, DemandTabDataBase
 from Node_View_Data import Panel_Data
 
 
@@ -81,8 +82,8 @@ class Backend_map(QObject):
     @Slot(str)
     def change_tab_to4(self,degreename):
         print(">>>>>>",degreename)
-        Panel_Data["TabWidget"].setCurrentIndex(3)
-        Panel_Data["SelectNodeCombo"].setCurrentText(degreename.strip())
+        Data["TabWidget"].setCurrentIndex(3)
+        Data["SelectNodeCombo"].setCurrentText(degreename.strip())
         ui.SelectNode_combo_change()
 
 
@@ -464,8 +465,8 @@ class Ui_MainWindow(object):
         self.add_node_button.clicked.connect(self.add_node_button_fun)
         self.m = folium.Map(location=[35.6892,51.3890],zoom_start=6)
         self.m.save("map.html")
-        Panel_Data["Map_Var"] = self.m
-        Panel_Data["Web_Engine"] = self.webengine
+        Data["Map_Var"] = self.m
+        Data["Web_Engine"] = self.webengine
         self.webengine.load(QUrl.fromLocalFile(os.path.abspath('map.html')))
         self.webengine.show()
 
@@ -509,31 +510,32 @@ class Ui_MainWindow(object):
 
         self.OpenTopology_button.clicked.connect(self.OpenTopology_fun)
 
-        Panel_Data["mdi_11"] = self.mdi_11
-        Panel_Data["mdi_11_flag"] = False
-        Panel_Data["mdi_12"] = self.mdi_12
-        Panel_Data["mdi_12_flag"] = False
-        Panel_Data["mdi_13"] = self.mdi_13
-        Panel_Data["mdi_13_flag"] = False
-        Panel_Data["mdi_14"] = self.mdi_14
-        Panel_Data["mdi_14_flag"] = False
+        Data["mdi_11"] = self.mdi_11
+        Data["mdi_11_flag"] = False
+        Data["mdi_12"] = self.mdi_12
+        Data["mdi_12_flag"] = False
+        Data["mdi_13"] = self.mdi_13
+        Data["mdi_13_flag"] = False
+        Data["mdi_14"] = self.mdi_14
+        Data["mdi_14_flag"] = False
 
         self.ShelfTab.currentChanged["int"].connect(self.Shelf_tab_clicked)
 
         self.SelectNode_combo.currentIndexChanged["int"].connect(self.SelectNode_combo_change)
 
-        Panel_Data["first_run_flag"] = False
+        Data["first_run_flag"] = False
+        Data["demand_first_run_flag"] = False
 
-        Panel_Data["ClientList"] = self.ClientList
-        Panel_Data["LineList"] = self.LineList
+        Data["ClientList"] = self.ClientList
+        Data["LineList"] = self.LineList
 
         #self.ShelfTab.setStyleSheet("QTabBar::tab:selected {background-color: #4FA600}")
 
-        self.filter.clicked.connect(self.printev)
+        Data["TabWidget"] = self.tabWidget
 
-        Panel_Data["TabWidget"] = self.tabWidget
+        Data["SelectNodeCombo"] = self.SelectNode_combo
 
-        Panel_Data["SelectNodeCombo"] = self.SelectNode_combo
+        self.network = Network()
 
         #TODO: edited
         self.listWidget.clicked['QModelIndex'].connect(self.list_click)
@@ -711,17 +713,14 @@ class Ui_MainWindow(object):
         #TODO: also change button color after above procedure
 
 
-    def printev(self):
-        print(Data["Grouping"])
-
     def SelectNode_combo_change(self):
         self.ShelfTab.setCurrentIndex(0)
-        if Panel_Data["first_run_flag"] == True:
+        if Data["first_run_flag"] == True:
             self.set_panels()
 
         # degree 1 Grooming
         
-        nodename  = self.SelectNode_combo.currentText()
+        '''nodename  = self.SelectNode_combo.currentText()
         print("we are in grooming:",nodename)
         if Data["Nodes"][nodename]["Client_Services"]["flag"]["1"] == False:
             self.calculate_services(nodename,0)
@@ -734,7 +733,7 @@ class Ui_MainWindow(object):
         self.LineList.clear()
         for service in list(Data["Nodes"][nodename]["Line_Services"]["1"].keys()):
             if Data["Nodes"][nodename]["Line_Services"]["1"][service] != 0:
-                self.LineList.addItem(str(Data["Nodes"][nodename]["Line_Services"]["1"][service]) + " * "+service)
+                self.LineList.addItem(str(Data["Nodes"][nodename]["Line_Services"]["1"][service]) + " * "+service)'''
 
 
     def set_panels(self):
@@ -746,40 +745,40 @@ class Ui_MainWindow(object):
                 if "1"+str(i)+str(j) in Data["Nodes"][nodename]["Panels"]:
                     panel = Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Name"]
                     if panel == "SC":
-                        Panel_Data["1"+str(i)+str(j)].setWidget(SC_panel("1"+str(i)+str(j),nodename))
+                        Data["1"+str(i)+str(j)].setWidget(SC_panel("1"+str(i)+str(j),nodename))
                     elif panel == "BAF3":
-                        Panel_Data["1"+str(i)+str(j)].setWidget(BAF3_panel("1"+str(i)+str(j),nodename))
+                        Data["1"+str(i)+str(j)].setWidget(BAF3_panel("1"+str(i)+str(j),nodename))
                     elif panel == "LAF3":
-                        Panel_Data["1"+str(i)+str(j)].setWidget(LAF3_panel("1"+str(i)+str(j),nodename))
+                        Data["1"+str(i)+str(j)].setWidget(LAF3_panel("1"+str(i)+str(j),nodename))
                     elif panel == "PAF3":
-                        Panel_Data["1"+str(i)+str(j)].setWidget(PAF3_panel("1"+str(i)+str(j),nodename))
+                        Data["1"+str(i)+str(j)].setWidget(PAF3_panel("1"+str(i)+str(j),nodename))
                     elif panel == "MP2X":
-                        Panel_Data["1"+str(i)+str(j)].setWidget(MP2X_panel("1"+str(i)+str(j),nodename))
+                        Data["1"+str(i)+str(j)].setWidget(MP2X_panel("1"+str(i)+str(j),nodename))
                     elif panel == "MP2D":
                         position = Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Position"]
                         if position == "L":
 
-                            Panel_Data["1"+str(i)+str(j)].setWidget(MP2D_panel_L("1"+str(i)+str(j),nodename))
+                            Data["1"+str(i)+str(j)].setWidget(MP2D_panel_L("1"+str(i)+str(j),nodename))
                             if Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Client1"] == "green":
-                                Panel_Data["1"+str(i)+str(j)].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
+                                Data["1"+str(i)+str(j)].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
                             elif Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Client1"] == "red":
-                                Panel_Data["1"+str(i)+str(j)].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_red.png")))
+                                Data["1"+str(i)+str(j)].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_red.png")))
 
                             if Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Client2"] == "green":
-                                Panel_Data["1"+str(i)+str(j)].widget().label_client2.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
+                                Data["1"+str(i)+str(j)].widget().label_client2.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
                             elif Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Client2"] == "red":
-                                Panel_Data["1"+str(i)+str(j)].widget().label_client2.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_red.png")))
+                                Data["1"+str(i)+str(j)].widget().label_client2.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_red.png")))
 
                             if Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Line"] == 2:
-                                Panel_Data["1"+str(i)+str(j)].widget().label_line.setPixmap(QPixmap(os.path.join("MP2D_panel", "line_green.png")))
+                                Data["1"+str(i)+str(j)].widget().label_line.setPixmap(QPixmap(os.path.join("MP2D_panel", "line_green.png")))
                         
                         elif position == "R":
-                            Panel_Data["1"+str(i)+str(j)].setWidget(MP2D_panel_R("1"+str(i)+str(j),nodename))
+                            Data["1"+str(i)+str(j)].setWidget(MP2D_panel_R("1"+str(i)+str(j),nodename))
 
                     elif panel == "TP2X":
-                        Panel_Data["1"+str(i)+str(j)].setWidget(TP2X_panel("1"+str(i)+str(j),nodename))
+                        Data["1"+str(i)+str(j)].setWidget(TP2X_panel("1"+str(i)+str(j),nodename))
                 else:
-                    Panel_Data["1"+str(i)+str(j)].setWidget(BLANK_panel("1"+str(i)+str(j), nodename))
+                    Data["1"+str(i)+str(j)].setWidget(BLANK_panel("1"+str(i)+str(j), nodename))
         
 
 
@@ -818,60 +817,22 @@ class Ui_MainWindow(object):
 
     def main_tab_clicked(self,index):
         if index == 3:
-            Panel_Data["width"] = MainWindow.geometry().width()
-            Panel_Data["height"] = MainWindow.geometry().height()
-            if Panel_Data["first_run_flag"] == False:
+            if Data["first_run_flag"] == False:
                 for i in range(1,5):
                     self.shelfset(i)
-                    Panel_Data["mdi_1"+str(i)+"_flag"] = True
+                    Data["mdi_1"+str(i)+"_flag"] = True
 
-            Panel_Data["first_run_flag"] = True
+            Data["first_run_flag"] = True
+        if index == 4:
+            pass
+            # TODO: run shelf set function for Demand Tab and turn its relevant flag on
     
 
     def Shelf_tab_clicked(self,index):
-        Panel_Data["width"] = MainWindow.geometry().width()
-        Panel_Data["height"] = MainWindow.geometry().height()
-        '''if Panel_Data["mdi_1"+str(index+1)+"_flag"] == False:
-            self.shelfset(index + 1)
-            Panel_Data["mdi_1"+str(index+1)+"_flag"] = True'''
+        Data["width"] = MainWindow.geometry().width()
+        Data["height"] = MainWindow.geometry().height()
 
-        # grooming
-        nodename = self.SelectNode_combo.currentText()
-        
-        #degree = degreenames[index]
-        if Data["Nodes"][nodename]["Client_Services"]["flag"][str(index+1)] == False:
-            self.calculate_services(nodename,index)
-        self.ClientList.clear()
-        for service in list(Data["Nodes"][nodename]["Client_Services"]["data"][str(index+1)].keys()):
-            if Data["Nodes"][nodename]["Client_Services"]["data"][str(index+1)][service] != 0:
-                self.ClientList.addItem(str(Data["Nodes"][nodename]["Client_Services"]["data"][str(index+1)][service])+" * "+service)
-
-        # grooming( line side )
-        self.LineList.clear()
-        for service in list(Data["Nodes"][nodename]["Line_Services"][str(index+1)].keys()):
-            if Data["Nodes"][nodename]["Line_Services"][str(index+1)][service] != 0:
-                self.LineList.addItem(str(Data["Nodes"][nodename]["Line_Services"][str(index+1)][service]) + " * "+service)
-
-
-
-        # TODO: be careful we doing this without any saving ( take care ! )
-    def calculate_services(self,nodename,index):
-        #degreenames = ["North","South","East","West"]
-        degreeName = str(index +1)
-        self.ser = {}                       # temporary calculation ( this is bad !!! )
-        if degreeName in Data["Nodes"][nodename]["Degree"]:
-            i = 0
-            for row in list(Data["Nodes"][nodename]["Degree"][degreeName].values()):
-                for header in self.all_headers:
-                    if i == 0:
-                        self.ser[header] = int(Data[header]["DataSection"]["Quantity"].get(row,0))
-                    else:
-                        self.ser[header] += int(Data[header]["DataSection"]["Quantity"].get(row,0))
-                i += 1
-        Data["Nodes"][nodename]["Client_Services"]["data"][str(index+1)].update(self.ser)
-        Data["Nodes"][nodename]["Client_Services"]["flag"][str(index+1)] = True
-
-
+        # TODO: Update Light Path list
                     
 
     
@@ -895,11 +856,6 @@ class Ui_MainWindow(object):
                 self.Traffic_matrix.setCurrentCell(int(row),i)
                 self.Traffic_matrix.setItem(int(row),i,QTableWidgetItem(cell_data))
             
-    
-        '''if item == "Day_1":
-            self.Traffic_matrix.setHorizontalHeaderLabels(Day_1["Headers"])
-        elif item == "Day_N":
-            self.Traffic_matrix.setHorizontalHeaderLabels(Day_N["Headers"])'''
 
     # MHA EDITION:
     def SaveTM_fun(self):
@@ -991,8 +947,6 @@ class Ui_MainWindow(object):
 
         #Close the Pandas Excel writer and output the Excel file.
         #writer.save()   
-    def getsecond(self,n):
-        return str(n[1])
 
     def LoadTM_fun(self):
         name = QFileDialog.getOpenFileName(MainWindow, "Load Traffic Matrix")
@@ -1053,6 +1007,100 @@ class Ui_MainWindow(object):
                             Data[m]["DataSection"][l1[k][j]][keys] = text
 
             #Data.update(Temp_data)
+    
+    def TrafficMatrixToObject(self):
+        RowsNumber = list(Data["General"]["DataSection"]["0"].keys())
+        ServiceTypes = ["E1", "STM_1_Electrical", "STM_1_Optical", "STM_4", "STM_16", "STM_64", "FE", "1GE", "10GE",
+                           "40GE", "100GE"]
+
+        SubHeaders = [["Quantity", "SLA"], ["Quantity", "SLA"], ["Quantity", "λ", "SLA"],
+                  ["Quantity", "λ", "concat.", "SLA"], ["Quantity", "λ", "concat.", "SLA"],
+                  ["Quantity", "λ", "concat.", "SLA"],
+                  ["Quantity", "Granularity_xVC12", "Granularity_xVC4", "λ", "SLA"],
+                  ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"],
+                  ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"]]
+
+        for Row in RowsNumber:
+            id = Data["General"]["DataSection"]["0"][Row]
+            Source = Data["General"]["DataSection"]["1"][Row]
+            Destination = Data["General"]["DataSection"]["2"][Row]
+
+            # TODO: find Type in Traffic Matrix
+            Type = None
+            i = 0
+            ServiceDict = {}
+            ServiceCount = 0
+            for service in ServiceTypes:
+                PropertyDict = {}
+                for PropNum in range(0,len(SubHeaders[i])):
+                    Prop = SubHeaders[i][PropNum]
+                    if PropNum == 0:
+                        ServiceCount += Data[service]["DataSection"][Prop][Row]
+                        PropertyDict[Prop] = ServiceCount
+                    else:
+                        PropertyDict[Prop] = Data[service]["DataSection"][Prop][Row]
+                i += 1
+                ServiceDict[service] = PropertyDict
+            self.network.TrafficMatrix.add_demand(id,Source,Destination,Type)
+
+            self.FillDemandTabDataBase_Services(Source, Destination, ServiceDict)
+
+            for service in list(ServiceDict.keys()):
+
+                Sla = ServiceDict[service["SLA"]]
+
+                if "λ" in ServiceDict[service]:
+                    Wavelength = ServiceDict[service]["λ"]
+                else:
+                    Wavelength = None
+                
+                if "Granularity_xVC12" in ServiceDict[service]:
+                    Granularity_xVC12 = ServiceDict[service]["Granularity_xVC12"]
+                else:
+                    Granularity_xVC12 = None
+                
+                if "Granularity_xVC4" in ServiceDict[service]:
+                    Granularity_xVC4 = ServiceDict[service]["Granularity_xVC4"]
+                else:
+                    Granularity_xVC4 = None
+                
+                if "Granularity" in ServiceDict[service]:
+                    Granularity = ServiceDict[service]["Granularity"]
+                else:
+                    Granularity = None
+                
+                IgnoringNodes = None
+
+                for i in range(ServiceDict[service]["Quantity"]):
+                    self.network.TrafficMatrix.DemandDict[id].add_service(service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
+                    
+    def FillDemandTabDataBase_Services(self, Source, Destination, ServiceDict):
+
+        DemandTabDataBase["Services"][(Source,Destination)] = []
+        for Service in ServiceDict.values():
+            Quantity = ServiceDict[Service]
+            item = str(Quantity) + " * " + str(Service)
+            DemandTabDataBase["Services"][(Source,Destination)].append(item)
+
+        DemandTabDataBase["Services"][(Source,Destination)] = DemandTabDataBase["Services"][(Destination,Source)]
+            
+
+
+    def PhysicalTopologyToObject(self):
+        for NodeData in Data["Nodes"].values():
+            self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["Type"])
+        
+        for LinkId , LinkData in Data["Links"]:
+            self.network.PhysicalTopology.add_link(LinkId[0], LinkId[1], LinkData["NumSpan"])
+
+            for i in range(LinkData["NumSpan"]):
+                self.network.PhysicalTopology.LinkDict[(LinkId[0], LinkId[1])].put_fiber_Type(LinkId[0], LinkId[1],
+                 LinkData["Length"][i], LinkData["Loss"][i], LinkData["Dispersion"][i], LinkData["Beta"][i], LinkData["Gamma"][i], 
+                 i, LinkData["Snr"][i])
+                
+
+
+
 
     def TM_CellChange_fun(self):
         row = self.Traffic_matrix.currentRow()
@@ -1100,15 +1148,6 @@ class Ui_MainWindow(object):
                 self.General_TM.setItem(int(row),j,QTableWidgetItem(cell_data))
     
     
-    
-        '''for i in range(Data[item]["ColumnCount"]):
-            column_name = Data[item]["Headers"][i].strip()
-            keys = Data[item]["DataSection"][column_name].keys()
-            for row in list(keys):
-                cell_data = Data[item]["DataSection"][column_name][row]
-                self.Traffic_matrix.setCurrentCell(int(row),i)
-                self.Traffic_matrix.setItem(int(row),i,QTableWidgetItem(cell_data))'''
-    
     def add_node_button_fun(self):
         self.addnode_dialog = QtWidgets.QDialog()
         self.ui = Ui_add_node_window()
@@ -1116,31 +1155,21 @@ class Ui_MainWindow(object):
         self.addnode_dialog.show()
     
     def insert_link_fun(self):
-        self.node_analysis()
-        self.link_analysis()
         added = []
         for id in list(Data["Links"].keys()):
-            source = Data["Links"][id]["Source"]
-            destination = Data["Links"][id]["Destination"]
+            source = id[0]
+            destination = id[1]
             source_cor = Data["Nodes"][source]["Coordinate"]
             destination_cor = Data["Nodes"][destination]["Coordinate"]
-            source_flag = Data["Nodes"][source]["CityFlag"]
-            destination_flag = Data["Nodes"][destination]["CityFlag"]
-            link_flag = Data["Links"][id]["CityFlag"]
             loc = [source_cor,destination_cor]
-            if source_flag == 0:
-                #folium.Marker(source_cor ,color = "blue", popup = "%s" %source).add_to(self.m)
-                #print(folium.Marker(source_cor,color = "blue", popup = "%s" %source))
-                if added.count(source) == 0:
-                    folium.Marker(source_cor,icon=folium.Icon(color="red"), popup=  "<h2>%s</h2>" %source).add_to(self.m)
-                    added.append(source)
-            if destination_flag == 0:
-                #folium.Marker(destination_cor ,icon = "home", popup = destination).add_to(self.m)
-                if added.count(destination) == 0:
-                    folium.Marker(destination_cor,icon=folium.Icon(color="red"),popup= "<h2>%s</h2>" %destination).add_to(self.m)
-                    added.append(destination)
-            if link_flag == 0:
-                folium.PolyLine(loc ,weight = 3,popup = "Link ID: %s"%(id),color = "black",opacity = 0.8).add_to(self.m)
+
+            # drawing nodes and links on map
+            folium.Marker(source_cor,icon=folium.Icon(color="red"), popup=  "<h2>%s</h2>" %source).add_to(self.m)
+            added.append(source)
+            folium.Marker(destination_cor,icon=folium.Icon(color="red"),popup= "<h2>%s</h2>" %destination).add_to(self.m)
+            added.append(destination)
+            folium.PolyLine(loc ,weight = 3,popup = "Link ID: %s"%(id),color = "black",opacity = 0.8).add_to(self.m)
+            
 
         self.m.save("map.html")
 
@@ -1255,138 +1284,7 @@ class Ui_MainWindow(object):
         self.webengine.load(QUrl.fromLocalFile(os.path.abspath('map.html')))
         self.webengine.show()
 
-    
-
-    def link_analysis(self):
-        # this function finds all links and fills link data section in backend
-
-        rows = list(Data["General"]["DataSection"]["0"].keys())
-        for row in rows:
-            id = Data["General"]["DataSection"]["0"][row]
-            if not(id in Data["Links"]):
-                source = Data["General"]["DataSection"]["1"][row]
-                destination = Data["General"]["DataSection"]["2"][row]
-                source_city = Data["Nodes"][source]["City"]
-                destination_city = Data["Nodes"][destination]["City"]
-                degree = Data["General"]["DataSection"]["8"][row]
-                degree_list = Data["Nodes"][source]["Degree"]
-
-
-                Data["Links"][id] = {}
-                Data["Links"][id]["Source"] = source
-                Data["Links"][id]["Destination"] = destination
-                if source_city == destination_city:
-                    Data["Links"][id]["CityFlag"] = 1               # this flag means source and destination are in same city
-                else:
-                    Data["Links"][id]["CityFlag"] = 0
-
-                # completing Node DataBase
-
-                '''source_key = Data["Nodes"][source]["Degree"] 
-                destination_key = Data["Nodes"][destination]["Degree"] 
-                source_key += 1
-                destination_key += 1
-                Data["Nodes"][source]["Degree_List"][str(source_key)] = source
-                Data["Nodes"][destination]["Degree_List"][str(destination_key)] = destination'''
-
-                if degree in degree_list:
-                     Data["Nodes"][source]["Degree"][degree][destination] = row
-                else:
-                    Data["Nodes"][source]["Degree"][degree] = {}
-                    Data["Nodes"][source]["Degree"][degree][destination] = row
-
-
-        print("links done")
-
-
-
-
-    
-    def node_analysis(self):
-
-        # this function finds all nodes and fill the node data section in our Backend
-        self.nodes = []
-        self.source_list = list(Data["General"]["DataSection"]["1"].values())
-        self.destination_list = list(Data["General"]["DataSection"]["2"].values())
-        for item in self.source_list:
-            if self.nodes.count(item) == 0:
-                self.nodes.append(item)
-        for item in self.destination_list:
-            if self.nodes.count(item) == 0:
-                self.nodes.append(item)
-        for node in self.nodes:
-            if not (node in Data["Nodes"]):
-                user_rec = "my_app_" + str(random.randint(0,1000000))
-                geolocator = Nominatim(user_agent=user_rec,timeout = random.randint(3,9))
-                location = geolocator.geocode("%s,iran" %node)
-                long = location.longitude
-                lat = location.latitude
-                loc = [lat,long]
-                item = node.split("-")
-                if len(item) == 2 and re.search("\d",item[1]) != None:
-                    city = item[0]
-                    flag = item[1]
-                else:
-                    city = item
-                    flag = 1
-                Data["Nodes"][node] = {}
-                Data["Nodes"][node]["ID"] = Data["Last_Node_ID"] + 1
-                Data["Nodes"][node]["City"] = city
-                Data["Nodes"][node]["Coordinate"] = loc
-                Data["Nodes"][node]["Degree"] = {}
-                Data["Nodes"][node]["Client_Services"] = {}
-                Data["Nodes"][node]["Client_Services"]["data"] = {}
-                Data["Nodes"][node]["Client_Services"]["data"]["1"] = {}
-                Data["Nodes"][node]["Client_Services"]["data"]["2"] = {}
-                Data["Nodes"][node]["Client_Services"]["data"]["3"] = {}
-                Data["Nodes"][node]["Client_Services"]["data"]["4"] = {}
-
-                Data["Nodes"][node]["Client_Services"]["flag"] = {}  # by this flag we make sure just one time we inserting TM data into Client_Service section
-                Data["Nodes"][node]["Client_Services"]["flag"]["1"] = False
-                Data["Nodes"][node]["Client_Services"]["flag"]["2"] = False
-                Data["Nodes"][node]["Client_Services"]["flag"]["3"] = False
-                Data["Nodes"][node]["Client_Services"]["flag"]["4"] = False
-
-                Data["Nodes"][node]["Line_Services"] = {}
-                Data["Nodes"][node]["Line_Services"]["1"] = {}
-                Data["Nodes"][node]["Line_Services"]["1"]["OTU2"] = 0
-                Data["Nodes"][node]["Line_Services"]["1"]["OTU4"] = 0
-                Data["Nodes"][node]["Line_Services"]["1"]["2*OTU4"] = 0
-                Data["Nodes"][node]["Line_Services"]["1"]["STM_64"] = 0
-
-                Data["Nodes"][node]["Line_Services"]["2"] = {}
-                Data["Nodes"][node]["Line_Services"]["2"]["OTU2"] = 0
-                Data["Nodes"][node]["Line_Services"]["2"]["OTU4"] = 0
-                Data["Nodes"][node]["Line_Services"]["2"]["2*OTU4"] = 0
-                Data["Nodes"][node]["Line_Services"]["2"]["STM_64"] = 0
-
-                Data["Nodes"][node]["Line_Services"]["3"] = {}
-                Data["Nodes"][node]["Line_Services"]["3"]["OTU2"] = 0
-                Data["Nodes"][node]["Line_Services"]["3"]["OTU4"] = 0
-                Data["Nodes"][node]["Line_Services"]["3"]["2*OTU4"] = 0
-                Data["Nodes"][node]["Line_Services"]["3"]["STM_64"] = 0
-
-                Data["Nodes"][node]["Line_Services"]["4"] = {}
-                Data["Nodes"][node]["Line_Services"]["4"]["OTU2"] = 0
-                Data["Nodes"][node]["Line_Services"]["4"]["OTU4"] = 0
-                Data["Nodes"][node]["Line_Services"]["4"]["2*OTU4"] = 0
-                Data["Nodes"][node]["Line_Services"]["4"]["STM_64"] = 0
-
-                Data["Nodes"][node]["Panels"] = {}
-                '''Data["Nodes"][node]["Panels"]["1"] = {} # 0: North
-                Data["Nodes"][node]["Panels"]["2"] = {}
-                Data["Nodes"][node]["Panels"]["3"] = {}
-                Data["Nodes"][node]["Panels"]["4"] = {} # 3 : West '''
-
-                if flag == '2':
-                    Data["Nodes"][node]["CityFlag"] = 1
-                else:
-                    Data["Nodes"][node]["CityFlag"] = 0
-                #Data["Nodes"][node]["Degree_List"] = {}
-                Data["Last_Node_ID"] += 1
-        #print(Data["Nodes"]["Tehran-1"])
-        print("Nodes done")
-        
+      
     def panelList_fun(self):
         for panel in self.panels_name:
             if panel != "SC":
@@ -1399,8 +1297,10 @@ class Ui_MainWindow(object):
         self.SelectNode_combo.addItems(nodesname)
 
     def SaveChanges_button_fun(self):
-        self.node_analysis()
-        self.link_analysis()
+
+        # filling Network Object
+        self.PhysicalTopologyToObject()
+        self.TrafficMatrixToObject()
 
         self.SelectNode_combo_fun()
 
@@ -1409,13 +1309,13 @@ class Ui_MainWindow(object):
         print("nodename:",nodename)
         for i in range(1,15):
             setattr(self,"panel_1" + str(shelfnum) + str(i),QMdiSubWindow())
-            Panel_Data["1"+str(shelfnum)+str(i)] = getattr(ui,"panel_1"+str(shelfnum)+str(i))
-            Panel_Data["1"+str(shelfnum)+str(i)].setWindowFlag(Qt.FramelessWindowHint)
-            Panel_Data["1"+str(shelfnum)+str(i)].setWidget(BLANK_panel("1"+str(shelfnum)+str(i), nodename))
+            Data["1"+str(shelfnum)+str(i)] = getattr(ui,"panel_1"+str(shelfnum)+str(i))
+            Data["1"+str(shelfnum)+str(i)].setWindowFlag(Qt.FramelessWindowHint)
+            Data["1"+str(shelfnum)+str(i)].setWidget(BLANK_panel("1"+str(shelfnum)+str(i), nodename))
             
-            Panel_Data["mdi_1"+str(shelfnum)].addSubWindow(Panel_Data["1"+str(shelfnum)+str(i)])              
+            Data["mdi_1"+str(shelfnum)].addSubWindow(Data["1"+str(shelfnum)+str(i)])              
 
-            Panel_Data["1"+str(shelfnum)+str(i)].show()
+            Data["1"+str(shelfnum)+str(i)].show()
 
 
     # obsoleted 
@@ -1423,13 +1323,13 @@ class Ui_MainWindow(object):
 
         for i in range(1,15):
             setattr(self,"panel_11"+str(i),QMdiSubWindow())
-            Panel_Data["11"+str(i)] = getattr(ui,"panel_11"+str(i))
-            Panel_Data["11"+str(i)].setWindowFlag(Qt.FramelessWindowHint)
-            Panel_Data["11"+str(i)].setWidget(BLANK_panel("11"+str(i)))
+            Data["11"+str(i)] = getattr(ui,"panel_11"+str(i))
+            Data["11"+str(i)].setWindowFlag(Qt.FramelessWindowHint)
+            Data["11"+str(i)].setWidget(BLANK_panel("11"+str(i)))
             
-            Panel_Data["mdi_11"].addSubWindow(Panel_Data["11"+str(i)])              
+            Data["mdi_11"].addSubWindow(Data["11"+str(i)])              
 
-            Panel_Data["11"+str(i)].show()
+            Data["11"+str(i)].show()
     
     
 

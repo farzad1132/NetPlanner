@@ -1,11 +1,65 @@
 class Network:
+
+    @classmethod
+    def from_json(cls, data):
+        instance = cls()
+        LightPathDict = dict(zip(data['LightPathDict'].keys(), list(map(Network.Lightpath.from_json, data['LightPathDict'].values()))))
+        instance.__dict__['PhysicalTopology'] = Network.Topology.from_json(data['PhysicalTopology'])
+        instance.__dict__['LightPathDict'] = LightPathDict
+        return instance
+
     def __init__(self):
 
         self.PhysicalTopology = self.Topology()
         self.TrafficMatrix = self.Traffic()
         
+        self.LightPathDict = {}
+
+    def add_lightpath(self, Source, Destination, Capacity, ServiceIdList, Type, DemandId,
+     MandatoryNodesIdList = None, IgnoringNodesIdList = None):
+
+        self.LightPathDict[Network.Lightpath.get_id()] = self.Lightpath(Source, Destination, Capacity, ServiceIdList, Type, DemandId, 
+        MandatoryNodesIdList= MandatoryNodesIdList, IgnoringNodesIdList= IgnoringNodesIdList)
+    
+    def del_lightpath(self, ServiceIdList):
+        
+        # this function corrects lightpaths id that their id is bigger than deleted lightpath id
+        def correct_UpperIds(id):
+            for UpperId in list(self.LightPathDict.keys()).sort():
+                if UpperId > id:
+                    self.LightPathDict[UpperId - 1] = self.LightPathDict.pop(UpperId)
+
+        # finding object that we want to delete
+        for id, lightpath in self.LightPathDict.items():
+            if lightpath.ServiceIdList == ServiceIdList:
+                del lightpath
+                if id in self.LightPathDict:
+                    self.LightPathDict.pop(id)
+                    correct_UpperIds(id)
+
+
+        # correcting ReferenceId
+        Network.Lightpath.update_id(-1)
+        
+    
+    def put_results(self, id, WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p,
+                    SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p):
+        
+        self.LightPathDict[id].set_results(WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p, SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p)
+
 
     class Topology:
+
+        @classmethod
+        def from_json(cls, data):
+            instance = cls()
+            NodeDict = dict(zip(data['NodeDict'].keys(), list(map(Network.Topology.Node.from_json, data['NodeDict'].values()))))
+            LinkDict = dict(zip(data['LinkDict'].keys(), list(map(Network.Topology.Link.from_json, data['LinkDict'].values()))))
+            ClusterDict = dict(zip(data['ClusterDict'].keys(), list(map(Network.Topology.Cluster.from_json, data['ClusterDict'].values()))))
+            instance.__dict__['NodeDict'] = NodeDict
+            instance.__dict__['LinkDict'] = LinkDict
+            instance.__dict__['ClusterDict'] = ClusterDict
+            return instance
 
         def __init__(self):
             self.NodeDict = {}
@@ -33,8 +87,6 @@ class Network:
             # deleting object from memory
             del self.NodeDict[NodeId]
 
-            # deleting node from NodeDict
-            self.NodeDict.pop(NodeId)
 
             # correcting Node ReferenceId
             Network.Topology.Node.ReferenceId -= 1
@@ -64,17 +116,17 @@ class Network:
                 # deleting links objects
                 del self.LinkDict[link_tuple]
 
-                # deleting link from LinkDict
-                self.LinkDict.pop(link_tuple)
             
             # finding containing cluster
             clusters = list(self.ClusterDict.items())
             ContainingCluster = list(filter(lambda x :  NodeId in x[1].SubNodesId , clusters))
+            print(self.ClusterDict[ContainingCluster[0][0]].SubNodesId)
+            if ContainingCluster != []:
 
-            IndexOfNode = self.ClusterDict[ContainingCluster].SubNodesId.index(NodeId)
-            
-            # deleting Node Id from SubNodesId List
-            self.ClusterDict[ContainingCluster].SubNodesId.pop(IndexOfNode)
+                IndexOfNode = self.ClusterDict[ContainingCluster[0][0]].SubNodesId.index(NodeId)
+                
+                # deleting Node Id from SubNodesId List
+                self.ClusterDict[ContainingCluster[0][0]].SubNodesId.pop(IndexOfNode)
         
         def del_link(self, InNode, OutNode):
 
@@ -88,15 +140,13 @@ class Network:
             # deleting Link Object from memory
             del self.LinkDict[link_tuple]
 
-            # deleting Link from LinkDict
-            self.LinkDict.pop(link_tuple)
 
             # Correcting neighbor Property in InNode and OutNode
-            index = self.NodeDict[InNode].Neighbor.index(OutNode)
-            self.NodeDict[InNode].Neighbor.pop(index)
+            index = self.NodeDict[InNode].Neighbors.index(OutNode)
+            self.NodeDict[InNode].Neighbors.pop(index)
 
-            index = self.NodeDict[OutNode].Neighbor.index(InNode)
-            self.NodeDict[OutNode].Neighbor.pop(index)
+            index = self.NodeDict[OutNode].Neighbors.index(InNode)
+            self.NodeDict[OutNode].Neighbors.pop(index)
         
         def del_cluster(self, GatewayId):
 
@@ -127,6 +177,16 @@ class Network:
 
 
         class Node:
+
+            @classmethod
+            def from_json(cls, data):
+                AmplifierList = list(map(Network.Topology.Node.Amplifier.from_json, data["AmplifierList"]))
+                instance = cls(Location = data['Location'], Type = data['Type'])
+                instance.__dict__['AmplifierList'] = AmplifierList
+                instance.__dict__['Neighbors'] = data['Neighbors']
+                instance.__dict__['Id'] = data['Id']
+                return instance
+
             ReferenceId = 0
             # Id must be an int number
             # Location format must be (lat,lng) in int
@@ -141,17 +201,32 @@ class Network:
                 self.AmplifierList = []
             
             
-            def add_amplifier(self,nf):
+            def add_amplifier(self, nf):
                 self.AmplifierList.append(self.Amplifier(nf))
 
 
             class Amplifier:
+                @classmethod
+                def from_json(cls, data):
+                    instance = cls(data['nf'])
+                    instance.__dict__['Id'] = data['Id']
+                    return instance
+
                 def __init__(self, nf):
                     self.Id = Id
                     
                     self.nf = nf        # nf : noise figure
             
         class Link:
+
+            @classmethod
+            def from_json(cls, data):
+                SpanObjList = list(map(Network.Topology.Link.Span.from_json, data["SpanObjList"]))
+                instance = cls(InNode = data['InNode'], OutNode = data['OutNode'], NumSpan = data['NumSpan'])
+                instance.__dict__['SpanObjList'] = SpanObjList
+                instance.__dict__['WaveLengthList'] = data['WaveLengthList']
+                return instance
+
             def __init__(self, InNode, OutNode, NumSpan):
 
                 self.InNode = InNode
@@ -162,10 +237,18 @@ class Network:
                 self.WaveLengthList = []
                 self.LightPathDict = {}    # in  { id : LightPath Object } format
 
-            def put_fiber_Type(self,SpanPosition, Length, Loss, Dispersion, Beta,Gamma, PositionInLink, Snr):
-                self.SpanObjList[SpanPosition].put_fiber_Type(Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr)
+            def put_fiber_Type(self, Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr = None):
+                self.SpanObjList[PositionInLink].put_fiber_Type(Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr)
+                # self.SpanObjList[PositionInLink].Length = 
             
             class Span:
+
+                @classmethod
+                def from_json(cls, data):
+                    instance = cls(data['InNode'], data['OutNode'], data['Length'],data['Loss'] ,data['Dispersion'], data['Beta'],
+                                   data['Gamma'], data['PositionInLink'], data['Snr'])
+                    return instance
+
                 def __init__(self, InNode, OutNode, Length = None, Loss = None, Dispersion = None, Beta = None,
                 Gamma = None, PositionInLink = 0, Snr = None):
 
@@ -183,7 +266,7 @@ class Network:
                     # 0 for this variable means first span in link and so on ...
                     self.PositionInLink = PositionInLink
 
-                def put_fiber_Type(self, Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr):
+                def put_fiber_Type(self, Length, Loss, Dispersion, Beta, Gamma, PositionInLink, Snr = None):
 
                     self.Length = Length
                     self.Loss = Loss
@@ -191,9 +274,16 @@ class Network:
                     self.Beta = Beta
                     self.Gamma = Gamma
                     self.PositionInLink = PositionInLink
-                    self.Snr
+                    self.Snr = Snr
             
         class Cluster:
+
+            @classmethod
+            def from_json(cls, data):
+                instance = cls(GatewayId = data['GatewayId'], SubNodesId = data['SubNodesId'], Color = data['Color'])
+                instance.__dict__['Id'] = data['Id']
+                return cls
+
             ReferenceId = 0
             def __init__(self, GatewayId, SubNodesId, Color):
                 self.Id = Network.Topology.Cluster.ReferenceId
@@ -211,16 +301,22 @@ class Network:
         def __init__(self):
             self.DemandDict = {}    # in { id : DemandObj } format
         
-        def add_demand(self, Id, Source, Destination, Type):
+        def add_demand(self, Source, Destination, Type):
+            Id = self.GenerateDemandId()
             self.DemandDict[Id] = self.Demand(Id, Source, Destination, Type)
         
         def del_demand(self, Id):
             del self.DemandDict[Id]
 
             self.DemandDict.pop(Id)
+        
+        def GenerateDemandId(self):
+                Network.Traffic.Demand.DemandReferenceId += 1
+                return ( Network.Traffic.Demand.DemandReferenceId - 1 )
 
         class Demand:
-            
+            ServiceReferencedId = 0
+            DemandReferenceId = 0
             # this class is one row of Traffic Matrix
             def __init__(self, Id, Source, Destination, Type):
 
@@ -231,7 +327,10 @@ class Network:
                 self.Type = Type            # Type must be a string
                 self.ServiceDict = {}
             
+            
+            
             class G_100:
+                BW = 100
                 def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
                     self.Id = Id
                     self.Granularity = Granularity
@@ -242,6 +341,7 @@ class Network:
                     self.LightPathId = LightPathId
             
             class G_40:
+                BW = 40
                 def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
                     self.Id = Id
                     self.Granularity = Granularity
@@ -253,6 +353,7 @@ class Network:
 
             
             class G_10:
+                BW = 10
                 def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
                     self.Id = Id
                     self.Granularity = Granularity
@@ -292,7 +393,7 @@ class Network:
                 
             
             class STM_64:
-                BW = 9.95
+                BW = 10
 
                 def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
                     self.Id = Id
@@ -373,8 +474,8 @@ class Network:
                     
             
             def GenerateId(self):
-                self.ServiceId += 1
-                return ( self.ServiceId - 1 )
+                Network.Traffic.Demand.ServiceReferencedId += 1
+                return ( Network.Traffic.Demand.ServiceReferencedId - 1 )
             
             def add_service(self, ServiceType, Sla, IgnoringNodes = None, WaveLength = None, Granularity = None, Granularity_vc12 = None,
             Granularity_vc4 = None, LightPathId = None):
@@ -415,28 +516,112 @@ class Network:
                     self.ServiceDict[ServiceId] = self.G_100(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
         
     class Lightpath:
+        
+        @classmethod
+        def from_json(cls, data):
+            instance = cls(Source = data['Source'], Destination = data['Destination'], Capacity = data['Capacity'],
+                           ServiceIdList = data['ServiceIdList'], Type = data['Type'], DemandId = data['DemandId'],
+                           WorkingPath = data['WorkingPath'], ProtectionPath = data['ProtectionPath'],
+                           WaveLength = data['WaveLength'], RegeneratorNode_w = data['RegeneratorNode_w'],
+                           RegeneratorNode_p = data['RegeneratorNode_p'], SNR_th = data['SNR_th'], 
+                           LaunchPower = data['LaunchPower'], ModulationType = data['ModulationType'], SNR_w = data['SNR_w'], SNR_p = data['SNR_p'])
+            instance.__dict__['id'] = data['id']
+            return instance
+
         ReferenceId = 0
 
-        def __init__(self, Capacity, ServiceIdList, Type, MandatoryNodesIdList, DemandId):
+        
+        @classmethod
+        def get_id(cls):
+            cls.ReferenceId += 1
+            return ( cls.ReferenceId - 1 )
+        
+
+        @classmethod
+        def update_id(cls, Num):
+            # this method usage is when a bunch of instances from this class has been imported and we want to update
+            # our ReferencedId ( class variable )
+            cls.ReferenceId += Num
+
+
+        def __init__(self, Source, Destination, Capacity, ServiceIdList, Type,  DemandId, WorkingPath = None, ProtectionPath = None,
+                        WaveLength = None, RegeneratorNode_w = None, RegeneratorNode_p = None, IgnoringNodesIdList = None,
+                        SNR_th = None, LaunchPower = None, ModulationType = None, SNR_w = None, SNR_p = None, MandatoryNodesIdList = None):
+
             self.id = Network.Lightpath.ReferenceId
-            Network.Lightpath.ReferenceId += 1
+            
+            self.Source = Source
+            self.Destination = Destination
+            self.WorkingPath = WorkingPath
+            self.ProtectionPath = ProtectionPath
+            self.RegeneratorNode_w = RegeneratorNode_w
+            self.RegeneratorNode_p = RegeneratorNode_p
+            self.SNR_th = SNR_th
+            self.WaveLength = WaveLength
             self.DemandId = DemandId
             self.Capacity = Capacity
+            self.LaunchPower = LaunchPower
             self.ServiceIdList = ServiceIdList
+            self.ModulationType = ModulationType
             self.Type = Type
+            self.SNR_w = SNR_w
+            self.SNR_p = SNR_p
             self.MandatoryNodesIdList = MandatoryNodesIdList
+            self.IgnoringNodesIdList = IgnoringNodesIdList
+        
+        def set_results(self, WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p,
+         SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p):
+
+            self.WorkingPath = WorkingPath
+            self.ProtectionPath = ProtectionPath
+            self.WaveLength = WaveLength
+            self.RegeneratorNode_p = RegeneratorNode_p
+            self.RegeneratorNode_w = RegeneratorNode_w
+            self.SNR_th = SNR_th
+            self.LaunchPower = LaunchPower
+            self.ModulationType = ModulationType
+            self.SNR_w = SNR_w
+            self.SNR_p = SNR_p
 
 
-# text code
-n = Network()
 
-# adding Node
-n.PhysicalTopology.add_node((2,3))
-n.PhysicalTopology.add_node((4,7))
-n.PhysicalTopology.add_node((14,5))
+if __name__ == "__main__":
 
-print(n.PhysicalTopology.NodeDict)
+    n = Network()
+    n.PhysicalTopology.add_node((2,3))
+    n.PhysicalTopology.add_node((6,7))
+    n.PhysicalTopology.add_node((17,-3))
+    n.PhysicalTopology.add_link(0,1,4)
+    n.PhysicalTopology.add_link(1,2,1)
+    n.PhysicalTopology.add_cluster(1,[2,0],"blue")
+    print(n.PhysicalTopology.NodeDict[1].Neighbors)
+    print("LinkDict: ",n.PhysicalTopology.LinkDict)
+    print("NodeDict: ",n.PhysicalTopology.NodeDict)
+    print("ClusterDict: ",n.PhysicalTopology.ClusterDict)
+    n.PhysicalTopology.del_node(2)
+    print("NodeDict after deleting a Node: ",n.PhysicalTopology.NodeDict)
 
-# adding link
-n.PhysicalTopology.add_link(0,2,2)
-print(n.PhysicalTopology.LinkDict)
+    n.TrafficMatrix.add_demand("Tehran","Mashhad","X")
+    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+    n.TrafficMatrix.DemandDict[LastId].add_service("100GE",2)
+
+    n.TrafficMatrix.add_demand("Tehran", "Shiraz", "")
+    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+    n.TrafficMatrix.DemandDict[LastId].add_service("100GE",2)
+    n.TrafficMatrix.DemandDict[LastId].add_service("10GE",2)
+    n.TrafficMatrix.DemandDict[LastId].add_service("STM_64",2)
+
+    n.TrafficMatrix.add_demand("Tabriz", "Karaj", "")
+    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+    n.TrafficMatrix.DemandDict[LastId].add_service("FE",2)
+    n.TrafficMatrix.DemandDict[LastId].add_service("1GE",2)
+    
+    print("DemandDict: ",n.TrafficMatrix.DemandDict)
+    print("Demand 1: ",n.TrafficMatrix.DemandDict[1].ServiceDict)
+    print("Demand 2: ",n.TrafficMatrix.DemandDict[2].ServiceDict)
+    print("Demand 0: ",n.TrafficMatrix.DemandDict[0].ServiceDict)
+
+    n.add_lightpath("Tehran", "Mashhad", "20GE", [1 ,2], "100GE", 2)
+    n.put_results(0, [1 , 3 , 7], [1 ,4 ,7], 27, [5], [9], 25, 14, "111", 14)
+
+    print("LightpathDict: ", n.LightPathDict)
