@@ -1942,7 +1942,7 @@ class Ui_MainWindow(object):
         self.cluster_type_combobox.clear()
         self.ClusterColor_combobox.clear()
         
-        ClusterColors = ["green", "blue", "black", "orange", "yellow"]
+        ClusterColors = ["green", "blue", "purple", "orange", "yellow", "red"]
         self.ClusterColor_combobox.addItems(ClusterColors)
 
         ClusterTypes = ["100GE", "10GE", "100GE and 10GE"]
@@ -2370,7 +2370,7 @@ class Ui_MainWindow(object):
         self.SetNode_flag_javascript("False")
         self.lastgroup_name = self.GroupName_edit.text()
         self.lastgroup_type = self.cluster_type_combobox.currentText()
-        self.lastgroup_color = self.Clustercolor_combobox.currentText()
+        self.lastgroup_color = self.ClusterColor_combobox.currentText()
         if self.lastgroup_name == "":
 
 
@@ -3285,11 +3285,20 @@ class Ui_MainWindow(object):
 
                 var latlng = event.layer.getLatLng();
                 event.layer.remove()
-                var icon =  L.AwesomeMarkers.icon(
-                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": groupcolor, "prefix": "glyphicon"}
-            );
+                //var icon =  L.AwesomeMarkers.icon(
+               // {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": groupcolor, "prefix": "glyphicon"}
+            //);
 
-                var mark = L.marker(latlng).setIcon(icon).addTo(%s);
+            var url = "Icons/" + groupcolor + "/server_" + groupcolor + ".png"
+            //alert(url)
+
+            var myIcon = L.icon({
+                                    iconUrl: url,
+                                    iconSize: [30, 30],
+                                    iconAnchor: [20, 30],
+                                });
+
+                var mark = L.marker(latlng).setIcon(myIcon).addTo(%s);
 
                 var pop = L.popup({"maxWidth": "100%%"});
                 var htm = $(`<div id="htm" style="width: 100.0%%; height: 100.0%%;"><h2>${degreename}</h2></div>`)[0];
@@ -3308,10 +3317,21 @@ class Ui_MainWindow(object):
 
                 var latlng = event.layer.getLatLng();
                 event.layer.remove()
-                var icon =  L.AwesomeMarkers.icon(
-                {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": groupcolor, "prefix": "glyphicon"}
-            );
-                var mark = L.marker(latlng,{opacity:0.5}).setIcon(icon).addTo(%s);
+
+                //var icon =  L.AwesomeMarkers.icon(
+                //{"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": groupcolor, "prefix": "glyphicon"}
+            //);
+
+                var url = "Icons/" + groupcolor + "/server_" + groupcolor + ".png"
+                //alert(url)
+
+                var myIcon = L.icon({
+                                        iconUrl: url,
+                                        iconSize: [30, 30],
+                                        iconAnchor: [20, 30],
+                                    });
+
+                var mark = L.marker(latlng,{opacity:0.5}).setIcon(myIcon).addTo(%s);
 
                 var pop = L.popup({"maxWidth": "100%%"});
                 var htm = $(`<div id="htm" style="width: 100.0%%; height: 100.0%%;"><h2>${degreename}</h2></div>`)[0];
@@ -3770,14 +3790,14 @@ class Ui_MainWindow(object):
         return remain
          
     def failed_grooming_nodes(self):
-        # detecting node where grooming algorithm has been failed
+        self.failed_grooming_nodes()
+
 
         # changing their icon based on their cluster
 
         # NOTE: keep this in mind that you have to change icons againg when ever 
         #   Service section of that node gets empty ( based on its degree ) 
         # this should be done in another method ( manual service manipulations method in panels object)
-        pass
         
         
     
@@ -3806,7 +3826,9 @@ class Ui_MainWindow(object):
 
                 Source = key[0]
                 self.NotifiedNodes.append(Source)
-                self.NotifiedNodes.pop
+
+    def notify_sources(self):
+        pass
 
 
         
