@@ -79,10 +79,10 @@ class Backend_map(QObject):
 
         # creating grouping database
         print("we are grouping")
-        Data["Grouping"][text] = {}
-        Data["Grouping"][text]["Color"] = ui.lastgroup_color
-        Data["Grouping"][text]["Type"] = ui.lastgroup_type
-        Data["Grouping"][text]["SubNodes"] = {}
+        Data["Clustering"][text] = {}
+        Data["Clustering"][text]["Color"] = ui.lastgroup_color
+        Data["Clustering"][text]["Type"] = ui.lastgroup_type
+        Data["Clustering"][text]["SubNodes"] = []
 
 
     
@@ -103,7 +103,7 @@ class Backend_map(QObject):
     
     @Slot(str)
     def AddNode_DataBase(self,node):
-        Data["Grouping"][self.LastGateWay]["SubNodes"][node] = {}
+        Data["Clustering"][self.LastGateWay]["SubNodes"].append(node)
 
     @Slot()
     def TurnSubNodeSelect_off(self):
@@ -2324,12 +2324,11 @@ class Ui_MainWindow(object):
     
     def OK_button_fun(self):
         SubNodes = []
-        for node in Data["Grouping"][self.backend_map.LastGateWay]["SubNodes"].keys():
+        for node in Data["Clustering"][self.backend_map.LastGateWay]["SubNodes"]:
             SubNodes.append(self.NodeIdMap[node])
         
-        self.network.PhysicalTopology.add_cluster(self.NodeIdMap[self.backend_map.LastGateWay], SubNodes, Data["Grouping"][self.backend_map.LastGateWay]["Color"])
+        self.network.PhysicalTopology.add_cluster(self.NodeIdMap[self.backend_map.LastGateWay], SubNodes, Data["Clustering"][self.backend_map.LastGateWay]["Color"])
         self.SelectSubNode_button_fun()
-        print(self.network.PhysicalTopology.ClusterDict[0].SubNodesId)
 
     #TODO: complete this method
     def working_view_fun(self):
@@ -3331,7 +3330,7 @@ class Ui_MainWindow(object):
                                         iconAnchor: [20, 30],
                                     });
 
-                var mark = L.marker(latlng,{opacity:0.5}).setIcon(myIcon).addTo(%s);
+                var mark = L.marker(latlng,{opacity:0.6}).setIcon(myIcon).addTo(%s);
 
                 var pop = L.popup({"maxWidth": "100%%"});
                 var htm = $(`<div id="htm" style="width: 100.0%%; height: 100.0%%;"><h2>${degreename}</h2></div>`)[0];

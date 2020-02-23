@@ -17,7 +17,10 @@ Data["Last_Node_ID"] = 0
 Data["Last_Link_ID"] = 0
 Data["Nodes"] = {}  # TODO: write this parts structure
 Data["Links"] = {}  # TODO: write this parts structure
-Data["Grouping"] = {}
+
+Data["Clustering"] = {}
+# format :
+#          {<NodeName> : {"Color": <ColorName>, "Type" : <TypeName> , "SubNodes" : <SubNodesNameList> } }
 
 # keys are row numbers except nodes and links
 
