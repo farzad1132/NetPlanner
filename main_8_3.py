@@ -390,7 +390,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.PanelThreshold_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
         font = QtGui.QFont()
-        font.setPointSize(-1)
+        #font.setPointSize(-1)
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
@@ -408,7 +408,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.PanelThreshold_pushbutton)
         self.Grooming_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
         font = QtGui.QFont()
-        font.setPointSize(-1)
+        #font.setPointSize(-1)
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
@@ -427,7 +427,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.Grooming_pushbutton)
         self.RWA_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
         font = QtGui.QFont()
-        font.setPointSize(-1)
+        #font.setPointSize(-1)
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
@@ -445,7 +445,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.RWA_pushbutton)
         self.FinalPlan_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
         font = QtGui.QFont()
-        font.setPointSize(-1)
+        #font.setPointSize(-1)
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
@@ -2585,7 +2585,6 @@ class Ui_MainWindow(object):
                 Id = temp_dic["ID"][Row]
                 Node = temp_dic["Node"][Row]
                 Location = str(temp_dic["Location"][Row]).split(',')
-                print(f"bug spot---> location : {Location}")
                 Location = list(map(lambda x : float(x), Location))
 
                 Type = temp_dic["Type"][Row]
