@@ -3212,14 +3212,14 @@ class Ui_MainWindow(object):
             NodeName = data["Node"]
             Node_cor = data["Location"]
             NodeCorDict[NodeName] = Node_cor
-            Icon = folium.features.CustomIcon('server_v5.png',icon_size=(30, 30),icon_anchor=(20,30))
-            folium.Marker(Node_cor ,icon = Icon, popup=  "<h2>%s</h2>" %NodeName).add_to(self.m)
+            Icon = folium.features.CustomIcon('Icons\\blue\\server_blue.png',icon_size=(30, 30),icon_anchor=(20,30))
+            folium.Marker(Node_cor ,icon = Icon, tooltip =  "<h2>%s</h2>" %NodeName).add_to(self.m)
         
         for link in Data["Links"].keys():
             Source_cor = NodeCorDict[link[0]]
             DesTination_cor = NodeCorDict[link[1]]
             loc = [Source_cor, DesTination_cor]
-            folium.PolyLine(loc ,weight = 3,popup = "Link ID: %s"%(id),color = "black",opacity = 0.8).add_to(self.m)
+            folium.PolyLine(loc ,weight = 3,tooltip = "<h2>%s - %s</h2>"%(link[0], link[1]),color = "black",opacity = 0.8).add_to(self.m)
 
         self.m.save("map.html")
 
@@ -3266,10 +3266,15 @@ class Ui_MainWindow(object):
             });""" %MapVar))
 
         Fig.script.add_child(Element("""function groupClick(event) {
-            var degreename = event.layer.getPopup().getContent().textContent
+            //var degreename = event.layer.getPopup().getContent().textContent
             // TODO: change popup to tooltip
             //var degreename = event.layer.getTooltip().getContent()
             //alert(degreename)
+
+            var x = event.layer["_tooltip"]["_content"];
+            var doc = new DOMParser().parseFromString(x, "text/xml");
+            var z = doc.documentElement.textContent;
+            degreename = z.replace(/\s/g, '');
 
             //alert(groupcolor)
             
