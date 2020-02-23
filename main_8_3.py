@@ -3793,8 +3793,21 @@ class Ui_MainWindow(object):
 
         RemainServices = self.grooming_fun(self.network, int(MP1H_Threshold))
         print(f"remained services : {RemainServices}")
+        
 
         self.fill_DemandTabDataBase(self.network)
+        self.find_grooming_failed_sources()
+
+    def find_grooming_failed_sources(self):
+        self.NotifiedNodes = []
+
+        for key, value in DemandTabDataBase["Services"].items():
+            if ( not value ) is False:
+
+                Source = key[0]
+                self.NotifiedNodes.append(Source)
+                self.NotifiedNodes.pop
+
 
         
 
