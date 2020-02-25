@@ -3803,10 +3803,42 @@ class Ui_MainWindow(object):
         return remain
          
     def failed_grooming_nodes(self):
-        self.failed_grooming_nodes()
+
+        # finding failed nodes
+        NotifiedNodes = self.find_grooming_failed_sources()
+
+        # finding failed nodes cluster and their color and creating a dictionary for senting to JS
+        failed_nodes = {}
+        Num_failed_nodes = len(NotifiedNodes)
+        for GateWay , value in Data["Clustering"].items():
+
+            if GateWay in NotifiedNodes:
+                failed_nodes[GateWay] = {"Color": value["Color"], "SubNode": False}
+                NotifiedNodes.remove(GateWay)
+                Num_failed_nodes -= 1
+
+                if Num_failed_nodes == 0:
+                    break
+            
+            else:
+                intersect_nodes = list(set(NotifiedNodes) & set(value["SubNodes"]))
+
+                for failed_node in intersect_nodes:
+                    failed_nodes[failed_node] =  {"Color": value["Color"], "SubNode": True}
+                    NotifiedNodes.remove(failed_node)
+                    Num_failed_nodes -= 1
+
+                    if Num_failed_nodes == 0:
+                        break
+        for remained_nodes in NotifiedNodes:
+            # NOTE: default color is blue in this moment
+            failed_nodes[remained_nodes] = {"Color": "blue", "SubNode": False}
+        
 
 
-        # changing their icon based on their cluster
+        # emitting a signal and sending JSON to JS
+
+        
 
         # NOTE: keep this in mind that you have to change icons againg when ever 
         #   Service section of that node gets empty ( based on its degree ) 
@@ -3827,18 +3859,26 @@ class Ui_MainWindow(object):
         RemainServices = self.grooming_fun(self.network, int(MP1H_Threshold))
         print(f"remained services : {RemainServices}")
         
-
+        # filling Demand DataBase 
         self.fill_DemandTabDataBase(self.network)
-        self.find_grooming_failed_sources()
+
+        # changing failed nodes icon ( change to notified version )
+        self.failed_grooming_nodes()
+
+
+
 
     def find_grooming_failed_sources(self):
-        self.NotifiedNodes = []
+        NotifiedNodes = []
 
         for key, value in DemandTabDataBase["Services"].items():
             if ( not value ) is False:
 
                 Source = key[0]
-                self.NotifiedNodes.append(Source)
+                if not (Source in NotifiedNodes):
+                    NotifiedNodes.append(Source)
+        
+        return NotifiedNodes
 
     def notify_sources(self):
         pass
