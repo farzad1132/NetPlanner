@@ -2075,6 +2075,8 @@ class Ui_MainWindow(object):
 
         Data["Demand_first_run"] = False
 
+        self.update_demand_service_flag = True
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -3070,7 +3072,19 @@ class Ui_MainWindow(object):
 
         if Source != '':
             self.Demand_Destination_combobox.clear()
-            self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source])))
+            if Source in DemandTabDataBase["Source_Destination"]:
+                self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source])))
+            else:
+                self.update_demand_service_flag = False
+                for node, des_list in DemandTabDataBase["Source_Destination"].items():
+                    if Source in des_list:
+                        rep_Source = node
+                        print(f"rep Source : {rep_Source}")
+                        break
+                self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][rep_Source])))
+                self.Demand_Destination_combobox.setCurrentText(Source)
+                self.Demand_Source_combobox.setCurrentText(rep_Source)
+                self.update_demand_service_flag = True
 
         self.DemandMap_Change()
     
@@ -3078,7 +3092,7 @@ class Ui_MainWindow(object):
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
 
-        if self.Demand_Destination_combobox.currentText() != '':
+        if self.Demand_Destination_combobox.currentText() != '' and self.update_demand_service_flag is True :
             self.UpdateDemand_ServiceList()
             self.update_Demand_lightpath_list()
 
