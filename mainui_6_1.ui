@@ -38,7 +38,7 @@
         <string notr="true"/>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="TopologyTab">
         <attribute name="title">
@@ -50,7 +50,7 @@
            <item row="0" column="0">
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <item>
-              <widget class="QPushButton" name="OpenTopology_button">
+              <widget class="QPushButton" name="TopologyTab_button">
                <property name="maximumSize">
                 <size>
                  <width>81</width>
@@ -87,8 +87,89 @@ QPushButton:default {
 }</string>
                </property>
                <property name="text">
-                <string>Open
- Nodes</string>
+                <string>Plan
+Imports</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="Grooming_pushbutton">
+               <property name="font">
+                <font>
+                 <pointsize>-1</pointsize>
+                 <weight>75</weight>
+                 <italic>false</italic>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">
+background-color: rgb(255, 85, 88);
+border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color: dark-orange;
+    font: bold 14px;
+    min-width: 10em;
+    padding: 6px;</string>
+               </property>
+               <property name="text">
+                <string>Grooming</string>
+               </property>
+               <property name="checkable">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="RWA_pushbutton">
+               <property name="font">
+                <font>
+                 <pointsize>-1</pointsize>
+                 <weight>75</weight>
+                 <italic>false</italic>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">
+background-color: rgb(255, 44, 47);
+border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color: dark-orange;
+    font: bold 14px;
+    min-width: 10em;
+    padding: 6px;</string>
+               </property>
+               <property name="text">
+                <string>RWA</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="FinalPlan_pushbutton">
+               <property name="font">
+                <font>
+                 <pointsize>-1</pointsize>
+                 <weight>75</weight>
+                 <italic>false</italic>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">
+background-color: rgb(255, 0, 4);
+border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color: dark-orange;
+    font: bold 14px;
+    min-width: 10em;
+    padding: 6px;</string>
+               </property>
+               <property name="text">
+                <string>Final Plan</string>
                </property>
               </widget>
              </item>
@@ -175,151 +256,6 @@ QPushButton:default {
                <property name="text">
                 <string>Add
  Node</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="OpenLinks_pushbutton">
-               <property name="minimumSize">
-                <size>
-                 <width>84</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>81</width>
-                 <height>50</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <family>IRANSans</family>
-                 <pointsize>8</pointsize>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton {
-    border: 2px solid #8f8f91;
-    border-radius: 6px;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #f6f7fa, stop: 1 #dadbde);
-    min-width: 80px;
-	border-color: dark-orange;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
-}
-
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-               </property>
-               <property name="text">
-                <string>Open
- Links</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pushButton_5">
-               <property name="minimumSize">
-                <size>
-                 <width>84</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>81</width>
-                 <height>50</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <weight>50</weight>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton {
-    border: 2px solid #8f8f91;
-    border-radius: 6px;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #f6f7fa, stop: 1 #dadbde);
-    min-width: 80px;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
-}
-
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-               </property>
-               <property name="text">
-                <string>PushButton</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pushButton_7">
-               <property name="minimumSize">
-                <size>
-                 <width>84</width>
-                 <height>28</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>81</width>
-                 <height>50</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <weight>50</weight>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton {
-    border: 2px solid #8f8f91;
-    border-radius: 6px;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #f6f7fa, stop: 1 #dadbde);
-    min-width: 80px;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
-}
-
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-               </property>
-               <property name="text">
-                <string>PushButton</string>
                </property>
               </widget>
              </item>
@@ -434,87 +370,6 @@ border-style: outset;
                      </property>
                      <property name="text">
                       <string>Enter Panels Threshold</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="Grooming_pushbutton">
-                     <property name="font">
-                      <font>
-                       <pointsize>-1</pointsize>
-                       <weight>75</weight>
-                       <italic>false</italic>
-                       <bold>true</bold>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">
-background-color: rgb(255, 85, 88);
-border-style: outset;
-    border-width: 2px;
-    border-radius: 10px;
-    border-color: dark-orange;
-    font: bold 14px;
-    min-width: 10em;
-    padding: 6px;</string>
-                     </property>
-                     <property name="text">
-                      <string>Grooming</string>
-                     </property>
-                     <property name="checkable">
-                      <bool>false</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="RWA_pushbutton">
-                     <property name="font">
-                      <font>
-                       <pointsize>-1</pointsize>
-                       <weight>75</weight>
-                       <italic>false</italic>
-                       <bold>true</bold>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">
-background-color: rgb(255, 44, 47);
-border-style: outset;
-    border-width: 2px;
-    border-radius: 10px;
-    border-color: dark-orange;
-    font: bold 14px;
-    min-width: 10em;
-    padding: 6px;</string>
-                     </property>
-                     <property name="text">
-                      <string>RWA</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="FinalPlan_pushbutton">
-                     <property name="font">
-                      <font>
-                       <pointsize>-1</pointsize>
-                       <weight>75</weight>
-                       <italic>false</italic>
-                       <bold>true</bold>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">
-background-color: rgb(255, 0, 4);
-border-style: outset;
-    border-width: 2px;
-    border-radius: 10px;
-    border-color: dark-orange;
-    font: bold 14px;
-    min-width: 10em;
-    padding: 6px;</string>
-                     </property>
-                     <property name="text">
-                      <string>Final Plan</string>
                      </property>
                     </widget>
                    </item>
@@ -1364,108 +1219,14 @@ QListWidget::item:hover {
               </widget>
              </widget>
             </item>
-            <item row="2" column="0">
-             <widget class="QPushButton" name="SaveTM_button">
-              <property name="minimumSize">
-               <size>
-                <width>84</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="toolTip">
-               <string/>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
-    border: 2px solid #8f8f91;
-    border-radius: 6px;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #f6f7fa, stop: 1 #dadbde);
-    min-width: 80px;
-	border-color: dark-orange;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
-}
-
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-              </property>
-              <property name="text">
-               <string>Save Traffic Matrix</string>
-              </property>
-             </widget>
-            </item>
             <item row="2" column="1">
-             <widget class="QLabel" name="label_2">
+             <widget class="QLabel" name="label_5">
               <property name="text">
                <string>TextLabel</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
-             <widget class="QPushButton" name="LoadTM_button">
-              <property name="minimumSize">
-               <size>
-                <width>84</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
-    border: 2px solid #8f8f91;
-    border-radius: 6px;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #f6f7fa, stop: 1 #dadbde);
-    min-width: 80px;
-	border-color: dark-orange;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
-}
-
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-              </property>
-              <property name="text">
-               <string>Load Traffic Matrix</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
+            <item row="2" column="0">
              <widget class="QPushButton" name="filter">
               <property name="minimumSize">
                <size>
@@ -1500,14 +1261,7 @@ QPushButton:default {
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
-             <widget class="QLabel" name="label_5">
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0">
+            <item row="3" column="0">
              <widget class="QPushButton" name="pushButton_10">
               <property name="minimumSize">
                <size>
@@ -1542,63 +1296,14 @@ QPushButton:default {
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
+            <item row="3" column="1">
              <widget class="QLabel" name="label_6">
               <property name="text">
                <string>TextLabel</string>
               </property>
              </widget>
             </item>
-            <item row="6" column="0">
-             <widget class="QPushButton" name="SaveChanges_button">
-              <property name="minimumSize">
-               <size>
-                <width>84</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
-    border: 2px solid #8f8f91;
-    border-radius: 6px;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #f6f7fa, stop: 1 #dadbde);
-    min-width: 80px;
-	border-color: dark-orange;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
-}
-
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-              </property>
-              <property name="text">
-               <string>Save Changes</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="1">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>TextLabel</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="0">
+            <item row="4" column="0">
              <widget class="QPushButton" name="insert_link_button">
               <property name="minimumSize">
                <size>
@@ -1640,7 +1345,7 @@ QPushButton:default {
               </property>
              </widget>
             </item>
-            <item row="7" column="1">
+            <item row="4" column="1">
              <widget class="QLabel" name="label">
               <property name="text">
                <string>Load File</string>
