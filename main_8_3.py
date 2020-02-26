@@ -6,6 +6,7 @@ import pickle
 import sys, os
 import pandas as pd
 from PySide2 import QtWebEngineWidgets
+from PySide2.QtWebEngineWidgets import QWebEnginePage
 import folium,random
 from PySide2.QtCore import QUrl,Qt,QModelIndex
 from PySide2.QtGui import QStandardItemModel
@@ -1965,6 +1966,13 @@ class Ui_MainWindow(object):
         self.webengine.load(QUrl.fromLocalFile(os.path.abspath('map.html')))
         self.webengine.show()
 
+        # NOTE: uncomment bellow if you want use console.log
+
+        """ class WebEnginePage(QWebEnginePage):
+            def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
+                print("javaScriptConsoleMessage: ", level, message, lineNumber, sourceID)
+
+        self.webengine.setPage(WebEnginePage(self.webengine)) """
         backend_map = Backend_map(MainWindow)
         self.backend_map = backend_map
         channel = QWebChannel(MainWindow)
@@ -3253,6 +3261,7 @@ class Ui_MainWindow(object):
         var SelectSubNode_flag = null;
         var groupcolor = null;
         var marker_num = 0;
+        var failed_nodes = new Object();
 
         function setcolor(text){
             groupcolor = text;
@@ -3265,10 +3274,41 @@ class Ui_MainWindow(object):
         function SelectSubNode_flag_fun(text){
             SelectSubNode_flag = text;
         }
+
+        function receive_failed_nodes(NodeName, Color, SubNode){
+            failed_nodes[NodeName] = {"Color":Color, "SubNode":SubNode};
+        }
+
+        function change_icon(NodeName, latlng, Color, Opacity){
+
+                var url = "Icons/" + Color + "/server_" + Color + ".png"
+                //alert(url)
+
+                var myIcon = L.icon({
+                                        iconUrl: url,
+                                        iconSize: [30, 30],
+                                        iconAnchor: [20, 30],
+                                    });
+
+                var mark = L.marker(latlng,{opacity:Opacity}).setIcon(myIcon).addTo(%s);
+
+                //var pop = L.popup({"maxWidth": "100%%"});
+                //var htm = $(`<div id="htm" style="width: 100.0%%; height: 100.0%%;"><h2>${NodeName}</h2></div>`)[0];
+                //pop.setContent(htm);
+
+                mark.bindTooltip(
+                `<div>
+                     <h2>${NodeName}</h2>
+                 </div>`,
+                {"sticky": true}
+            );
+                mark.addTo(myFeatureGroup);
+        }
+
         var backend_map = null;
         new QWebChannel(qt.webChannelTransport, function (channel) {
         window.backend_map = channel.objects.backend_map;
-        });"""))
+        });""" %MapVar))
         Fig.script.add_child(Element("var myFeatureGroup = L.featureGroup().addTo(%s).on(\"click\", groupClick);" %MapVar))
 
         Fig.script.add_child(Element("""%s.eachLayer(function (layer) {
@@ -3302,25 +3342,8 @@ class Ui_MainWindow(object):
                // {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": groupcolor, "prefix": "glyphicon"}
             //);
 
-            var url = "Icons/" + groupcolor + "/server_" + groupcolor + ".png"
-            //alert(url)
+                change_icon(degreename, latlng, groupcolor, 1);
 
-            var myIcon = L.icon({
-                                    iconUrl: url,
-                                    iconSize: [30, 30],
-                                    iconAnchor: [20, 30],
-                                });
-
-                var mark = L.marker(latlng).setIcon(myIcon).addTo(%s);
-
-                var pop = L.popup({"maxWidth": "100%%"});
-                var htm = $(`<div id="htm" style="width: 100.0%%; height: 100.0%%;"><h2>${degreename}</h2></div>`)[0];
-                pop.setContent(htm);
-                mark.bindPopup(pop);
-
-                
-
-                mark.addTo(myFeatureGroup);
 
                 backend_map.SetNode_flag_fun("False",groupcolor)
 
@@ -3330,32 +3353,14 @@ class Ui_MainWindow(object):
 
                 var latlng = event.layer.getLatLng();
                 event.layer.remove()
+                
 
                 //var icon =  L.AwesomeMarkers.icon(
                 //{"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": groupcolor, "prefix": "glyphicon"}
             //);
 
-                var url = "Icons/" + groupcolor + "/server_" + groupcolor + ".png"
-                //alert(url)
+                change_icon(degreename, latlng, groupcolor, 0.6);
 
-                var myIcon = L.icon({
-                                        iconUrl: url,
-                                        iconSize: [30, 30],
-                                        iconAnchor: [20, 30],
-                                    });
-
-                var mark = L.marker(latlng,{opacity:0.6}).setIcon(myIcon).addTo(%s);
-
-                var pop = L.popup({"maxWidth": "100%%"});
-                var htm = $(`<div id="htm" style="width: 100.0%%; height: 100.0%%;"><h2>${degreename}</h2></div>`)[0];
-                pop.setContent(htm);
-                mark.bindPopup(pop);
-
-                
-
-               
-
-                mark.addTo(myFeatureGroup);
                 
 
 
@@ -3365,7 +3370,7 @@ class Ui_MainWindow(object):
 
             
             }
-            """ %(MapVar,MapVar)))
+            """ ))
         
         Fig.save("map.html")
 
@@ -3813,7 +3818,7 @@ class Ui_MainWindow(object):
         for GateWay , value in Data["Clustering"].items():
 
             if GateWay in NotifiedNodes:
-                failed_nodes[GateWay] = {"Color": value["Color"], "SubNode": False}
+                failed_nodes[GateWay] = {"Color": value["Color"], "SubNode": 0}
                 NotifiedNodes.remove(GateWay)
                 Num_failed_nodes -= 1
 
@@ -3824,7 +3829,7 @@ class Ui_MainWindow(object):
                 intersect_nodes = list(set(NotifiedNodes) & set(value["SubNodes"]))
 
                 for failed_node in intersect_nodes:
-                    failed_nodes[failed_node] =  {"Color": value["Color"], "SubNode": True}
+                    failed_nodes[failed_node] =  {"Color": value["Color"], "SubNode": 1}
                     NotifiedNodes.remove(failed_node)
                     Num_failed_nodes -= 1
 
@@ -3832,8 +3837,13 @@ class Ui_MainWindow(object):
                         break
         for remained_nodes in NotifiedNodes:
             # NOTE: default color is blue in this moment
-            failed_nodes[remained_nodes] = {"Color": "blue", "SubNode": False}
+            failed_nodes[remained_nodes] = {"Color": "blue", "SubNode": 0}
         
+        """ class Double_quote(dict):
+            def __str__(self):
+                return json.dumps(self)
+        failed_nodes = Double_quote(failed_nodes) """
+        self.failed_nodes_javascript(failed_nodes)
 
 
         # emitting a signal and sending JSON to JS
@@ -3843,6 +3853,12 @@ class Ui_MainWindow(object):
         # NOTE: keep this in mind that you have to change icons againg when ever 
         #   Service section of that node gets empty ( based on its degree ) 
         # this should be done in another method ( manual service manipulations method in panels object)
+
+    def failed_nodes_javascript(self,failed_nodes):
+        for nodename , value in failed_nodes.items():
+            color = value["Color"]
+            SubNode = value["SubNode"]
+            self.webengine.page().runJavaScript("receive_failed_nodes(\"%s\", \"%s\", \"%s\")" %(nodename, color, SubNode))
         
         
     
