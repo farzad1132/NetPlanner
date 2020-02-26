@@ -25,6 +25,7 @@ import json
 import socketio  
 import time
 import copy , math, warnings
+from excel_utils import export_excel
 
 from add_node import Ui_add_node_window
 from grooming_window import Grooming_Window
@@ -2558,7 +2559,13 @@ class Ui_MainWindow(object):
             else:
                 Data["DemandPanel_" + str(i)].setWidget(BLANK_Demand(str(i), Source, Destination))
 
-                         
+    def export_excel_fun(self):
+        name = QFileDialog.getSaveFileName(MainWindow, "Save Topology", filter = "(*.xlsx)")
+        if name[0] != 0:
+            try:
+                export_excel(name[0], self.decoded_network)
+            except:
+                pass              
 
 
 
@@ -2573,6 +2580,8 @@ class Ui_MainWindow(object):
             with open(name[0], 'wb') as handle:
                 pickle.dump(TSD, handle, protocol=pickle.HIGHEST_PROTOCOL)
             handle.close()
+        
+
     
     def OpenTopology_fun(self):
         # this method imports Nodes Information
@@ -4023,6 +4032,7 @@ class Ui_MainWindow(object):
         for lightpath in decoded_network.LightPathDict.values():
             print(lightpath.__dict__)
 
+        self.decoded_network = decoded_network
         self.fill_GroomingTabDataBase(decoded_network)
         
 
