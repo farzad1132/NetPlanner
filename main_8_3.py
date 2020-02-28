@@ -3406,11 +3406,12 @@ class Ui_MainWindow(object):
             var z = doc.documentElement.textContent;
             link_key = z.replace(/\s/g, '');
             link_key = link_key.split("-")
-            lambda_list = lambdas[link_key]
             
 
             // ** write your code here ** 
-            // lambda_list is a list of int numbers
+            // you can find used wavelengths in this way:
+            // wavelength_list = lambdas[link_key]
+            // this line will return list of int numbers
             
         }
 
