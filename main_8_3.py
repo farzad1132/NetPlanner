@@ -16,7 +16,8 @@ import branca
 from branca.element import Element
 import xlrd
 import xlsxwriter
-from pandas import ExcelWriter 
+from pandas import ExcelWriter
+from pandas import ExcelFile
 from newcheck import  Ui_checking
 from Common_Object_def import Network
 from math import ceil
@@ -2074,7 +2075,7 @@ class Ui_MainWindow(object):
 
         self.Grooming_pushbutton.clicked.connect(self.grooming_button_fun)
         self.RWA_pushbutton.clicked.connect(self.RWA_button_fun)
-        self.FinalPlan_pushbutton.clicked.connect(self.print_r)
+        self.FinalPlan_pushbutton.clicked.connect(self.export_excel_fun)
 
         self.window = MainWindow
 
@@ -2560,12 +2561,107 @@ class Ui_MainWindow(object):
                 Data["DemandPanel_" + str(i)].setWidget(BLANK_Demand(str(i), Source, Destination))
 
     def export_excel_fun(self):
+        
+
+        def export_excel(filename, network):
+            """
+            filename: example.xlsx
+            NOTE: if filename is open executing this function will cause an error
+            network: an instance of Common_Object_def
+            """
+            sources = []
+            destinations = []
+            wavelengths = []
+            routed_types = []
+            worst_working_snrs = []
+            worst_protection_snrs = []
+            working_path = []
+            protection_path = []
+            working_regens = []
+            protection_regens = []
+            # Building required lists for different fields
+            for lightpath in network.LightPathDict.values():
+                sources.append(self.IdNodeMap[lightpath.Source])
+                destinations.append(self.IdNodeMap[lightpath.Destination])
+                wavelengths.append(lightpath.WaveLength[0])
+                routed_types.append(lightpath.Type)
+
+                snr = lightpath.SNR_w[0]
+                for snr_temp in lightpath.SNR_w:
+                    if snr>snr_temp:
+                        snr = snr_temp
+                worst_working_snrs.append(snr)
+
+                snr = lightpath.SNR_p[0]
+                for snr_temp in lightpath.SNR_p:
+                    if snr>snr_temp:
+                        snr = snr_temp
+                worst_protection_snrs.append(snr)
+
+                working_path_name = list(map(lambda x : self.IdNodeMap[x], lightpath.WorkingPath))
+                working_path.append(working_path_name)
+                protection_path_name = list(map(lambda x : self.IdNodeMap[x], lightpath.ProtectionPath))
+                protection_path.append(protection_path_name)
+                working_regens_name = list(map(lambda x : self.IdNodeMap[x], lightpath.RegeneratorNode_w))
+                working_regens.append(working_regens_name)
+                protection_regens_name = list(map(lambda x : self.IdNodeMap[x], lightpath.RegeneratorNode_p))
+                protection_regens.append(protection_regens_name)
+
+            dictionary = {
+            'Source Site' : sources,
+            'Destination Site' : destinations,
+            'Demand Type': routed_types,
+            'Wavelength': wavelengths,
+            'Working SNR': worst_working_snrs,
+            'Protection SNR': worst_protection_snrs,
+            'Working Path': working_path,
+            'Working Regenerators': working_regens,
+            'Protection Path': protection_path,
+            'Protection Regenerators': protection_regens}
+
+            df = pd.DataFrame(dictionary)
+            writer = pd.ExcelWriter(filename, engine='xlsxwriter')
+            df.to_excel(writer, sheet_name='Routed Demands')
+            workbook  = writer.book
+            worksheet = writer.sheets['Routed Demands']
+            # Set column size (begininng, end, size)
+            worksheet.set_column(1, 2 , 17)
+            worksheet.set_column(3, 4 , 15)
+            worksheet.set_column(5, 6, 17)
+            worksheet.set_column(7, 7, 40)
+            worksheet.set_column(8, 8, 20)
+            worksheet.set_column(9, 9, 45)
+            worksheet.set_column(10, 10, 20)
+
+            # 3-color formatting for snrs
+            lightpath_number = len(network.LightPathDict.keys())
+            worksheet.conditional_format('F2:F' + str(lightpath_number+1), {'type': '3_color_scale'})
+            worksheet.conditional_format('G2:G' + str(lightpath_number+1), {'type': '3_color_scale'})
+            
+            # Set example specific text and color for some headers
+            color = "#FFC000"
+            fmt = workbook.add_format()
+            fmt = workbook.add_format({'bg_color': color})
+            worksheet.write('B1', 'Source Site', fmt)
+            worksheet.write('C1', 'Destination Site', fmt)
+            
+            color = "#FFFF64"
+            fmt = workbook.add_format()
+            fmt = workbook.add_format({'bg_color': color})
+            worksheet.write('H1', 'Working Path', fmt)
+            
+            color = "#64FF00"
+            fmt = workbook.add_format()
+            fmt = workbook.add_format({'bg_color': color})
+            worksheet.write('E1', 'Wavelength', fmt)
+            writer.save()
+
         name = QFileDialog.getSaveFileName(MainWindow, "Save Topology", filter = "(*.xlsx)")
         if name[0] != 0:
             try:
                 export_excel(name[0], self.decoded_network)
             except:
-                pass              
+                pass        
 
 
 
