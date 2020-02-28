@@ -2075,7 +2075,7 @@ class Ui_MainWindow(object):
 
         self.Grooming_pushbutton.clicked.connect(self.grooming_button_fun)
         self.RWA_pushbutton.clicked.connect(self.RWA_button_fun)
-        self.FinalPlan_pushbutton.clicked.connect(self.export_excel_fun)
+        self.FinalPlan_pushbutton.clicked.connect(self.send_lambdas_to_JS)
 
         self.window = MainWindow
 
@@ -3367,6 +3367,7 @@ class Ui_MainWindow(object):
         var groupcolor = null;
         var marker_num = 0;
         var failed_nodes = new Object();
+        var lambdas = new Object();
 
         function setcolor(text){
             groupcolor = text;
@@ -3382,6 +3383,36 @@ class Ui_MainWindow(object):
 
         function receive_failed_nodes(NodeName, Color, SubNode){
             failed_nodes[NodeName] = {"Color":Color, "SubNode":SubNode};
+        }
+
+        function receive_lambdas(Source, Destination, value){
+            a_value = JSON.parse(value)
+            lambdas[[Source, Destination]] = a_value
+        }
+
+        var links_groupfeature = L.featureGroup().addTo(%s).on(\"click\", links_click_event);
+
+        %s.eachLayer(function (layer) {
+               if (layer instanceof L.Polyline){
+                  layer.addTo(links_groupfeature);
+               }
+               
+            });
+        
+        function links_click_event(event){
+
+            var x = event.layer["_tooltip"]["_content"];
+            var doc = new DOMParser().parseFromString(x, "text/xml");
+            var z = doc.documentElement.textContent;
+            link_key = z.replace(/\s/g, '');
+            link_key = link_key.split("-")
+            
+
+            // ** write your code here ** 
+            // you can find used wavelengths in this way:
+            // wavelength_list = lambdas[link_key]
+            // this line will return list of int numbers
+            
         }
 
         function change_icon(NodeName, latlng, Color, Opacity){
@@ -3413,7 +3444,7 @@ class Ui_MainWindow(object):
         var backend_map = null;
         new QWebChannel(qt.webChannelTransport, function (channel) {
         window.backend_map = channel.objects.backend_map;
-        });""" %MapVar))
+        });""" %(MapVar, MapVar, MapVar)))
         Fig.script.add_child(Element("var myFeatureGroup = L.featureGroup().addTo(%s).on(\"click\", groupClick);" %MapVar))
 
         Fig.script.add_child(Element("""%s.eachLayer(function (layer) {
@@ -3790,7 +3821,7 @@ class Ui_MainWindow(object):
             Working = lightpath.WorkingPath
             Protection = lightpath.ProtectionPath
             DemandId = lightpath.DemandId
-            WaveLength = lightpath.WaveLength
+            WaveLength = lightpath.WaveLength[0]
             RG_w = lightpath.RegeneratorNode_w
             RG_p = lightpath.RegeneratorNode_p
             SNR_w = lightpath.SNR_w
@@ -3841,7 +3872,7 @@ class Ui_MainWindow(object):
 
                 if WaveLength in GroomingTabDataBase["Links"][keyW]:
                     # TODO: raise error --> this wavelength has been used
-                    pass
+                    print("wavelength has been used")
                 else:
                     GroomingTabDataBase["Links"][keyW].append(WaveLength)
             
@@ -3857,8 +3888,9 @@ class Ui_MainWindow(object):
                     print(f"$$ key not found $$ and key : {( InNodeName , OutNodeName)}")
 
                 if WaveLength in GroomingTabDataBase["Links"][keyP]:
-                    pass
                     # TODO: raise error --> this wavelength has been used
+                    print("wavelength has been used")
+
                 else:
                     GroomingTabDataBase["Links"][keyP].append(WaveLength)
 
@@ -3866,6 +3898,13 @@ class Ui_MainWindow(object):
             for key in GroomingTabDataBase["LightPathes"][tup]:
                 GroomingTabDataBase["LightPathes"][tup][int(key)] = GroomingTabDataBase["LightPathes"][tup].pop(key)
 
+        self.send_lambdas_to_JS()
+
+    def send_lambdas_to_JS(self):
+        for key , value in GroomingTabDataBase['Links'].items():
+            Source = key[0]
+            Destination = key[1]
+            self.webengine.page().runJavaScript("receive_lambdas(\"%s\", \"%s\", \"%s\")" %(Source, Destination, value))
                 
             
 
