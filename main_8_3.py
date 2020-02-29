@@ -3385,6 +3385,34 @@ class Ui_MainWindow(object):
             failed_nodes[NodeName] = {"Color":Color, "SubNode":SubNode};
         }
 
+        function change_failed_nodes_icon(){
+            
+
+            // loop on nodes group feature and notify their icon
+            myFeatureGroup.eachLayer(function (layer) {
+                var x = layer["_tooltip"]["_content"];
+                var doc = new DOMParser().parseFromString(x, "text/xml");
+                var z = doc.documentElement.textContent;
+                NodeName = z.replace(/\s/g, '');
+
+                if (NodeName in failed_nodes){
+                    value = failed_nodes[NodeName]
+                    Color = value["Color"]
+                    SubNode = value["SubNode"]
+                    
+                    latlng = layer.getLatLng()
+                    layer.remove()
+                    if (SubNode == 0){
+                        change_icon(NodeName, latlng, Color, 1, "notified")
+                    } else{
+                        change_icon(NodeName, latlng, Color, 0.6, "notified")
+                    }
+                    
+
+                }
+        });
+        }
+
         function receive_lambdas(Source, Destination, value){
             a_value = JSON.parse(value)
             lambdas[[Source, Destination]] = a_value
@@ -3398,6 +3426,8 @@ class Ui_MainWindow(object):
                }
                
             });
+        
+        
         
         function links_click_event(event){
 
@@ -3415,9 +3445,13 @@ class Ui_MainWindow(object):
             
         }
 
-        function change_icon(NodeName, latlng, Color, Opacity){
 
-                var url = "Icons/" + Color + "/server_" + Color + ".png"
+        function change_icon(NodeName, latlng, Color, Opacity, mode){
+                if ( mode == "normal" ){
+                    var url = "Icons/" + Color + "/server_" + Color + ".png"
+                } else {
+                    var url = "Icons/" + Color + "/server_n" + Color + ".png"
+                }
                 //alert(url)
 
                 var myIcon = L.icon({
@@ -3478,7 +3512,7 @@ class Ui_MainWindow(object):
                // {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": groupcolor, "prefix": "glyphicon"}
             //);
 
-                change_icon(degreename, latlng, groupcolor, 1);
+                change_icon(degreename, latlng, groupcolor, 1, "normal");
 
 
                 backend_map.SetNode_flag_fun("False",groupcolor)
@@ -3495,7 +3529,7 @@ class Ui_MainWindow(object):
                 //{"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": groupcolor, "prefix": "glyphicon"}
             //);
 
-                change_icon(degreename, latlng, groupcolor, 0.6);
+                change_icon(degreename, latlng, groupcolor, 0.6, "normal");
 
                 
 
@@ -4003,6 +4037,8 @@ class Ui_MainWindow(object):
             color = value["Color"]
             SubNode = value["SubNode"]
             self.webengine.page().runJavaScript("receive_failed_nodes(\"%s\", \"%s\", \"%s\")" %(nodename, color, SubNode))
+        
+        self.webengine.page().runJavaScript("change_failed_nodes_icon()")
         
         
     
