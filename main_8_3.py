@@ -115,16 +115,27 @@ class Backend_map(QObject):
 
     @Slot(str)
     def change_tab_to4(self,degreename):
+        degreename = degreename.strip()
         print(">>>>>>",degreename)
         if Data["Stage_flag"] == "Grooming":
             Data["TabWidget"].setCurrentIndex(3)
-            Data["SelectNodeCombo"].setCurrentText(degreename.strip())
+            Data["Clicked_Node"] = degreename
+            Data["ui"].clicked_Node_flag = True
+            Data["SelectNodeCombo"].setCurrentText(degreename)
             # TODO: check this function and delete it
             #ui.SelectNode_combo_change()
 
         if Data["Stage_flag"] == "Demand":
             Data["TabWidget"].setCurrentIndex(4)
-            Data["Demand_Source_combo"].setCurrentText(degreename.strip())
+            Data["Clicked_Node"] = degreename
+            Data["ui"].clicked_Node_flag = True
+            rep_source = DemandTabDataBase["Source_Destination"][degreename]["Source"]
+            if rep_source == Data["Demand_Source_combo"].currentText():
+                Data["Demand_Source_combo"].setCurrentText(rep_source)
+                Data["ui"].Demand_Source_combobox_Change()
+            else:
+                Data["Demand_Source_combo"].setCurrentText(rep_source)
+            
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -2001,7 +2012,7 @@ class Ui_MainWindow(object):
 
         self.tabWidget.currentChanged["int"].connect(self.main_tab_clicked)
 
-        self.Data_file_Flag = False
+        
 
         MainWindow.showMaximized()
 
@@ -2028,8 +2039,8 @@ class Ui_MainWindow(object):
 
         self.SelectNode_combo.currentIndexChanged["int"].connect(self.SelectNode_combo_change)
 
-        Data["first_run_flag"] = False
-        Data["demand_first_run_flag"] = False
+        
+        
 
         Data["ClientList"] = self.ClientList
         Data["LineList"] = self.LineList
@@ -2068,7 +2079,7 @@ class Ui_MainWindow(object):
         Data["Demand_LightPath_list"] = self.Demand_LineList
         Data["Demand_Service_list"] = self.Demand_ServiceList
 
-        Data["DemandTab_firststart_flag"] = False
+        
 
         self.Demand_ServiceList.setDragEnabled(True)
         self.Demand_LineList.setDragEnabled(True)
@@ -2083,9 +2094,9 @@ class Ui_MainWindow(object):
 
         self.Demand_LineList.clicked['QModelIndex'].connect(self.Demand_LineList_fun)
 
-        Data["Demand_first_run"] = False
+        
 
-        self.update_demand_service_flag = True
+        
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -2779,8 +2790,8 @@ class Ui_MainWindow(object):
             if Data["DemandTab_firststart_flag"] == False:
                 self.Demand_Shelf_set()
                 Data["DemandTab_firststart_flag"] = True
-
-            self.UpdateDemand_ServiceList()
+            if self.update_demand_service_flag is True:
+                self.UpdateDemand_ServiceList()
             
 
             # TODO: run shelf set function for Demand Tab and turn its relevant flag on
@@ -3159,18 +3170,29 @@ class Ui_MainWindow(object):
 
         SourceList = list(Data["General"]["DataSection"]["1"].values())
         DestinationList = list(Data["General"]["DataSection"]["2"].values())
-
+        Original_Source_list = []
         for Source in SourceList :
             if (Source in DemandTabDataBase["Source_Destination"] ) == False:
-                DemandTabDataBase["Source_Destination"][Source] = []
+                DemandTabDataBase["Source_Destination"][Source] = {"Source": Source, "DestinationList": []}
+                Original_Source_list.append(Source)
         
         for i in range(len(SourceList)):
             Destination = DestinationList[i]
             Source = SourceList[i]
-            DemandTabDataBase["Source_Destination"][Source].append(Destination)
+            DemandTabDataBase["Source_Destination"][Source]["DestinationList"].append(Destination)
+        
+        for value in Data["Nodes"].values():
+            NodeName = value["Node"]
+            if not (NodeName in DemandTabDataBase["Source_Destination"]):
+                for node, value in DemandTabDataBase["Source_Destination"].items():
+                    des_list = value["DestinationList"]
+                    if NodeName in des_list:
+                        DemandTabDataBase["Source_Destination"][NodeName] = {"Source":node, "DestinationList": des_list}
+                        break
+
 
         self.Demand_Source_combobox.clear()
-        self.Demand_Source_combobox.addItems(list(DemandTabDataBase["Source_Destination"].keys()))
+        self.Demand_Source_combobox.addItems(Original_Source_list)
     
     def UpdateDemand_ServiceList(self):
 
@@ -3179,43 +3201,71 @@ class Ui_MainWindow(object):
         ServiceList = list(DemandTabDataBase["Services"][(Source,Destination)].values())
         self.Demand_ServiceList.clear()
         self.Demand_ServiceList.addItems(ServiceList)
+        self.update_demand_service_flag = False
     
     def Demand_Source_combobox_Change(self):
-        Source = self.Demand_Source_combobox.currentText()
+        if self.Demand_Source_flag is True:
+            Source = self.Demand_Source_combobox.currentText()
+            self.from_Source_to_Destination_flag = True
 
-        if Source != '':
-            self.Demand_Destination_combobox.clear()
-            if Source in DemandTabDataBase["Source_Destination"]:
-                self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source])))
-            else:
-                self.update_demand_service_flag = False
-                for node, des_list in DemandTabDataBase["Source_Destination"].items():
-                    if Source in des_list:
-                        rep_Source = node
-                        print(f"rep Source : {rep_Source}")
-                        break
-                self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][rep_Source])))
-                self.Demand_Destination_combobox.setCurrentText(Source)
-                self.Demand_Source_combobox.setCurrentText(rep_Source)
-                self.update_demand_service_flag = True
+            if Source != '':                
+                
+                self.Demand_Destination_combobox.clear()
+                
+                
+                if self.clicked_Node_flag is True:
+                    
+                    if Source != Data["Clicked_Node"]:
+                        self.update_demand_service_flag = False
+                        self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
+                        self.update_demand_service_flag = True
+                        self.Demand_Destination_combobox.setCurrentText(Data["Clicked_Node"])
+                        if self.update_demand_service_flag is True:
+                            self.Demand_Destination_combobox_change()
+                    else:
+                        self.update_demand_service_flag = True
+                        self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
+                        
+                        
+                else:
+                    self.update_demand_service_flag = True
+                    self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
+        else:
+            self.Demand_Source_flag = True
+            
 
-        self.DemandMap_Change()
+        
     
     def Demand_Destination_combobox_change(self):
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
 
-        if self.Demand_Destination_combobox.currentText() != '' and self.update_demand_service_flag is True :
+        if self.update_demand_service_flag is True and Destination != '':
+
+            if self.clicked_Node_flag is True:
+                self.clicked_Node_flag = False
+            
+            if self.from_Source_to_Destination_flag is True:
+                self.from_Source_to_Destination_flag = False
+
+
             self.UpdateDemand_ServiceList()
             self.update_Demand_lightpath_list()
+            self.set_demand_panels()        
+            self.DemandMap_Change()
+        
+        elif self.from_Source_to_Destination_flag is False and Destination != '':
 
-            if Data["Demand_first_run"] is True:
-                self.set_demand_panels()
-            else:
-                Data["Demand_first_run"] = True
+
+            self.UpdateDemand_ServiceList()
+            self.update_Demand_lightpath_list()
+            self.set_demand_panels()        
+            self.DemandMap_Change()
+        
 
 
-        self.DemandMap_Change()
+
+        
         
         
             
@@ -3436,12 +3486,10 @@ class Ui_MainWindow(object):
             var z = doc.documentElement.textContent;
             link_key = z.replace(/\s/g, '');
             link_key = link_key.split("-")
+            lambda_list = lambdas[link_key]
             
 
             // ** write your code here ** 
-            // you can find used wavelengths in this way:
-            // wavelength_list = lambdas[link_key]
-            // this line will return list of int numbers
             
         }
 
@@ -3561,15 +3609,24 @@ class Ui_MainWindow(object):
 
     def SaveChanges_button_fun(self):
         # filling Network Object
+        self.set_flags()
         self.PhysicalTopologyToObject()
         self.TrafficMatrixToObject()
         self.DemandTabDataBase_Setup()
         self.GroomingTabDataBase_Setup()
         self.Fill_Demand_SourceandDestination_combobox()
+    
 
-
-
-        #self.SelectNode_combo_fun()
+    def set_flags(self):
+        self.from_Source_to_Destination_flag = False
+        self.clicked_Node_flag = False
+        self.Demand_Source_flag = False
+        self.update_demand_service_flag = False
+        self.Demand_first_run = False
+        Data["DemandTab_firststart_flag"] = False
+        Data["demand_first_run_flag"] = False
+        Data["first_run_flag"] = False
+        self.Data_file_Flag = False
     
     def DemandTabDataBase_Setup(self):
         for node in Data["Nodes"].values():

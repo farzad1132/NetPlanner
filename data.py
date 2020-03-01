@@ -135,7 +135,7 @@ Data["100GE"]["DataSection"]["SLA"]={}
 DemandTabDataBase = {}
 DemandTabDataBase["Source_Destination"] = {}
 # format:
-#       { source :  [ Destinations ]}
+#       { <ClickedNode> : {"Source": <SourceName>, "DestinationList : <DestinationList>"} }
 DemandTabDataBase["Services"] = {} # dynamic one : changes with user actions
 # format: 
 #       {(Tehran, karaj): { (1,3) : '[1 , 3] # 100G ' , ... }, ...}         (1 , 3) ---> 1 : Demand Id , 3 : Service Id
