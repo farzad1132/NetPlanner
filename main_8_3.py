@@ -3990,6 +3990,7 @@ class Ui_MainWindow(object):
         self.send_lambdas_to_JS()
 
     def send_lambdas_to_JS(self):
+        print(self.webengine.geometry())
         for key , value in GroomingTabDataBase['Links'].items():
             Source = key[0]
             Destination = key[1]
