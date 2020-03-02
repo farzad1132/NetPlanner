@@ -61,7 +61,7 @@ from TP1H_Demand.TP1H_R_Demand import TP1H_R_Demand
 
 #from mapwidget import MapWidget
 from mapwidget import MapWidget
-
+import matplotlib as mpl
 from  matplotlib.backends.backend_qt5agg  import  FigureCanvas
 from  matplotlib.figure  import  Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -404,7 +404,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.PanelThreshold_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
         font = QtGui.QFont()
-        font.setPointSize(-1)
+        #font.setPointSize(-1)
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
@@ -422,7 +422,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.PanelThreshold_pushbutton)
         self.Grooming_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
         font = QtGui.QFont()
-        font.setPointSize(-1)
+        #font.setPointSize(-1)
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
@@ -441,7 +441,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.Grooming_pushbutton)
         self.RWA_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
         font = QtGui.QFont()
-        font.setPointSize(-1)
+        #font.setPointSize(-1)
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
@@ -459,7 +459,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.RWA_pushbutton)
         self.FinalPlan_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
         font = QtGui.QFont()
-        font.setPointSize(-1)
+        #font.setPointSize(-1)
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
@@ -2242,6 +2242,8 @@ class Ui_MainWindow(object):
 
     def DemandMap_Change(self, Working = None, Protection = None, 
         WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None):
+        #mpl.rcParams["figure.figsize"] = [18.4, 7.8]
+        self.MapWidget.canvas.figure.subplots_adjust(left = -0.04, right = 1, top = 0.85)
         self.MapWidget.canvas.axes.cla()
         R = 6371 
         Source = self.Demand_Source_combobox.currentText()
@@ -2258,7 +2260,6 @@ class Ui_MainWindow(object):
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'gold')
             else:
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
-            
 
             self.MapWidget.canvas.axes.text(x, y, NodeName, {'color': 'blueviolet'}, withdash=True,
                 dashdirection= 1,
@@ -2333,14 +2334,12 @@ class Ui_MainWindow(object):
 
                 x, y = self.IdLocationMap[key]
 
-
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'green')
 
         if ProtectionRegenaratorsList != None:
             for key in ProtectionRegenaratorsList:
 
                 x, y = self.IdLocationMap[key]
-
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'green')
 
         self.MapWidget.canvas.draw()
@@ -2710,7 +2709,6 @@ class Ui_MainWindow(object):
                 Id = temp_dic["ID"][Row]
                 Node = temp_dic["Node"][Row]
                 Location = str(temp_dic["Location"][Row]).split(',')
-                print(f"bug spot---> location : {Location}")
                 Location = list(map(lambda x : float(x), Location))
 
                 Type = temp_dic["Type"][Row]
