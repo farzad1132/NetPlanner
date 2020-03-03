@@ -3996,6 +3996,27 @@ class Ui_MainWindow(object):
         # changing failed nodes icon ( change to notified version )
         self.failed_grooming_nodes()
 
+        self.Grooming_pushbutton.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: green;\n"
+"    min-width: 80px;\n"
+"    border-color: dark-orange;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+
 
 
 
@@ -4027,6 +4048,27 @@ class Ui_MainWindow(object):
         self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, maxNW)
         self.RWA_button_fun()
         self.fill_GroomingTabDataBase(decoded_network)
+
+        self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: green;\n"
+"    min-width: 80px;\n"
+"    border-color: dark-orange;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
 
 
 

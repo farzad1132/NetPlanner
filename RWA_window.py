@@ -290,7 +290,7 @@ class Ui_RWA_Window(object):
 
         # NOTE: added 
         self.cancel_pushbutton.clicked.connect(RWA_Window.close)
-        self.ok_pushbutton.clicked.connect(self.ok_nutton_fun)
+        self.ok_pushbutton.clicked.connect(self.ok_button_fun)
 
     def retranslateUi(self, RWA_Window):
         _translate = QtCore.QCoreApplication.translate
