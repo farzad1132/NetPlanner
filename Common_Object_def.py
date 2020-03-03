@@ -12,8 +12,12 @@ class Network:
 
         self.PhysicalTopology = self.Topology()
         self.TrafficMatrix = self.Traffic()
+        self.ParamsObj = self.Params()
         
         self.LightPathDict = {}
+
+    def put_params(self, merge, alpha, iterations, margin, processors, k, maxNW = None):
+        self.ParamsObj.set_results(merge, alpha, iterations, margin, processors, k , maxNW)
 
     def add_lightpath(self, Source, Destination, Capacity, ServiceIdList, Type, DemandId,
      MandatoryNodesIdList = None, IgnoringNodesIdList = None):
@@ -582,6 +586,29 @@ class Network:
             self.ModulationType = ModulationType
             self.SNR_w = SNR_w
             self.SNR_p = SNR_p
+    
+    class Params:
+        def __init__(self, merge = None, alpha = None, iterations = None, margin = None, processors = None, k = None, maxNW = None):
+
+            self.merge = merge                  
+            self.alpha = alpha                  
+            self.iterations = iterations        
+            self.margin = margin                
+            self.processors = processors       
+            self.k = k                          
+            self.maxNW = maxNW                  
+
+
+        def set_results(self, merge, alpha, iterations, margin, processors, k, maxNW = None):
+
+            self.merge = merge
+            self.alpha = alpha
+            self.iterations = iterations
+            self.margin = margin
+            self.processors = processors
+            self.k = k
+            self.maxNW = maxNW
+
 
 
 
@@ -622,6 +649,16 @@ if __name__ == "__main__":
     print("Demand 0: ",n.TrafficMatrix.DemandDict[0].ServiceDict)
 
     n.add_lightpath("Tehran", "Mashhad", "20GE", [1 ,2], "100GE", 2)
-    n.put_results(0, [1 , 3 , 7], [1 ,4 ,7], 27, [5], [9], 25, 14, "111", 14)
+    n.put_results(0, [1 , 3 , 7], [1 ,4 ,7], 27, [5], [9], 25, 14, "111", 14, 31)
 
     print("LightpathDict: ", n.LightPathDict)
+
+    n.put_params(merge= "Yes",
+                 alpha= 0.2,
+                 iterations= 2,
+                 margin= 4,
+                 processors= 4,
+                 k= 1,
+                 maxNW= 50)
+
+    print(f"Params result: {n.ParamsObj.__dict__}")

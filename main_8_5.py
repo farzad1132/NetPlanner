@@ -193,13 +193,13 @@ class Ui_MainWindow(object):
 "}")
         self.import_button.setObjectName("import_button")
         self.horizontalLayout_3.addWidget(self.import_button)
-        self.SaveTopology_button = QtWidgets.QPushButton(self.TopologyTab)
-        self.SaveTopology_button.setMaximumSize(QtCore.QSize(81, 50))
+        self.export_result_button = QtWidgets.QPushButton(self.TopologyTab)
+        self.export_result_button.setMaximumSize(QtCore.QSize(81, 50))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
-        self.SaveTopology_button.setFont(font)
-        self.SaveTopology_button.setStyleSheet("QPushButton {\n"
+        self.export_result_button.setFont(font)
+        self.export_result_button.setStyleSheet("QPushButton {\n"
 "    border: 2px solid #8f8f91;\n"
 "    border-radius: 6px;\n"
 "    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
@@ -220,8 +220,8 @@ class Ui_MainWindow(object):
 "QPushButton:default {\n"
 "    border-color: navy; /* make the default button prominent */\n"
 "}")
-        self.SaveTopology_button.setObjectName("SaveTopology_button")
-        self.horizontalLayout_3.addWidget(self.SaveTopology_button)
+        self.export_result_button.setObjectName("export_result_button")
+        self.horizontalLayout_3.addWidget(self.export_result_button)
         self.add_node_button = QtWidgets.QPushButton(self.TopologyTab)
         self.add_node_button.setMaximumSize(QtCore.QSize(81, 50))
         font = QtGui.QFont()
@@ -2029,7 +2029,7 @@ class Ui_MainWindow(object):
         QObject.connect(self.TMSliderBar,SIGNAL("actionTriggered(int)"),self.SyncScroll_1)
         QObject.connect(self.GMTSliderBar,SIGNAL("actionTriggered(int)"),self.SyncScroll_2)
 
-        self.SaveTopology_button.clicked.connect(self.SaveTopology_fun)
+        self.export_result_button.clicked.connect(self.export_excel_fun)
 
         #self.OpenTopology_button.clicked.connect(self.OpenTopology_fun)
 
@@ -2092,7 +2092,7 @@ class Ui_MainWindow(object):
         self.Demand_LineList.setDragEnabled(True)
 
         self.Grooming_pushbutton.clicked.connect(self.grooming_button_fun)
-        self.RWA_pushbutton.clicked.connect(self.RWA_button_fun)
+        self.RWA_pushbutton.clicked.connect(self.open_RWA_window_fun)
         self.FinalPlan_pushbutton.clicked.connect(self.send_lambdas_to_JS)
 
         self.window = MainWindow
@@ -2112,7 +2112,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
         self.tabWidget.setAccessibleName(_translate("MainWindow", "maintab"))
         self.import_button.setText(_translate("MainWindow", "Imports"))
-        self.SaveTopology_button.setText(_translate("MainWindow", "Export \n"
+        self.export_result_button.setText(_translate("MainWindow", "Export \n"
 "Rresult"))
         self.add_node_button.setText(_translate("MainWindow", "Add\n"
 " Node"))
@@ -4015,7 +4015,29 @@ class Ui_MainWindow(object):
         pass
 
 
-        
+    def open_RWA_window_fun(self):
+        self.RWA_window_dialog = QtWidgets.QDialog()
+        self.RWA_window = Ui_RWA_Window()
+        self.RWA_window.setupUi(self.RWA_window_dialog)
+        self.RWA_window_dialog.show()
+
+
+    def RWA_procedure(self, merge, alpha, iterations, margin, processors, k, maxNW):
+
+        self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, maxNW)
+        self.RWA_button_fun()
+        self.fill_GroomingTabDataBase(decoded_network)
+
+
+
+    def insert_params_into_obj(self, merge, alpha, iterations, margin, processors, k, maxNW):
+        self.network.put_params(merge= merge,
+                                alpha= alpha,
+                                iterations= iterations,
+                                margin= margin,
+                                processors= processors,
+                                k= k,
+                                maxNW= maxNW)
 
 
         
@@ -4139,7 +4161,7 @@ class Ui_MainWindow(object):
             print(lightpath.__dict__)
 
         self.decoded_network = decoded_network
-        self.fill_GroomingTabDataBase(decoded_network)
+        
 
 
 

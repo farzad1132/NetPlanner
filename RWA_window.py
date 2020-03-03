@@ -6,24 +6,18 @@ import sys
 import os
 from data import *
 from Common_Object_def import Network
+import pandas as pd 
 
 
 class Ui_RWA_Window(object):
     def setupUi(self, RWA_Window):
         RWA_Window.setObjectName("RWA_Window")
-        RWA_Window.resize(447, 351)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(RWA_Window.sizePolicy().hasHeightForWidth())
-        RWA_Window.setSizePolicy(sizePolicy)
-        self.centralwidget = QtWidgets.QWidget(RWA_Window)
-        self.centralwidget.setObjectName("centralwidget")
-        self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
+        RWA_Window.resize(477, 363)
+        self.gridLayout_2 = QtWidgets.QGridLayout(RWA_Window)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.mergindemands_gridlayout = QtWidgets.QGridLayout()
         self.mergindemands_gridlayout.setObjectName("mergindemands_gridlayout")
-        self.mergingdemands_label = QtWidgets.QLabel(self.centralwidget)
+        self.mergingdemands_label = QtWidgets.QLabel(RWA_Window)
         font = QtGui.QFont()
         font.setFamily("IRANSans")
         font.setPointSize(8)
@@ -38,7 +32,7 @@ class Ui_RWA_Window(object):
         self.mergingdemands_label.setAlignment(QtCore.Qt.AlignCenter)
         self.mergingdemands_label.setObjectName("mergingdemands_label")
         self.mergindemands_gridlayout.addWidget(self.mergingdemands_label, 0, 0, 1, 1)
-        self.mergindemands_comboBox = QtWidgets.QComboBox(self.centralwidget)
+        self.mergindemands_comboBox = QtWidgets.QComboBox(RWA_Window)
         self.mergindemands_comboBox.setStyleSheet("border-color: rgb(0, 85, 0);\n"
 "border-color: rgb(85, 255, 0);")
         self.mergindemands_comboBox.setEditable(False)
@@ -49,7 +43,7 @@ class Ui_RWA_Window(object):
         self.gridLayout_2.addLayout(self.mergindemands_gridlayout, 0, 0, 1, 1)
         self.formLayout = QtWidgets.QFormLayout()
         self.formLayout.setObjectName("formLayout")
-        self.mergingdemands_label_2 = QtWidgets.QLabel(self.centralwidget)
+        self.mergingdemands_label_2 = QtWidgets.QLabel(RWA_Window)
         font = QtGui.QFont()
         font.setFamily("IRANSans")
         font.setPointSize(8)
@@ -64,7 +58,7 @@ class Ui_RWA_Window(object):
         self.mergingdemands_label_2.setAlignment(QtCore.Qt.AlignCenter)
         self.mergingdemands_label_2.setObjectName("mergingdemands_label_2")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.mergingdemands_label_2)
-        self.alphalineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.alphalineEdit = QtWidgets.QLineEdit(RWA_Window)
         self.alphalineEdit.setStyleSheet("")
         self.alphalineEdit.setText("")
         self.alphalineEdit.setObjectName("alphalineEdit")
@@ -72,7 +66,7 @@ class Ui_RWA_Window(object):
         self.gridLayout_2.addLayout(self.formLayout, 1, 0, 1, 1)
         self.formLayout_4 = QtWidgets.QFormLayout()
         self.formLayout_4.setObjectName("formLayout_4")
-        self.Iteration_label = QtWidgets.QLabel(self.centralwidget)
+        self.Iteration_label = QtWidgets.QLabel(RWA_Window)
         font = QtGui.QFont()
         font.setFamily("IRANSans")
         font.setPointSize(8)
@@ -87,7 +81,7 @@ class Ui_RWA_Window(object):
         self.Iteration_label.setAlignment(QtCore.Qt.AlignCenter)
         self.Iteration_label.setObjectName("Iteration_label")
         self.formLayout_4.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.Iteration_label)
-        self.Iteration_lineedit = QtWidgets.QLineEdit(self.centralwidget)
+        self.Iteration_lineedit = QtWidgets.QLineEdit(RWA_Window)
         self.Iteration_lineedit.setStyleSheet("\n"
 "border-color: rgb(170, 0, 0);")
         self.Iteration_lineedit.setText("")
@@ -96,7 +90,7 @@ class Ui_RWA_Window(object):
         self.gridLayout_2.addLayout(self.formLayout_4, 1, 1, 1, 1)
         self.formLayout_2 = QtWidgets.QFormLayout()
         self.formLayout_2.setObjectName("formLayout_2")
-        self.Margin_label = QtWidgets.QLabel(self.centralwidget)
+        self.Margin_label = QtWidgets.QLabel(RWA_Window)
         font = QtGui.QFont()
         font.setFamily("IRANSans")
         font.setPointSize(8)
@@ -111,7 +105,7 @@ class Ui_RWA_Window(object):
         self.Margin_label.setAlignment(QtCore.Qt.AlignCenter)
         self.Margin_label.setObjectName("Margin_label")
         self.formLayout_2.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.Margin_label)
-        self.Margin_lineedit = QtWidgets.QLineEdit(self.centralwidget)
+        self.Margin_lineedit = QtWidgets.QLineEdit(RWA_Window)
         self.Margin_lineedit.setStyleSheet("\n"
 "border-color: rgb(170, 0, 0);")
         self.Margin_lineedit.setText("")
@@ -120,7 +114,7 @@ class Ui_RWA_Window(object):
         self.gridLayout_2.addLayout(self.formLayout_2, 2, 0, 1, 1)
         self.formLayout_5 = QtWidgets.QFormLayout()
         self.formLayout_5.setObjectName("formLayout_5")
-        self.Processors_label = QtWidgets.QLabel(self.centralwidget)
+        self.Processors_label = QtWidgets.QLabel(RWA_Window)
         font = QtGui.QFont()
         font.setFamily("IRANSans")
         font.setPointSize(8)
@@ -135,7 +129,7 @@ class Ui_RWA_Window(object):
         self.Processors_label.setAlignment(QtCore.Qt.AlignCenter)
         self.Processors_label.setObjectName("Processors_label")
         self.formLayout_5.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.Processors_label)
-        self.Processors_lineedit = QtWidgets.QLineEdit(self.centralwidget)
+        self.Processors_lineedit = QtWidgets.QLineEdit(RWA_Window)
         self.Processors_lineedit.setStyleSheet("\n"
 "border-color: rgb(170, 0, 0);")
         self.Processors_lineedit.setText("")
@@ -144,7 +138,7 @@ class Ui_RWA_Window(object):
         self.gridLayout_2.addLayout(self.formLayout_5, 2, 1, 1, 1)
         self.formLayout_3 = QtWidgets.QFormLayout()
         self.formLayout_3.setObjectName("formLayout_3")
-        self.K_label = QtWidgets.QLabel(self.centralwidget)
+        self.K_label = QtWidgets.QLabel(RWA_Window)
         font = QtGui.QFont()
         font.setFamily("IRANSans")
         font.setPointSize(8)
@@ -159,7 +153,7 @@ class Ui_RWA_Window(object):
         self.K_label.setAlignment(QtCore.Qt.AlignCenter)
         self.K_label.setObjectName("K_label")
         self.formLayout_3.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.K_label)
-        self.K_lineedit = QtWidgets.QLineEdit(self.centralwidget)
+        self.K_lineedit = QtWidgets.QLineEdit(RWA_Window)
         self.K_lineedit.setStyleSheet("\n"
 "border-color: rgb(170, 0, 0);")
         self.K_lineedit.setText("")
@@ -168,7 +162,7 @@ class Ui_RWA_Window(object):
         self.gridLayout_2.addLayout(self.formLayout_3, 3, 0, 1, 1)
         self.formLayout_6 = QtWidgets.QFormLayout()
         self.formLayout_6.setObjectName("formLayout_6")
-        self.MNV_label = QtWidgets.QLabel(self.centralwidget)
+        self.MNV_label = QtWidgets.QLabel(RWA_Window)
         font = QtGui.QFont()
         font.setFamily("IRANSans")
         font.setPointSize(8)
@@ -183,7 +177,7 @@ class Ui_RWA_Window(object):
         self.MNV_label.setAlignment(QtCore.Qt.AlignCenter)
         self.MNV_label.setObjectName("MNV_label")
         self.formLayout_6.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.MNV_label)
-        self.MNV_lineedit = QtWidgets.QLineEdit(self.centralwidget)
+        self.MNV_lineedit = QtWidgets.QLineEdit(RWA_Window)
         self.MNV_lineedit.setStyleSheet("\n"
 "border-color: rgb(170, 0, 0);")
         self.MNV_lineedit.setText("")
@@ -192,7 +186,7 @@ class Ui_RWA_Window(object):
         self.gridLayout_2.addLayout(self.formLayout_6, 3, 1, 1, 1)
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
-        self.ok_pushbutton = QtWidgets.QPushButton(self.centralwidget)
+        self.ok_pushbutton = QtWidgets.QPushButton(RWA_Window)
         self.ok_pushbutton.setStyleSheet("QPushButton {\n"
 "    border: 2px solid #8f8f91;\n"
 "    border-radius: 6px;\n"
@@ -240,7 +234,7 @@ class Ui_RWA_Window(object):
         self.ok_pushbutton.setAutoDefault(False)
         self.ok_pushbutton.setObjectName("ok_pushbutton")
         self.gridLayout.addWidget(self.ok_pushbutton, 0, 1, 1, 1)
-        self.cancel_pushbutton = QtWidgets.QPushButton(self.centralwidget)
+        self.cancel_pushbutton = QtWidgets.QPushButton(RWA_Window)
         self.cancel_pushbutton.setStyleSheet("QPushButton {\n"
 "    border: 2px solid #8f8f91;\n"
 "    border-radius: 6px;\n"
@@ -290,24 +284,20 @@ class Ui_RWA_Window(object):
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 0, 0, 1, 1)
         self.gridLayout_2.addLayout(self.gridLayout, 4, 0, 1, 2)
-        RWA_Window.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(RWA_Window)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 447, 26))
-        self.menubar.setObjectName("menubar")
-        RWA_Window.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(RWA_Window)
-        self.statusbar.setObjectName("statusbar")
-        RWA_Window.setStatusBar(self.statusbar)
 
         self.retranslateUi(RWA_Window)
         QtCore.QMetaObject.connectSlotsByName(RWA_Window)
 
+        # NOTE: added 
+        self.cancel_pushbutton.clicked.connect(RWA_Window.close)
+        self.ok_pushbutton.clicked.connect(self.ok_nutton_fun)
+
     def retranslateUi(self, RWA_Window):
         _translate = QtCore.QCoreApplication.translate
-        RWA_Window.setWindowTitle(_translate("RWA_Window", "MainWindow"))
+        RWA_Window.setWindowTitle(_translate("RWA_Window", "RWA Window"))
         self.mergingdemands_label.setText(_translate("RWA_Window", "Merging demands"))
-        self.mergindemands_comboBox.setItemText(0, _translate("RWA_Window", "Yes"))
-        self.mergindemands_comboBox.setItemText(1, _translate("RWA_Window", "No"))
+        self.mergindemands_comboBox.setItemText(0, _translate("RWA_Window", "True"))
+        self.mergindemands_comboBox.setItemText(1, _translate("RWA_Window", "False"))
         self.mergingdemands_label_2.setText(_translate("RWA_Window", "      Alpha  "))
         self.Iteration_label.setText(_translate("RWA_Window", "  Iteration   "))
         self.Margin_label.setText(_translate("RWA_Window", "    Margin "))
@@ -317,11 +307,41 @@ class Ui_RWA_Window(object):
         self.ok_pushbutton.setText(_translate("RWA_Window", "OK"))
         self.cancel_pushbutton.setText(_translate("RWA_Window", "Cancel"))
 
+    
+    def ok_button_fun(self):
+        merge = self.mergindemands_comboBox.currentText()
+        alpha = self.alphalineEdit.text()
+        margin = self.Margin_lineedit.text()
+        iterations = self.Iteration_lineedit.text()
+        processors = self.Processors_lineedit.text()
 
+        k = self.K_lineedit.text()
+        maxNW = self.MNV_lineedit.text()
+
+        if (alpha and margin and iterations and processors and k) != "":
+            merge = bool(merge)
+            alpha = float(alpha)
+            margin = int(margin)
+            iterations = int(iterations)
+            processors = int(processors)
+            k = int(k)
+            
+            if maxNW == "":
+                maxNW = None
+            else:
+                maxNW = int(maxNW)
+
+
+            Data["ui"].RWA_procedure(merge, alpha, iterations, margin, processors, k, maxNW)
+            RWA_Window.close()
+        else:
+            print("fill all boxes")
+
+        
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    RWA_Window = QtWidgets.QMainWindow()
+    RWA_Window = QtWidgets.QWidget()
     ui = Ui_RWA_Window()
     ui.setupUi(RWA_Window)
     RWA_Window.show()
