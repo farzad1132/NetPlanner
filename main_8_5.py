@@ -2262,13 +2262,9 @@ class Ui_MainWindow(object):
             else:
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
 
-            self.MapWidget.canvas.axes.text(x, y, NodeName, {'color': 'blueviolet'}, withdash=True,
-                dashdirection= 1,
-                dashlength= 0.0005,
-                rotation= 30,
-                dashrotation= 30 ,
-                dashpush= 10
-                )
+            self.MapWidget.canvas.axes.annotate(NodeName, xy = (x, y), xytext = (x, y),
+             color='crimson', rotation=25, 
+             horizontalalignment='left', verticalalignment='top', ha="left", va="bottom")
 
         for key in Data["Links"].keys():
             InNodeName = key[0]
