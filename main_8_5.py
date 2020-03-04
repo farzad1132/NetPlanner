@@ -142,7 +142,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
 
-        #NOTE: commented
+        # NOTE: commented
         #MainWindow.resize(1238, 841)
 
         self.gridLayout = QtWidgets.QGridLayout(MainWindow)
@@ -1909,7 +1909,8 @@ class Ui_MainWindow(object):
         self.gridLayout_13 = QtWidgets.QGridLayout(self.tab_8)
         self.gridLayout_13.setObjectName("gridLayout_13")
         self.Demand_mdi = QtWidgets.QMdiArea(self.tab_8)
-        self.Demand_mdi.setMinimumSize(QtCore.QSize(1575, 521))
+        self.Demand_mdi.setMinimumSize(QtCore.QSize(1560, 521))
+        self.Demand_mdi.setMaximumSize(QtCore.QSize(1570, 1000))
         self.Demand_mdi.setObjectName("Demand_mdi")
         self.gridLayout_13.addWidget(self.Demand_mdi, 0, 0, 1, 1)
         self.Demand_tab.addTab(self.tab_8, "")
@@ -1932,10 +1933,10 @@ class Ui_MainWindow(object):
         self.gridLayout_12.addWidget(self.ClientLabel_25, 2, 1, 1, 1)
         self.gridLayout_15 = QtWidgets.QGridLayout()
         self.gridLayout_15.setObjectName("gridLayout_15")
-        """ self.MapWidget = MapWidget(self.tab)
+        self.MapWidget = MapWidget(self.tab)
         self.MapWidget.setMinimumSize(QtCore.QSize(821, 259))
         self.MapWidget.setObjectName("MapWidget")
-        self.gridLayout_15.addWidget(self.MapWidget, 0, 0, 1, 1) """
+        self.gridLayout_15.addWidget(self.MapWidget, 0, 0, 1, 1)
         self.gridLayout_12.addLayout(self.gridLayout_15, 3, 1, 1, 2)
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_12.addItem(spacerItem3, 0, 1, 1, 1)
@@ -1950,8 +1951,6 @@ class Ui_MainWindow(object):
         self.ShelfTab.setCurrentIndex(3)
         self.Demand_tab.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-
 
 
         # TODO: added
@@ -2104,9 +2103,6 @@ class Ui_MainWindow(object):
         self.import_button.clicked.connect(self.open_ImportUI_fun)
 
 
-
-
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -2242,7 +2238,9 @@ class Ui_MainWindow(object):
         self.ClientLabel_25.setText(_translate("MainWindow", "Map:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
 
+
     
+
     def DemandMap_Change(self, Working = None, Protection = None, 
         WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None):
         #mpl.rcParams["figure.figsize"] = [18.4, 7.8]
@@ -4203,9 +4201,6 @@ class Ui_MainWindow(object):
             print(lightpath.__dict__)
 
         self.decoded_network = decoded_network
-        
-
-
 
 
 if __name__ == "__main__":
