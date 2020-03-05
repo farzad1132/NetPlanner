@@ -2708,7 +2708,10 @@ class Ui_MainWindow(object):
             Data["first_run_flag"] = True
         if index == 4:
             if Data["DemandTab_firststart_flag"] == False:
+                Source = self.Demand_Source_combobox.currentText()
+                self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
                 self.Demand_Shelf_set()
+                self.DemandMap_Change()
                 Data["DemandTab_firststart_flag"] = True
             if self.update_demand_service_flag is True:
                 self.UpdateDemand_ServiceList()
@@ -3068,8 +3071,9 @@ class Ui_MainWindow(object):
         self.update_demand_service_flag = False
     
     def Demand_Source_combobox_Change(self):
+        Source = self.Demand_Source_combobox.currentText()
         if self.Demand_Source_flag is True:
-            Source = self.Demand_Source_combobox.currentText()
+            
             self.from_Source_to_Destination_flag = True
 
             if Source != '':                
@@ -3095,6 +3099,7 @@ class Ui_MainWindow(object):
                     self.update_demand_service_flag = True
                     self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
         else:
+            #self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
             self.Demand_Source_flag = True
             
 
@@ -3125,6 +3130,11 @@ class Ui_MainWindow(object):
             self.update_Demand_lightpath_list()
             self.set_demand_panels()        
             self.DemandMap_Change()
+        
+        
+        
+        
+
         
 
 
@@ -3478,6 +3488,7 @@ class Ui_MainWindow(object):
         self.TrafficMatrixToObject()
         self.DemandTabDataBase_Setup()
         self.GroomingTabDataBase_Setup()
+        #self.Demand_Shelf_set()
         self.Fill_Demand_SourceandDestination_combobox()
     
 
@@ -3531,7 +3542,7 @@ class Ui_MainWindow(object):
             Data["DemandPanel_" + str(i)].setWindowFlag(Qt.FramelessWindowHint)
             Data["DemandPanel_" + str(i)].setWidget(BLANK_Demand(str(i), Source, Destination))
 
-            Data["Demand_mdi"].addSubWindow(Data["DemandPanel_" + str(i)])
+            self.Demand_mdi.addSubWindow(Data["DemandPanel_" + str(i)])
             Data["DemandPanel_" + str(i)].show()
 
 
