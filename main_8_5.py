@@ -4052,7 +4052,7 @@ class Ui_MainWindow(object):
 
         self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, maxNW)
         self.RWA_button_fun()
-        self.fill_GroomingTabDataBase(decoded_network)
+        self.fill_GroomingTabDataBase(self.decoded_network)
 
         self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
 "    border: 2px solid #8f8f91;\n"
