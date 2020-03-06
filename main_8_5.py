@@ -3924,6 +3924,7 @@ class Ui_MainWindow(object):
         NotifiedNodes = self.find_grooming_failed_sources()
 
         # finding failed nodes cluster and their color and creating a dictionary for senting to JS
+        print(f" -- >> clustering database : {Data['Clustering']}")
         failed_nodes = {}
         Num_failed_nodes = len(NotifiedNodes)
         for GateWay , value in Data["Clustering"].items():
@@ -3936,16 +3937,16 @@ class Ui_MainWindow(object):
                 if Num_failed_nodes == 0:
                     break
             
-            else:
-                intersect_nodes = list(set(NotifiedNodes) & set(value["SubNodes"]))
+            intersect_nodes = list(set(NotifiedNodes) & set(value["SubNodes"]))
 
-                for failed_node in intersect_nodes:
-                    failed_nodes[failed_node] =  {"Color": value["Color"], "SubNode": 1}
-                    NotifiedNodes.remove(failed_node)
-                    Num_failed_nodes -= 1
+            for failed_node in intersect_nodes:
+                failed_nodes[failed_node] =  {"Color": value["Color"], "SubNode": 1}
+                NotifiedNodes.remove(failed_node)
+                Num_failed_nodes -= 1
 
-                    if Num_failed_nodes == 0:
-                        break
+                if Num_failed_nodes == 0:
+                    break
+
         for remained_nodes in NotifiedNodes:
             # NOTE: default color is blue in this moment
             failed_nodes[remained_nodes] = {"Color": "blue", "SubNode": 0}
@@ -3954,6 +3955,7 @@ class Ui_MainWindow(object):
             def __str__(self):
                 return json.dumps(self)
         failed_nodes = Double_quote(failed_nodes) """
+        print(f" -->> failed nodes : {failed_nodes}")
         self.failed_nodes_javascript(failed_nodes)
 
 
