@@ -323,6 +323,11 @@ class customlabel(QLabel):
         key = (int(ids[0]) , int(ids[1]))
         if mode == "delete":
             DemandTabDataBase["Services"][(source, destination)].pop(key)
+
+            # statement bellow checks for removing notification
+            if not DemandTabDataBase["Services"][(source, destination)]:
+                
+                Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
             DemandTabDataBase["Services"][(source, destination)][key] = "[%s , %s] # %s" % (ids[0], ids[1], type)

@@ -127,9 +127,9 @@ class Backend_map(QObject):
             #ui.SelectNode_combo_change()
 
         if Data["Stage_flag"] == "Demand":
+            Data["ui"].clicked_Node_flag = True
             Data["TabWidget"].setCurrentIndex(4)
             Data["Clicked_Node"] = degreename
-            Data["ui"].clicked_Node_flag = True
             rep_source = DemandTabDataBase["Source_Destination"][degreename]["Source"]
             if rep_source == Data["Demand_Source_combo"].currentText():
                 Data["Demand_Source_combo"].setCurrentText(rep_source)
@@ -2102,6 +2102,8 @@ class Ui_MainWindow(object):
 
         self.import_button.clicked.connect(self.open_ImportUI_fun)
 
+        #self.Demand_Shelf_set()
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -2709,9 +2711,9 @@ class Ui_MainWindow(object):
         if index == 4:
             if Data["DemandTab_firststart_flag"] == False:
                 Source = self.Demand_Source_combobox.currentText()
-                self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
                 self.Demand_Shelf_set()
-                self.DemandMap_Change()
+                if self.clicked_Node_flag == False:
+                    self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
                 Data["DemandTab_firststart_flag"] = True
             if self.update_demand_service_flag is True:
                 self.UpdateDemand_ServiceList()
@@ -3131,6 +3133,12 @@ class Ui_MainWindow(object):
             self.set_demand_panels()        
             self.DemandMap_Change()
         
+        """ elif Data["DemandTab_firststart_flag"] == False:
+            
+            self.UpdateDemand_ServiceList()
+            self.update_Demand_lightpath_list()
+            self.set_demand_panels()        
+            self.DemandMap_Change() """
         
         
         
@@ -3335,6 +3343,31 @@ class Ui_MainWindow(object):
 
                 }
         });
+        }
+
+        function set_failed_node_default(Source){
+            var value = failed_nodes[Source];
+            var color = value["Color"];
+            var subnode = value["SubNode"];
+
+            myFeatureGroup.eachLayer(function (layer) {
+                var x = layer["_tooltip"]["_content"];
+                var doc = new DOMParser().parseFromString(x, "text/xml");
+                var z = doc.documentElement.textContent;
+                NodeName = z.replace(/\s/g, '');
+
+                if (NodeName == Source){
+                    var latlng = layer.getLatLng()
+                    layer.remove()
+
+                    if (subnode == 0){
+                        change_icon(NodeName, latlng, Color, 1, "normal")
+                    } else{
+                        change_icon(NodeName, latlng, Color, 0.6, "normal")
+                    }
+                }
+        });
+
         }
 
         function receive_lambdas(Source, Destination, value){
@@ -3974,6 +4007,11 @@ class Ui_MainWindow(object):
             self.webengine.page().runJavaScript("receive_failed_nodes(\"%s\", \"%s\", \"%s\")" %(nodename, color, SubNode))
         
         self.webengine.page().runJavaScript("change_failed_nodes_icon()")
+
+    def set_failed_nodes_default(self, source):
+
+        self.webengine.page().runJavaScript("set_failed_node_default(\"%s\")" %source)
+
         
     def open_ImportUI_fun(self):
 
@@ -3993,6 +4031,7 @@ class Ui_MainWindow(object):
         
 
     def grooming_procedure(self, MP1H_Threshold):
+        #self.Demand_Shelf_set()
 
         RemainServices = self.grooming_fun(self.network, int(MP1H_Threshold))
         print(f"remained services : {RemainServices}")
