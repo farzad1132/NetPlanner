@@ -3299,6 +3299,7 @@ class Ui_MainWindow(object):
         var groupcolor = null;
         var marker_num = 0;
         var failed_nodes = new Object();
+        var failed_nodes_list = [];
         var lambdas = new Object();
 
         function setcolor(text){
@@ -3314,12 +3315,12 @@ class Ui_MainWindow(object):
         }
 
         function receive_failed_nodes(NodeName, Color, SubNode){
-            failed_nodes[NodeName] = {"Color":Color, "SubNode":SubNode};
+            failed_nodes[NodeName] = {"Color":Color, "SubNode":parseInt(SubNode)};
+            failed_nodes_list.push(NodeName);
         }
 
         function change_failed_nodes_icon(){
             
-
             // loop on nodes group feature and notify their icon
             myFeatureGroup.eachLayer(function (layer) {
                 var x = layer["_tooltip"]["_content"];
@@ -3327,13 +3328,19 @@ class Ui_MainWindow(object):
                 var z = doc.documentElement.textContent;
                 NodeName = z.replace(/\s/g, '');
 
-                if (NodeName in failed_nodes){
+                if (failed_nodes_list.includes(NodeName)){
                     value = failed_nodes[NodeName]
                     Color = value["Color"]
                     SubNode = value["SubNode"]
+
+                    index = failed_nodes_list.indexOf(NodeName);
+                    failed_nodes_list.splice(index, 1);
                     
+                    myFeatureGroup.removeLayer(layer);
                     latlng = layer.getLatLng()
-                    layer.remove()
+                    %s.removeLayer(layer);
+                    layer.remove();
+
                     if (SubNode == 0){
                         change_icon(NodeName, latlng, Color, 1, "notified")
                     } else{
@@ -3349,6 +3356,8 @@ class Ui_MainWindow(object):
             var value = failed_nodes[Source];
             var color = value["Color"];
             var subnode = value["SubNode"];
+            var flag = 0;
+            
 
             myFeatureGroup.eachLayer(function (layer) {
                 var x = layer["_tooltip"]["_content"];
@@ -3357,14 +3366,21 @@ class Ui_MainWindow(object):
                 NodeName = z.replace(/\s/g, '');
 
                 if (NodeName == Source){
+                    if (flag == 0){
                     var latlng = layer.getLatLng()
-                    layer.remove()
+                    
+                    %s.removeLayer(layer);
+                    layer.remove();
 
                     if (subnode == 0){
-                        change_icon(NodeName, latlng, Color, 1, "normal")
+                        
+                        change_icon(NodeName, latlng, color, 1, "normal")
                     } else{
-                        change_icon(NodeName, latlng, Color, 0.6, "normal")
+                        ("yes sub node is 1")
+                        change_icon(NodeName, latlng, color, 0.6, "normal")
                     }
+                }
+                flag = 1;
                 }
         });
 
@@ -3402,6 +3418,7 @@ class Ui_MainWindow(object):
 
 
         function change_icon(NodeName, latlng, Color, Opacity, mode){
+
                 if ( mode == "normal" ){
                     var url = "Icons/" + Color + "/server_" + Color + ".png"
                 } else {
@@ -3433,12 +3450,14 @@ class Ui_MainWindow(object):
         var backend_map = null;
         new QWebChannel(qt.webChannelTransport, function (channel) {
         window.backend_map = channel.objects.backend_map;
-        });""" %(MapVar, MapVar, MapVar)))
+        });""" %(MapVar, MapVar, MapVar, MapVar, MapVar)))
         Fig.script.add_child(Element("var myFeatureGroup = L.featureGroup().addTo(%s).on(\"click\", groupClick);" %MapVar))
 
         Fig.script.add_child(Element("""%s.eachLayer(function (layer) {
                if (layer instanceof L.Marker){
-                  layer.addTo(myFeatureGroup);
+
+                    
+                    layer.addTo(myFeatureGroup);
                }
                
             });""" %MapVar))
@@ -3462,11 +3481,12 @@ class Ui_MainWindow(object):
                 backend_map.Create_DataBase(degreename)
 
                 var latlng = event.layer.getLatLng();
-                event.layer.remove()
-                //var icon =  L.AwesomeMarkers.icon(
-               // {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": groupcolor, "prefix": "glyphicon"}
-            //);
-
+                
+                myFeatureGroup.removeLayer(event.layer);
+                %s.removeLayer(event.layer);
+                event.layer.remove();
+                
+                
                 change_icon(degreename, latlng, groupcolor, 1, "normal");
 
 
@@ -3477,13 +3497,11 @@ class Ui_MainWindow(object):
                 backend_map.AddNode_DataBase(degreename)
 
                 var latlng = event.layer.getLatLng();
-                event.layer.remove()
                 
-
-                //var icon =  L.AwesomeMarkers.icon(
-                //{"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": groupcolor, "prefix": "glyphicon"}
-            //);
-
+                myFeatureGroup.removeLayer(event.layer);
+                %s.removeLayer(event.layer);
+                event.layer.remove();
+                
                 change_icon(degreename, latlng, groupcolor, 0.6, "normal");
 
                 
@@ -3495,7 +3513,7 @@ class Ui_MainWindow(object):
 
             
             }
-            """ ))
+            """ %(MapVar, MapVar) ))
         
         Fig.save("map.html")
 
