@@ -248,7 +248,7 @@ class customlabel(QLabel):
                 for i in range(ServiceListLen - self.ClientNum + 1):
                     DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList.append(None) 
             DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = ids[1]
-            print(f"debug in MP1H--> demandid : {ids[0]}")
+            #print(f"debug in MP1H--> demandid : {ids[0]}")
             DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = ids[0]
             self.modify_ServiceList(ids, self.nodename, self.Destination)
 
@@ -323,6 +323,15 @@ class customlabel(QLabel):
         key = (int(ids[0]) , int(ids[1]))
         if mode == "delete":
             DemandTabDataBase["Services"][(source, destination)].pop(key)
+
+            # statement bellow checks for removing notification
+            x = 0
+            for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
+                if DemandTabDataBase["Services"][(source, dest)]:
+                    x = 1
+                    break
+            if x == 0:        
+                Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
             DemandTabDataBase["Services"][(source, destination)][key] = "[%s , %s] # %s" % (ids[0], ids[1], type)

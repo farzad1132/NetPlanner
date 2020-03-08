@@ -128,9 +128,9 @@ class Backend_map(QObject):
             #ui.SelectNode_combo_change()
 
         if Data["Stage_flag"] == "Demand":
+            Data["ui"].clicked_Node_flag = True
             Data["TabWidget"].setCurrentIndex(4)
             Data["Clicked_Node"] = degreename
-            Data["ui"].clicked_Node_flag = True
             rep_source = DemandTabDataBase["Source_Destination"][degreename]["Source"]
             if rep_source == Data["Demand_Source_combo"].currentText():
                 Data["Demand_Source_combo"].setCurrentText(rep_source)
@@ -2103,6 +2103,8 @@ class Ui_MainWindow(object):
 
         self.import_button.clicked.connect(self.open_ImportUI_fun)
 
+        #self.Demand_Shelf_set()
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -2716,9 +2718,9 @@ class Ui_MainWindow(object):
         if index == 4:
             if Data["DemandTab_firststart_flag"] == False:
                 Source = self.Demand_Source_combobox.currentText()
-                self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
                 self.Demand_Shelf_set()
-                self.DemandMap_Change()
+                if self.clicked_Node_flag == False:
+                    self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
                 Data["DemandTab_firststart_flag"] = True
             if self.update_demand_service_flag is True:
                 self.UpdateDemand_ServiceList()
@@ -3138,6 +3140,12 @@ class Ui_MainWindow(object):
             self.set_demand_panels()        
             self.DemandMap_Change()
         
+        """ elif Data["DemandTab_firststart_flag"] == False:
+            
+            self.UpdateDemand_ServiceList()
+            self.update_Demand_lightpath_list()
+            self.set_demand_panels()        
+            self.DemandMap_Change() """
         
         
         
@@ -3298,6 +3306,7 @@ class Ui_MainWindow(object):
         var groupcolor = null;
         var marker_num = 0;
         var failed_nodes = new Object();
+        var failed_nodes_list = [];
         var lambdas = new Object();
 
         function setcolor(text){
@@ -3313,12 +3322,12 @@ class Ui_MainWindow(object):
         }
 
         function receive_failed_nodes(NodeName, Color, SubNode){
-            failed_nodes[NodeName] = {"Color":Color, "SubNode":SubNode};
+            failed_nodes[NodeName] = {"Color":Color, "SubNode":parseInt(SubNode)};
+            failed_nodes_list.push(NodeName);
         }
 
         function change_failed_nodes_icon(){
             
-
             // loop on nodes group feature and notify their icon
             myFeatureGroup.eachLayer(function (layer) {
                 var x = layer["_tooltip"]["_content"];
@@ -3326,13 +3335,19 @@ class Ui_MainWindow(object):
                 var z = doc.documentElement.textContent;
                 NodeName = z.replace(/\s/g, '');
 
-                if (NodeName in failed_nodes){
+                if (failed_nodes_list.includes(NodeName)){
                     value = failed_nodes[NodeName]
                     Color = value["Color"]
                     SubNode = value["SubNode"]
+
+                    index = failed_nodes_list.indexOf(NodeName);
+                    failed_nodes_list.splice(index, 1);
                     
+                    myFeatureGroup.removeLayer(layer);
                     latlng = layer.getLatLng()
-                    layer.remove()
+                    %s.removeLayer(layer);
+                    layer.remove();
+
                     if (SubNode == 0){
                         change_icon(NodeName, latlng, Color, 1, "notified")
                     } else{
@@ -3342,6 +3357,40 @@ class Ui_MainWindow(object):
 
                 }
         });
+        }
+
+        function set_failed_node_default(Source){
+            var value = failed_nodes[Source];
+            var color = value["Color"];
+            var subnode = value["SubNode"];
+            var flag = 0;
+            
+
+            myFeatureGroup.eachLayer(function (layer) {
+                var x = layer["_tooltip"]["_content"];
+                var doc = new DOMParser().parseFromString(x, "text/xml");
+                var z = doc.documentElement.textContent;
+                NodeName = z.replace(/\s/g, '');
+
+                if (NodeName == Source){
+                    if (flag == 0){
+                    var latlng = layer.getLatLng()
+                    
+                    %s.removeLayer(layer);
+                    layer.remove();
+
+                    if (subnode == 0){
+                        
+                        change_icon(NodeName, latlng, color, 1, "normal")
+                    } else{
+                        ("yes sub node is 1")
+                        change_icon(NodeName, latlng, color, 0.6, "normal")
+                    }
+                }
+                flag = 1;
+                }
+        });
+
         }
 
         function receive_lambdas(Source, Destination, value){
@@ -3376,6 +3425,7 @@ class Ui_MainWindow(object):
 
 
         function change_icon(NodeName, latlng, Color, Opacity, mode){
+
                 if ( mode == "normal" ){
                     var url = "Icons/" + Color + "/server_" + Color + ".png"
                 } else {
@@ -3407,12 +3457,14 @@ class Ui_MainWindow(object):
         var backend_map = null;
         new QWebChannel(qt.webChannelTransport, function (channel) {
         window.backend_map = channel.objects.backend_map;
-        });""" %(MapVar, MapVar, MapVar)))
+        });""" %(MapVar, MapVar, MapVar, MapVar, MapVar)))
         Fig.script.add_child(Element("var myFeatureGroup = L.featureGroup().addTo(%s).on(\"click\", groupClick);" %MapVar))
 
         Fig.script.add_child(Element("""%s.eachLayer(function (layer) {
                if (layer instanceof L.Marker){
-                  layer.addTo(myFeatureGroup);
+
+                    
+                    layer.addTo(myFeatureGroup);
                }
                
             });""" %MapVar))
@@ -3436,11 +3488,12 @@ class Ui_MainWindow(object):
                 backend_map.Create_DataBase(degreename)
 
                 var latlng = event.layer.getLatLng();
-                event.layer.remove()
-                //var icon =  L.AwesomeMarkers.icon(
-               // {"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": groupcolor, "prefix": "glyphicon"}
-            //);
-
+                
+                myFeatureGroup.removeLayer(event.layer);
+                %s.removeLayer(event.layer);
+                event.layer.remove();
+                
+                
                 change_icon(degreename, latlng, groupcolor, 1, "normal");
 
 
@@ -3451,13 +3504,11 @@ class Ui_MainWindow(object):
                 backend_map.AddNode_DataBase(degreename)
 
                 var latlng = event.layer.getLatLng();
-                event.layer.remove()
                 
-
-                //var icon =  L.AwesomeMarkers.icon(
-                //{"extraClasses": "fa-rotate-0", "icon": "info-sign", "iconColor": "white", "markerColor": groupcolor, "prefix": "glyphicon"}
-            //);
-
+                myFeatureGroup.removeLayer(event.layer);
+                %s.removeLayer(event.layer);
+                event.layer.remove();
+                
                 change_icon(degreename, latlng, groupcolor, 0.6, "normal");
 
                 
@@ -3469,7 +3520,7 @@ class Ui_MainWindow(object):
 
             
             }
-            """ ))
+            """ %(MapVar, MapVar) ))
         
         Fig.save("map.html")
 
@@ -3931,6 +3982,7 @@ class Ui_MainWindow(object):
         NotifiedNodes = self.find_grooming_failed_sources()
 
         # finding failed nodes cluster and their color and creating a dictionary for senting to JS
+        print(f" -- >> clustering database : {Data['Clustering']}")
         failed_nodes = {}
         Num_failed_nodes = len(NotifiedNodes)
         for GateWay , value in Data["Clustering"].items():
@@ -3943,16 +3995,16 @@ class Ui_MainWindow(object):
                 if Num_failed_nodes == 0:
                     break
             
-            else:
-                intersect_nodes = list(set(NotifiedNodes) & set(value["SubNodes"]))
+            intersect_nodes = list(set(NotifiedNodes) & set(value["SubNodes"]))
 
-                for failed_node in intersect_nodes:
-                    failed_nodes[failed_node] =  {"Color": value["Color"], "SubNode": 1}
-                    NotifiedNodes.remove(failed_node)
-                    Num_failed_nodes -= 1
+            for failed_node in intersect_nodes:
+                failed_nodes[failed_node] =  {"Color": value["Color"], "SubNode": 1}
+                NotifiedNodes.remove(failed_node)
+                Num_failed_nodes -= 1
 
-                    if Num_failed_nodes == 0:
-                        break
+                if Num_failed_nodes == 0:
+                    break
+
         for remained_nodes in NotifiedNodes:
             # NOTE: default color is blue in this moment
             failed_nodes[remained_nodes] = {"Color": "blue", "SubNode": 0}
@@ -3961,6 +4013,7 @@ class Ui_MainWindow(object):
             def __str__(self):
                 return json.dumps(self)
         failed_nodes = Double_quote(failed_nodes) """
+        print(f" -->> failed nodes : {failed_nodes}")
         self.failed_nodes_javascript(failed_nodes)
 
 
@@ -3979,6 +4032,11 @@ class Ui_MainWindow(object):
             self.webengine.page().runJavaScript("receive_failed_nodes(\"%s\", \"%s\", \"%s\")" %(nodename, color, SubNode))
         
         self.webengine.page().runJavaScript("change_failed_nodes_icon()")
+
+    def set_failed_nodes_default(self, source):
+
+        self.webengine.page().runJavaScript("set_failed_node_default(\"%s\")" %source)
+
         
     def open_ImportUI_fun(self):
 
@@ -3998,6 +4056,7 @@ class Ui_MainWindow(object):
         
 
     def grooming_procedure(self, MP1H_Threshold):
+        #self.Demand_Shelf_set()
 
         RemainServices = self.grooming_fun(self.network, int(MP1H_Threshold))
         print(f"remained services : {RemainServices}")
