@@ -2272,8 +2272,8 @@ class Ui_MainWindow(object):
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
 
             self.MapWidget.canvas.axes.annotate(NodeName, xy = (x, y), xytext = (x, y),
-             color='crimson', rotation=25, 
-             horizontalalignment='left', verticalalignment='top', ha="left", va="bottom")
+             color='purple', rotation = 30, 
+             horizontalalignment='left', verticalalignment='center_baseline')
 
         for key in Data["Links"].keys():
             InNodeName = key[0]
