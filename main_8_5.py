@@ -3848,8 +3848,8 @@ class Ui_MainWindow(object):
             WaveLength = lightpath.WaveLength[0]
             RG_w = lightpath.RegeneratorNode_w
             RG_p = lightpath.RegeneratorNode_p
-            SNR_w = lightpath.SNR_w
-            SNR_p = lightpath.SNR_p
+            SNR_w = list(map(lambda x : round(x, 2), lightpath.SNR_w))
+            SNR_p = list(map(lambda x : round(x, 2), lightpath.SNR_p))
 
             # adding pathes to to GroomingTabDataBase ( lightpath part )
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id] = {}
