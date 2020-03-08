@@ -7,10 +7,11 @@ import os
 from data import *
 from Common_Object_def import Network
 import pandas as pd 
-
+bus = {}
 
 class Ui_RWA_Window(object):
     def setupUi(self, RWA_Window):
+        bus["RWA_Window"] = RWA_Window
         RWA_Window.setObjectName("RWA_Window")
         RWA_Window.resize(477, 363)
         self.gridLayout_2 = QtWidgets.QGridLayout(RWA_Window)
@@ -319,7 +320,13 @@ class Ui_RWA_Window(object):
         maxNW = self.MNV_lineedit.text()
 
         if (alpha and margin and iterations and processors and k) != "":
-            merge = bool(merge)
+            if merge == "False":
+                merge = False
+            elif merge == "True":
+                merge = True
+            else:
+                print(f"merge error")
+                assert False
             alpha = float(alpha)
             margin = int(margin)
             iterations = int(iterations)
@@ -333,7 +340,7 @@ class Ui_RWA_Window(object):
 
 
             Data["ui"].RWA_procedure(merge, alpha, iterations, margin, processors, k, maxNW)
-            RWA_Window.close()
+            bus["RWA_Window"].close()
         else:
             print("fill all boxes")
 

@@ -20,12 +20,13 @@ from pandas import ExcelWriter
 from pandas import ExcelFile
 from newcheck import  Ui_checking
 from Common_Object_def import Network
+import math
 from math import ceil
 import requests
 import json
 import socketio  
 import time
-import copy , math, warnings
+import copy , warnings
 
 from add_node import Ui_add_node_window
 from grooming_window import Grooming_Window
@@ -2092,7 +2093,7 @@ class Ui_MainWindow(object):
 
         self.Grooming_pushbutton.clicked.connect(self.grooming_button_fun)
         self.RWA_pushbutton.clicked.connect(self.open_RWA_window_fun)
-        self.FinalPlan_pushbutton.clicked.connect(self.send_lambdas_to_JS)
+        self.FinalPlan_pushbutton.clicked.connect(self.create_obj)
 
         self.window = MainWindow
 
@@ -2237,6 +2238,12 @@ class Ui_MainWindow(object):
         self.Demand_tab.setTabText(self.Demand_tab.indexOf(self.tab_8), _translate("MainWindow", "Shelf"))
         self.ClientLabel_25.setText(_translate("MainWindow", "Map:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
+    
+
+    def create_obj(self):
+        with open("NetworkObj.obj", 'wb') as handle:
+            pickle.dump(self.network, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        handle.close()
 
 
     
@@ -4051,6 +4058,7 @@ class Ui_MainWindow(object):
     def RWA_procedure(self, merge, alpha, iterations, margin, processors, k, maxNW):
 
         self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, maxNW)
+        #self.create_obj()
         self.RWA_button_fun()
         self.fill_GroomingTabDataBase(self.decoded_network)
 
@@ -4138,23 +4146,27 @@ class Ui_MainWindow(object):
 
         net = copy.copy(self.network)
 
+
         # Convert keys to String
         tuple_keys = list(net.PhysicalTopology.LinkDict.keys())
         for key in tuple_keys:
             net.PhysicalTopology.LinkDict[str(key)] = net.PhysicalTopology.LinkDict.pop(key)
 
-            
         ##############################################
         # Convert the Network object to JSON message
         data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
         # print(data)
+        class_dict = json.loads(data)
+        new_network = Network.from_json(class_dict) 
+        # assert False
+        data = json.dumps(new_network,default=convert_to_dict,indent=4, sort_keys=True)
 
-        decoded_network = Network.from_json(json.loads(data)) 
-        str_keys = list(decoded_network.PhysicalTopology.LinkDict.keys())
+        str_keys = list(new_network.PhysicalTopology.LinkDict.keys())
         for key in str_keys:
             Lkey = list(key)
             ActualKey =( int(Lkey[1]) , int(Lkey[-2]) )
-            decoded_network.PhysicalTopology.LinkDict[ActualKey] = decoded_network.PhysicalTopology.LinkDict.pop(key)
+            new_network.PhysicalTopology.LinkDict[ActualKey] = new_network.PhysicalTopology.LinkDict.pop(key)
+
 
         # assert False
         # This line tests whether the JSON encoded common object is reconstructable!
@@ -4182,6 +4194,8 @@ class Ui_MainWindow(object):
             # print('####################################################')
             # print(json.dumps(res.json()))
             decoded_network = Network.from_json(json.loads(json.dumps(res.json())))
+            data = json.dumps(decoded_network.LightPathDict,default=convert_to_dict,indent=4, sort_keys=True)
+            print(data)
             # Converting keys to original version ( Server Side )
             str_keys = list(decoded_network.PhysicalTopology.LinkDict.keys())
             for key in str_keys:
@@ -4196,17 +4210,14 @@ class Ui_MainWindow(object):
             
 
         sio.disconnect()
-        time.sleep(3)
+        sio.wait()
         print('RWA finished and data received in client') 
         try:
             print('Sample WaveLength output', decoded_network.LightPathDict[0].WaveLength)
             print('Sample Path output', decoded_network.LightPathDict[0].WorkingPath)
+            # export_excel('Test.xlsx',decoded_network)
         except:
             pass
-        
-        for lightpath in decoded_network.LightPathDict.values():
-            print(lightpath.__dict__)
-
         self.decoded_network = decoded_network
 
 
