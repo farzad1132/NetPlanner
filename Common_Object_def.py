@@ -486,6 +486,25 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
+            class Groom_out10:
+                BW=10
+
+                def __init__(self, Id, Sla, Source, Destination, Capacity, ServiceIdList,  DemandId,
+                        IgnoringNodesIdList = None, MandatoryNodesIdList = None, LightPathId = None):
+
+                    self.Id = Id
+            
+                    self.Source = Source
+                    self.Sla = Sla
+                    self.Destination = Destination
+                    self.DemandId = DemandId
+                    self.Capacity = Capacity
+                    self.ServiceIdList = ServiceIdList
+                    self.Type = "Groom_out10"
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
+                    self.IgnoringNodesIdList = IgnoringNodesIdList
+                    self.LightPathId = LightPathId
+
                     
             
             def GenerateId(self):
