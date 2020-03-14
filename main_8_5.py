@@ -3295,6 +3295,7 @@ class Ui_MainWindow(object):
         MapVar = re.findall("var( map_.*)=", Figtext)[0].strip()
         channel = "qrc:///qtwebchannel/qwebchannel.js"
         Fig.header.add_child(Element("<script src=%s></script>" %channel))
+        Fig.header.add_child(Element("<link rel=\"stylesheet\" href=\"MainMap_style.css\" />"))
         '''Fig.script.add_child(Element("""window.onload = function() {
         new QWebChannel(qt.webChannelTransport, function (channel) {
         window.backend = channel.objects.backend;
