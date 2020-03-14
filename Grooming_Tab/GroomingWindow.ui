@@ -86,7 +86,8 @@ QCheckBox::indicator:unchecked:hover {
 
 
 QCheckBox::indicator:checked {
-   border:2px solid green
+   
+	image: url(:/newPrefix/checkmark.png);
 }
 </string>
         </property>
@@ -126,7 +127,8 @@ QCheckBox::indicator:unchecked:hover {
 
 
 QCheckBox::indicator:checked {
-   border:2px solid green
+   
+	image: url(:/newPrefix/checkmark.png);
 }
 </string>
         </property>
@@ -166,7 +168,8 @@ QCheckBox::indicator:unchecked:hover {
 
 
 QCheckBox::indicator:checked {
-   border:2px solid green
+   
+	image: url(:/newPrefix/checkmark.png);
 }
 </string>
         </property>
@@ -262,6 +265,8 @@ QPushButton:default {
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
  <connections/>
 </ui>
