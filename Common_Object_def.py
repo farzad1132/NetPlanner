@@ -341,6 +341,7 @@ class Network:
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "G_100"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -352,6 +353,7 @@ class Network:
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "G_40"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -364,6 +366,7 @@ class Network:
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "G_10"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -377,6 +380,7 @@ class Network:
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "G_1"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -391,6 +395,7 @@ class Network:
                     self.Granularity_vc4 = Granularity_vc4
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "FE"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -404,6 +409,7 @@ class Network:
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "STM_64"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -416,6 +422,7 @@ class Network:
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "STM_16"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -431,7 +438,7 @@ class Network:
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
-
+                    self.Type = "SYM_4"
                     self.sDemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -445,6 +452,7 @@ class Network:
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "STM_1_Optical"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -458,6 +466,7 @@ class Network:
                 def __init__(self, Id, Sla, DemandId, IgnoringNodes, LightPathId = None):
                     self.Id = Id
                     self.Sla = Sla
+                    self.Type = "STM_1_Electrical"
                     self.DemandId =DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -472,6 +481,7 @@ class Network:
                 def __init__(self, Id, Sla,DemandId, IgnoringNodes, LightPathId = None):
                     self.Id = Id
                     self.Sla = Sla
+                    self.Type = "E1"
                     self.DemandId =DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
