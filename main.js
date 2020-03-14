@@ -15,11 +15,11 @@ inside header:
 		integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
 		crossorigin=""></script>
 
-	<link rel="stylesheet" href="style.css" />
+	<link rel="stylesheet" href="MainMap_style.css" />
 
 
 inside body:
-
+    //map variable : MapVar
     <div id="mapid"></div>
 
 
@@ -29,29 +29,8 @@ inside body:
  */
 
 
- 
-//dummy data
-var dummyData = [
-    [
-        [33.51, 55.68],
-        [33.51, 57.68]
-    ],
-    [
-        [32.44, 50.40],
-        [30.30, 60.00]
-    ],
-    [
-        [30.51, 55.68],
-        [33.51, 57.68]
-    ],
-    [
-        [32.44, 56.40],
-        [34.30, 60.00]
-    ]
-];
 
-
-//map configs 
+//map configs ( global ) 
 popupOptions = {
     maxWidth: "auto"
 };
@@ -61,26 +40,8 @@ lineOptions = {
 };
 
 
-//main map
-var mymap = L.map('mapid').setView([33.6, 53.7], 13);
 
-//map tile-layer
-L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 6,
-    id: 'mapbox/streets-v11',
-    // x: 53,
-    // y: 33,
-    // z: 1,
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: 'pk.eyJ1IjoicGl0Y2xhaXIiLCJhIjoiY2s3MDZmZGcwMDB1NDNtcDBmZ3pjdWp2NyJ9.MC35oYwFqBb-Zndvv2yiHQ'
-}).addTo(mymap);
-
-
-
-
-//mandatory globals, need to be added to the code
+//mandatory globals, need to be added to the code ( global )
 var wrapper = document.createElement("div");
 var canvas = document.createElement("canvas");
 canvas.setAttribute("class", "focusArea");
@@ -94,9 +55,34 @@ wrapper.appendChild(displayArea);
 
 
 
-drawLines(dummyData);
 
-createLegend(mymap);
+
+createLegend(MapVar);
+
+
+/**
+ * addes legend to the given map
+ */
+function createLegend(MapVar) {
+    var legend = L.control({ position: 'bottomleft' });
+    legend.onAdd = function (map) {
+        var div = L.DomUtil.create("div", "legend");
+        div.style.backgroundColor = 'WHITE';
+
+        div.innerHTML += '<p>Number of Links<b>: XX</b></p>';
+        div.innerHTML += '<p>xxxx  xxxx xxxx<b>: XX</b></p>';
+
+        return div;
+    };
+
+    legend.addTo(MapVar);
+}
+
+
+
+
+
+
 
 handleMouseOverLines();
 
@@ -109,23 +95,7 @@ function handleMouseOverLines() {
     canvas.addEventListener("mouseleave", unshowLineNumberInBox);
 }
 
-/**
- * addes legend to the given map
- */
-function createLegend(mymap) {
-    var legend = L.control({ position: 'bottomleft' });
-    legend.onAdd = function (map) {
-        var div = L.DomUtil.create("div", "legend");
-        div.style.backgroundColor = 'WHITE';
 
-        div.innerHTML += '<p>Number of Links<b>: XX</b></p>';
-        div.innerHTML += '<p>xxxx  xxxx xxxx<b>: XX</b></p>';
-
-        return div;
-    };
-
-    legend.addTo(mymap);
-}
 
 
 
@@ -154,13 +124,50 @@ function createLegend(mymap) {
         [34.30, 60.00]
     ]
 ];
- */
-function drawLines(data) {
-    for (var i = 0; i < data.length; i++) {
-        var polyline = L.polyline(data[i], lineOptions).addTo(mymap);
-        polyline.bindPopup(drawDetailBox, popupOptions);
-    }
+
+*/
+
+drawLines(dummyData);
+
+
+
+function drawLines(event, lambda_list) {
+
+    var layer = event.layer;
+    layer.bindPopup(drawDetailBox, popupOptions);
+
 }
+
+
+
+///////////////////////////////
+/**
+ * adds a number to the bootom of the popup box when mouse is over the corresponding line
+ * @param  e: event 
+ */
+function showLineNumberInBox(e) {
+    x = e.clientX;
+    y = e.clientY;
+    const xOff = e.offsetX;
+    if (xOff % 4 <= 2) {
+        cursor = parseInt(xOff / 4);
+    } else {
+        cursor = " ";
+    }
+    document.getElementById("displayArea").style.display = 'block';
+    document.getElementById("displayArea").innerHTML = cursor;
+    document.getElementById("displayArea").style.right = x + 'px';
+    document.getElementById("displayArea").style.top = y + 'px';
+}
+
+/**
+ * removes the line number created in method showLineNumberInBox when mouse leaves the line
+ */
+function unshowLineNumberInBox() {
+    document.getElementById("displayArea").style.display = 'none';
+    document.getElementById("displayArea").innerHTML = "";
+}
+
 
 /**
  * draws a popup box with lines inside it.
@@ -191,29 +198,5 @@ function drawDetailBox() {
 }
 
 
-/**
- * adds a number to the bootom of the popup box when mouse is over the corresponding line
- * @param  e: event 
- */
-function showLineNumberInBox(e) {
-    x = e.clientX;
-    y = e.clientY;
-    const xOff = e.offsetX;
-    if (xOff % 4 <= 2) {
-        cursor = parseInt(xOff / 4);
-    } else {
-        cursor = " ";
-    }
-    document.getElementById("displayArea").style.display = 'block';
-    document.getElementById("displayArea").innerHTML = cursor;
-    document.getElementById("displayArea").style.right = x + 'px';
-    document.getElementById("displayArea").style.top = y + 'px';
-}
 
-/**
- * removes the line number created in method showLineNumberInBox when mouse leaves the line
- */
-function unshowLineNumberInBox() {
-    document.getElementById("displayArea").style.display = 'none';
-    document.getElementById("displayArea").innerHTML = "";
-}
+
