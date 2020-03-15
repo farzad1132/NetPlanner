@@ -1,6 +1,10 @@
 .legend {
-	padding-right: 15px;
-	padding-left: 15px;
+	display: block; 
+	padding-left: 10px; 
+	padding-right: 10px; 
+	border: 3px solid green; 
+	background-color:tomato;;
+
 }
 
 /* #displayArea {background:#fff; border:1px solid #ccc;padding:5px;float:left;width:auto;display:none;position:absolute;top:0} */
