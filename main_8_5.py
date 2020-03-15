@@ -3310,6 +3310,21 @@ class Ui_MainWindow(object):
         var failed_nodes_list = [];
         var lambdas = new Object();
 
+
+        var wrapper = document.createElement("div");
+        var canvas = document.createElement("canvas");
+        canvas.setAttribute("class", "focusArea");
+        var displayArea = document.createElement('div');
+        // displayArea.textContent = " ";
+        displayArea.setAttribute("id", "displayArea");
+        displayArea.innerHTML = "Wavelength Number: ";
+        canvas.height = 50;
+        canvas.width = 420
+        wrapper.appendChild(canvas);
+        wrapper.appendChild(displayArea);
+
+        handleMouseOverLines();
+
         function setcolor(text){
             groupcolor = text;
         }
@@ -3420,9 +3435,88 @@ class Ui_MainWindow(object):
             lambda_list = lambdas[link_key]
             
 
-            // ** write your code here ** 
+            drawLines(event.layer, lambda_list);
             
         }
+
+        function drawLines(layer, lambdaList) {
+
+            popupOptions = {
+                maxWidth: "auto"
+            };
+
+            layer.bindPopup(drawDetailBox(lambdaList), popupOptions)
+
+        }
+
+        function drawDetailBox(lambdaList) {
+
+            var h = canvas.height;
+            console.log(h);
+
+            var ctx = canvas.getContext("2d");
+
+            for (var i = 1; i <= 100; i++) {
+
+                ctx.beginPath();
+                ctx.moveTo(i * 4, 0);
+                ctx.lineTo(i * 4, h);
+                ctx.lineWidth = 2;
+                if (lambdaList.includes(i))
+                    ctx.strokeStyle = "black"
+                else
+                    ctx.strokeStyle = "gray";
+                ctx.stroke();
+
+            }
+
+            return wrapper;
+        }
+
+
+        function handleMouseOverLines() {
+
+            canvas.addEventListener("mousemove", showLineNumberInBox);
+            canvas.addEventListener("mouseleave", unshowLineNumberInBox);
+        }
+
+        function showLineNumberInBox(e) {
+            x = e.clientX;
+            y = e.clientY;
+            const xOff = e.offsetX;
+            if (xOff %% 4 <= 2) {
+                cursor = parseInt(xOff / 4);
+                if(cursor == 0){
+                    cursor = " ";
+                }
+            } else {
+                cursor = " ";
+            }
+            document.getElementById("displayArea").style.display = 'block';
+            document.getElementById("displayArea").innerHTML = 'Wavelength Number: '+ cursor;
+            document.getElementById("displayArea").style.right = x + 'px';
+            document.getElementById("displayArea").style.top = y + 'px';
+        }
+
+        
+        function unshowLineNumberInBox() {
+                document.getElementById("displayArea").innerHTML = "Wavelength Number: ";
+            }
+
+            function createLegend(MapVar) {
+        var legend = L.control({ position: 'bottomleft' });
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create("div", "legend");
+            div.style.backgroundColor = 'WHITE';
+
+            div.innerHTML += '<p>Number of Links<b>: XX</b></p>';
+            div.innerHTML += '<p>xxxx  xxxx xxxx<b>: XX</b></p>';
+
+            return div;
+        };
+
+    legend.addTo(MapVar);
+}
 
 
         function change_icon(NodeName, latlng, Color, Opacity, mode){
