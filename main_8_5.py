@@ -4114,9 +4114,9 @@ class Ui_MainWindow(object):
         self.RWA_window_dialog.show()
 
 
-    def RWA_procedure(self, merge, alpha, iterations, margin, processors, k, maxNW):
+    def RWA_procedure(self, merge, alpha, iterations, margin, processors, k, MaxNW):
 
-        self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, maxNW)
+        self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, MaxNW)
         #self.create_obj()
         self.RWA_button_fun()
         self.fill_GroomingTabDataBase(self.decoded_network)
@@ -4144,14 +4144,14 @@ class Ui_MainWindow(object):
 
 
 
-    def insert_params_into_obj(self, merge, alpha, iterations, margin, processors, k, maxNW):
+    def insert_params_into_obj(self, merge, alpha, iterations, margin, processors, k, MaxNW):
         self.network.put_params(merge= merge,
                                 alpha= alpha,
                                 iterations= iterations,
                                 margin= margin,
                                 processors= processors,
                                 k= k,
-                                maxNW= maxNW)
+                                MaxNW= MaxNW)
 
 
         
