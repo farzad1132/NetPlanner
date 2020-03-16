@@ -317,7 +317,7 @@ class Ui_RWA_Window(object):
         processors = self.Processors_lineedit.text()
 
         k = self.K_lineedit.text()
-        maxNW = self.MNV_lineedit.text()
+        MaxNW = self.MNV_lineedit.text()
 
         if (alpha and margin and iterations and processors and k) != "":
             if merge == "False":
@@ -333,13 +333,13 @@ class Ui_RWA_Window(object):
             processors = int(processors)
             k = int(k)
             
-            if maxNW == "":
-                maxNW = None
+            if MaxNW == "":
+                MaxNW = None
             else:
-                maxNW = int(maxNW)
+                maxNW = int(MaxNW)
 
 
-            Data["ui"].RWA_procedure(merge, alpha, iterations, margin, processors, k, maxNW)
+            Data["ui"].RWA_procedure(merge, alpha, iterations, margin, processors, k, MaxNW)
             bus["RWA_Window"].close()
         else:
             print("fill all boxes")

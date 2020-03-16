@@ -14,11 +14,12 @@ class Network:
         self.PhysicalTopology = self.Topology()
         self.TrafficMatrix = self.Traffic()
         self.ParamsObj = self.Params()
+        self.ResultObj = self.Overall_Result()
         
         self.LightPathDict = {}
 
-    def put_params(self, merge, alpha, iterations, margin, processors, k, maxNW = None):
-        self.ParamsObj.set_results(merge, alpha, iterations, margin, processors, k , maxNW)
+    def put_params(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm = "Greedy"):
+        self.ParamsObj.set_params(merge, alpha, iterations, margin, processors, k , MaxNW, GroupSize, History, Algorithm)
 
     def add_lightpath(self, Source, Destination, Capacity, ServiceIdList, Type, DemandId,
      MandatoryNodesIdList = None, IgnoringNodesIdList = None):
@@ -48,9 +49,10 @@ class Network:
         
     
     def put_results(self, id, WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p,
-                    SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p):
+                    SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p, ProtectionType):
         
-        self.LightPathDict[id].set_results(WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p, SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p)
+        self.LightPathDict[id].set_results(WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p, SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p,
+                                            ProtectionType)
 
 
     class Topology:
@@ -204,6 +206,8 @@ class Network:
                 self.degrees = []
                 self.services = []
                 self.AmplifierList = []
+                self.ROADM_Type = None
+                self.NodeState = []
             
             
             def add_amplifier(self, nf):
@@ -238,6 +242,7 @@ class Network:
                 self.OutNode = OutNode
                 self.NumSpan = NumSpan
                 self.SpanObjList = [self.Span(self.InNode,self.OutNode) for i in range(NumSpan)]
+                self.LinkState = []
 
                 self.WaveLengthList = []
                 self.LightPathDict = {}    # in  { id : LightPath Object } format
@@ -341,6 +346,7 @@ class Network:
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "G_100"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -352,6 +358,7 @@ class Network:
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "G_40"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -364,6 +371,7 @@ class Network:
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "G_10"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -377,6 +385,7 @@ class Network:
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "G_1"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -391,6 +400,7 @@ class Network:
                     self.Granularity_vc4 = Granularity_vc4
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "FE"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -404,6 +414,7 @@ class Network:
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "STM_64"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -416,6 +427,7 @@ class Network:
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "STM_16"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -431,7 +443,7 @@ class Network:
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
-
+                    self.Type = "SYM_4"
                     self.sDemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -445,6 +457,7 @@ class Network:
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
+                    self.Type = "STM_1_Optical"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -458,6 +471,7 @@ class Network:
                 def __init__(self, Id, Sla, DemandId, IgnoringNodes, LightPathId = None):
                     self.Id = Id
                     self.Sla = Sla
+                    self.Type = "STM_1_Electrical"
                     self.DemandId =DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -472,8 +486,28 @@ class Network:
                 def __init__(self, Id, Sla,DemandId, IgnoringNodes, LightPathId = None):
                     self.Id = Id
                     self.Sla = Sla
+                    self.Type = "E1"
                     self.DemandId =DemandId
                     self.IgnoringNodes = IgnoringNodes
+                    self.LightPathId = LightPathId
+
+            class Groom_out10:
+                BW=10
+
+                def __init__(self, Id, Sla, Source, Destination, Capacity, ServiceIdList,  DemandId,
+                        IgnoringNodesIdList = None, MandatoryNodesIdList = None, LightPathId = None):
+
+                    self.Id = Id
+            
+                    self.Source = Source
+                    self.Sla = Sla
+                    self.Destination = Destination
+                    self.DemandId = DemandId
+                    self.Capacity = Capacity
+                    self.ServiceIdList = ServiceIdList
+                    self.Type = "Groom_out10"
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
+                    self.IgnoringNodesIdList = IgnoringNodesIdList
                     self.LightPathId = LightPathId
 
                     
@@ -551,7 +585,8 @@ class Network:
 
         def __init__(self, Source, Destination, Capacity, ServiceIdList, Type,  DemandId, WorkingPath = None, ProtectionPath = None,
                         WaveLength = None, RegeneratorNode_w = None, RegeneratorNode_p = None, IgnoringNodesIdList = None,
-                        SNR_th = None, LaunchPower = None, ModulationType = None, SNR_w = None, SNR_p = None, MandatoryNodesIdList = None):
+                        SNR_th = None, LaunchPower = None, ModulationType = None, SNR_w = None, SNR_p = None, MandatoryNodesIdList = None,
+                        ProtectionType = None):
 
             self.id = Network.Lightpath.ReferenceId
             
@@ -573,9 +608,10 @@ class Network:
             self.SNR_p = SNR_p
             self.MandatoryNodesIdList = MandatoryNodesIdList
             self.IgnoringNodesIdList = IgnoringNodesIdList
+            self.ProtectionType = ProtectionType
         
         def set_results(self, WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p,
-         SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p):
+         SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p, ProtectionType):
 
             self.WorkingPath = WorkingPath
             self.ProtectionPath = ProtectionPath
@@ -587,16 +623,18 @@ class Network:
             self.ModulationType = ModulationType
             self.SNR_w = SNR_w
             self.SNR_p = SNR_p
+            self.ProtectionType = ProtectionType
     
     class Params:
         @classmethod
         def from_json(cls, data):
             instance = cls(merge = data['merge'], alpha = data['alpha'], iterations = data['iterations'],
                            margin = data['margin'], processors = data['processors'], k = data['k'],
-                           maxNW = data['maxNW'])
+                           MaxNW = data['MaxNW'])
             return instance
 
-        def __init__(self, merge = None, alpha = None, iterations = None, margin = None, processors = None, k = None, maxNW = None):
+        def __init__(self, merge = None, alpha = None, iterations = None, margin = None, processors = None, k = None, MaxNW = None,
+                    GroupSize = None, History = None, Algorithm = "Greedy"):
 
             self.merge = merge                  
             self.alpha = alpha                  
@@ -604,10 +642,13 @@ class Network:
             self.margin = margin                
             self.processors = processors       
             self.k = k                          
-            self.maxNW = maxNW                  
+            self.MaxNW = MaxNW
+            self.GroupSize = GroupSize
+            self.History = History
+            self.Algorithm = Algorithm                  
 
 
-        def set_results(self, merge, alpha, iterations, margin, processors, k, maxNW = None):
+        def set_params(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm):
 
             self.merge = merge
             self.alpha = alpha
@@ -615,7 +656,16 @@ class Network:
             self.margin = margin
             self.processors = processors
             self.k = k
-            self.maxNW = maxNW
+            self.MaxNW = MaxNW
+            self.GroupSize = GroupSize
+            self.History = History
+            self.Algorithm = Algorithm
+    
+    class Overall_Result:
+        def __init__(self):
+            self.Num_WL = None          # Number of used Wavelengths
+            self.Num_RG = None          # Number of used Regenerators
+            self.Worst_SNR = None
 
 
 
@@ -656,8 +706,13 @@ if __name__ == "__main__":
     print("Demand 2: ",n.TrafficMatrix.DemandDict[2].ServiceDict)
     print("Demand 0: ",n.TrafficMatrix.DemandDict[0].ServiceDict)
 
-    n.add_lightpath("Tehran", "Mashhad", "20GE", [1 ,2], "100GE", 2)
-    n.put_results(0, [1 , 3 , 7], [1 ,4 ,7], 27, [5], [9], 25, 14, "111", 14, 31)
+    n.add_lightpath(Source= "Tehran",
+                    Destination= "Shiraz",
+                    Capacity= 100,
+                    ServiceIdList= [1, 2],
+                    Type= "x",
+                    DemandId= 2)
+    n.put_results(0, [1 , 3 , 7], [1 ,4 ,7], 27, [5], [9], 25, 14, "111", 14, 31, "1+1")
 
     print("LightpathDict: ", n.LightPathDict)
 
@@ -667,6 +722,9 @@ if __name__ == "__main__":
                  margin= 4,
                  processors= 4,
                  k= 1,
-                 maxNW= 50)
+                 MaxNW= 50,
+                 GroupSize= 2,
+                 History= 20,
+                 Algorithm= "Greedy")
 
     print(f"Params result: {n.ParamsObj.__dict__}")
