@@ -14,12 +14,12 @@ class Network:
         self.PhysicalTopology = self.Topology()
         self.TrafficMatrix = self.Traffic()
         self.ParamsObj = self.Params()
-        self.ResultObj = self.Result()
+        self.ResultObj = self.Overall_Result()
         
         self.LightPathDict = {}
 
     def put_params(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm = "Greedy"):
-        self.ParamsObj.set_results(merge, alpha, iterations, margin, processors, k , MaxNW, GroupSize, History, Algorithm)
+        self.ParamsObj.set_params(merge, alpha, iterations, margin, processors, k , MaxNW, GroupSize, History, Algorithm)
 
     def add_lightpath(self, Source, Destination, Capacity, ServiceIdList, Type, DemandId,
      MandatoryNodesIdList = None, IgnoringNodesIdList = None):
@@ -648,7 +648,7 @@ class Network:
             self.Algorithm = Algorithm                  
 
 
-        def set_results(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm):
+        def set_params(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm):
 
             self.merge = merge
             self.alpha = alpha
@@ -661,7 +661,7 @@ class Network:
             self.History = History
             self.Algorithm = Algorithm
     
-    class Result:
+    class Overall_Result:
         def __init__(self):
             self.Num_WL = None          # Number of used Wavelengths
             self.Num_RG = None          # Number of used Regenerators
