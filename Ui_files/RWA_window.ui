@@ -40,7 +40,7 @@ QToolBox::tab:only-one{
 }</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="Greedy">
     <property name="geometry">
@@ -58,7 +58,7 @@ QToolBox::tab:only-one{
      <property name="geometry">
       <rect>
        <x>210</x>
-       <y>0</y>
+       <y>40</y>
        <width>251</width>
        <height>81</height>
       </rect>
@@ -111,7 +111,7 @@ QToolBox::tab:only-one{
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>0</y>
+       <y>40</y>
        <width>201</width>
        <height>81</height>
       </rect>
@@ -163,7 +163,7 @@ QToolBox::tab:only-one{
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>100</y>
+       <y>140</y>
        <width>201</width>
        <height>71</height>
       </rect>
@@ -216,7 +216,7 @@ QToolBox::tab:only-one{
      <property name="geometry">
       <rect>
        <x>210</x>
-       <y>100</y>
+       <y>140</y>
        <width>251</width>
        <height>71</height>
       </rect>
@@ -269,7 +269,7 @@ QToolBox::tab:only-one{
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>180</y>
+       <y>220</y>
        <width>201</width>
        <height>71</height>
       </rect>
@@ -322,12 +322,27 @@ QToolBox::tab:only-one{
      <property name="geometry">
       <rect>
        <x>210</x>
-       <y>180</y>
-       <width>249</width>
+       <y>220</y>
+       <width>251</width>
        <height>71</height>
       </rect>
      </property>
      <layout class="QFormLayout" name="formLayout_18">
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="Greedy_MaxNW_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="Greedy_MaxNW_Label">
         <property name="font">
@@ -353,19 +368,61 @@ QToolBox::tab:only-one{
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLineEdit" name="Greedy_MaxNW_LineEdit">
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>201</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="mergindemands_gridlayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="Mergin_DemandRe_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="styleSheet">
-         <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
-    padding: 0 8px;
-    selection-background-color: darkgray;
+         <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
 }</string>
         </property>
         <property name="text">
-         <string/>
+         <string>Merging demands</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="Mergin_DemandRe_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="editable">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Yes</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>No</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>
@@ -1029,7 +1086,7 @@ QToolBox::tab:only-one{
       <rect>
        <x>210</x>
        <y>90</y>
-       <width>249</width>
+       <width>251</width>
        <height>71</height>
       </rect>
      </property>
@@ -1077,63 +1134,6 @@ QToolBox::tab:only-one{
      </layout>
     </widget>
    </widget>
-  </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>40</y>
-     <width>211</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="mergindemands_gridlayout_3">
-    <item row="0" column="0">
-     <widget class="QLabel" name="Mergin_DemandRe_Label">
-      <property name="font">
-       <font>
-        <family>IRANSans</family>
-        <pointsize>8</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"> QLabel {
-    border: 2px solid green;
-    border-radius: 4px;
-    padding: 2px;
-}</string>
-      </property>
-      <property name="text">
-       <string>Merging demands</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QComboBox" name="Mergin_DemandRe_LineEdit">
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="editable">
-       <bool>false</bool>
-      </property>
-      <item>
-       <property name="text">
-        <string>Yes</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>No</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-   </layout>
   </widget>
   <widget class="QWidget" name="layoutWidget_21">
    <property name="geometry">
