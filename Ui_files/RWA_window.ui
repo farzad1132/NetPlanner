@@ -1,314 +1,1154 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RWA_Window</class>
- <widget class="QWidget" name="RWA_Window">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>477</width>
-    <height>363</height>
+    <width>573</width>
+    <height>678</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>RWA Window</string>
+   <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
-    <layout class="QGridLayout" name="mergindemands_gridlayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="mergingdemands_label">
-       <property name="font">
-        <font>
-         <family>IRANSans</family>
-         <pointsize>8</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"> QLabel {
-    border: 2px solid green;
-    border-radius: 4px;
-    padding: 2px;
+  <widget class="QToolBox" name="RW_toolBox">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>70</y>
+     <width>481</width>
+     <height>431</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QToolBox::tab {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                                stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+    border-radius: 5px;
+    color: gray;
+}
+
+QToolBox::tab:selected { /* italicize selected tabs */
+    font: italic;
+    color: dark green;
+}
+
+QToolBox::tab:only-one{
 }</string>
-       </property>
-       <property name="text">
-        <string>Merging demands</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="mergindemands_comboBox">
-       <property name="styleSheet">
-        <string notr="true">border-color: rgb(0, 85, 0);
-border-color: rgb(85, 255, 0);</string>
-       </property>
-       <property name="editable">
-        <bool>false</bool>
-       </property>
-       <item>
-        <property name="text">
-         <string>Yes</string>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="Greedy">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>481</width>
+      <height>341</height>
+     </rect>
+    </property>
+    <attribute name="label">
+     <string>Greedy</string>
+    </attribute>
+    <widget class="QWidget" name="layoutWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>0</y>
+       <width>251</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_14">
+      <item row="0" column="0">
+       <widget class="QLabel" name="Greedy_Iteration_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
         </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>No</string>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
         </property>
-       </item>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0">
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="mergingdemands_label_2">
-       <property name="font">
-        <font>
-         <family>IRANSans</family>
-         <pointsize>8</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"> QLabel {
+        <property name="text">
+         <string>  Iteration   </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="Greedy_Iteration_LineEdit">
+        <property name="styleSheet">
+         <string notr="true">
+ QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>201</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_13">
+      <item row="0" column="0">
+       <widget class="QLabel" name="Greedy_Alpha_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
 }</string>
-       </property>
-       <property name="text">
-        <string>      Alpha  </string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLineEdit" name="alphalineEdit">
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="1">
-    <layout class="QFormLayout" name="formLayout_4">
-     <item row="0" column="0">
-      <widget class="QLabel" name="Iteration_label">
-       <property name="font">
-        <font>
-         <family>IRANSans</family>
-         <pointsize>8</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"> QLabel {
+        </property>
+        <property name="text">
+         <string>      Alpha  </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="Greedy_Alpha_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_4">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>100</y>
+       <width>201</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_15">
+      <item row="0" column="0">
+       <widget class="QLabel" name="Greedy_Margin_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
 }</string>
-       </property>
-       <property name="text">
-        <string>  Iteration   </string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLineEdit" name="Iteration_lineedit">
-       <property name="styleSheet">
-        <string notr="true">
-border-color: rgb(170, 0, 0);</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0">
-    <layout class="QFormLayout" name="formLayout_2">
-     <item row="0" column="0">
-      <widget class="QLabel" name="Margin_label">
-       <property name="font">
-        <font>
-         <family>IRANSans</family>
-         <pointsize>8</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"> QLabel {
+        </property>
+        <property name="text">
+         <string>    Margin </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="Greedy_Margin_LineEdit">
+        <property name="styleSheet">
+         <string notr="true">
+ QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_5">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>100</y>
+       <width>251</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_16">
+      <item row="0" column="0">
+       <widget class="QLabel" name="Greedy_Processors_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
 }</string>
-       </property>
-       <property name="text">
-        <string>    Margin </string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLineEdit" name="Margin_lineedit">
-       <property name="styleSheet">
-        <string notr="true">
-border-color: rgb(170, 0, 0);</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="1">
-    <layout class="QFormLayout" name="formLayout_5">
-     <item row="0" column="0">
-      <widget class="QLabel" name="Processors_label">
-       <property name="font">
-        <font>
-         <family>IRANSans</family>
-         <pointsize>8</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"> QLabel {
+        </property>
+        <property name="text">
+         <string> Processors</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="Greedy_Processors_LineEdit">
+        <property name="styleSheet">
+         <string notr="true">
+ QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_6">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>180</y>
+       <width>201</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_17">
+      <item row="0" column="0">
+       <widget class="QLabel" name="Greedy_K_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
 }</string>
-       </property>
-       <property name="text">
-        <string> Processors</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLineEdit" name="Processors_lineedit">
-       <property name="styleSheet">
-        <string notr="true">
-border-color: rgb(170, 0, 0);</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="0">
-    <layout class="QFormLayout" name="formLayout_3">
-     <item row="0" column="0">
-      <widget class="QLabel" name="K_label">
-       <property name="font">
-        <font>
-         <family>IRANSans</family>
-         <pointsize>8</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"> QLabel {
+        </property>
+        <property name="text">
+         <string>        k     </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="Greedy_K_LineEdit">
+        <property name="styleSheet">
+         <string notr="true">
+ QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_7">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>180</y>
+       <width>249</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_18">
+      <item row="0" column="0">
+       <widget class="QLabel" name="Greedy_MaxNW_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
 }</string>
-       </property>
-       <property name="text">
-        <string>        k     </string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLineEdit" name="K_lineedit">
-       <property name="styleSheet">
-        <string notr="true">
-border-color: rgb(170, 0, 0);</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="1">
-    <layout class="QFormLayout" name="formLayout_6">
-     <item row="0" column="0">
-      <widget class="QLabel" name="MNV_label">
-       <property name="font">
-        <font>
-         <family>IRANSans</family>
-         <pointsize>8</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"> QLabel {
+        </property>
+        <property name="text">
+         <string>Maximum Number of Wavelengths</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="Greedy_MaxNW_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="Group_ILP">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>481</width>
+      <height>341</height>
+     </rect>
+    </property>
+    <attribute name="label">
+     <string>Group ILP</string>
+    </attribute>
+    <widget class="QWidget" name="layoutWidget_8">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>10</y>
+       <width>201</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_19">
+      <item row="0" column="0">
+       <widget class="QLabel" name="GroupILP_Alpha_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
 }</string>
-       </property>
+        </property>
+        <property name="text">
+         <string>      Alpha  </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="GroupILP_Alpha_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_9">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>10</y>
+       <width>251</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_20">
+      <item row="0" column="0">
+       <widget class="QLabel" name="GroupILP_Iteration_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+        </property>
+        <property name="text">
+         <string>  Iteration   </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="GroupILP_Iteration_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_10">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>100</y>
+       <width>201</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_21">
+      <item row="0" column="0">
+       <widget class="QLabel" name="GroupILP_Margin_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+        </property>
+        <property name="text">
+         <string>    Margin </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="GroupILP_Margin_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+     <zorder>GroupILP_Margin_LineEdit</zorder>
+     <zorder>GroupILP_Margin_Label</zorder>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_11">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>100</y>
+       <width>251</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_22">
+      <item row="0" column="0">
+       <widget class="QLabel" name="GroupILP_Processors_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+        </property>
+        <property name="text">
+         <string> Processors</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="GroupILP_Processors_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_12">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>180</y>
+       <width>201</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_23">
+      <item row="0" column="0">
+       <widget class="QLabel" name="GroupILP_K_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+        </property>
+        <property name="text">
+         <string>        k     </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="GroupILP_K_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+     <zorder>GroupILP_K_LineEdit</zorder>
+     <zorder>GroupILP_K_Label</zorder>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_13">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>180</y>
+       <width>249</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_24">
+      <item row="0" column="0">
+       <widget class="QLabel" name="GroupILP_MaxNW_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+        </property>
+        <property name="text">
+         <string>Maximum Number of Wavelengths</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="GroupILP_MaxNW_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_14">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>260</y>
+       <width>201</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_25">
+      <item row="0" column="0">
+       <widget class="QLabel" name="GroupILP_Groupsize_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+        </property>
+        <property name="text">
+         <string>Group Size</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="GroupILP_Groupsize_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_15">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>260</y>
+       <width>251</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_26">
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="GroupILP_History_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="GroupILP_History_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+        </property>
+        <property name="text">
+         <string>      History   </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="ILP">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>481</width>
+      <height>341</height>
+     </rect>
+    </property>
+    <attribute name="label">
+     <string>ILP</string>
+    </attribute>
+    <widget class="QWidget" name="layoutWidget_16">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>170</y>
+       <width>201</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_27">
+      <item row="0" column="0">
+       <widget class="QLabel" name="ILP_Alpha_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+        </property>
+        <property name="text">
+         <string>      Alpha  </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="ILP_Alpha_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_17">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>10</y>
+       <width>201</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_28">
+      <item row="0" column="0">
+       <widget class="QLabel" name="ILP_Margin_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+        </property>
+        <property name="text">
+         <string>    Margin </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="ILP_Margin_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_18">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>10</y>
+       <width>251</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_29">
+      <item row="0" column="0">
+       <widget class="QLabel" name="ILP_Processors_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+        </property>
+        <property name="text">
+         <string> Processors</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="ILP_Processors_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_19">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>90</y>
+       <width>201</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_30">
+      <item row="0" column="0">
+       <widget class="QLabel" name="ILP_K_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+        </property>
+        <property name="text">
+         <string>        k     </string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="ILP_K_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_20">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>90</y>
+       <width>249</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <layout class="QFormLayout" name="formLayout_31">
+      <item row="0" column="0">
+       <widget class="QLabel" name="ILP_MaxNW_Label">
+        <property name="font">
+         <font>
+          <family>IRANSans</family>
+          <pointsize>8</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+        </property>
+        <property name="text">
+         <string>Maximum Number of Wavelengths</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="ILP_MaxNW_LineEdit">
+        <property name="styleSheet">
+         <string notr="true"> QLineEdit {
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 0 8px;
+    selection-background-color: darkgray;
+}</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>40</y>
+     <width>211</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="mergindemands_gridlayout_3">
+    <item row="0" column="0">
+     <widget class="QLabel" name="Mergin_DemandRe_Label">
+      <property name="font">
+       <font>
+        <family>IRANSans</family>
+        <pointsize>8</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+      </property>
+      <property name="text">
+       <string>Merging demands</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QComboBox" name="Mergin_DemandRe_LineEdit">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="editable">
+       <bool>false</bool>
+      </property>
+      <item>
        <property name="text">
-        <string>Maximum Number of Wavelengths</string>
+        <string>Yes</string>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLineEdit" name="MNV_lineedit">
-       <property name="styleSheet">
-        <string notr="true">
-border-color: rgb(170, 0, 0);</string>
-       </property>
+      </item>
+      <item>
        <property name="text">
-        <string/>
+        <string>No</string>
        </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="1">
-      <widget class="QPushButton" name="ok_pushbutton">
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
+      </item>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="layoutWidget_21">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>510</y>
+     <width>471</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="2">
+     <widget class="QPushButton" name="ok_pushbutton_3">
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
     border: 2px solid #8f8f91;
     border-radius: 6px;
     background-color: #8ADBB5;
@@ -352,19 +1192,19 @@ QPushButton::menu-indicator:pressed, QPushButton::menu-indicator:open {
     position: relative;
     top: 2px; left: 2px; /* shift the arrow by 2 px */
 }</string>
-       </property>
-       <property name="text">
-        <string>OK</string>
-       </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QPushButton" name="cancel_pushbutton">
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
+      </property>
+      <property name="text">
+       <string>OK</string>
+      </property>
+      <property name="autoDefault">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="cancel_pushbutton_3">
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
     border: 2px solid #8f8f91;
     border-radius: 6px;
     background-color: #8ADBB5;
@@ -408,28 +1248,27 @@ QPushButton::menu-indicator:pressed, QPushButton::menu-indicator:open {
     position: relative;
     top: 2px; left: 2px; /* shift the arrow by 2 px */
 }</string>
-       </property>
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-  </layout>
+      </property>
+      <property name="text">
+       <string>Cancel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <spacer name="horizontalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <resources/>
  <connections/>
