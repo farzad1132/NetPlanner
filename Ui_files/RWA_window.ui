@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>RWA_Window</class>
+ <widget class="QWidget" name="RWA_Window">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -35,7 +35,7 @@ QToolBox::tab:only-one{
 }</string>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="Greedy">
       <property name="geometry">
@@ -976,7 +976,7 @@ QToolBox::tab:only-one{
    <item row="1" column="0">
     <layout class="QGridLayout" name="gridLayout_3">
      <item row="0" column="2">
-      <widget class="QPushButton" name="ok_pushbutton_3">
+      <widget class="QPushButton" name="ok_pushbutton">
        <property name="styleSheet">
         <string notr="true">QPushButton {
     border: 2px solid #8f8f91;
@@ -1032,7 +1032,7 @@ QPushButton::menu-indicator:pressed, QPushButton::menu-indicator:open {
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QPushButton" name="cancel_pushbutton_3">
+      <widget class="QPushButton" name="cancel_pushbutton">
        <property name="styleSheet">
         <string notr="true">QPushButton {
     border: 2px solid #8f8f91;
