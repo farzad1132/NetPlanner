@@ -494,15 +494,12 @@ class Network:
             class Groom_out10:
                 BW=10
 
-                def __init__(self, Id, Sla, Source, Destination, Capacity, ServiceIdList,  DemandId,
-                        IgnoringNodesIdList = None, MandatoryNodesIdList = None, LightPathId = None):
+                def __init__(self, Id, Sla, Capacity, ServiceIdList, IgnoringNodesIdList = None, MandatoryNodesIdList = None,
+                                    LightPathId = None):
 
                     self.Id = Id
             
-                    self.Source = Source
                     self.Sla = Sla
-                    self.Destination = Destination
-                    self.DemandId = DemandId
                     self.Capacity = Capacity
                     self.ServiceIdList = ServiceIdList
                     self.Type = "Groom_out10"
@@ -517,7 +514,7 @@ class Network:
                 return ( Network.Traffic.Demand.ServiceReferencedId - 1 )
             
             def add_service(self, ServiceType, Sla, IgnoringNodes = None, WaveLength = None, Granularity = None, Granularity_vc12 = None,
-            Granularity_vc4 = None, LightPathId = None):
+            Granularity_vc4 = None, LightPathId = None, ServiceIdList = None, Capacity = None, MandatoryNodesIdList = None):
 
                 ServiceId = self.GenerateId()
 
@@ -553,7 +550,22 @@ class Network:
 
                 elif ServiceType == "100GE":
                     self.ServiceDict[ServiceId] = self.G_100(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
+                
+                elif ServiceType == "Groom_out10":
+                    self.ServiceDict[ServiceId] = self.Groom_out10(ServiceId, Sla, Capacity, ServiceIdList, IgnoringNodes, MandatoryNodesIdList, LightPathId)
         
+            def delete_groom_out_10(self, ServiceId):
+                self.ServiceDict.pop(ServiceId)
+
+                for key in list(self.ServiceDict.keys).sort():
+                    if key > ServiceId:
+                        self.ServiceDict[key - 1] = self.ServiceDict.pop(key)
+                
+                Network.Traffic.Demand.ServiceReferencedId -= 1
+
+                
+
+
     class Lightpath:
         
         @classmethod
@@ -728,3 +740,9 @@ if __name__ == "__main__":
                  Algorithm= "Greedy")
 
     print(f"Params result: {n.ParamsObj.__dict__}")
+
+    # example of adding groom_out10
+    n.TrafficMatrix.DemandDict[0].add_service(ServiceType= "Groom_out10",
+                                              Sla= 2,
+                                              Capacity = 20,
+                                              ServiceIdList = [1, 2])
