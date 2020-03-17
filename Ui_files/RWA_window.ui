@@ -85,14 +85,17 @@ QToolBox::tab:only-one{
            <property name="editable">
             <bool>false</bool>
            </property>
+           <property name="currentText">
+            <string>True</string>
+           </property>
            <item>
             <property name="text">
-             <string>Yes</string>
+             <string>True</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>No</string>
+             <string>False</string>
             </property>
            </item>
           </widget>

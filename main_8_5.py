@@ -2243,7 +2243,7 @@ class Ui_MainWindow(object):
     
 
     def create_obj(self):
-        with open("NetworkObj.obj", 'wb') as handle:
+        with open("NetworkObj_greedy.obj", 'wb') as handle:
             pickle.dump(self.network, handle, protocol=pickle.HIGHEST_PROTOCOL)
         handle.close()
 

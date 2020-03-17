@@ -192,6 +192,7 @@ class Network:
                 instance.__dict__['AmplifierList'] = AmplifierList
                 instance.__dict__['Neighbors'] = data['Neighbors']
                 instance.__dict__['Id'] = data['Id']
+                instance.__dict__['NodeState'] = data['NodeState']
                 return instance
 
             ReferenceId = 0
@@ -234,6 +235,7 @@ class Network:
                 instance = cls(InNode = data['InNode'], OutNode = data['OutNode'], NumSpan = data['NumSpan'])
                 instance.__dict__['SpanObjList'] = SpanObjList
                 instance.__dict__['WaveLengthList'] = data['WaveLengthList']
+                instance.__dict__['LinkState'] = data['LinkState']
                 return instance
 
             def __init__(self, InNode, OutNode, NumSpan):
@@ -563,7 +565,8 @@ class Network:
                            WorkingPath = data['WorkingPath'], ProtectionPath = data['ProtectionPath'],
                            WaveLength = data['WaveLength'], RegeneratorNode_w = data['RegeneratorNode_w'],
                            RegeneratorNode_p = data['RegeneratorNode_p'], SNR_th = data['SNR_th'], 
-                           LaunchPower = data['LaunchPower'], ModulationType = data['ModulationType'], SNR_w = data['SNR_w'], SNR_p = data['SNR_p'])
+                           LaunchPower = data['LaunchPower'], ModulationType = data['ModulationType'], SNR_w = data['SNR_w'],
+                           SNR_p = data['SNR_p'], ProtectionType = data['ProtectionType'])
             instance.__dict__['id'] = data['id']
             return instance
 
@@ -662,6 +665,13 @@ class Network:
             self.Algorithm = Algorithm
     
     class Overall_Result:
+        @classmethod
+        def from_json(cls, data):
+            instance = cls()
+            instance.__dict__['Num_WL'] = data['Num_WL']
+            instance.__dict__['Num_RG'] = data['Num_RG']
+            instance.__dict__['Worst_SNR'] = data['Worst_SNR']
+            return instance
         def __init__(self):
             self.Num_WL = None          # Number of used Wavelengths
             self.Num_RG = None          # Number of used Regenerators
@@ -728,3 +738,41 @@ if __name__ == "__main__":
                  Algorithm= "Greedy")
 
     print(f"Params result: {n.ParamsObj.__dict__}")
+    
+    ## Testing JSON
+    n.ResultObj.Num_RG = 10
+    n.PhysicalTopology.LinkDict[(0, 1)].LinkState = [1, 2, 3]
+    
+    import json
+    import numpy
+    def convert_to_dict(obj):
+        """
+        A function takes in a custom object and returns a dictionary representation of the object.
+        This dict representation includes meta data such as the object's module and class names.
+        """
+
+        #  Populate the dictionary with object meta data 
+        if isinstance(obj, numpy.int64):
+            obj_dict = int(obj)
+            return obj_dict
+        else:
+            obj_dict = {
+                "__class__": obj.__class__.__name__,
+                "__module__": obj.__module__
+            }
+            #  Populate the dictionary with object properties
+            obj_dict.update(obj.__dict__)
+            return obj_dict
+    net = n
+    # Convert keys to String
+    tuple_keys = list(net.PhysicalTopology.LinkDict.keys())
+    for key in tuple_keys:
+        net.PhysicalTopology.LinkDict[str(key)] = net.PhysicalTopology.LinkDict.pop(key)
+
+    ##############################################
+    # Convert the Network object to JSON message
+    data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
+    # print(data)
+    # This line tests whether the JSON encoded common object is reconstructable!
+    decoded_n = Network.from_json(json.loads(data)) 
+    assert(isinstance(decoded_n, Network))

@@ -731,8 +731,8 @@ class Ui_RWA_Window(object):
         _translate = QtCore.QCoreApplication.translate
         RWA_Window.setWindowTitle(_translate("RWA_Window", "RWA_Window"))
         self.Mergin_DemandRe_Label.setText(_translate("RWA_Window", "Merging demands"))
-        self.Mergin_DemandRe_LineEdit.setItemText(0, _translate("RWA_Window", "Yes"))
-        self.Mergin_DemandRe_LineEdit.setItemText(1, _translate("RWA_Window", "No"))
+        self.Mergin_DemandRe_LineEdit.setItemText(0, _translate("RWA_Window", "True"))
+        self.Mergin_DemandRe_LineEdit.setItemText(1, _translate("RWA_Window", "False"))
         self.Greedy_Alpha_Label.setText(_translate("RWA_Window", "      Alpha  "))
         self.Greedy_Iteration_Label.setText(_translate("RWA_Window", "  Iteration   "))
         self.Greedy_Margin_Label.setText(_translate("RWA_Window", "    Margin "))
@@ -764,7 +764,7 @@ class Ui_RWA_Window(object):
         index = self.RW_toolBox.currentIndex()
 
         if index == 0:
-            merge = self.mergindemands_comboBox.currentText()
+            merge = self.Mergin_DemandRe_LineEdit.currentText()
             alpha = self.Greedy_Alpha_LineEdit.text()
             margin = self.Greedy_Margin_LineEdit.text()
             iterations = self.Greedy_Iteration_LineEdit.text()
@@ -805,8 +805,8 @@ class Ui_RWA_Window(object):
             processors = self.GroupILP_Processors_LineEdit.text()
             k = self.GroupILP_K_LineEdit.text()
             maxNW = self.GroupILP_MaxNW_LineEdit.text()
-            groupsize = GroupILP_Groupsize_LineEdit.text()
-            history = GroupILP_History_LineEdit.text()
+            groupsize = self.GroupILP_Groupsize_LineEdit.text()
+            history = self.GroupILP_History_LineEdit.text()
             Algorithm = "GroupILP"
 
             alpha = float(alpha)
