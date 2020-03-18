@@ -1,0 +1,640 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>125</width>
+    <height>541</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_85">
+   <item row="7" column="0">
+    <layout class="QGridLayout" name="gridLayout_107">
+     <item row="0" column="1">
+      <widget class="QLabel" name="act3_63">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="fail1_55">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_116">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;act&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="act4_63">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="fail2_55">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="label_117">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;sf&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <layout class="QGridLayout" name="gridLayout_93">
+     <item row="2" column="1">
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="1">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="1">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <layout class="QGridLayout" name="gridLayout_101">
+     <item row="0" column="1">
+      <widget class="QLabel" name="act3_57">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="fail1_49">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_104">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;act&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="act4_57">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="fail2_49">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="label_105">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;sf&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="9" column="0">
+    <layout class="QGridLayout" name="gridLayout_109">
+     <item row="0" column="1">
+      <widget class="QLabel" name="act3_65">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="fail1_57">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_120">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;act&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="act4_65">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="fail2_57">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="label_121">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;sf&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="0">
+    <layout class="QGridLayout" name="gridLayout_106">
+     <item row="0" column="1">
+      <widget class="QLabel" name="act3_62">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="fail1_54">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_114">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;act&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="act4_62">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="fail2_54">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="label_115">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;sf&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="0">
+    <layout class="QGridLayout" name="gridLayout_105">
+     <item row="0" column="1">
+      <widget class="QLabel" name="act3_61">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="fail1_53">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_112">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;act&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="act4_61">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="fail2_53">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="label_113">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;sf&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <layout class="QGridLayout" name="gridLayout_102">
+     <item row="1" column="3">
+      <widget class="QLabel" name="label_107">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;sf&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QLabel" name="label_106">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;act&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="fail2_50">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="fail1_50">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="act4_58">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="act3_58">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <layout class="QGridLayout" name="gridLayout_103">
+     <item row="0" column="1">
+      <widget class="QLabel" name="act3_59">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="fail1_51">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_108">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;act&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="act4_59">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="fail2_51">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="label_109">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;sf&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="8" column="0">
+    <layout class="QGridLayout" name="gridLayout_108">
+     <item row="0" column="1">
+      <widget class="QLabel" name="act3_64">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="fail1_56">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_118">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;act&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="act4_64">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="fail2_56">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="label_119">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;sf&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <layout class="QGridLayout" name="gridLayout_104">
+     <item row="0" column="1">
+      <widget class="QLabel" name="act3_60">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="fail1_52">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_110">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;act&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="act4_60">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="fail2_52">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="label_111">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;sf&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="10" column="0" colspan="2">
+    <layout class="QGridLayout" name="gridLayout_99">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_103">
+       <property name="text">
+        <string>CH1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="CH2_6">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>CH.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="CH1_6">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>CH.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_102">
+       <property name="text">
+        <string>CH2</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="1" rowspan="9">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>358</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

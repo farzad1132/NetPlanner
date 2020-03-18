@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MP2X_L</class>
+ <widget class="QWidget" name="MP2X_L">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>112</width>
+    <height>543</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="5" column="0">
+    <layout class="QGridLayout" name="gridLayout_8">
+     <item row="0" column="0">
+      <widget class="QLabel" name="client3_1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="client3_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="10" column="0">
+    <layout class="QGridLayout" name="gridLayout_14">
+     <item row="0" column="0">
+      <widget class="QLabel" name="client8_1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="client8_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="8" column="0">
+    <layout class="QGridLayout" name="gridLayout_12">
+     <item row="0" column="0">
+      <widget class="QLabel" name="client6_1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="client6_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="1" rowspan="2">
+    <widget class="QLabel" name="title">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>title2.png</pixmap>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <layout class="QGridLayout" name="gridLayout_15">
+     <item row="0" column="0">
+      <widget class="QLabel" name="client7_1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="client7_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <layout class="QGridLayout" name="gridLayout_11">
+     <item row="0" column="0">
+      <widget class="QLabel" name="client1_1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="client1_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>client_socket.png</pixmap>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <layout class="QGridLayout" name="gridLayout_13">
+     <item row="0" column="0">
+      <widget class="QLabel" name="client5_1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="client5_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="line1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>line2.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="line2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>line2.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="0">
+    <layout class="QGridLayout" name="gridLayout_9">
+     <item row="0" column="0">
+      <widget class="QLabel" name="client4_1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="client4_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="upper_soclet">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>socket1.png</pixmap>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0">
+    <widget class="QLabel" name="socket">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>socket2.png</pixmap>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <layout class="QGridLayout" name="gridLayout_10">
+     <item row="0" column="0">
+      <widget class="QLabel" name="client2_1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="client2_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="11" column="0">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
