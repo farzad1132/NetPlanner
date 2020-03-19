@@ -159,8 +159,7 @@ class MP2X_L_Demand(QWidget):
         from BLANK_Demand.BLANK_Demand import BLANK_Demand
         ContextMenu = QMenu(self)
         CloseAction = ContextMenu.addAction("Close Panel")
-        TurnOnAction = ContextMenu.addAction("Turn On")
-        TurnOffAction = ContextMenu.addAction("Turn Off")
+        RefreshAction = ContextMenu.addAction(" Refresh ")
             
         action = ContextMenu.exec_(self.mapToGlobal(event.pos()))
 
@@ -169,20 +168,52 @@ class MP2X_L_Demand(QWidget):
             Data["DemandPanel_" + self.id].setWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
             Data["DemandPanel_" + self.uppernum].setWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
 
-            # TODO: undo every service or lightpath that is created in this panel
+            # undoing every service or lightpath that is created in this panel
+            if not(DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity) != [0, 0]:
+
+                for i in range(len(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity)):
+                    if DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[i] != 0:
+                        ids = [DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[i], DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[i]]
+                        type = DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[i]
+
+                        self.modify_ServiceList(ids, self.nodename, self.Destination, "add", type)
+
+                LineServiceId = DemandTabDataBase["Panels"][self.nodename][self.id].LineServiceIdList
+
+                if LineServiceId[0] != None:
+
+                    self.modify_LightPathList(LineServiceId[0], self.nodename, self.Destination, mode="delete", type="MP2X Line")
+
+                #Network.Lightpath.update_id(-1)
             DemandTabDataBase["Panels"][self.nodename].pop(self.id)
             DemandTabDataBase["Panels"][self.nodename].pop(self.uppernum)
         
-        if action == TurnOnAction:
-            customlabel.Stateflag = 1   # this flag show that wheather this panel is on or off
+        if action == RefreshAction:
+            # TODO: recalculate line capacity
+            pass
+    
+    def modify_groom_out_10(self, mp2x_line_id, Source, Destination, mode = "add", type = None):
 
-
-            # TODO: complete this
-            #for client in DemandTabDataBase["Panels"][self.nodename][self.id].ClientsType:
+        if mode == "add":
+            DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
         
-        if action == TurnOffAction:
-            customlabel.Stateflag = 0
-            # TODO: delete line signals
+        if mode == "delete":
+            for Des in DemandTabDataBase["Source_Destination"][Source]:
+                if id in DemandTabDataBase["Services"][(Source, Destination)]:
+                    DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
+        
+        Data["ui"].update_Demand_lightpath_list()
+    
+    def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
+
+        key = (ids[0] , ids[1])
+        if mode == "delete":
+            DemandTabDataBase["Services"][(source, destination)].pop(key)
+            
+        elif mode == "add":
+            DemandTabDataBase["Services"][(source, destination)][key] = "[%s , %s] # %s" % (ids[0], ids[1], type)
+            
+        Data["ui"].UpdateDemand_ServiceList()
 
 
 class customlabel(QLabel):
@@ -263,32 +294,35 @@ class customlabel(QLabel):
                 print("Please First Turn off Panel")
     
 
-    def modify_ServiceList(self, ids, source, destination, mode = "delete", Type = None):
-        from main_8_2 import ui
+    def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
+        
 
-        key = (ids[0] , ids[1])
+        key = (int(ids[0]) , int(ids[1]))
         if mode == "delete":
             DemandTabDataBase["Services"][(source, destination)].pop(key)
+
+            # statement bellow checks for removing notification
+            x = 0
+            for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
+                if DemandTabDataBase["Services"][(source, dest)]:
+                    x = 1
+                    break
+            if x == 0:        
+                Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
-            DemandTabDataBase["Services"][(source, destination)][key] = "[%s , %s] # %s" % (ids[0], ids[1], Type)
+            DemandTabDataBase["Services"][(source, destination)][key] = "[%s , %s] # %s" % (ids[0], ids[1], type)
             
-        ui.UpdateDemand_ServiceList()
-
-
-
-    """ def countdown_fun(self,nodename,header,value):
-        degree = self.id[1]
-        Data["Nodes"][nodename]["Client_Services"]["data"][degree][header] += value
-        Data["ClientList"].clear()
-        for service in list(Data["Nodes"][nodename]["Client_Services"]["data"][degree].keys()):
-            if Data["Nodes"][nodename]["Client_Services"]["data"][degree][service] !=0 :
-                Data["ClientList"].addItem(str(Data["Nodes"][nodename]["Client_Services"]["data"][degree][service])+" * "+service)
+        Data["ui"].UpdateDemand_ServiceList()
     
-    def modify_linelist(self,nodename,value):
-        degree = self.id[1]
-        Data["Nodes"][nodename]["Line_Services"][degree]["2*OTU4"] += value
-        Data["LineList"].clear()
-        for service in list(Data["Nodes"][nodename]["Line_Services"][degree].keys()):
-            if Data["Nodes"][nodename]["Line_Services"][degree][service] != 0:
-                Data["LineList"].addItem(str(Data["Nodes"][nodename]["Line_Services"][degree][service]) + " * "+service) """
+    def modify_LightPathList(self, id, Source, Destination, mode = "add", type = None):
+
+        if mode == "add":
+            DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
+        
+        if mode == "delete":
+            for Des in DemandTabDataBase["Source_Destination"][Source]:
+                if id in DemandTabDataBase["Lightpathes"][(Source, Destination)]:
+                    DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
+        
+        Data["ui"].update_Demand_lightpath_list()

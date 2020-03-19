@@ -35,6 +35,7 @@ from RWA_window import Ui_RWA_Window
 
 from data import *
 from Node_View_Data import Panel_Data
+from grooming_algorithm import grooming_fun
 
 
 from BLANK_panel.BLANK_panel import BLANK_panel
@@ -3632,106 +3633,7 @@ class Ui_MainWindow(object):
                 #if (innode, outnode) 
 
 
-
-
-    """ def grooming_fun(self):
-
-        MP1H_th = 7
-
-        for demand, demandobj in self.network.TrafficMatrix.DemandDict.items():
-            ServiceList =list(demandobj.ServiceDict.items())
-
-            STM_64_List = list(filter(lambda x : isinstance( x[1] , Network.Traffic.Demand.STM_64 ) , ServiceList))
-            STM_64_List = list(map(lambda x : x[0] , STM_64_List ))
-            NumSTM_64 = len(STM_64_List)
-
-            G10_List = list(filter(lambda x : isinstance( x[1] , Network.Traffic.Demand.G_10 ) , ServiceList))
-            G10_List = list(map(lambda x : x[0] , G10_List ))
-            NumG10 = len(G10_List)
-
-            G100_List = list(filter(lambda x : isinstance( x[1] , Network.Traffic.Demand.G_100 ) , ServiceList))
-            G100_List = list(map(lambda x : x[0] , G100_List ))
-            NumG100 = len(G100_List)
-
-            # Number Of MP1H Calculation
-
-            NumClientPorts_MP1H = NumSTM_64 + NumG10
-            MP1H_servicelist = G10_List + STM_64_List
-            NumFullLightPath = NumClientPorts_MP1H // 10
-            RemClients_MP1H = NumClientPorts_MP1H % 10
-            NumMP1H = ceil(NumClientPorts_MP1H / 10)
-
-            for no in range(NumFullLightPath):
-                self.network.add_lightpath(demandobj.Source, demandobj.Destination, "100GE", MP1H_servicelist[0:10]
-                ,"100GE", demand)
-                for i in reversed(range(10)) :
-                    DemandTabDataBase["Services"][(demandobj.Source, demandobj.Destination)][(demand, str(MP1H_servicelist[i]))]
-                    MP1H_servicelist.pop(i)
-
-            
-            if RemClients_MP1H >= MP1H_th:
-                print("th_List:" , MP1H_servicelist)
-                x = list(MP1H_servicelist)
-                for i in range(10-len(MP1H_servicelist)):
-                    x.append(None)
-                self.network.add_lightpath(demandobj.Source, demandobj.Destination, "100GE", x, "100GE", demand)
-
-                for i in reversed(range(len(MP1H_servicelist))):
-                    DemandTabDataBase["Services"][(demandobj.Source, demandobj.Destination)][(demand, str(MP1H_servicelist[i]))]
-                    MP1H_servicelist.pop(i)
-            
-            # Number Of TP1H Calculation
-            NumTP1H = NumG100
-
-
-            for no in reversed(range(NumG100)):
-                if isinstance(G100_List, int):
-                    x = [G100_List]
-                    for i in range(9):
-                        x.append(None)
-                else:
-                    x = [G100_List[no]]
-                    for i in range(9):
-                        x.append(None)
-                self.network.add_lightpath(demandobj.Source, demandobj.Destination, "100GE", G100_List[no], "100GE", demand)
-
-                DemandTabDataBase["Services"][(demandobj.Source, demandobj.Destination)][(demand, str(G100_List[no]))]
-                G100_List.pop(no) """
-
-
-
-
-    def print_r(self, obj):
-        with open('NetworkObj.obj', 'wb') as handle:
-            pickle.dump(self.network, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        handle.close()
-        
-    
-    def fill_lightpath(self):
-        for i in range(4):
-            path = [0, 1]
-            self.network.put_results(i, list(path), list(path), [i + 1], "x", "x", "x", "x", "x", "x")
-        
-        for i in range(4, 9):
-            path = [0 ,2]
-            self.network.put_results(i, list(path), list(path), [i - 3], "x", "x", "x", "x", "x", "x")
-        for i in range(9, 11):
-            path = [2, 1]
-            self.network.put_results(i, list(path), list(path), [i - 8], "x", "x", "x", "x", "x", "x")
-        
-        for i in range(11, 13):
-            path = [0 ,3]
-            self.network.put_results(i, list(path), list(path), [i - 10], "x", "x", "x", "x", "x", "x")
-        
-        path = [3, 0, 1]
-        self.network.put_results(13, list(path), list(path), [5], "x", "x", "x", "x", "x", "x")
-
-        path = [3, 0 ,2]
-        self.network.put_results(14, list(path), list(path), [6], "x", "x", "x", "x", "x", "x")
-    
-    def fill_DemandTabDataBase(self, netobj):
-
-        def get_panel_num(Source):
+    def get_panel_num(self, Source):
             IdList = list(DemandTabDataBase["Panels"][Source].keys())
             
             # if shelf is empty this method must return 1 in ## string ##
@@ -3740,18 +3642,20 @@ class Ui_MainWindow(object):
             IdList = list(map(lambda x : int(x), IdList))
             MaxId = max(IdList)
             return str(MaxId + 1)
-        
-        def create_ClientsCapacityList(DemandId, ServiceIdList):
+
+    def create_ClientsCapacityList(self, DemandId, ServiceIdList, netobj):
             OutputList = []
+            LineCapacity = 0
             for ServiceId in ServiceIdList:
                 ServiceObj = netobj.TrafficMatrix.DemandDict[DemandId].ServiceDict[ServiceId]
-                if isinstance(ServiceObj, Network.Traffic.Demand.G_10):
-                    OutputList.append("10GE")
-                else:
-                    OutputList.append("STM_64")
+                OutputList.append(ServiceObj.Type)
+                LineCapacity += ServiceObj.BW
             
-            return OutputList
-
+            return OutputList, LineCapacity
+    
+    # NOTE: this method just handles MP1H and TP1H
+    def fill_DemandTabDataBase(self, netobj):
+        
         # lightpath and panel part
         for id, lightpath in netobj.LightPathDict.items():
             
@@ -3772,7 +3676,7 @@ class Ui_MainWindow(object):
             
             # checking wheather lightpath is created by tp1h or not
             if len(lightpath.ServiceIdList) == 1:
-                panelid = get_panel_num(Source)
+                panelid = self.get_panel_num(Source)
                 DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
 
                 ## debug section
@@ -3784,9 +3688,9 @@ class Ui_MainWindow(object):
                 # omitting handeled services from DemandTabDataBase
                 DemandTabDataBase["Services"][(Source, Destination)].pop((DemandId, lightpath.ServiceIdList[0]))
             else:
-                panelid = get_panel_num(Source)
-                ClientCapacity = create_ClientsCapacityList(DemandId, lightpath.ServiceIdList)
-                LineCapacity = len(ClientCapacity) * 10
+                panelid = self.get_panel_num(Source)
+                ClientCapacity, LineCapacity = self.create_ClientsCapacityList(DemandId, lightpath.ServiceIdList, netobj)
+                #LineCapacity = len(ClientCapacity) * 10
                 
                 ClientLen = len(ClientCapacity) 
                 if ClientLen != 10:
@@ -3807,18 +3711,39 @@ class Ui_MainWindow(object):
                     DemandTabDataBase["Services"][(Source, Destination)].pop((DemandId, ServiceId))
                 print(f"panels part--> Source:{Source} panels:{DemandTabDataBase['Panels'][Source]}")
                 print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+
+    def fill_DemandTabDataBase_MP2X(self, full_MP2X_list, netobj):
+
+        
+
+        # panel part ( creating panels object )
+        for DemandId, Servicetuple in full_MP2X_list:
+            Source = self.IdNodeMap[netobj.TrafficMatrix.DemandDict[DemandId].Source]
+            Destination = self.IdNodeMap[netobj.TrafficMatrix.DemandDict[DemandId].Destination]
+            
+            ServiceIdList = []
+            for mp2x_id in Servicetuple:
+                half_ServiceIdList = netobj.TrafficMatrix.DemandDict[DemandId].ServiceDict[mp2x_id].ServiceIdList
+                ServiceIdList.extend(half_ServiceIdList)
+            
+            PanelId = self.get_panel_num(Source)
+            ClientsCapacity, LineCapacity = self.create_ClientsCapacityList(DemandId, ServiceIdList, netobj)
+
+            ClientLen = len(ClientsCapacity) 
+            if ClientLen != 16:
+                for i in range(16 - ClientLen):
+                    ClientsCapacity.append(0)
+            
+            DemandTabDataBase["Panels"][Source][PanelId] = MP2X_L
+
+
+
+        # omitting handled services from DemandTabDataBase
+            
+
     
     def fill_GroomingTabDataBase(self, netobj):
 
-        def get_panel_num(Source):
-            IdList = list(DemandTabDataBase["Panels"][Source].keys())
-            
-            # if shelf is empty this method must return 1 in ## string ##
-            if not IdList:
-                return "1"
-            IdList = list(map(lambda x : int(x), IdList))
-            MaxId = max(IdList)
-            return str(MaxId + 1)
         
         def create_ClientsCapacityList(DemandId, ServiceIdList):
             OutputList = []
@@ -3870,7 +3795,7 @@ class Ui_MainWindow(object):
                 GroomingTabDataBase["Panels"][( DegreeNode, DegreeId )] = {}
             
             # TODO: separate lightpathes based on their degree
-            PanelId = get_panel_num(Source)
+            PanelId = self.get_panel_num(Source)
 
             # checking the lightpath is TP1H or MP1H
             if len(lightpath.ServiceIdList) == 1:
@@ -3933,48 +3858,6 @@ class Ui_MainWindow(object):
                 
             
 
-    def grooming_fun(self, n, MP1H_Threshold):
-        # n: network object
-
-        service_lower10=[]
-        service_lower100=[]
-        output_10=[]                                            #(DemandId,Service)
-        output_100=[]
-        remain=[]
-        threshold = MP1H_Threshold
-        for i in n.TrafficMatrix.DemandDict:
-            y=[]
-            z=[]
-            for j in n.TrafficMatrix.DemandDict[i].ServiceDict:
-                if (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW < 10):
-                    y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
-                elif (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW == 10):
-                    z.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
-                else:
-                    n.add_lightpath(n.TrafficMatrix.DemandDict[i].Source, n.TrafficMatrix.DemandDict[i].Destination, 100, [n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id], 100, i)
-            if z:
-                service_lower100.append((i,z))
-            
-        for i in range(0,len(service_lower100)):
-            NO_LP= math.ceil(len(service_lower100[i][1])/10)
-            for j in range(0,NO_LP):
-                list_of_service=[]
-                cap=0
-                for k in range(j*10,(j+1)*10):
-                    if (k < len(service_lower100[i][1])):
-                        list_of_service.append(service_lower100[i][1][k][0])
-                        cap=cap+service_lower100[i][1][k][1]
-    #          print(service_lower100[2][0])
-                if cap ==10:
-                    typee="10GE"
-                else:
-                    typee="100GE"
-                if cap < threshold:
-                    remain.append((i,list_of_service))
-                else:
-                    n.add_lightpath(n.TrafficMatrix.DemandDict[service_lower100[i][0]].Source, n.TrafficMatrix.DemandDict[service_lower100[i][0]].Destination, cap, list_of_service, typee, service_lower100[i][0])    
-    #         
-        return remain
          
     def failed_grooming_nodes(self):
 
@@ -4058,8 +3941,8 @@ class Ui_MainWindow(object):
     def grooming_procedure(self, MP1H_Threshold):
         #self.Demand_Shelf_set()
 
-        RemainServices = self.grooming_fun(self.network, int(MP1H_Threshold))
-        print(f"remained services : {RemainServices}")
+        Remain_lower100,full_mp2x_lines, half_mp2x_lines  = grooming_fun(self.network, int(MP1H_Threshold))
+        print(f"remained lower 100 services : {Remain_lower100}")
         
         # filling Demand DataBase 
         self.fill_DemandTabDataBase(self.network)

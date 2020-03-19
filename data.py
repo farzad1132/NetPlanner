@@ -189,15 +189,44 @@ class MP2D_R:
         self.LeftId = LeftId
 
 class MP2X_L:
-    def __init__(self, ClientsType = [0 for i in range(16)], LinesCapacity = [0, 0]):
-        self.ClientsType = ClientsType
-        self.LinesCapacity = LinesCapacity
+    def __init__(self, ClientsCapacity = None, LinesCapacity = None, ServiceIdList = None, DemandIdList = None
+                    , LineServiceIdList = None, LineService_flagList = None):
+
+        if ClientsCapacity is None:
+            self.ClientsCapacity = [0 for i in range(16)]
+        else:
+            self.ClientsCapacity = ClientsCapacity
+
+        if LinesCapacity is None:
+            self.LinesCapacity = [0, 0]
+        else:
+            self.LinesCapacity = LinesCapacity
     
-    def add_client(self, ClientNum, Type):
+        if ServiceIdList is None:
+            self.ServiceIdList = [None for i in range(10)]
+        else:
+            self.ServiceIdList = ServiceIdList
+        
+        if DemandIdList is None:
+            self.DemandIdList = [None for i in range(16)]
+        else:
+            self.DemandIdList = DemandIdList
+        
+        if LineServiceIdList is None:
+            self.LineServiceIdList = [None for i in range(2)]
+        else:
+            self.LineServiceIdList = LineServiceIdList
+        
+        if LineService_flagList is None:
+            self.LineService_flagList = [0 for i in range(2)]
+        else:
+            self.LineService_flagList = LineService_flagList
+    
+    """ def add_client(self, ClientNum, Type):
         self.ClientsType[ClientNum] = Type
     
     def del_client(self, ClientNum):
-        self.ClientsType[ClientNum] = 0
+        self.ClientsType[ClientNum] = 0 """
 
 class MP2X_R:
     def __init__(self, LeftId):
@@ -227,14 +256,14 @@ class MP1H_L:
         self.LightPathId = LightPathId
         self.LineCapacity = LineCapacity
     
-    def add_client(self, ClientNum, Type, LineCapacity):
+    """ def add_client(self, ClientNum, Type, LineCapacity):
         # type can be 10GE or stm64
         self.ClientsCapacity[ClientNum] = Type
         self.LineCapacity = LineCapacity
     
     def del_client(self, ClientNum, LineCapacity):
         self.ClientsCapacity[ClientNum] = 0
-        self.LineCapacity = LineCapacity
+        self.LineCapacity = LineCapacity """
 
 class MP1H_R:
     def __init__(self, LeftId):
