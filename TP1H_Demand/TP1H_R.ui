@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>116</width>
+    <width>120</width>
     <height>551</height>
    </rect>
   </property>
@@ -14,18 +14,8 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="6" column="1" colspan="2">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="pixmap">
-      <pixmap>CH.png</pixmap>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <spacer name="horizontalSpacer">
+   <item row="8" column="0" colspan="2">
+    <spacer name="horizontalSpacer_3">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -37,10 +27,16 @@
      </property>
     </spacer>
    </item>
-   <item row="4" column="0" colspan="2">
-    <layout class="QGridLayout" name="gridLayout_104">
-     <item row="1" column="0">
-      <widget class="QLabel" name="fail2_52">
+   <item row="1" column="2">
+    <layout class="QGridLayout" name="gridLayout_9">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_34">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -49,15 +45,53 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="label_110">
+     <item row="2" column="1">
+      <widget class="QLabel" name="label_31">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;act&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;W/P&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLabel" name="act3_60">
+      <widget class="QLabel" name="label_33">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;ACT&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="label_30">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;FAIL&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_32">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -66,8 +100,34 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="act4_60">
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_26">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="0" colspan="2">
+    <layout class="QGridLayout" name="gridLayout_105">
+     <item row="0" column="0">
+      <widget class="QLabel" name="fail1_53">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -77,14 +137,59 @@
       </widget>
      </item>
      <item row="1" column="2">
-      <widget class="QLabel" name="label_111">
+      <widget class="QLabel" name="label_113">
        <property name="text">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;sf&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="fail1_52">
+     <item row="1" column="1">
+      <widget class="QLabel" name="act4_61">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_112">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;act&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="act3_61">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="fail2_53">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -108,6 +213,22 @@
      </property>
     </spacer>
    </item>
+   <item row="6" column="1" colspan="2">
+    <widget class="QLabel" name="label">
+     <property name="minimumSize">
+      <size>
+       <width>15</width>
+       <height>12</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>CH.png</pixmap>
+     </property>
+    </widget>
+   </item>
    <item row="10" column="0" colspan="2">
     <spacer name="horizontalSpacer_4">
      <property name="orientation">
@@ -121,86 +242,8 @@
      </property>
     </spacer>
    </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label_25">
-     <property name="text">
-      <string>CH</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0" colspan="2">
-    <layout class="QGridLayout" name="gridLayout_105">
-     <item row="0" column="0">
-      <widget class="QLabel" name="fail1_53">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>button.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QLabel" name="label_113">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;sf&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="act4_61">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>button.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="label_112">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;act&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="act3_61">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>button.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="fail2_53">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>button.png</pixmap>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="8" column="0" colspan="2">
-    <spacer name="horizontalSpacer_3">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="0" column="2">
-    <spacer name="horizontalSpacer_7">
+   <item row="1" column="0">
+    <spacer name="horizontalSpacer_8">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -225,6 +268,120 @@
      </property>
     </spacer>
    </item>
+   <item row="2" column="0" colspan="2">
+    <spacer name="horizontalSpacer">
+     <property name="minimumSize">
+      <size>
+       <width>15</width>
+       <height>12</height>
+      </size>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="2">
+    <spacer name="horizontalSpacer_7">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <layout class="QGridLayout" name="gridLayout_104">
+     <item row="1" column="0">
+      <widget class="QLabel" name="fail2_52">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_110">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;act&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="act3_60">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="act4_60">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QLabel" name="label_111">
+       <property name="text">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;sf&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="fail1_52">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>button.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item row="5" column="0" colspan="2">
     <spacer name="horizontalSpacer_2">
      <property name="orientation">
@@ -238,73 +395,18 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="2">
-    <layout class="QGridLayout" name="gridLayout_9">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_34">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>button.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="label_31">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;W/P&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="label_33">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;ACT&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="label_30">
-       <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:6pt;&quot;&gt;FAIL&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_32">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>button.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_26">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>button.png</pixmap>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0">
-    <spacer name="horizontalSpacer_8">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_25">
+     <property name="minimumSize">
       <size>
-       <width>40</width>
-       <height>20</height>
+       <width>15</width>
+       <height>12</height>
       </size>
      </property>
-    </spacer>
+     <property name="text">
+      <string>CH</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

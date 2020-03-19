@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>119</width>
+    <width>146</width>
     <height>539</height>
    </rect>
   </property>
@@ -378,16 +378,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="7" column="2">
-    <widget class="QLabel" name="label_61">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="pixmap">
-      <pixmap>../../NetPlanner/MP2X_panel/CH.png</pixmap>
-     </property>
-    </widget>
    </item>
    <item row="10" column="0" colspan="3">
     <spacer name="horizontalSpacer_3">

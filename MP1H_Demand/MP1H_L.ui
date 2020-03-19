@@ -14,44 +14,6 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="7" column="2" colspan="2">
-    <layout class="QGridLayout" name="gridLayout_9">
-     <item row="0" column="1">
-      <widget class="QLabel" name="line">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>line (2).png</pixmap>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="6" column="1" colspan="3">
-    <layout class="QGridLayout" name="gridLayout_15">
-     <item row="0" column="0">
-      <widget class="QLabel" name="client5_1">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="client5_2">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="3" column="5" rowspan="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
@@ -65,67 +27,6 @@
      </property>
     </spacer>
    </item>
-   <item row="2" column="1" colspan="3">
-    <layout class="QGridLayout" name="gridLayout_11">
-     <item row="0" column="0">
-      <widget class="QLabel" name="client1_1">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="client1_2">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="7" column="1">
-    <widget class="QLabel" name="label_12">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1" colspan="2">
-    <widget class="QLabel" name="label_22">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="pixmap">
-      <pixmap>../MP2x/socket2.png</pixmap>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="upper_socket">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="pixmap">
-      <pixmap>socket1.png</pixmap>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QLabel" name="socket">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="pixmap">
-      <pixmap>socket2.png</pixmap>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="1" colspan="2">
     <widget class="QLabel" name="label_18">
      <property name="text">
@@ -136,10 +37,16 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1" colspan="3">
-    <layout class="QGridLayout" name="gridLayout_14">
+   <item row="6" column="1" colspan="3">
+    <layout class="QGridLayout" name="gridLayout_15">
      <item row="0" column="0">
-      <widget class="QLabel" name="client4_1">
+      <widget class="QLabel" name="client5_1">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -149,7 +56,13 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLabel" name="client4_2">
+      <widget class="QLabel" name="client5_2">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -160,34 +73,45 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="1" colspan="3">
-    <layout class="QGridLayout" name="gridLayout_12">
-     <item row="0" column="0">
-      <widget class="QLabel" name="client2_1">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="client2_2">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="8" column="1" colspan="2">
+    <widget class="QLabel" name="label_22">
+     <property name="minimumSize">
+      <size>
+       <width>15</width>
+       <height>12</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>../MP2x/socket2.png</pixmap>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLabel" name="label_12">
+     <property name="minimumSize">
+      <size>
+       <width>15</width>
+       <height>12</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </item>
    <item row="4" column="1" colspan="3">
     <layout class="QGridLayout" name="gridLayout_13">
      <item row="0" column="0">
       <widget class="QLabel" name="client3_1">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -198,6 +122,172 @@
      </item>
      <item row="0" column="1">
       <widget class="QLabel" name="client3_2">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="2" colspan="2">
+    <layout class="QGridLayout" name="gridLayout_9">
+     <item row="0" column="1">
+      <widget class="QLabel" name="line">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>line (2).png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="upper_socket">
+     <property name="minimumSize">
+      <size>
+       <width>15</width>
+       <height>12</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>socket1.png</pixmap>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" colspan="3">
+    <layout class="QGridLayout" name="gridLayout_14">
+     <item row="0" column="0">
+      <widget class="QLabel" name="client4_1">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="client4_2">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="1" colspan="3">
+    <layout class="QGridLayout" name="gridLayout_11">
+     <item row="0" column="0">
+      <widget class="QLabel" name="client1_1">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="client1_2">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="socket">
+     <property name="minimumSize">
+      <size>
+       <width>15</width>
+       <height>12</height>
+      </size>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>socket2.png</pixmap>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="3">
+    <layout class="QGridLayout" name="gridLayout_12">
+     <item row="0" column="0">
+      <widget class="QLabel" name="client2_1">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>client.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="client2_2">
+       <property name="minimumSize">
+        <size>
+         <width>15</width>
+         <height>12</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -210,6 +300,12 @@
    </item>
    <item row="0" column="3" rowspan="2" colspan="2">
     <widget class="QLabel" name="label">
+     <property name="minimumSize">
+      <size>
+       <width>16</width>
+       <height>12</height>
+      </size>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -217,19 +313,6 @@
       <pixmap>title2.png</pixmap>
      </property>
     </widget>
-   </item>
-   <item row="1" column="0" colspan="2">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>

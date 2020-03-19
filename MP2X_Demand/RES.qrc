@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>button.png</file>
+    <file>title2.png</file>
+    <file>1.png</file>
+    <file>2.png</file>
+    <file>client.png</file>
+    <file>line2.png</file>
+    <file>line.png</file>
+  </qresource>
+</RCC>
