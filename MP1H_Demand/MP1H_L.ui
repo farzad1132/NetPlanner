@@ -13,9 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="5" rowspan="2">
-    <spacer name="verticalSpacer">
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="1">
+    <spacer name="verticalSpacer_3">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -27,138 +27,262 @@
      </property>
     </spacer>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QLabel" name="label_18">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="pixmap">
-      <pixmap>../MP2x/socket1.png</pixmap>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1" colspan="3">
-    <layout class="QGridLayout" name="gridLayout_15">
+   <item row="4" column="1" colspan="2">
+    <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
-      <widget class="QLabel" name="client5_1">
-       <property name="minimumSize">
-        <size>
-         <width>15</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
+      <layout class="QGridLayout" name="gridLayout_11">
+       <item row="0" column="0">
+        <widget class="QLabel" name="client1_1">
+         <property name="minimumSize">
+          <size>
+           <width>15</width>
+           <height>12</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">image: url(:/newPrefix/client.png);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="client1_2">
+         <property name="minimumSize">
+          <size>
+           <width>15</width>
+           <height>12</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">image: url(:/newPrefix/client.png);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="client5_2">
-       <property name="minimumSize">
-        <size>
-         <width>15</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
+     <item row="1" column="0">
+      <layout class="QGridLayout" name="gridLayout_12">
+       <item row="0" column="0">
+        <widget class="QLabel" name="client2_1">
+         <property name="minimumSize">
+          <size>
+           <width>15</width>
+           <height>12</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">image: url(:/newPrefix/client.png);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="client2_2">
+         <property name="minimumSize">
+          <size>
+           <width>15</width>
+           <height>12</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">image: url(:/newPrefix/client.png);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="0">
+      <layout class="QGridLayout" name="gridLayout_13">
+       <item row="0" column="0">
+        <widget class="QLabel" name="client3_1">
+         <property name="minimumSize">
+          <size>
+           <width>15</width>
+           <height>12</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">image: url(:/newPrefix/client.png);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="client3_2">
+         <property name="minimumSize">
+          <size>
+           <width>15</width>
+           <height>12</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">image: url(:/newPrefix/client.png);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="0">
+      <layout class="QGridLayout" name="gridLayout_14">
+       <item row="0" column="0">
+        <widget class="QLabel" name="client4_1">
+         <property name="minimumSize">
+          <size>
+           <width>15</width>
+           <height>12</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">image: url(:/newPrefix/client.png);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="client4_2">
+         <property name="minimumSize">
+          <size>
+           <width>15</width>
+           <height>12</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">image: url(:/newPrefix/client.png);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="4" column="0">
+      <layout class="QGridLayout" name="gridLayout_15">
+       <item row="0" column="1">
+        <widget class="QLabel" name="client5_2">
+         <property name="minimumSize">
+          <size>
+           <width>15</width>
+           <height>12</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">image: url(:/newPrefix/client.png);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="client5_1">
+         <property name="minimumSize">
+          <size>
+           <width>15</width>
+           <height>12</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">image: url(:/newPrefix/client.png);</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
-   <item row="8" column="1" colspan="2">
-    <widget class="QLabel" name="label_22">
+   <item row="2" column="0" colspan="3">
+    <spacer name="horizontalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>80</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="3" rowspan="4">
+    <widget class="QLabel" name="title">
      <property name="minimumSize">
       <size>
-       <width>15</width>
+       <width>16</width>
        <height>12</height>
       </size>
      </property>
+     <property name="styleSheet">
+      <string notr="true">image: url(:/newPrefix/title2.png);</string>
+     </property>
      <property name="text">
       <string/>
      </property>
-     <property name="pixmap">
-      <pixmap>../MP2x/socket2.png</pixmap>
-     </property>
     </widget>
    </item>
-   <item row="7" column="1">
-    <widget class="QLabel" name="label_12">
+   <item row="5" column="0" rowspan="4" colspan="4">
+    <widget class="QLabel" name="line">
      <property name="minimumSize">
       <size>
-       <width>15</width>
-       <height>12</height>
+       <width>40</width>
+       <height>40</height>
       </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">image: url(:/newPrefix/line (2).png);</string>
      </property>
      <property name="text">
       <string/>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="3">
-    <layout class="QGridLayout" name="gridLayout_13">
-     <item row="0" column="0">
-      <widget class="QLabel" name="client3_1">
-       <property name="minimumSize">
-        <size>
-         <width>15</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="client3_2">
-       <property name="minimumSize">
-        <size>
-         <width>15</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="11" column="2" colspan="2">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>50</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
-   <item row="7" column="2" colspan="2">
-    <layout class="QGridLayout" name="gridLayout_9">
-     <item row="0" column="1">
-      <widget class="QLabel" name="line">
-       <property name="minimumSize">
-        <size>
-         <width>15</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>line (2).png</pixmap>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="9" column="0" colspan="4">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>110</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
-   <item row="0" column="0">
+   <item row="0" column="0" rowspan="2">
     <widget class="QLabel" name="upper_socket">
      <property name="minimumSize">
       <size>
@@ -166,87 +290,28 @@
        <height>12</height>
       </size>
      </property>
+     <property name="styleSheet">
+      <string notr="true">image: url(:/newPrefix/socket1.png);</string>
+     </property>
      <property name="text">
       <string/>
      </property>
-     <property name="pixmap">
-      <pixmap>socket1.png</pixmap>
-     </property>
     </widget>
    </item>
-   <item row="5" column="1" colspan="3">
-    <layout class="QGridLayout" name="gridLayout_14">
-     <item row="0" column="0">
-      <widget class="QLabel" name="client4_1">
-       <property name="minimumSize">
-        <size>
-         <width>15</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="client4_2">
-       <property name="minimumSize">
-        <size>
-         <width>15</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="4" column="3">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>234</height>
+      </size>
+     </property>
+    </spacer>
    </item>
-   <item row="2" column="1" colspan="3">
-    <layout class="QGridLayout" name="gridLayout_11">
-     <item row="0" column="0">
-      <widget class="QLabel" name="client1_1">
-       <property name="minimumSize">
-        <size>
-         <width>15</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="client1_2">
-       <property name="minimumSize">
-        <size>
-         <width>15</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="8" column="0">
+   <item row="10" column="0" rowspan="2">
     <widget class="QLabel" name="socket">
      <property name="minimumSize">
       <size>
@@ -254,68 +319,57 @@
        <height>12</height>
       </size>
      </property>
+     <property name="styleSheet">
+      <string notr="true">image: url(:/newPrefix/socket2.png);</string>
+     </property>
      <property name="text">
       <string/>
      </property>
-     <property name="pixmap">
-      <pixmap>socket2.png</pixmap>
-     </property>
     </widget>
    </item>
-   <item row="3" column="1" colspan="3">
-    <layout class="QGridLayout" name="gridLayout_12">
-     <item row="0" column="0">
-      <widget class="QLabel" name="client2_1">
-       <property name="minimumSize">
-        <size>
-         <width>15</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="client2_2">
-       <property name="minimumSize">
-        <size>
-         <width>15</width>
-         <height>12</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>client.png</pixmap>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="3" rowspan="2" colspan="2">
-    <widget class="QLabel" name="label">
-     <property name="minimumSize">
+   <item row="3" column="0" colspan="3">
+    <spacer name="horizontalSpacer_4">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
       <size>
-       <width>16</width>
-       <height>12</height>
+       <width>80</width>
+       <height>20</height>
       </size>
      </property>
-     <property name="text">
-      <string/>
+    </spacer>
+   </item>
+   <item row="10" column="1" rowspan="2">
+    <spacer name="verticalSpacer_4">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="pixmap">
-      <pixmap>title2.png</pixmap>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
      </property>
-    </widget>
+    </spacer>
+   </item>
+   <item row="6" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>105</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="RES.qrc"/>
+ </resources>
  <connections/>
 </ui>
