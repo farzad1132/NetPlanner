@@ -3330,7 +3330,7 @@ class Ui_MainWindow(object):
         var Algorithm = null;
         var Worst_SNR = null;
 
-        handleMouseOverLines();
+        //handleMouseOverLines();
 
         function setcolor(text){
             groupcolor = text;
@@ -3442,17 +3442,19 @@ class Ui_MainWindow(object):
             lambda_list = lambdas[link_key]
             
 
-            drawLines(event.layer, lambda_list);
+            drawLines(event.layer, lambda_list, handleMouseOverLines);
             
         }
 
-        function drawLines(layer, lambdaList) {
+        function drawLines(layer, lambdaList, callback) {
 
             popupOptions = {
                 maxWidth: "auto"
             };
 
             layer.bindPopup(drawDetailBox(lambdaList), popupOptions)
+            
+            callback(lambdaList)
 
         }
 
@@ -3481,20 +3483,22 @@ class Ui_MainWindow(object):
         }
 
 
-        function handleMouseOverLines() {
+        function handleMouseOverLines(lambdaList) {
 
-            canvas.addEventListener("mousemove", showLineNumberInBox);
+            canvas.addEventListener("mousemove", e => showLineNumberInBox(e, lambdaList));
             canvas.addEventListener("mouseleave", unshowLineNumberInBox);
         }
 
-        function showLineNumberInBox(e) {
+        function showLineNumberInBox(e, lambdaList) {
             x = e.clientX;
             y = e.clientY;
+            var lineNum = 0;
             const xOff = e.offsetX;
             if (xOff %% 4 <= 2) {
-                cursor = parseInt(xOff / 4);
-                if(cursor == 0){
-                    cursor = " ";
+                cursor = " ";
+                lineNum = parseInt(xOff / 4);
+                if(lambdaList.includes(lineNum)){
+                    cursor = lineNum;
                 }
             } else {
                 cursor = " ";
