@@ -1167,7 +1167,7 @@ QPushButton:default {
            <property name="minimumSize">
             <size>
              <width>1570</width>
-             <height>870</height>
+             <height>850</height>
             </size>
            </property>
           </widget>

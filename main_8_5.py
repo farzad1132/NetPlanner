@@ -829,7 +829,7 @@ class Ui_MainWindow(object):
         self.gridLayout_14.addItem(spacerItem1, 2, 0, 1, 1)
         self.gridLayout_11.addWidget(self.T_groupbox, 1, 1, 2, 1)
         self.webengine = QtWebEngineWidgets.QWebEngineView(self.TopologyTab)
-        self.webengine.setMinimumSize(QtCore.QSize(1570, 870))
+        self.webengine.setMinimumSize(QtCore.QSize(1570, 840))
         self.webengine.setObjectName("webengine")
         self.gridLayout_11.addWidget(self.webengine, 2, 0, 1, 1)
         self.tabWidget.addTab(self.TopologyTab, "")
@@ -2243,9 +2243,10 @@ class Ui_MainWindow(object):
     
 
     def create_obj(self):
-        with open("NetworkObj_greedy.obj", 'wb') as handle:
+        """with open("NetworkObj_greedy.obj", 'wb') as handle:
             pickle.dump(self.network, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        handle.close()
+        handle.close() """
+        pass
 
 
     
@@ -3295,6 +3296,7 @@ class Ui_MainWindow(object):
         MapVar = re.findall("var( map_.*)=", Figtext)[0].strip()
         channel = "qrc:///qtwebchannel/qwebchannel.js"
         Fig.header.add_child(Element("<script src=%s></script>" %channel))
+        Fig.header.add_child(Element("<link rel=\"stylesheet\" href=\"MainMap_style.css\" />"))
         '''Fig.script.add_child(Element("""window.onload = function() {
         new QWebChannel(qt.webChannelTransport, function (channel) {
         window.backend = channel.objects.backend;
@@ -3308,6 +3310,27 @@ class Ui_MainWindow(object):
         var failed_nodes = new Object();
         var failed_nodes_list = [];
         var lambdas = new Object();
+
+
+        var wrapper = document.createElement("div");
+        var canvas = document.createElement("canvas");
+        canvas.setAttribute("class", "focusArea");
+        var displayArea = document.createElement('div');
+        // displayArea.textContent = " ";
+        displayArea.setAttribute("id", "displayArea");
+        displayArea.innerHTML = "Wavelength Number: ";
+        canvas.height = 50;
+        canvas.width = 420
+        wrapper.appendChild(canvas);
+        wrapper.appendChild(displayArea);
+
+
+        var Num_WL = null;
+        var Num_RG = null;
+        var Algorithm = null;
+        var Worst_SNR = null;
+
+        //handleMouseOverLines();
 
         function setcolor(text){
             groupcolor = text;
@@ -3419,8 +3442,97 @@ class Ui_MainWindow(object):
             lambda_list = lambdas[link_key]
             
 
-            // ** write your code here ** 
+            drawLines(event.layer, lambda_list, handleMouseOverLines);
             
+        }
+
+        function drawLines(layer, lambdaList, callback) {
+
+            popupOptions = {
+                maxWidth: "auto"
+            };
+
+            layer.bindPopup(drawDetailBox(lambdaList), popupOptions)
+            
+            callback(lambdaList)
+
+        }
+
+        function drawDetailBox(lambdaList) {
+
+            var h = canvas.height;
+            console.log(h);
+
+            var ctx = canvas.getContext("2d");
+
+            for (var i = 1; i <= 100; i++) {
+
+                ctx.beginPath();
+                ctx.moveTo(i * 4, 0);
+                ctx.lineTo(i * 4, h);
+                ctx.lineWidth = 2;
+                if (lambdaList.includes(i))
+                    ctx.strokeStyle = "black"
+                else
+                    ctx.strokeStyle = "gray";
+                ctx.stroke();
+
+            }
+
+            return wrapper;
+        }
+
+
+        function handleMouseOverLines(lambdaList) {
+
+            canvas.addEventListener("mousemove", e => showLineNumberInBox(e, lambdaList));
+            canvas.addEventListener("mouseleave", unshowLineNumberInBox);
+        }
+
+        function showLineNumberInBox(e, lambdaList) {
+            x = e.clientX;
+            y = e.clientY;
+            var lineNum = 0;
+            const xOff = e.offsetX;
+            if (xOff %% 4 <= 2) {
+                cursor = " ";
+                lineNum = parseInt(xOff / 4);
+                if(lambdaList.includes(lineNum)){
+                    cursor = lineNum;
+                }
+            } else {
+                cursor = " ";
+            }
+            document.getElementById("displayArea").style.display = 'block';
+            document.getElementById("displayArea").innerHTML = 'Wavelength Number: '+ cursor;
+            document.getElementById("displayArea").style.right = x + 'px';
+            document.getElementById("displayArea").style.top = y + 'px';
+        }
+
+        
+        function unshowLineNumberInBox() {
+                document.getElementById("displayArea").innerHTML = "Wavelength Number: ";
+            }
+
+            function createLegend(num_WL, num_RG, algorithm , worst_SNR) {
+                Num_WL = num_WL;
+                Num_RG = num_RG;
+                Algorithm = algorithm;
+                Worst_SNR = worst_SNR;
+        var legend = L.control({ position: 'bottomleft' });
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create("div", "legend");
+            div.style.backgroundColor = 'WHITE';
+
+            div.innerHTML += '<h5>Total number of used wavelengths<b>: ' + Num_WL + '</b></h5>';
+            div.innerHTML += '<h5>Total number of regenerators<b>: ' + Num_RG + '</b></h5>';
+            div.innerHTML += '<h5>Used algorithm and its runtime<b>: ' + Algorithm + '</b></h5>';
+            div.innerHTML += '<h5>Worst SNR on all links<b>: ' + Worst_SNR + '</b></h5>';
+
+            return div;
+        };
+
+            legend.addTo(%s);
         }
 
 
@@ -3457,7 +3569,7 @@ class Ui_MainWindow(object):
         var backend_map = null;
         new QWebChannel(qt.webChannelTransport, function (channel) {
         window.backend_map = channel.objects.backend_map;
-        });""" %(MapVar, MapVar, MapVar, MapVar, MapVar)))
+        });""" %(MapVar, MapVar, MapVar, MapVar, MapVar, MapVar)))
         Fig.script.add_child(Element("var myFeatureGroup = L.featureGroup().addTo(%s).on(\"click\", groupClick);" %MapVar))
 
         Fig.script.add_child(Element("""%s.eachLayer(function (layer) {
@@ -3923,6 +4035,7 @@ class Ui_MainWindow(object):
                 GroomingTabDataBase["LightPathes"][tup][int(key)] = GroomingTabDataBase["LightPathes"][tup].pop(key)
 
         self.send_lambdas_to_JS()
+        self.create_legend("x", "x", "x", "x")
 
     def send_lambdas_to_JS(self):
         print(self.webengine.geometry())
@@ -3930,6 +4043,9 @@ class Ui_MainWindow(object):
             Source = key[0]
             Destination = key[1]
             self.webengine.page().runJavaScript("receive_lambdas(\"%s\", \"%s\", \"%s\")" %(Source, Destination, value))
+    
+    def create_legend(self, Num_WL, Num_RG, Algorithm, Worst_SNR):
+        self.webengine.page().runJavaScript("createLegend(\"%s\", \"%s\", \"%s\", \"%s\")" %(Num_WL, Num_RG, Algorithm, Worst_SNR))
                 
             
 
