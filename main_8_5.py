@@ -3179,7 +3179,7 @@ class Ui_MainWindow(object):
             self.NodeIdMap[NodeData["Node"]] = self.network.Topology.Node.ReferenceId
             self.IdNodeMap[self.network.Topology.Node.ReferenceId] = NodeData["Node"]
             self.IdLocationMap[self.network.Topology.Node.ReferenceId] = scale_calculation(NodeData["Location"][0], NodeData["Location"][1])
-            self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["Type"])
+            self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["ROADM_Type"])
         
         for LinkId , LinkData in Data["Links"].items():
             self.network.PhysicalTopology.add_link(self.NodeIdMap[LinkId[0]], self.NodeIdMap[LinkId[1]], LinkData["NumSpan"])

@@ -73,9 +73,9 @@ class Network:
             self.LinkDict = {}
             self.ClusterDict = {}
         
-        def add_node(self, Location, Type = "Not Declared"):
+        def add_node(self, Location, ROADM_Type = "Directionless"):
             Id = Network.Topology.Node.ReferenceId
-            self.NodeDict[Id] = self.Node(Location, Type)
+            self.NodeDict[Id] = self.Node(Location, ROADM_Type)
         
         def add_link(self, InNode, OutNode, NumSpan):
             self.LinkDict[(InNode , OutNode)] = self.Link(InNode,OutNode,NumSpan)
@@ -188,7 +188,7 @@ class Network:
             @classmethod
             def from_json(cls, data):
                 AmplifierList = list(map(Network.Topology.Node.Amplifier.from_json, data["AmplifierList"]))
-                instance = cls(Location = data['Location'], Type = data['Type'])
+                instance = cls(Location = data['Location'], ROADM_Type = data['ROADM_Type'])
                 instance.__dict__['AmplifierList'] = AmplifierList
                 instance.__dict__['Neighbors'] = data['Neighbors']
                 instance.__dict__['Id'] = data['Id']
@@ -198,16 +198,15 @@ class Network:
             ReferenceId = 0
             # Id must be an int number
             # Location format must be (lat,lng) in int
-            def __init__(self, Location, Type = "not declared"):
+            def __init__(self, Location, ROADM_Type = "Directionless"):
                 self.Id = Network.Topology.Node.ReferenceId
                 Network.Topology.Node.ReferenceId += 1
                 self.Location = Location
-                self.Type = Type
                 self.Neighbors = []
                 self.degrees = []
                 self.services = []
                 self.AmplifierList = []
-                self.ROADM_Type = None
+                self.ROADM_Type = ROADM_Type
                 self.NodeState = []
             
             
