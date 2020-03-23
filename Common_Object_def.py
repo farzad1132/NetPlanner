@@ -7,6 +7,7 @@ class Network:
         instance.__dict__['PhysicalTopology'] = Network.Topology.from_json(data['PhysicalTopology'])
         instance.__dict__['LightPathDict'] = LightPathDict
         instance.__dict__['ParamsObj'] = Network.Params.from_json(data['ParamsObj'])
+        instance.__dict__['ResultObj'] = Network.Overall_Result.from_json(data['ResultObj'])
         return instance
 
     def __init__(self):
@@ -632,7 +633,8 @@ class Network:
         def from_json(cls, data):
             instance = cls(merge = data['merge'], alpha = data['alpha'], iterations = data['iterations'],
                            margin = data['margin'], processors = data['processors'], k = data['k'],
-                           MaxNW = data['MaxNW'])
+                           MaxNW = data['MaxNW'], Algorithm = data['Algorithm'], History = data['History'],
+                           GroupSize = data['GroupSize'])
             return instance
 
         def __init__(self, merge = None, alpha = None, iterations = None, margin = None, processors = None, k = None, MaxNW = None,

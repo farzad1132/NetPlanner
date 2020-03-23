@@ -161,10 +161,12 @@ GroomingTabDataBase["Panels"] = {}
 #       { <NodeName> : { ( <DegreeName>, <DegreeId> ): { <PanelId> : <PanelObject>}}}
 # <DegreeName> : by this Node LightPath exits from the Source
 
-GroomingTabDataBase["Links"] = {}
+GroomingTabDataBase["LinkState"] = {}
 # format:
 #       { ( <InNodeName> , <OutNodeName> ) : <LambdaList> }
 # <LambdaList> : list of lambda ids
+
+GroomingTabDataBase["NodeState"] = {}
 
 
 class MP2D_L:

@@ -2671,6 +2671,53 @@ class Ui_MainWindow(object):
             fmt = workbook.add_format()
             fmt = workbook.add_format({'bg_color': color})
             worksheet.write('E1', 'Wavelength', fmt)
+
+            #### Link Stats #######
+            wavelength_number_on_links = []
+            all_link_states = []
+            for link in list(network.PhysicalTopology.LinkDict.keys()):
+                wavelength_number_on_links.append(len(network.PhysicalTopology.LinkDict[link].LinkState))
+                all_link_states.append(network.PhysicalTopology.LinkDict[link].LinkState)
+            dictionary2 = {
+            'Links' : list(map(lambda x : (self.IdNodeMap[x[0]], self.IdNodeMap[x[1]]), list(network.PhysicalTopology.LinkDict.keys()))),
+            'Used Wavelengths' : all_link_states,
+            'Wavelength Number': wavelength_number_on_links
+            }
+            link_number = len(list(network.PhysicalTopology.LinkDict.keys()))
+            df2 = pd.DataFrame(dictionary2)
+            df2.to_excel(writer, sheet_name='Link State')
+            worksheet2 = writer.sheets['Link State']
+            worksheet2.conditional_format('D2:D'+ str(link_number+1),  {'type': '3_color_scale',
+                                                'min_color': "green",
+                                                'mid_color': "yellow",
+                                                'max_color': "red"})
+            worksheet2.set_column(1, 1 , 12)
+            worksheet2.set_column(2, 2, 52)
+            worksheet2.set_column(3, 3, 18)
+
+            #### Node Stats #######
+            wavelength_number_on_nodes = []
+            all_node_states = []
+            for node in list(network.PhysicalTopology.NodeDict.keys()):
+                wavelength_number_on_nodes.append(len(network.PhysicalTopology.NodeDict[node].NodeState))
+                all_node_states.append(network.PhysicalTopology.NodeDict[node].NodeState)
+            dictionary3 = {
+            'Nodes' : list(map(lambda x : self.IdNodeMap[x], list(network.PhysicalTopology.NodeDict.keys()))),
+            'Used Wavelengths' : all_node_states,
+            'Wavelength Number': wavelength_number_on_nodes
+            }
+            node_number = len(list(network.PhysicalTopology.NodeDict.keys()))
+            df3 = pd.DataFrame(dictionary3)
+            df3.to_excel(writer, sheet_name='Node State')
+            worksheet3 = writer.sheets['Node State']
+            worksheet3.conditional_format('D2:D'+ str(node_number+1),  {'type': '3_color_scale',
+                                                'min_color': "green",
+                                                'mid_color': "yellow",
+                                                'max_color': "red"})
+            worksheet3.set_column(1, 1 , 12)
+            worksheet3.set_column(2, 2, 52)
+            worksheet3.set_column(3, 3, 18)
+
             writer.save()
 
         name = QFileDialog.getSaveFileName(MainWindow, "Save Topology", filter = "(*.xlsx)")
@@ -2965,7 +3012,7 @@ class Ui_MainWindow(object):
     def initialize_GroomingTabDataBase(self, Source, Destination):
         GroomingTabDataBase["LightPathes"][(Source, Destination)] = {}
         GroomingTabDataBase["Panels"][Source] = {}
-        #GroomingTabDataBase["Links"][(Source, Destination)] = []
+        #GroomingTabDataBase["LinkState"][(Source, Destination)] = []
         
     
 
@@ -3185,7 +3232,7 @@ class Ui_MainWindow(object):
             self.network.PhysicalTopology.add_link(self.NodeIdMap[LinkId[0]], self.NodeIdMap[LinkId[1]], LinkData["NumSpan"])
             
             # NOTE : here we are initializing link part of GroomingTabDataBase
-            GroomingTabDataBase["Links"][(LinkId[0], LinkId[1])] = []
+            #GroomingTabDataBase["LinkState"][(LinkId[0], LinkId[1])] = []
 
             for i in range(LinkData["NumSpan"]):
                 self.network.PhysicalTopology.LinkDict[(self.NodeIdMap[LinkId[0]], self.NodeIdMap[LinkId[1]])].put_fiber_Type(LinkData["Length"][i],
@@ -3514,7 +3561,7 @@ class Ui_MainWindow(object):
                 document.getElementById("displayArea").innerHTML = "Wavelength Number: ";
             }
 
-            function createLegend(num_WL, num_RG, algorithm , worst_SNR) {
+            function createLegend(num_WL, num_RG, algorithm , worst_SNR, RWA_Runtime) {
                 Num_WL = num_WL;
                 Num_RG = num_RG;
                 Algorithm = algorithm;
@@ -3526,7 +3573,7 @@ class Ui_MainWindow(object):
 
             div.innerHTML += '<h5>Total number of used wavelengths<b>: ' + Num_WL + '</b></h5>';
             div.innerHTML += '<h5>Total number of regenerators<b>: ' + Num_RG + '</b></h5>';
-            div.innerHTML += '<h5>Used algorithm and its runtime<b>: ' + Algorithm + '</b></h5>';
+            div.innerHTML += '<h5>Used algorithm and its runtime<b>: ' + Algorithm + '  ,  ' + RWA_Runtime + ' s' + '</b></h5>';
             div.innerHTML += '<h5>Worst SNR on all links<b>: ' + Worst_SNR + '</b></h5>';
 
             return div;
@@ -3920,7 +3967,7 @@ class Ui_MainWindow(object):
                 print(f"panels part--> Source:{Source} panels:{DemandTabDataBase['Panels'][Source]}")
                 print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
     
-    def fill_GroomingTabDataBase(self, netobj):
+    def fill_GroomingTabDataBase(self, netobj, RWA_Runtime):
 
         def get_panel_num(Source):
             IdList = list(DemandTabDataBase["Panels"][Source].keys())
@@ -3951,7 +3998,12 @@ class Ui_MainWindow(object):
             return OutputList
         
         
-        for id, lightpath in netobj.LightPathDict.items():
+        for id, lightpath in list(netobj.LightPathDict.items()):
+
+            if isinstance(id, str):
+                netobj.LightPathDict[int(id)] = netobj.LightPathDict.pop(id)
+                id = int(id)
+            
             Source = self.IdNodeMap[lightpath.Source]
             Destination = self.IdNodeMap[lightpath.Destination]
             Working = lightpath.WorkingPath
@@ -3993,59 +4045,39 @@ class Ui_MainWindow(object):
                 ClientCapacity = create_ClientsCapacityList(DemandId ,lightpath.ServiceIdList)
                 GroomingTabDataBase["Panels"][Source][PanelId] = MP1H_L(ClientCapacity, "100GE", lightpath.ServiceIdList, [DemandId for i in range(10)], id)
                 GroomingTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = MP1H_R(PanelId)
-
-            # filling GroomingTabDataBase ( Links or lambdas part )
-            for i in range(len(Working) - 1):
-                InNodeName = self.IdNodeMap[Working[ i ]]
-                OutNodeName = self.IdNodeMap[Working[ i + 1 ]]
-
-                if ( InNodeName , OutNodeName) in GroomingTabDataBase["Links"]:
-                    keyW = ( InNodeName , OutNodeName)
-                elif ( OutNodeName , InNodeName ) in GroomingTabDataBase["Links"]:
-                    keyW = ( OutNodeName , InNodeName )
-                else:
-                    print(f"$$ key not found $$ and key : {( InNodeName , OutNodeName)}")
-
-                if WaveLength in GroomingTabDataBase["Links"][keyW]:
-                    # TODO: raise error --> this wavelength has been used
-                    print("wavelength has been used")
-                else:
-                    GroomingTabDataBase["Links"][keyW].append(WaveLength)
             
-            for i in range(len(Protection) - 1):
-                InNodeName = self.IdNodeMap[Protection[ i ]]
-                OutNodeName = self.IdNodeMap[Protection[ i + 1 ]]
+        # filling LinkSate Part
+        for key, value in netobj.PhysicalTopology.LinkDict.items():
+            GroomingTabDataBase["LinkState"][(self.IdNodeMap[key[0]], self.IdNodeMap[key[1]])] = value.LinkState
+        
+        for key, value in netobj.PhysicalTopology.NodeDict.items():
+            GroomingTabDataBase["NodeState"][self.IdNodeMap[int(key)]] = value.NodeState
 
-                if ( InNodeName , OutNodeName) in GroomingTabDataBase["Links"]:
-                    keyP = ( InNodeName , OutNodeName)
-                elif ( OutNodeName , InNodeName ) in GroomingTabDataBase["Links"]:
-                    keyP = ( OutNodeName , InNodeName )
-                else:
-                    print(f"$$ key not found $$ and key : {( InNodeName , OutNodeName)}")
 
-                if WaveLength in GroomingTabDataBase["Links"][keyP]:
-                    # TODO: raise error --> this wavelength has been used
-                    print("wavelength has been used")
-
-                else:
-                    GroomingTabDataBase["Links"][keyP].append(WaveLength)
-
-        for tup in GroomingTabDataBase["LightPathes"]:
+        """ for tup in GroomingTabDataBase["LightPathes"]:
             for key in GroomingTabDataBase["LightPathes"][tup]:
-                GroomingTabDataBase["LightPathes"][tup][int(key)] = GroomingTabDataBase["LightPathes"][tup].pop(key)
+                GroomingTabDataBase["LightPathes"][tup][int(key)] = GroomingTabDataBase["LightPathes"][tup].pop(key) """
+        
+        for key in list(netobj.PhysicalTopology.NodeDict.keys()):
+            if isinstance(key, str):
+                netobj.PhysicalTopology.NodeDict[int(key)] = netobj.PhysicalTopology.NodeDict.pop(key)
 
         self.send_lambdas_to_JS()
-        self.create_legend("x", "x", "x", "x")
+        self.create_legend(Num_WL= netobj.ResultObj.Num_WL,
+                            Num_RG= netobj.ResultObj.Num_RG,
+                            Algorithm= netobj.ParamsObj.Algorithm,
+                            Worst_SNR= round(netobj.ResultObj.Worst_SNR, 2),
+                            RWA_Runtime= round(RWA_Runtime, 2))
 
     def send_lambdas_to_JS(self):
         print(self.webengine.geometry())
-        for key , value in GroomingTabDataBase['Links'].items():
+        for key , value in GroomingTabDataBase["LinkState"].items():
             Source = key[0]
             Destination = key[1]
             self.webengine.page().runJavaScript("receive_lambdas(\"%s\", \"%s\", \"%s\")" %(Source, Destination, value))
     
-    def create_legend(self, Num_WL, Num_RG, Algorithm, Worst_SNR):
-        self.webengine.page().runJavaScript("createLegend(\"%s\", \"%s\", \"%s\", \"%s\")" %(Num_WL, Num_RG, Algorithm, Worst_SNR))
+    def create_legend(self, Num_WL, Num_RG, Algorithm, Worst_SNR, RWA_Runtime):
+        self.webengine.page().runJavaScript("createLegend(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\")" %(Num_WL, Num_RG, Algorithm, Worst_SNR, RWA_Runtime))
                 
             
 
@@ -4234,8 +4266,10 @@ class Ui_MainWindow(object):
                             History, Algorithm):
 
         self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm)
+        RWA_Start_Time = time.time()
         self.RWA_button_fun()
-        self.fill_GroomingTabDataBase(self.decoded_network)
+        RWA_Runtime = time.time() - RWA_Start_Time
+        self.fill_GroomingTabDataBase(self.decoded_network, RWA_Runtime)
 
         self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
 "    border: 2px solid #8f8f91;\n"
@@ -4321,9 +4355,9 @@ class Ui_MainWindow(object):
                 #  Populate the dictionary with object properties
                 obj_dict.update(obj.__dict__)
                 return obj_dict
-
+        # NetworkObj_GroupILP NetworkObj_greedy NetworkObj_ILP
         net = copy.copy(self.network)
-
+        use_sockets = False
 
         # Convert keys to String
         tuple_keys = list(net.PhysicalTopology.LinkDict.keys())
@@ -4332,27 +4366,24 @@ class Ui_MainWindow(object):
 
         ##############################################
         # Convert the Network object to JSON message
-        data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
+        # data = json.dumps(net.TrafficMatrix,default=convert_to_dict,indent=4, sort_keys=True)
         # print(data)
-        class_dict = json.loads(data)
-        new_network = Network.from_json(class_dict) 
         # assert False
-        data = json.dumps(new_network,default=convert_to_dict,indent=4, sort_keys=True)
+        data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
 
-        str_keys = list(new_network.PhysicalTopology.LinkDict.keys())
+        str_keys = list(net.PhysicalTopology.LinkDict.keys())
         for key in str_keys:
             Lkey = list(key)
             ActualKey =( int(Lkey[1]) , int(Lkey[-2]) )
-            new_network.PhysicalTopology.LinkDict[ActualKey] = new_network.PhysicalTopology.LinkDict.pop(key)
+            net.PhysicalTopology.LinkDict[ActualKey] = net.PhysicalTopology.LinkDict.pop(key)
 
-
-        # assert False
         # This line tests whether the JSON encoded common object is reconstructable!
         decoded_n = Network.from_json(json.loads(data)) 
         assert(isinstance(decoded_n, Network))
 
         # Establishing a socket.io connection for logging purposes
-        sio.connect('http://localhost:5000')
+        if use_sockets:
+            sio.connect('http://localhost:5000')
 
         ##Run the grooming function on the server
         # print('####################################################')
@@ -4372,8 +4403,8 @@ class Ui_MainWindow(object):
             # print('####################################################')
             # print(json.dumps(res.json()))
             decoded_network = Network.from_json(json.loads(json.dumps(res.json())))
-            data = json.dumps(decoded_network.LightPathDict,default=convert_to_dict,indent=4, sort_keys=True)
-            print(data)
+            # data = json.dumps(decoded_network.ResultObj,default=convert_to_dict,indent=4, sort_keys=True)
+            # print(data)
             # Converting keys to original version ( Server Side )
             str_keys = list(decoded_network.PhysicalTopology.LinkDict.keys())
             for key in str_keys:
@@ -4385,10 +4416,10 @@ class Ui_MainWindow(object):
             str_keys = decoded_network.LightPathDict.keys()
             for key in str_keys:
                 decoded_network.LightPathDict[int(key)] = decoded_network.LightPathDict.pop(key)
-            
-
-        sio.disconnect()
-        sio.wait()
+        if use_sockets:  
+            sio.disconnect()
+            sio.sleep(0)
+        # sio.wait()
         print('RWA finished and data received in client') 
         try:
             print('Sample WaveLength output', decoded_network.LightPathDict[0].WaveLength)
