@@ -2105,6 +2105,8 @@ class Ui_MainWindow(object):
 
         #self.Demand_Shelf_set()
 
+        self.NormalMode_checkbox.stateChanged["int"].connect(self.google_map_view)
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -2247,6 +2249,17 @@ class Ui_MainWindow(object):
             pickle.dump(self.network, handle, protocol=pickle.HIGHEST_PROTOCOL)
         handle.close() """
         pass
+
+    def google_map_view(self, state):
+
+        if state == 2:
+            green = ceil(self.Max_LinkState/4)
+            yellow = ceil(self.Max_LinkState/2)
+            orange = ceil(self.Max_LinkState * (3/4))
+            self.webengine.page().runJavaScript('google_map_view_set(\'%s\', \'%s\', \'%s\')' %(green, yellow, orange))
+        
+        if state == 0:
+            self.webengine.page().runJavaScript('google_map_view_reset()')
 
 
     
@@ -3459,7 +3472,7 @@ class Ui_MainWindow(object):
                 }
                 flag = 1;
                 }
-        });
+            });
 
         }
 
@@ -3476,6 +3489,45 @@ class Ui_MainWindow(object):
                }
                
             });
+        
+        function google_map_view_set(green, yellow, orange){
+            links_groupfeature.eachLayer(function (layer){
+
+                var x = layer["_tooltip"]["_content"];
+                var doc = new DOMParser().parseFromString(x, "text/xml");
+                var z = doc.documentElement.textContent;
+                link_key = z.replace(/\s/g, '');
+                link_key = link_key.split("-");
+                lambda_list = lambdas[link_key];
+
+                Len = lambda_list.length;
+                if ( Len <= green ){
+                    layer.setStyle({
+                        color: 'green'
+                    });
+                } else if ( Len <= yellow ){
+                    layer.setStyle({
+                        color: 'yellow'
+                    });
+                } else if ( Len <= orange ){
+                    layer.setStyle({
+                        color: 'orange'
+                    });
+                } else{
+                    layer.setStyle({
+                        color: 'red'
+                    });
+                }
+            });
+        }
+
+        function google_map_view_reset(){
+            links_groupfeature.eachLayer(function(layer){
+                layer.setStyle({
+                    color: 'black'
+                });
+            });
+        }
         
         
         
@@ -4047,8 +4099,11 @@ class Ui_MainWindow(object):
                 GroomingTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = MP1H_R(PanelId)
             
         # filling LinkSate Part
+        self.Max_LinkState = 0
         for key, value in netobj.PhysicalTopology.LinkDict.items():
             GroomingTabDataBase["LinkState"][(self.IdNodeMap[key[0]], self.IdNodeMap[key[1]])] = value.LinkState
+            if len(value.LinkState) > self.Max_LinkState:
+                self.Max_LinkState = len(value.LinkState)
         
         for key, value in netobj.PhysicalTopology.NodeDict.items():
             GroomingTabDataBase["NodeState"][self.IdNodeMap[int(key)]] = value.NodeState
