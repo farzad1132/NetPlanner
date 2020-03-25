@@ -497,6 +497,8 @@ class Ui_MainWindow(object):
         self.T_groupbox.setObjectName("T_groupbox")
         self.gridLayout_14 = QtWidgets.QGridLayout(self.T_groupbox)
         self.gridLayout_14.setObjectName("gridLayout_14")
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_14.addItem(spacerItem1, 2, 0, 1, 1)
         self.Grouping_groupbox = QtWidgets.QGroupBox(self.T_groupbox)
         self.Grouping_groupbox.setObjectName("Grouping_groupbox")
         self.gridLayout_17 = QtWidgets.QGridLayout(self.Grouping_groupbox)
@@ -787,46 +789,30 @@ class Ui_MainWindow(object):
         self.ViewGroupbox.setObjectName("ViewGroupbox")
         self.gridLayout_18 = QtWidgets.QGridLayout(self.ViewGroupbox)
         self.gridLayout_18.setObjectName("gridLayout_18")
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.NormalMode_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
+        self.Max_available_radiobutton = QtWidgets.QRadioButton(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setItalic(True)
+        self.Max_available_radiobutton.setFont(font)
+        self.Max_available_radiobutton.setObjectName("Max_available_radiobutton")
+        self.gridLayout_18.addWidget(self.Max_available_radiobutton, 0, 0, 1, 1)
+        self.Max_Used_radiobutton = QtWidgets.QRadioButton(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setItalic(True)
+        font.setStrikeOut(False)
+        self.Max_Used_radiobutton.setFont(font)
+        self.Max_Used_radiobutton.setObjectName("Max_Used_radiobutton")
+        self.gridLayout_18.addWidget(self.Max_Used_radiobutton, 1, 0, 1, 1)
+        self.Enable_google_view_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
         font = QtGui.QFont()
         font.setFamily("IRANSans")
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
-        self.NormalMode_checkbox.setFont(font)
-        self.NormalMode_checkbox.setStyleSheet("")
-        self.NormalMode_checkbox.setObjectName("NormalMode_checkbox")
-        self.verticalLayout_3.addWidget(self.NormalMode_checkbox)
-        self.Working_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setBold(True)
-        font.setWeight(75)
-        self.Working_checkbox.setFont(font)
-        self.Working_checkbox.setObjectName("Working_checkbox")
-        self.verticalLayout_3.addWidget(self.Working_checkbox)
-        self.Protection_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setBold(True)
-        font.setWeight(75)
-        self.Protection_checkbox.setFont(font)
-        self.Protection_checkbox.setObjectName("Protection_checkbox")
-        self.verticalLayout_3.addWidget(self.Protection_checkbox)
-        self.Restoration_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setBold(True)
-        font.setWeight(75)
-        self.Restoration_checkbox.setFont(font)
-        self.Restoration_checkbox.setObjectName("Restoration_checkbox")
-        self.verticalLayout_3.addWidget(self.Restoration_checkbox)
-        self.gridLayout_18.addLayout(self.verticalLayout_3, 0, 0, 1, 1)
+        self.Enable_google_view_checkbox.setFont(font)
+        self.Enable_google_view_checkbox.setStyleSheet("")
+        self.Enable_google_view_checkbox.setObjectName("Enable_google_view_checkbox")
+        self.gridLayout_18.addWidget(self.Enable_google_view_checkbox, 2, 0, 1, 1)
         self.gridLayout_14.addWidget(self.ViewGroupbox, 1, 0, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout_14.addItem(spacerItem1, 2, 0, 1, 1)
         self.gridLayout_11.addWidget(self.T_groupbox, 1, 1, 2, 1)
         self.webengine = QtWebEngineWidgets.QWebEngineView(self.TopologyTab)
         self.webengine.setMinimumSize(QtCore.QSize(1570, 840))
@@ -1910,8 +1896,7 @@ class Ui_MainWindow(object):
         self.gridLayout_13 = QtWidgets.QGridLayout(self.tab_8)
         self.gridLayout_13.setObjectName("gridLayout_13")
         self.Demand_mdi = QtWidgets.QMdiArea(self.tab_8)
-        self.Demand_mdi.setMinimumSize(QtCore.QSize(1560, 521))
-        self.Demand_mdi.setMaximumSize(QtCore.QSize(1570, 1000))
+        self.Demand_mdi.setMinimumSize(QtCore.QSize(1575, 521))
         self.Demand_mdi.setObjectName("Demand_mdi")
         self.gridLayout_13.addWidget(self.Demand_mdi, 0, 0, 1, 1)
         self.Demand_tab.addTab(self.tab_8, "")
@@ -1954,7 +1939,6 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
 
-        # TODO: added
 
         self.SelectNode_combo.clear()
         self.NodeType_combobox.clear()
@@ -2047,7 +2031,7 @@ class Ui_MainWindow(object):
         self.SelectNode_combo.currentIndexChanged["int"].connect(self.SelectNode_combo_change)
 
         
-        
+        # NOTE: added
 
         Data["ClientList"] = self.ClientList
         Data["LineList"] = self.LineList
@@ -2105,8 +2089,10 @@ class Ui_MainWindow(object):
 
         #self.Demand_Shelf_set()
 
-        self.NormalMode_checkbox.stateChanged["int"].connect(self.google_map_view)
+        self.Enable_google_view_checkbox.stateChanged["int"].connect(self.google_map_view)
 
+        self.Max_Used_radiobutton.toggled["bool"].connect(self.change_radiobuttons_state)
+        self.Max_available_radiobutton.toggled["bool"].connect(self.change_radiobuttons_state)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -2133,11 +2119,11 @@ class Ui_MainWindow(object):
         self.Cancel_button.setText(_translate("MainWindow", "Cancel"))
         self.OK_button.setText(_translate("MainWindow", "Ok"))
         self.ShowSubNodes.setText(_translate("MainWindow", "Show Sub Nodes"))
-        self.ViewGroupbox.setTitle(_translate("MainWindow", "View Modes"))
-        self.NormalMode_checkbox.setText(_translate("MainWindow", "Normal Mode"))
-        self.Working_checkbox.setText(_translate("MainWindow", "Working View"))
-        self.Protection_checkbox.setText(_translate("MainWindow", "Protection View"))
-        self.Restoration_checkbox.setText(_translate("MainWindow", "Restoration View"))
+        self.ViewGroupbox.setTitle(_translate("MainWindow", "Google View Modes"))
+        self.Max_available_radiobutton.setText(_translate("MainWindow", "Use Max Availabe as Reference"))
+        self.Max_Used_radiobutton.setText(_translate("MainWindow", "Use Max used Wavelength in a Link\n"
+" as Reference"))
+        self.Enable_google_view_checkbox.setText(_translate("MainWindow", "Enable"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.TopologyTab), _translate("MainWindow", "Topology Tab"))
         self.Traffic_matrix.setSortingEnabled(False)
         item = self.General_TM.horizontalHeaderItem(0)
@@ -2242,7 +2228,7 @@ class Ui_MainWindow(object):
         self.Demand_tab.setTabText(self.Demand_tab.indexOf(self.tab_8), _translate("MainWindow", "Shelf"))
         self.ClientLabel_25.setText(_translate("MainWindow", "Map:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
-    
+
 
     def create_obj(self):
         """with open("NetworkObj_greedy.obj", 'wb') as handle:
@@ -2250,12 +2236,30 @@ class Ui_MainWindow(object):
         handle.close() """
         pass
 
+    def change_radiobuttons_state(self):
+        if self.Max_available_radiobutton.isChecked():
+            self.Max_Used_radiobutton.setChecked(False)
+            return 2
+        if self.Max_Used_radiobutton.isChecked():
+            self.Max_available_radiobutton.setChecked(False)
+            return 1
+
     def google_map_view(self, state):
 
+        radio_state = self.change_radiobuttons_state()
+
         if state == 2:
-            green = ceil(self.Max_LinkState/4)
-            yellow = ceil(self.Max_LinkState/2)
-            orange = ceil(self.Max_LinkState * (3/4))
+            if radio_state == 1:
+                green = ceil(self.Max_LinkState/4)
+                yellow = ceil(self.Max_LinkState/2)
+                orange = ceil(self.Max_LinkState * (3/4))
+                
+            else:
+                self.MaxNW = int(self.MaxNW)
+                green = ceil(self.MaxNW/4)
+                yellow = ceil(self.MaxNW/2)
+                orange = ceil(self.MaxNW * (3/4))
+        
             self.webengine.page().runJavaScript('google_map_view_set(\'%s\', \'%s\', \'%s\')' %(green, yellow, orange))
         
         if state == 0:
@@ -3613,23 +3617,25 @@ class Ui_MainWindow(object):
                 document.getElementById("displayArea").innerHTML = "Wavelength Number: ";
             }
 
-            function createLegend(num_WL, num_RG, algorithm , worst_SNR, RWA_Runtime) {
-                Num_WL = num_WL;
-                Num_RG = num_RG;
-                Algorithm = algorithm;
-                Worst_SNR = worst_SNR;
-        var legend = L.control({ position: 'bottomleft' });
-        legend.onAdd = function (map) {
-            var div = L.DomUtil.create("div", "legend");
-            div.style.backgroundColor = 'WHITE';
+        function createLegend(num_WL, num_RG, algorithm , worst_SNR, RWA_Runtime) {
+            Num_WL = num_WL;
+            Num_RG = num_RG;
+            Algorithm = algorithm;
+            Worst_SNR = worst_SNR;
+            var legend = L.control({ position: 'bottomleft' });
 
-            div.innerHTML += '<h5>Total number of used wavelengths<b>: ' + Num_WL + '</b></h5>';
-            div.innerHTML += '<h5>Total number of regenerators<b>: ' + Num_RG + '</b></h5>';
-            div.innerHTML += '<h5>Used algorithm and its runtime<b>: ' + Algorithm + '  ,  ' + RWA_Runtime + ' s' + '</b></h5>';
-            div.innerHTML += '<h5>Worst SNR on all links<b>: ' + Worst_SNR + '</b></h5>';
+            legend.onAdd = function (map) {
 
-            return div;
-        };
+                var div = L.DomUtil.create("div", "legend");
+                div.style.backgroundColor = 'WHITE';
+
+                div.innerHTML += '<h5>Total number of used wavelengths<b>: ' + Num_WL + '</b></h5>';
+                div.innerHTML += '<h5>Total number of regenerators<b>: ' + Num_RG + '</b></h5>';
+                div.innerHTML += '<h5>Used algorithm and its runtime<b>: ' + Algorithm + '  ,  ' + RWA_Runtime + ' s' + '</b></h5>';
+                div.innerHTML += '<h5>Worst SNR on all links<b>: ' + Worst_SNR + '</b></h5>';
+
+                return div;
+            };
 
             legend.addTo(%s);
         }
@@ -4360,6 +4366,8 @@ class Ui_MainWindow(object):
                                 GroupSize= GroupSize,
                                 History= History,
                                 Algorithm= Algorithm)
+        
+        self.MaxNW = MaxNW
 
 
         
@@ -4485,14 +4493,14 @@ class Ui_MainWindow(object):
         self.decoded_network = decoded_network
 
 
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QWidget()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
-    # NOTE: don't forget this
-    # added
+    # NOTE: added
     Data["ui"] = ui
     MainWindow.show()
     sys.exit(app.exec_())
