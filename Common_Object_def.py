@@ -7,6 +7,7 @@ class Network:
         instance.__dict__['PhysicalTopology'] = Network.Topology.from_json(data['PhysicalTopology'])
         instance.__dict__['LightPathDict'] = LightPathDict
         instance.__dict__['ParamsObj'] = Network.Params.from_json(data['ParamsObj'])
+        instance.__dict__['ResultObj'] = Network.Overall_Result.from_json(data['ResultObj'])
         return instance
 
     def __init__(self):
@@ -73,9 +74,9 @@ class Network:
             self.LinkDict = {}
             self.ClusterDict = {}
         
-        def add_node(self, Location, Type = "Not Declared"):
+        def add_node(self, Location, ROADM_Type = "Directionless"):
             Id = Network.Topology.Node.ReferenceId
-            self.NodeDict[Id] = self.Node(Location, Type)
+            self.NodeDict[Id] = self.Node(Location, ROADM_Type)
         
         def add_link(self, InNode, OutNode, NumSpan):
             self.LinkDict[(InNode , OutNode)] = self.Link(InNode,OutNode,NumSpan)
@@ -188,25 +189,25 @@ class Network:
             @classmethod
             def from_json(cls, data):
                 AmplifierList = list(map(Network.Topology.Node.Amplifier.from_json, data["AmplifierList"]))
-                instance = cls(Location = data['Location'], Type = data['Type'])
+                instance = cls(Location = data['Location'], ROADM_Type = data['ROADM_Type'])
                 instance.__dict__['AmplifierList'] = AmplifierList
                 instance.__dict__['Neighbors'] = data['Neighbors']
                 instance.__dict__['Id'] = data['Id']
+                instance.__dict__['NodeState'] = data['NodeState']
                 return instance
 
             ReferenceId = 0
             # Id must be an int number
             # Location format must be (lat,lng) in int
-            def __init__(self, Location, Type = "not declared"):
+            def __init__(self, Location, ROADM_Type = "Directionless"):
                 self.Id = Network.Topology.Node.ReferenceId
                 Network.Topology.Node.ReferenceId += 1
                 self.Location = Location
-                self.Type = Type
                 self.Neighbors = []
                 self.degrees = []
                 self.services = []
                 self.AmplifierList = []
-                self.ROADM_Type = None
+                self.ROADM_Type = ROADM_Type
                 self.NodeState = []
             
             
@@ -234,6 +235,7 @@ class Network:
                 instance = cls(InNode = data['InNode'], OutNode = data['OutNode'], NumSpan = data['NumSpan'])
                 instance.__dict__['SpanObjList'] = SpanObjList
                 instance.__dict__['WaveLengthList'] = data['WaveLengthList']
+                instance.__dict__['LinkState'] = data['LinkState']
                 return instance
 
             def __init__(self, InNode, OutNode, NumSpan):
@@ -575,7 +577,8 @@ class Network:
                            WorkingPath = data['WorkingPath'], ProtectionPath = data['ProtectionPath'],
                            WaveLength = data['WaveLength'], RegeneratorNode_w = data['RegeneratorNode_w'],
                            RegeneratorNode_p = data['RegeneratorNode_p'], SNR_th = data['SNR_th'], 
-                           LaunchPower = data['LaunchPower'], ModulationType = data['ModulationType'], SNR_w = data['SNR_w'], SNR_p = data['SNR_p'])
+                           LaunchPower = data['LaunchPower'], ModulationType = data['ModulationType'], SNR_w = data['SNR_w'],
+                           SNR_p = data['SNR_p'], ProtectionType = data['ProtectionType'])
             instance.__dict__['id'] = data['id']
             return instance
 
@@ -642,7 +645,8 @@ class Network:
         def from_json(cls, data):
             instance = cls(merge = data['merge'], alpha = data['alpha'], iterations = data['iterations'],
                            margin = data['margin'], processors = data['processors'], k = data['k'],
-                           MaxNW = data['MaxNW'])
+                           MaxNW = data['MaxNW'], Algorithm = data['Algorithm'], History = data['History'],
+                           GroupSize = data['GroupSize'])
             return instance
 
         def __init__(self, merge = None, alpha = None, iterations = None, margin = None, processors = None, k = None, MaxNW = None,
@@ -674,6 +678,13 @@ class Network:
             self.Algorithm = Algorithm
     
     class Overall_Result:
+        @classmethod
+        def from_json(cls, data):
+            instance = cls()
+            instance.__dict__['Num_WL'] = data['Num_WL']
+            instance.__dict__['Num_RG'] = data['Num_RG']
+            instance.__dict__['Worst_SNR'] = data['Worst_SNR']
+            return instance
         def __init__(self):
             self.Num_WL = None          # Number of used Wavelengths
             self.Num_RG = None          # Number of used Regenerators
@@ -746,3 +757,41 @@ if __name__ == "__main__":
                                               Sla= 2,
                                               Capacity = 20,
                                               ServiceIdList = [1, 2])
+    
+    ## Testing JSON
+    n.ResultObj.Num_RG = 10
+    n.PhysicalTopology.LinkDict[(0, 1)].LinkState = [1, 2, 3]
+    
+    import json
+    import numpy
+    def convert_to_dict(obj):
+        """
+        A function takes in a custom object and returns a dictionary representation of the object.
+        This dict representation includes meta data such as the object's module and class names.
+        """
+
+        #  Populate the dictionary with object meta data 
+        if isinstance(obj, numpy.int64):
+            obj_dict = int(obj)
+            return obj_dict
+        else:
+            obj_dict = {
+                "__class__": obj.__class__.__name__,
+                "__module__": obj.__module__
+            }
+            #  Populate the dictionary with object properties
+            obj_dict.update(obj.__dict__)
+            return obj_dict
+    net = n
+    # Convert keys to String
+    tuple_keys = list(net.PhysicalTopology.LinkDict.keys())
+    for key in tuple_keys:
+        net.PhysicalTopology.LinkDict[str(key)] = net.PhysicalTopology.LinkDict.pop(key)
+
+    ##############################################
+    # Convert the Network object to JSON message
+    data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
+    # print(data)
+    # This line tests whether the JSON encoded common object is reconstructable!
+    decoded_n = Network.from_json(json.loads(data)) 
+    assert(isinstance(decoded_n, Network))

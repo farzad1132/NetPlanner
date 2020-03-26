@@ -498,6 +498,8 @@ class Ui_MainWindow(object):
         self.T_groupbox.setObjectName("T_groupbox")
         self.gridLayout_14 = QtWidgets.QGridLayout(self.T_groupbox)
         self.gridLayout_14.setObjectName("gridLayout_14")
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_14.addItem(spacerItem1, 2, 0, 1, 1)
         self.Grouping_groupbox = QtWidgets.QGroupBox(self.T_groupbox)
         self.Grouping_groupbox.setObjectName("Grouping_groupbox")
         self.gridLayout_17 = QtWidgets.QGridLayout(self.Grouping_groupbox)
@@ -788,49 +790,33 @@ class Ui_MainWindow(object):
         self.ViewGroupbox.setObjectName("ViewGroupbox")
         self.gridLayout_18 = QtWidgets.QGridLayout(self.ViewGroupbox)
         self.gridLayout_18.setObjectName("gridLayout_18")
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.NormalMode_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
+        self.Max_available_radiobutton = QtWidgets.QRadioButton(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setItalic(True)
+        self.Max_available_radiobutton.setFont(font)
+        self.Max_available_radiobutton.setObjectName("Max_available_radiobutton")
+        self.gridLayout_18.addWidget(self.Max_available_radiobutton, 0, 0, 1, 1)
+        self.Max_Used_radiobutton = QtWidgets.QRadioButton(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setItalic(True)
+        font.setStrikeOut(False)
+        self.Max_Used_radiobutton.setFont(font)
+        self.Max_Used_radiobutton.setObjectName("Max_Used_radiobutton")
+        self.gridLayout_18.addWidget(self.Max_Used_radiobutton, 1, 0, 1, 1)
+        self.Enable_google_view_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
         font = QtGui.QFont()
         font.setFamily("IRANSans")
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
-        self.NormalMode_checkbox.setFont(font)
-        self.NormalMode_checkbox.setStyleSheet("")
-        self.NormalMode_checkbox.setObjectName("NormalMode_checkbox")
-        self.verticalLayout_3.addWidget(self.NormalMode_checkbox)
-        self.Working_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setBold(True)
-        font.setWeight(75)
-        self.Working_checkbox.setFont(font)
-        self.Working_checkbox.setObjectName("Working_checkbox")
-        self.verticalLayout_3.addWidget(self.Working_checkbox)
-        self.Protection_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setBold(True)
-        font.setWeight(75)
-        self.Protection_checkbox.setFont(font)
-        self.Protection_checkbox.setObjectName("Protection_checkbox")
-        self.verticalLayout_3.addWidget(self.Protection_checkbox)
-        self.Restoration_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setBold(True)
-        font.setWeight(75)
-        self.Restoration_checkbox.setFont(font)
-        self.Restoration_checkbox.setObjectName("Restoration_checkbox")
-        self.verticalLayout_3.addWidget(self.Restoration_checkbox)
-        self.gridLayout_18.addLayout(self.verticalLayout_3, 0, 0, 1, 1)
+        self.Enable_google_view_checkbox.setFont(font)
+        self.Enable_google_view_checkbox.setStyleSheet("")
+        self.Enable_google_view_checkbox.setObjectName("Enable_google_view_checkbox")
+        self.gridLayout_18.addWidget(self.Enable_google_view_checkbox, 2, 0, 1, 1)
         self.gridLayout_14.addWidget(self.ViewGroupbox, 1, 0, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout_14.addItem(spacerItem1, 2, 0, 1, 1)
         self.gridLayout_11.addWidget(self.T_groupbox, 1, 1, 2, 1)
         self.webengine = QtWebEngineWidgets.QWebEngineView(self.TopologyTab)
-        self.webengine.setMinimumSize(QtCore.QSize(1570, 870))
+        self.webengine.setMinimumSize(QtCore.QSize(1570, 840))
         self.webengine.setObjectName("webengine")
         self.gridLayout_11.addWidget(self.webengine, 2, 0, 1, 1)
         self.tabWidget.addTab(self.TopologyTab, "")
@@ -1911,8 +1897,7 @@ class Ui_MainWindow(object):
         self.gridLayout_13 = QtWidgets.QGridLayout(self.tab_8)
         self.gridLayout_13.setObjectName("gridLayout_13")
         self.Demand_mdi = QtWidgets.QMdiArea(self.tab_8)
-        self.Demand_mdi.setMinimumSize(QtCore.QSize(1560, 521))
-        self.Demand_mdi.setMaximumSize(QtCore.QSize(1570, 1000))
+        self.Demand_mdi.setMinimumSize(QtCore.QSize(1575, 521))
         self.Demand_mdi.setObjectName("Demand_mdi")
         self.gridLayout_13.addWidget(self.Demand_mdi, 0, 0, 1, 1)
         self.Demand_tab.addTab(self.tab_8, "")
@@ -1955,7 +1940,6 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
 
-        # TODO: added
 
         self.SelectNode_combo.clear()
         self.NodeType_combobox.clear()
@@ -2048,7 +2032,7 @@ class Ui_MainWindow(object):
         self.SelectNode_combo.currentIndexChanged["int"].connect(self.SelectNode_combo_change)
 
         
-        
+        # NOTE: added
 
         Data["ClientList"] = self.ClientList
         Data["LineList"] = self.LineList
@@ -2106,6 +2090,10 @@ class Ui_MainWindow(object):
 
         #self.Demand_Shelf_set()
 
+        self.Enable_google_view_checkbox.stateChanged["int"].connect(self.google_map_view)
+
+        self.Max_Used_radiobutton.toggled["bool"].connect(self.change_radiobuttons_state)
+        self.Max_available_radiobutton.toggled["bool"].connect(self.change_radiobuttons_state)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -2132,11 +2120,11 @@ class Ui_MainWindow(object):
         self.Cancel_button.setText(_translate("MainWindow", "Cancel"))
         self.OK_button.setText(_translate("MainWindow", "Ok"))
         self.ShowSubNodes.setText(_translate("MainWindow", "Show Sub Nodes"))
-        self.ViewGroupbox.setTitle(_translate("MainWindow", "View Modes"))
-        self.NormalMode_checkbox.setText(_translate("MainWindow", "Normal Mode"))
-        self.Working_checkbox.setText(_translate("MainWindow", "Working View"))
-        self.Protection_checkbox.setText(_translate("MainWindow", "Protection View"))
-        self.Restoration_checkbox.setText(_translate("MainWindow", "Restoration View"))
+        self.ViewGroupbox.setTitle(_translate("MainWindow", "Google View Modes"))
+        self.Max_available_radiobutton.setText(_translate("MainWindow", "Use Max Availabe as Reference"))
+        self.Max_Used_radiobutton.setText(_translate("MainWindow", "Use Max used Wavelength in a Link\n"
+" as Reference"))
+        self.Enable_google_view_checkbox.setText(_translate("MainWindow", "Enable"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.TopologyTab), _translate("MainWindow", "Topology Tab"))
         self.Traffic_matrix.setSortingEnabled(False)
         item = self.General_TM.horizontalHeaderItem(0)
@@ -2241,12 +2229,42 @@ class Ui_MainWindow(object):
         self.Demand_tab.setTabText(self.Demand_tab.indexOf(self.tab_8), _translate("MainWindow", "Shelf"))
         self.ClientLabel_25.setText(_translate("MainWindow", "Map:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
-    
+
 
     def create_obj(self):
-        with open("NetworkObj.obj", 'wb') as handle:
+        """with open("NetworkObj_greedy.obj", 'wb') as handle:
             pickle.dump(self.network, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        handle.close()
+        handle.close() """
+        pass
+
+    def change_radiobuttons_state(self):
+        if self.Max_available_radiobutton.isChecked():
+            self.Max_Used_radiobutton.setChecked(False)
+            return 2
+        if self.Max_Used_radiobutton.isChecked():
+            self.Max_available_radiobutton.setChecked(False)
+            return 1
+
+    def google_map_view(self, state):
+
+        radio_state = self.change_radiobuttons_state()
+
+        if state == 2:
+            if radio_state == 1:
+                green = ceil(self.Max_LinkState/4)
+                yellow = ceil(self.Max_LinkState/2)
+                orange = ceil(self.Max_LinkState * (3/4))
+                
+            else:
+                self.MaxNW = int(self.MaxNW)
+                green = ceil(self.MaxNW/4)
+                yellow = ceil(self.MaxNW/2)
+                orange = ceil(self.MaxNW * (3/4))
+        
+            self.webengine.page().runJavaScript('google_map_view_set(\'%s\', \'%s\', \'%s\')' %(green, yellow, orange))
+        
+        if state == 0:
+            self.webengine.page().runJavaScript('google_map_view_reset()')
 
 
     
@@ -2671,6 +2689,53 @@ class Ui_MainWindow(object):
             fmt = workbook.add_format()
             fmt = workbook.add_format({'bg_color': color})
             worksheet.write('E1', 'Wavelength', fmt)
+
+            #### Link Stats #######
+            wavelength_number_on_links = []
+            all_link_states = []
+            for link in list(network.PhysicalTopology.LinkDict.keys()):
+                wavelength_number_on_links.append(len(network.PhysicalTopology.LinkDict[link].LinkState))
+                all_link_states.append(network.PhysicalTopology.LinkDict[link].LinkState)
+            dictionary2 = {
+            'Links' : list(map(lambda x : (self.IdNodeMap[x[0]], self.IdNodeMap[x[1]]), list(network.PhysicalTopology.LinkDict.keys()))),
+            'Used Wavelengths' : all_link_states,
+            'Wavelength Number': wavelength_number_on_links
+            }
+            link_number = len(list(network.PhysicalTopology.LinkDict.keys()))
+            df2 = pd.DataFrame(dictionary2)
+            df2.to_excel(writer, sheet_name='Link State')
+            worksheet2 = writer.sheets['Link State']
+            worksheet2.conditional_format('D2:D'+ str(link_number+1),  {'type': '3_color_scale',
+                                                'min_color': "green",
+                                                'mid_color': "yellow",
+                                                'max_color': "red"})
+            worksheet2.set_column(1, 1 , 12)
+            worksheet2.set_column(2, 2, 52)
+            worksheet2.set_column(3, 3, 18)
+
+            #### Node Stats #######
+            wavelength_number_on_nodes = []
+            all_node_states = []
+            for node in list(network.PhysicalTopology.NodeDict.keys()):
+                wavelength_number_on_nodes.append(len(network.PhysicalTopology.NodeDict[node].NodeState))
+                all_node_states.append(network.PhysicalTopology.NodeDict[node].NodeState)
+            dictionary3 = {
+            'Nodes' : list(map(lambda x : self.IdNodeMap[x], list(network.PhysicalTopology.NodeDict.keys()))),
+            'Used Wavelengths' : all_node_states,
+            'Wavelength Number': wavelength_number_on_nodes
+            }
+            node_number = len(list(network.PhysicalTopology.NodeDict.keys()))
+            df3 = pd.DataFrame(dictionary3)
+            df3.to_excel(writer, sheet_name='Node State')
+            worksheet3 = writer.sheets['Node State']
+            worksheet3.conditional_format('D2:D'+ str(node_number+1),  {'type': '3_color_scale',
+                                                'min_color': "green",
+                                                'mid_color': "yellow",
+                                                'max_color': "red"})
+            worksheet3.set_column(1, 1 , 12)
+            worksheet3.set_column(2, 2, 52)
+            worksheet3.set_column(3, 3, 18)
+
             writer.save()
 
         name = QFileDialog.getSaveFileName(MainWindow, "Save Topology", filter = "(*.xlsx)")
@@ -2965,7 +3030,7 @@ class Ui_MainWindow(object):
     def initialize_GroomingTabDataBase(self, Source, Destination):
         GroomingTabDataBase["LightPathes"][(Source, Destination)] = {}
         GroomingTabDataBase["Panels"][Source] = {}
-        #GroomingTabDataBase["Links"][(Source, Destination)] = []
+        #GroomingTabDataBase["LinkState"][(Source, Destination)] = []
         
     
 
@@ -3179,13 +3244,13 @@ class Ui_MainWindow(object):
             self.NodeIdMap[NodeData["Node"]] = self.network.Topology.Node.ReferenceId
             self.IdNodeMap[self.network.Topology.Node.ReferenceId] = NodeData["Node"]
             self.IdLocationMap[self.network.Topology.Node.ReferenceId] = scale_calculation(NodeData["Location"][0], NodeData["Location"][1])
-            self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["Type"])
+            self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["ROADM_Type"])
         
         for LinkId , LinkData in Data["Links"].items():
             self.network.PhysicalTopology.add_link(self.NodeIdMap[LinkId[0]], self.NodeIdMap[LinkId[1]], LinkData["NumSpan"])
             
             # NOTE : here we are initializing link part of GroomingTabDataBase
-            GroomingTabDataBase["Links"][(LinkId[0], LinkId[1])] = []
+            #GroomingTabDataBase["LinkState"][(LinkId[0], LinkId[1])] = []
 
             for i in range(LinkData["NumSpan"]):
                 self.network.PhysicalTopology.LinkDict[(self.NodeIdMap[LinkId[0]], self.NodeIdMap[LinkId[1]])].put_fiber_Type(LinkData["Length"][i],
@@ -3296,6 +3361,7 @@ class Ui_MainWindow(object):
         MapVar = re.findall("var( map_.*)=", Figtext)[0].strip()
         channel = "qrc:///qtwebchannel/qwebchannel.js"
         Fig.header.add_child(Element("<script src=%s></script>" %channel))
+        Fig.header.add_child(Element("<link rel=\"stylesheet\" href=\"MainMap_style.css\" />"))
         '''Fig.script.add_child(Element("""window.onload = function() {
         new QWebChannel(qt.webChannelTransport, function (channel) {
         window.backend = channel.objects.backend;
@@ -3309,6 +3375,27 @@ class Ui_MainWindow(object):
         var failed_nodes = new Object();
         var failed_nodes_list = [];
         var lambdas = new Object();
+
+
+        var wrapper = document.createElement("div");
+        var canvas = document.createElement("canvas");
+        canvas.setAttribute("class", "focusArea");
+        var displayArea = document.createElement('div');
+        // displayArea.textContent = " ";
+        displayArea.setAttribute("id", "displayArea");
+        displayArea.innerHTML = "Wavelength Number: ";
+        canvas.height = 50;
+        canvas.width = 420
+        wrapper.appendChild(canvas);
+        wrapper.appendChild(displayArea);
+
+
+        var Num_WL = null;
+        var Num_RG = null;
+        var Algorithm = null;
+        var Worst_SNR = null;
+
+        //handleMouseOverLines();
 
         function setcolor(text){
             groupcolor = text;
@@ -3390,7 +3477,7 @@ class Ui_MainWindow(object):
                 }
                 flag = 1;
                 }
-        });
+            });
 
         }
 
@@ -3408,6 +3495,45 @@ class Ui_MainWindow(object):
                
             });
         
+        function google_map_view_set(green, yellow, orange){
+            links_groupfeature.eachLayer(function (layer){
+
+                var x = layer["_tooltip"]["_content"];
+                var doc = new DOMParser().parseFromString(x, "text/xml");
+                var z = doc.documentElement.textContent;
+                link_key = z.replace(/\s/g, '');
+                link_key = link_key.split("-");
+                lambda_list = lambdas[link_key];
+
+                Len = lambda_list.length;
+                if ( Len <= green ){
+                    layer.setStyle({
+                        color: 'green'
+                    });
+                } else if ( Len <= yellow ){
+                    layer.setStyle({
+                        color: 'yellow'
+                    });
+                } else if ( Len <= orange ){
+                    layer.setStyle({
+                        color: 'orange'
+                    });
+                } else{
+                    layer.setStyle({
+                        color: 'red'
+                    });
+                }
+            });
+        }
+
+        function google_map_view_reset(){
+            links_groupfeature.eachLayer(function(layer){
+                layer.setStyle({
+                    color: 'black'
+                });
+            });
+        }
+        
         
         
         function links_click_event(event){
@@ -3420,8 +3546,99 @@ class Ui_MainWindow(object):
             lambda_list = lambdas[link_key]
             
 
-            // ** write your code here ** 
+            drawLines(event.layer, lambda_list, handleMouseOverLines);
             
+        }
+
+        function drawLines(layer, lambdaList, callback) {
+
+            popupOptions = {
+                maxWidth: "auto"
+            };
+
+            layer.bindPopup(drawDetailBox(lambdaList), popupOptions)
+            
+            callback(lambdaList)
+
+        }
+
+        function drawDetailBox(lambdaList) {
+
+            var h = canvas.height;
+            console.log(h);
+
+            var ctx = canvas.getContext("2d");
+
+            for (var i = 1; i <= 100; i++) {
+
+                ctx.beginPath();
+                ctx.moveTo(i * 4, 0);
+                ctx.lineTo(i * 4, h);
+                ctx.lineWidth = 2;
+                if (lambdaList.includes(i))
+                    ctx.strokeStyle = "black"
+                else
+                    ctx.strokeStyle = "gray";
+                ctx.stroke();
+
+            }
+
+            return wrapper;
+        }
+
+
+        function handleMouseOverLines(lambdaList) {
+
+            canvas.addEventListener("mousemove", e => showLineNumberInBox(e, lambdaList));
+            canvas.addEventListener("mouseleave", unshowLineNumberInBox);
+        }
+
+        function showLineNumberInBox(e, lambdaList) {
+            x = e.clientX;
+            y = e.clientY;
+            var lineNum = 0;
+            const xOff = e.offsetX;
+            if (xOff %% 4 <= 2) {
+                cursor = " ";
+                lineNum = parseInt(xOff / 4);
+                if(lambdaList.includes(lineNum)){
+                    cursor = lineNum;
+                }
+            } else {
+                cursor = " ";
+            }
+            document.getElementById("displayArea").style.display = 'block';
+            document.getElementById("displayArea").innerHTML = 'Wavelength Number: '+ cursor;
+            document.getElementById("displayArea").style.right = x + 'px';
+            document.getElementById("displayArea").style.top = y + 'px';
+        }
+
+        
+        function unshowLineNumberInBox() {
+                document.getElementById("displayArea").innerHTML = "Wavelength Number: ";
+            }
+
+        function createLegend(num_WL, num_RG, algorithm , worst_SNR, RWA_Runtime) {
+            Num_WL = num_WL;
+            Num_RG = num_RG;
+            Algorithm = algorithm;
+            Worst_SNR = worst_SNR;
+            var legend = L.control({ position: 'bottomleft' });
+
+            legend.onAdd = function (map) {
+
+                var div = L.DomUtil.create("div", "legend");
+                div.style.backgroundColor = 'WHITE';
+
+                div.innerHTML += '<h5>Total number of used wavelengths<b>: ' + Num_WL + '</b></h5>';
+                div.innerHTML += '<h5>Total number of regenerators<b>: ' + Num_RG + '</b></h5>';
+                div.innerHTML += '<h5>Used algorithm and its runtime<b>: ' + Algorithm + '  ,  ' + RWA_Runtime + ' s' + '</b></h5>';
+                div.innerHTML += '<h5>Worst SNR on all links<b>: ' + Worst_SNR + '</b></h5>';
+
+                return div;
+            };
+
+            legend.addTo(%s);
         }
 
 
@@ -3458,7 +3675,7 @@ class Ui_MainWindow(object):
         var backend_map = null;
         new QWebChannel(qt.webChannelTransport, function (channel) {
         window.backend_map = channel.objects.backend_map;
-        });""" %(MapVar, MapVar, MapVar, MapVar, MapVar)))
+        });""" %(MapVar, MapVar, MapVar, MapVar, MapVar, MapVar)))
         Fig.script.add_child(Element("var myFeatureGroup = L.featureGroup().addTo(%s).on(\"click\", groupClick);" %MapVar))
 
         Fig.script.add_child(Element("""%s.eachLayer(function (layer) {
@@ -3742,7 +3959,7 @@ class Ui_MainWindow(object):
             
 
     
-    def fill_GroomingTabDataBase(self, netobj):
+    def fill_GroomingTabDataBase(self, netobj, RWA_Runtime):
 
         
         def create_ClientsCapacityList(DemandId, ServiceIdList):
@@ -3764,7 +3981,12 @@ class Ui_MainWindow(object):
             return OutputList
         
         
-        for id, lightpath in netobj.LightPathDict.items():
+        for id, lightpath in list(netobj.LightPathDict.items()):
+
+            if isinstance(id, str):
+                netobj.LightPathDict[int(id)] = netobj.LightPathDict.pop(id)
+                id = int(id)
+            
             Source = self.IdNodeMap[lightpath.Source]
             Destination = self.IdNodeMap[lightpath.Destination]
             Working = lightpath.WorkingPath
@@ -3806,55 +4028,42 @@ class Ui_MainWindow(object):
                 ClientCapacity = create_ClientsCapacityList(DemandId ,lightpath.ServiceIdList)
                 GroomingTabDataBase["Panels"][Source][PanelId] = MP1H_L(ClientCapacity, "100GE", lightpath.ServiceIdList, [DemandId for i in range(10)], id)
                 GroomingTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = MP1H_R(PanelId)
-
-            # filling GroomingTabDataBase ( Links or lambdas part )
-            for i in range(len(Working) - 1):
-                InNodeName = self.IdNodeMap[Working[ i ]]
-                OutNodeName = self.IdNodeMap[Working[ i + 1 ]]
-
-                if ( InNodeName , OutNodeName) in GroomingTabDataBase["Links"]:
-                    keyW = ( InNodeName , OutNodeName)
-                elif ( OutNodeName , InNodeName ) in GroomingTabDataBase["Links"]:
-                    keyW = ( OutNodeName , InNodeName )
-                else:
-                    print(f"$$ key not found $$ and key : {( InNodeName , OutNodeName)}")
-
-                if WaveLength in GroomingTabDataBase["Links"][keyW]:
-                    # TODO: raise error --> this wavelength has been used
-                    print("wavelength has been used")
-                else:
-                    GroomingTabDataBase["Links"][keyW].append(WaveLength)
             
-            for i in range(len(Protection) - 1):
-                InNodeName = self.IdNodeMap[Protection[ i ]]
-                OutNodeName = self.IdNodeMap[Protection[ i + 1 ]]
+        # filling LinkSate Part
+        self.Max_LinkState = 0
+        for key, value in netobj.PhysicalTopology.LinkDict.items():
+            GroomingTabDataBase["LinkState"][(self.IdNodeMap[key[0]], self.IdNodeMap[key[1]])] = value.LinkState
+            if len(value.LinkState) > self.Max_LinkState:
+                self.Max_LinkState = len(value.LinkState)
+        
+        for key, value in netobj.PhysicalTopology.NodeDict.items():
+            GroomingTabDataBase["NodeState"][self.IdNodeMap[int(key)]] = value.NodeState
 
-                if ( InNodeName , OutNodeName) in GroomingTabDataBase["Links"]:
-                    keyP = ( InNodeName , OutNodeName)
-                elif ( OutNodeName , InNodeName ) in GroomingTabDataBase["Links"]:
-                    keyP = ( OutNodeName , InNodeName )
-                else:
-                    print(f"$$ key not found $$ and key : {( InNodeName , OutNodeName)}")
 
-                if WaveLength in GroomingTabDataBase["Links"][keyP]:
-                    # TODO: raise error --> this wavelength has been used
-                    print("wavelength has been used")
-
-                else:
-                    GroomingTabDataBase["Links"][keyP].append(WaveLength)
-
-        for tup in GroomingTabDataBase["LightPathes"]:
+        """ for tup in GroomingTabDataBase["LightPathes"]:
             for key in GroomingTabDataBase["LightPathes"][tup]:
-                GroomingTabDataBase["LightPathes"][tup][int(key)] = GroomingTabDataBase["LightPathes"][tup].pop(key)
+                GroomingTabDataBase["LightPathes"][tup][int(key)] = GroomingTabDataBase["LightPathes"][tup].pop(key) """
+        
+        for key in list(netobj.PhysicalTopology.NodeDict.keys()):
+            if isinstance(key, str):
+                netobj.PhysicalTopology.NodeDict[int(key)] = netobj.PhysicalTopology.NodeDict.pop(key)
 
         self.send_lambdas_to_JS()
+        self.create_legend(Num_WL= netobj.ResultObj.Num_WL,
+                            Num_RG= netobj.ResultObj.Num_RG,
+                            Algorithm= netobj.ParamsObj.Algorithm,
+                            Worst_SNR= round(netobj.ResultObj.Worst_SNR, 2),
+                            RWA_Runtime= round(RWA_Runtime, 2))
 
     def send_lambdas_to_JS(self):
         print(self.webengine.geometry())
-        for key , value in GroomingTabDataBase['Links'].items():
+        for key , value in GroomingTabDataBase["LinkState"].items():
             Source = key[0]
             Destination = key[1]
             self.webengine.page().runJavaScript("receive_lambdas(\"%s\", \"%s\", \"%s\")" %(Source, Destination, value))
+    
+    def create_legend(self, Num_WL, Num_RG, Algorithm, Worst_SNR, RWA_Runtime):
+        self.webengine.page().runJavaScript("createLegend(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\")" %(Num_WL, Num_RG, Algorithm, Worst_SNR, RWA_Runtime))
                 
             
 
@@ -4001,8 +4210,10 @@ class Ui_MainWindow(object):
                             History, Algorithm):
 
         self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm)
+        RWA_Start_Time = time.time()
         self.RWA_button_fun()
-        self.fill_GroomingTabDataBase(self.decoded_network)
+        RWA_Runtime = time.time() - RWA_Start_Time
+        self.fill_GroomingTabDataBase(self.decoded_network, RWA_Runtime)
 
         self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
 "    border: 2px solid #8f8f91;\n"
@@ -4038,6 +4249,8 @@ class Ui_MainWindow(object):
                                 GroupSize= GroupSize,
                                 History= History,
                                 Algorithm= Algorithm)
+        
+        self.MaxNW = MaxNW
 
 
         
@@ -4088,9 +4301,9 @@ class Ui_MainWindow(object):
                 #  Populate the dictionary with object properties
                 obj_dict.update(obj.__dict__)
                 return obj_dict
-
+        # NetworkObj_GroupILP NetworkObj_greedy NetworkObj_ILP
         net = copy.copy(self.network)
-
+        use_sockets = False
 
         # Convert keys to String
         tuple_keys = list(net.PhysicalTopology.LinkDict.keys())
@@ -4099,27 +4312,24 @@ class Ui_MainWindow(object):
 
         ##############################################
         # Convert the Network object to JSON message
-        data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
+        # data = json.dumps(net.TrafficMatrix,default=convert_to_dict,indent=4, sort_keys=True)
         # print(data)
-        class_dict = json.loads(data)
-        new_network = Network.from_json(class_dict) 
         # assert False
-        data = json.dumps(new_network,default=convert_to_dict,indent=4, sort_keys=True)
+        data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
 
-        str_keys = list(new_network.PhysicalTopology.LinkDict.keys())
+        str_keys = list(net.PhysicalTopology.LinkDict.keys())
         for key in str_keys:
             Lkey = list(key)
             ActualKey =( int(Lkey[1]) , int(Lkey[-2]) )
-            new_network.PhysicalTopology.LinkDict[ActualKey] = new_network.PhysicalTopology.LinkDict.pop(key)
+            net.PhysicalTopology.LinkDict[ActualKey] = net.PhysicalTopology.LinkDict.pop(key)
 
-
-        # assert False
         # This line tests whether the JSON encoded common object is reconstructable!
         decoded_n = Network.from_json(json.loads(data)) 
         assert(isinstance(decoded_n, Network))
 
         # Establishing a socket.io connection for logging purposes
-        sio.connect('http://localhost:5000')
+        if use_sockets:
+            sio.connect('http://localhost:5000')
 
         ##Run the grooming function on the server
         # print('####################################################')
@@ -4139,8 +4349,8 @@ class Ui_MainWindow(object):
             # print('####################################################')
             # print(json.dumps(res.json()))
             decoded_network = Network.from_json(json.loads(json.dumps(res.json())))
-            data = json.dumps(decoded_network.LightPathDict,default=convert_to_dict,indent=4, sort_keys=True)
-            print(data)
+            # data = json.dumps(decoded_network.ResultObj,default=convert_to_dict,indent=4, sort_keys=True)
+            # print(data)
             # Converting keys to original version ( Server Side )
             str_keys = list(decoded_network.PhysicalTopology.LinkDict.keys())
             for key in str_keys:
@@ -4152,10 +4362,10 @@ class Ui_MainWindow(object):
             str_keys = decoded_network.LightPathDict.keys()
             for key in str_keys:
                 decoded_network.LightPathDict[int(key)] = decoded_network.LightPathDict.pop(key)
-            
-
-        sio.disconnect()
-        sio.wait()
+        if use_sockets:  
+            sio.disconnect()
+            sio.sleep(0)
+        # sio.wait()
         print('RWA finished and data received in client') 
         try:
             print('Sample WaveLength output', decoded_network.LightPathDict[0].WaveLength)
@@ -4166,14 +4376,14 @@ class Ui_MainWindow(object):
         self.decoded_network = decoded_network
 
 
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QWidget()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
-    # NOTE: don't forget this
-    # added
+    # NOTE: added
     Data["ui"] = ui
     MainWindow.show()
     sys.exit(app.exec_())

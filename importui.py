@@ -416,7 +416,7 @@ class Ui_ImportMenuUI(object):
                 Temp_data = handle.parse(header=0, skipfooter=0)
             temp_dic ={}
             handle.close() 
-            headers = ['ID','Node','Location','Type'] 
+            headers = ['ID','Node','Location','ROADM_Type'] 
 
             for pointer in headers:
                 temp_dic[pointer] = {}
@@ -429,9 +429,9 @@ class Ui_ImportMenuUI(object):
                 Location = str(temp_dic["Location"][Row]).split(',')
                 Location = list(map(lambda x : float(x), Location))
 
-                Type = temp_dic["Type"][Row]
+                ROADM_Type = temp_dic["ROADM_Type"][Row]
 
-                ProperDict[Id] = {"Node": Node, "Location": Location, "Type":Type}
+                ProperDict[Id] = {"Node": Node, "Location": Location, "ROADM_Type":ROADM_Type}
 
             Data["Nodes"].update(ProperDict)
 

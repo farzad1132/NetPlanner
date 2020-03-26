@@ -90,7 +90,7 @@ QPushButton:default {
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="SaveTopology_button">
+            <widget class="QPushButton" name="export_result_button">
              <property name="maximumSize">
               <size>
                <width>81</width>
@@ -665,6 +665,19 @@ QGroupBox::title {
             <string/>
            </property>
            <layout class="QGridLayout" name="gridLayout_14">
+            <item row="2" column="0">
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
             <item row="0" column="0">
              <widget class="QGroupBox" name="Grouping_groupbox">
               <property name="title">
@@ -1076,88 +1089,55 @@ QPushButton:default {
             <item row="1" column="0">
              <widget class="QGroupBox" name="ViewGroupbox">
               <property name="title">
-               <string>View Modes</string>
+               <string>Google View Modes</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_18">
                <item row="0" column="0">
-                <layout class="QVBoxLayout" name="verticalLayout_3">
-                 <item>
-                  <widget class="QCheckBox" name="NormalMode_checkbox">
-                   <property name="font">
-                    <font>
-                     <family>IRANSans</family>
-                     <weight>75</weight>
-                     <italic>false</italic>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                   <property name="text">
-                    <string>Normal Mode</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="Working_checkbox">
-                   <property name="font">
-                    <font>
-                     <family>IRANSans</family>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Working View</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="Protection_checkbox">
-                   <property name="font">
-                    <font>
-                     <family>IRANSans</family>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Protection View</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="Restoration_checkbox">
-                   <property name="font">
-                    <font>
-                     <family>IRANSans</family>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Restoration View</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+                <widget class="QRadioButton" name="Max_available_radiobutton">
+                 <property name="font">
+                  <font>
+                   <italic>true</italic>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Use Max Availabe as Reference</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QRadioButton" name="Max_Used_radiobutton">
+                 <property name="font">
+                  <font>
+                   <italic>true</italic>
+                   <strikeout>false</strikeout>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Use Max used Wavelength in a Link
+ as Reference</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QCheckBox" name="Enable_google_view_checkbox">
+                 <property name="font">
+                  <font>
+                   <family>IRANSans</family>
+                   <weight>75</weight>
+                   <italic>false</italic>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="text">
+                  <string>Enable</string>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
-            </item>
-            <item row="2" column="0">
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
             </item>
            </layout>
           </widget>
@@ -1167,7 +1147,7 @@ QPushButton:default {
            <property name="minimumSize">
             <size>
              <width>1570</width>
-             <height>870</height>
+             <height>840</height>
             </size>
            </property>
           </widget>
