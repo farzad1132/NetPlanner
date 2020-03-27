@@ -1,5 +1,9 @@
 from PySide2 import QtCore, QtGui, QtWidgets
-from PySide2.QtWidgets import QApplication,QTableWidget,QTableWidgetItem,QFileDialog,QMdiSubWindow,QWidget,QLabel,QAbstractItemView,QListWidgetItem,QMenu,QFontComboBox
+from PySide2.QtGui import *
+from PySide2.QtCore import *
+from PySide2.QtWidgets import *
+
+from PySide2.QtWidgets import QApplication,QTableWidget,QTableWidgetItem,QFileDialog,QMdiSubWindow,QWidget,QLabel,QAbstractItemView,QListWidgetItem,QMenu,QFontComboBox,QSplitter
 from PySide2.QtCore import SIGNAL,QObject,Slot
 from PySide2.QtGui import QPixmap
 import pickle
@@ -1899,8 +1903,8 @@ class Ui_MainWindow(object):
         self.listWidget_8.setObjectName("listWidget_8")
         self.gridLayout_2.addWidget(self.listWidget_8, 7, 0, 1, 1)
         self.gridLayout_12.addLayout(self.gridLayout_2, 1, 0, 3, 1)
-        self.gridLayout_4 = QtWidgets.QGridLayout()
-        self.gridLayout_4.setObjectName("gridLayout_4")
+        #self.gridLayout_4 = QtWidgets.QGridLayout()
+        #self.gridLayout_4.setObjectName("gridLayout_4")
         self.Demand_tab = QtWidgets.QTabWidget(self.tab)
         self.Demand_tab.setEnabled(True)
         self.Demand_tab.setMinimumSize(QtCore.QSize(821, 442))
@@ -1915,6 +1919,9 @@ class Ui_MainWindow(object):
         self.Demand_mdi.setObjectName("Demand_mdi")
         self.gridLayout_13.addWidget(self.Demand_mdi, 0, 0, 1, 1)
         self.Demand_tab.addTab(self.tab_8, "")
+
+        #edited
+        """
         self.gridLayout_4.addWidget(self.Demand_tab, 0, 0, 1, 1)
         self.gridLayout_12.addLayout(self.gridLayout_4, 1, 1, 1, 2)
         self.ClientLabel_25 = QtWidgets.QLabel(self.tab)
@@ -1929,16 +1936,37 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"}")
+"}"
         self.ClientLabel_25.setObjectName("ClientLabel_25")
         self.gridLayout_12.addWidget(self.ClientLabel_25, 2, 1, 1, 1)
-        self.gridLayout_15 = QtWidgets.QGridLayout()
-        self.gridLayout_15.setObjectName("gridLayout_15")
+        """
+        #edited
+
+        #self.gridLayout_15 = QtWidgets.QGridLayout()
+        #self.gridLayout_15.setObjectName("gridLayout_15")
         self.MapWidget = MapWidget(self.tab)
         self.MapWidget.setMinimumSize(QtCore.QSize(821, 259))
         self.MapWidget.setObjectName("MapWidget")
-        self.gridLayout_15.addWidget(self.MapWidget, 0, 0, 1, 1)
-        self.gridLayout_12.addLayout(self.gridLayout_15, 3, 1, 1, 2)
+
+        #NewEditedForSplitter
+        ### notic: gridLayout_12 is the main Layout in the demandtab!
+        vbox = QVBoxLayout()
+        self.gridLayout_12.addLayout(vbox, 1, 1, 1, 2)
+        self.top = QFrame()
+        self.top.setFrameShape(QFrame.StyledPanel)
+        self.bottom = QFrame()
+        self.bottom.setFrameShape(QFrame.StyledPanel)
+        splitter = QSplitter(Qt.Vertical)
+        splitter.addWidget(self.Demand_tab)
+        splitter.addWidget(self.MapWidget)
+        splitter.setSizes([100,200])
+        vbox.addWidget(splitter)
+
+        #self.gridLayout_12.addLayout(self.gridLayout_15, 3, 1, 1, 2)
+
+        #NewEditedForSplitter
+
+
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_12.addItem(spacerItem3, 0, 1, 1, 1)
         self.tabWidget.addTab(self.tab, "")
@@ -2238,7 +2266,7 @@ class Ui_MainWindow(object):
         self.label_9.setText(_translate("MainWindow", "Node Type:"))
         self.ClientLabel_21.setText(_translate("MainWindow", "List Of Network Panels:"))
         self.Demand_tab.setTabText(self.Demand_tab.indexOf(self.tab_8), _translate("MainWindow", "Shelf"))
-        self.ClientLabel_25.setText(_translate("MainWindow", "Map:"))
+        #self.ClientLabel_25.setText(_translate("MainWindow", "Map:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
     
 
@@ -2253,7 +2281,7 @@ class Ui_MainWindow(object):
     def DemandMap_Change(self, Working = None, Protection = None, 
         WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None):
         #mpl.rcParams["figure.figsize"] = [18.4, 7.8]
-        self.MapWidget.canvas.figure.subplots_adjust(left = -0.04, right = 1, top = 0.85)
+        self.MapWidget.canvas.figure.subplots_adjust(left = -0.04, right = 1, top = 1.015, bottom = 0.015)
         self.MapWidget.canvas.axes.cla()
         R = 6371 
         Source = self.Demand_Source_combobox.currentText()
@@ -4118,10 +4146,10 @@ class Ui_MainWindow(object):
         self.RWA_window_dialog.show()
 
 
-    def RWA_procedure(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize,
-                            History, Algorithm):
+    def RWA_procedure(self, merge, alpha, iterations, margin, processors, k, maxNW):
 
-        self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm)
+        self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, maxNW)
+        #self.create_obj()
         self.RWA_button_fun()
         self.fill_GroomingTabDataBase(self.decoded_network)
 
@@ -4148,17 +4176,14 @@ class Ui_MainWindow(object):
 
 
 
-    def insert_params_into_obj(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm):
+    def insert_params_into_obj(self, merge, alpha, iterations, margin, processors, k, maxNW):
         self.network.put_params(merge= merge,
                                 alpha= alpha,
                                 iterations= iterations,
                                 margin= margin,
                                 processors= processors,
                                 k= k,
-                                MaxNW= MaxNW,
-                                GroupSize= GroupSize,
-                                History= History,
-                                Algorithm= Algorithm)
+                                maxNW= maxNW)
 
 
         
