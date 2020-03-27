@@ -2559,7 +2559,7 @@ class Ui_MainWindow(object):
 
                             # filling customlabel attributes
                             clientvar.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
-                            clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])])
+                            clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])].toolTip())
                             clientvar.servicetype = panel.ClientsCapacity[i]
                             clientvar.nodename = Source
                             clientvar.Destination = Destination
@@ -2581,7 +2581,7 @@ class Ui_MainWindow(object):
                         clientvar = getattr(widget, "client")
 
                         # filling customlabel attributes 
-                        clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandId, panel.ServiceId)])
+                        clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandId, panel.ServiceId)].toolTip())
                         clientvar.servicetype = "100GE"
                         self.nodename = Source
                         self.Destination = Destination
@@ -3038,7 +3038,8 @@ class Ui_MainWindow(object):
 
     def FillDemandTabDataBase_Services(self, id, Source, Destination, ServiceDict):
         
-        ServiceDict_2 = {}
+        ServiceDict_static = {}
+        ServiceDict_dynamic = {}
         """ for Service in ServiceDict.keys():
             Quantity = ServiceDict[Service]["Quantity"]
             for i in range(Quantity):
@@ -3049,64 +3050,24 @@ class Ui_MainWindow(object):
         #for servic
         # check wheather ServiceId is int or str
         for serviceId, service in Servicedict.items():
+
             serviceId = int(serviceId)
-            if isinstance(service, Network.Traffic.Demand.E1):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "E1")
-                ServiceDict_2[(id, serviceId)] = servicetitle
+            item = QListWidgetItem(service.Type)
+            item.setTextAlignment(Qt.AlignCenter)
+            item.setToolTip(f"Type: {service.Type}\nSource: {Source}\nDestination: {Destination}")
+            data = {"DemandId": id, "ServiceId": serviceId}
+            item.setData(Qt.UserRole, data)
 
-            elif isinstance(service, Network.Traffic.Demand.STM_1_Electrical):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_1_Electrical")
-                ServiceDict_2[(id, serviceId)] = servicetitle
+            ServiceDict_static[(id, serviceId)] = item
+            ServiceDict_dynamic[(id, serviceId)] = None
 
-            elif isinstance(service, Network.Traffic.Demand.STM_1_Optical):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_1_Optical")
-                ServiceDict_2[(id, serviceId)] = servicetitle
 
-            elif isinstance(service, Network.Traffic.Demand.STM_4):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_4")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.STM_16):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_16")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.STM_64):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_64")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.FE):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "FE")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.G_1):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "1GE")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.G_10):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "10GE")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.G_40):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "40GE")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.G_100):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "100GE")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-        
-        """ def manual_update(ServiceDict):
-            print(f"before adding : {DemandTabDataBase['Services_static'][Source]}")
-            for key, value in ServiceDict.items():
-                DemandTabDataBase["Services_static"][Source][key] = value
-                print(f"key : {key}, value: {value}") """
-                
-
-        DemandTabDataBase["Services"][(Source,Destination)] = ServiceDict_2
+        DemandTabDataBase["Services"][(Source,Destination)] = ServiceDict_dynamic
         if Source in DemandTabDataBase["Services_static"]:
-            DemandTabDataBase["Services_static"][Source].update(ServiceDict_2.copy())
+            DemandTabDataBase["Services_static"][Source].update(ServiceDict_static)
         else:
             DemandTabDataBase["Services_static"][Source] = {}
-            DemandTabDataBase["Services_static"][Source].update(ServiceDict_2.copy())
+            DemandTabDataBase["Services_static"][Source].update(ServiceDict_static)
 
     
     def Fill_Demand_SourceandDestination_combobox(self):
@@ -3141,9 +3102,11 @@ class Ui_MainWindow(object):
 
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
-        ServiceList = list(DemandTabDataBase["Services"][(Source,Destination)].values())
+        #ServiceList = list(DemandTabDataBase["Services"][(Source,Destination)].values())
         self.Demand_ServiceList.clear()
-        self.Demand_ServiceList.addItems(ServiceList)
+        for id in DemandTabDataBase["Services"][(Source,Destination)].keys():
+            item = DemandTabDataBase["Services_static"][Source][id]
+            self.Demand_ServiceList.addItem(item)
         self.update_demand_service_flag = False
     
     def Demand_Source_combobox_Change(self):
@@ -3264,9 +3227,10 @@ class Ui_MainWindow(object):
         #if Data["Stage_flag"] == "Grooming":
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
-        lightpath_list = list(DemandTabDataBase["Lightpathes"][(Source, Destination)].values())
+        #lightpath_list = list(DemandTabDataBase["Lightpathes"][(Source, Destination)].values())
         self.Demand_LineList.clear()
-        self.Demand_LineList.addItems(lightpath_list)
+        for value in DemandTabDataBase["Lightpathes"][(Source, Destination)].values():
+            self.Demand_LineList.addItem(value)
         
                 
 
@@ -3882,7 +3846,13 @@ class Ui_MainWindow(object):
             Destination = self.IdNodeMap[lightpath.Destination]
             type = lightpath.Type
             DemandId = lightpath.DemandId
-            DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
+            
+            item = QListWidgetItem(type)
+            UserData = {"DemandId": DemandId, "LightPathId":id}
+            item.setData(Qt.UserRole, UserData)
+            item.setTextAlignment(Qt.AlignCenter)
+
+            DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = item
 
             ## debug section
             print("Source: ", Source)

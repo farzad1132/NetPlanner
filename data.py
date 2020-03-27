@@ -138,14 +138,22 @@ DemandTabDataBase["Source_Destination"] = {}
 #       { <ClickedNode> : {"Source": <SourceName>, "DestinationList : <DestinationList>"} }
 DemandTabDataBase["Services"] = {} # dynamic one : changes with user actions
 # format: 
-#       {(Tehran, karaj): { (1,3) : '[1 , 3] # 100G ' , ... }, ...}         (1 , 3) ---> 1 : Demand Id , 3 : Service Id
+#       {(Tehran, karaj): { (1,3) : None }, ...}         (1 , 3) ---> 1 : Demand Id , 3 : Service Id
+# this database just shows that witch services hasn't been assigned
 
 DemandTabDataBase["Services_static"] = {}   # same as Services part but difference is that its not changing with user actions
 # format:
-#       { <SourceName> : { (<DemandId>, <ServiceId>) : '[1 , 3] # 100G ' >}}
+#       { <SourceName> : { (<DemandId>, <ServiceId>) : QlistWidgetItem }}
+# QlistWidgetItem:
+#   text: Service Type
+#   data: {"DemandId": <DemandId>, "ServiceId": <ServiceId>}
+#   tooltip: "Source: {<Source>}\n Destination: {<Destination>}"
 DemandTabDataBase["Lightpathes"] = {}
 # format:
-#       {(Tehran, Karaj): [ Lightpath Id # 100GE , ...]}
+#       { (<SourceName>, <DestinationName>) : { <LightPathId> : QlistWidgetItem}}
+#   QlistWidgetItem:
+#   text: LightPath Type
+#   data: { "LightPathId": <LightPathId> }
 DemandTabDataBase["Panels"] = {}
 # format:
 #       { Tehran:{1: MP2X, 2: MP1H, ..} , Karaj:{}, ...}
