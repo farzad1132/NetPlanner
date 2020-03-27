@@ -192,7 +192,7 @@ class MP2D_R:
 
 class MP2X_L:
     def __init__(self, ClientsCapacity = None, LinesCapacity = None, ServiceIdList = None, DemandIdList = None
-                    , LineServiceIdList = None, LineService_flagList = None):
+                    , LineServiceIdList = None, LineService_flagList = None, Destination = None):
 
         if ClientsCapacity is None:
             self.ClientsCapacity = [0 for i in range(16)]
@@ -231,12 +231,13 @@ class MP2X_L:
         self.ClientsType[ClientNum] = 0 """
 
 class MP2X_R:
-    def __init__(self, LeftId):
+    def __init__(self, LeftId, Destination):
         self.LeftId = LeftId
+        self.Destination = Destination
 
 class MP1H_L:
     def __init__(self, ClientsCapacity = None, LineCapacity = 0, ServiceIdList = None, 
-    DemandIdList = None, LightPathId = None, LightPath_flag = 0):
+    DemandIdList = None, LightPathId = None, LightPath_flag = 0, Destination = None):
 
         if ClientsCapacity is None:
             self.ClientsCapacity = [0 for i in range(10)]
@@ -253,7 +254,7 @@ class MP1H_L:
         else:
             self.DemandIdList = DemandIdList
         
-
+        self.Destination = Destination
         self.LightPath_flag = LightPath_flag
         self.LightPathId = LightPathId
         self.LineCapacity = LineCapacity
@@ -268,18 +269,21 @@ class MP1H_L:
         self.LineCapacity = LineCapacity """
 
 class MP1H_R:
-    def __init__(self, LeftId):
+    def __init__(self, LeftId, Destination):
+        self.Destination = Destination
         self.LeftId = LeftId
 
 class TP1H_L:
-    def __init__(self, DemandId = None, ServiceId = None, Line = 0, LightPathId = None):
+    def __init__(self, DemandId = None, ServiceId = None, Line = 0, LightPathId = None, Destination = None):
+        self.Destination = Destination
         self.LightPathId = LightPathId
         self.DemandId = DemandId
         self.ServiceId = ServiceId
         self.Line = Line
 
 class TP1H_R:
-    def __init__(self, LeftId):
+    def __init__(self, LeftId, Destination):
+        self.Destination = Destination
         self.LeftId = LeftId
 
 class SC:

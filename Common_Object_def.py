@@ -32,17 +32,23 @@ class Network:
         
         # this function corrects lightpaths id that their id is bigger than deleted lightpath id
         def correct_UpperIds(id):
-            for UpperId in list(self.LightPathDict.keys()).sort():
+            """ for UpperId in list(self.LightPathDict.keys()).sort():
                 if UpperId > id:
-                    self.LightPathDict[UpperId - 1] = self.LightPathDict.pop(UpperId)
+                    self.LightPathDict[UpperId - 1] = self.LightPathDict.pop(UpperId) """
+            sorted_keys = sorted(list(self.LightPathDict.keys()))
+            index = sorted_keys.index(id)
+            for key in sorted_keys[index:]:
+                self.LightPathDict[key - 1] = self.LightPathDict.pop(key)
+
 
         # finding object that we want to delete
-        for id, lightpath in self.LightPathDict.items():
+        for id, lightpath in list(self.LightPathDict.items()):
             if lightpath.ServiceIdList == ServiceIdList:
                 del lightpath
                 if id in self.LightPathDict:
                     self.LightPathDict.pop(id)
-                    correct_UpperIds(id)
+                    correct_UpperIds(id + 1)
+                    break
 
 
         # correcting ReferenceId

@@ -2530,10 +2530,11 @@ class Ui_MainWindow(object):
 
 
         Source = self.Demand_Source_combobox.currentText()
-        Destination = self.Demand_Destination_combobox.currentText()
+        Local_Destination = self.Demand_Destination_combobox.currentText()
         for i in range(1, 15):
             if str(i) in DemandTabDataBase["Panels"][Source]:
                 panel = DemandTabDataBase["Panels"][Source][str(i)]
+                Destination = panel.Destination
                 if isinstance(panel , MP2X_L):
                     Data["DemandPanel_" + str(i)].setWidget(MP2X_L_Demand(str(i), Source, Destination))
                     for client in panel.ClientsType:
@@ -2593,7 +2594,7 @@ class Ui_MainWindow(object):
                     Data["DemandPanel_" + str(i)].setWidget(TP1H_R_Demand(str(i), Source))
             
             else:
-                Data["DemandPanel_" + str(i)].setWidget(BLANK_Demand(str(i), Source, Destination))
+                Data["DemandPanel_" + str(i)].setWidget(BLANK_Demand(str(i), Source, Local_Destination))
 
     def export_excel_fun(self):
         
@@ -3894,13 +3895,19 @@ class Ui_MainWindow(object):
             # checking wheather lightpath is created by tp1h or not
             if len(lightpath.ServiceIdList) == 1:
                 panelid = self.get_panel_num(Source)
-                DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
+                #DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
+                DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(  DemandId= DemandId,
+                                                                        ServiceId= lightpath.ServiceIdList[0],
+                                                                        Line= "100GE",
+                                                                        LightPathId= id,
+                                                                        Destination= Destination)
 
                 ## debug section
                 print(DemandTabDataBase["Panels"][Source][panelid].__dict__)
 
                 ## end of debug section
-                DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = TP1H_R(panelid)
+                DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = TP1H_R(    LeftId= panelid,
+                                                                                        Destination= Destination)
 
                 # omitting handeled services from DemandTabDataBase
                 DemandTabDataBase["Services"][(Source, Destination)].pop((DemandId, lightpath.ServiceIdList[0]))
@@ -3915,13 +3922,22 @@ class Ui_MainWindow(object):
                         ClientCapacity.append(0)
                 
                 
-                DemandTabDataBase["Panels"][Source][panelid] = MP1H_L(ClientCapacity, LineCapacity, lightpath.ServiceIdList, [DemandId for i in range(10)], id, LightPath_flag= 1)
+                #DemandTabDataBase["Panels"][Source][panelid] = MP1H_L(ClientCapacity, LineCapacity, lightpath.ServiceIdList, [DemandId for i in range(10)], id, LightPath_flag= 1)
+                DemandTabDataBase["Panels"][Source][panelid] = MP1H_L(  ClientsCapacity= ClientCapacity,
+                                                                        LineCapacity= LineCapacity,
+                                                                        ServiceIdList= lightpath.ServiceIdList,
+                                                                        DemandIdList= [DemandId for i in range(10)],
+                                                                        LightPathId= id,
+                                                                        LightPath_flag= 1,
+                                                                        Destination= Destination)
+
 
                 ## debug section
                 print(DemandTabDataBase["Panels"][Source][panelid].__dict__)
 
                 ## end of debug section
-                DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = MP1H_R(panelid)
+                DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = MP1H_R(    LeftId= panelid,
+                                                                                        Destination= Destination)
 
                 # omitting handeled services from DemandTabDataBase
                 for ServiceId in lightpath.ServiceIdList:
@@ -3962,25 +3978,6 @@ class Ui_MainWindow(object):
     def fill_GroomingTabDataBase(self, netobj, RWA_Runtime):
 
         
-        def create_ClientsCapacityList(DemandId, ServiceIdList):
-            OutputList = []
-            for ServiceId in ServiceIdList:
-                
-                # FIXME: very important
-                if ServiceId in self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict:
-                    ServiceObj = self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict[ServiceId]
-                else:
-                    ServiceObj = 0
-                ##
-
-                if isinstance(ServiceObj, Network.Traffic.Demand.G_10):
-                    OutputList.append("10GE")
-                else:
-                    OutputList.append("STM_64")
-            
-            return OutputList
-        
-        
         for id, lightpath in list(netobj.LightPathDict.items()):
 
             if isinstance(id, str):
@@ -4007,27 +4004,6 @@ class Ui_MainWindow(object):
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_w"] = SNR_w
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_p"] = SNR_p
 
-            # Detecting Degrees and Filling GroomingTabDataBase ( Panels Part )
-
-            DegreeNode = self.IdNodeMap[Working[1]]     # second node of each lightpath
-
-            # BUG: be careful here we are calculating degrees based on working path only
-            if not( DegreeNode in GroomingTabDataBase["Panels"]):
-                DegreeId = len(GroomingTabDataBase["Panels"][Source]) + 1   
-                GroomingTabDataBase["Panels"][( DegreeNode, DegreeId )] = {}
-            
-            # TODO: separate lightpathes based on their degree
-            PanelId = self.get_panel_num(Source)
-
-            # checking the lightpath is TP1H or MP1H
-            if len(lightpath.ServiceIdList) == 1:
-                GroomingTabDataBase["Panels"][Source][PanelId] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
-                GroomingTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = TP1H_R(PanelId)
-
-            else:
-                ClientCapacity = create_ClientsCapacityList(DemandId ,lightpath.ServiceIdList)
-                GroomingTabDataBase["Panels"][Source][PanelId] = MP1H_L(ClientCapacity, "100GE", lightpath.ServiceIdList, [DemandId for i in range(10)], id)
-                GroomingTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = MP1H_R(PanelId)
             
         # filling LinkSate Part
         self.Max_LinkState = 0
@@ -4039,10 +4015,6 @@ class Ui_MainWindow(object):
         for key, value in netobj.PhysicalTopology.NodeDict.items():
             GroomingTabDataBase["NodeState"][self.IdNodeMap[int(key)]] = value.NodeState
 
-
-        """ for tup in GroomingTabDataBase["LightPathes"]:
-            for key in GroomingTabDataBase["LightPathes"][tup]:
-                GroomingTabDataBase["LightPathes"][tup][int(key)] = GroomingTabDataBase["LightPathes"][tup].pop(key) """
         
         for key in list(netobj.PhysicalTopology.NodeDict.keys()):
             if isinstance(key, str):
@@ -4156,6 +4128,10 @@ class Ui_MainWindow(object):
         # filling Demand DataBase 
         self.fill_DemandTabDataBase(self.network)
 
+        # NOTE: start debugging
+        print(f"Panels part of DemandTabDataBase: {DemandTabDataBase['Panels']}")
+        # NOTE: end of debugging
+
         # changing failed nodes icon ( change to notified version )
         self.failed_grooming_nodes()
 
@@ -4214,6 +4190,9 @@ class Ui_MainWindow(object):
         self.RWA_button_fun()
         RWA_Runtime = time.time() - RWA_Start_Time
         self.fill_GroomingTabDataBase(self.decoded_network, RWA_Runtime)
+        # NOTE: start debugging
+        print(f"Panels part of groomingTabDataBase: {GroomingTabDataBase['Panels']}")
+        # NOTE: end of debugging
 
         self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
 "    border: 2px solid #8f8f91;\n"

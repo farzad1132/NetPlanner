@@ -138,7 +138,8 @@ class MP1H_L_Demand(QWidget):
 
                 
                 self.modify_LightPathList(LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
-                Network.Lightpath.update_id(-1)
+                Data["NetworkObj"].del_lightpath(DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList)
+
             DemandTabDataBase["Panels"][self.nodename].pop(self.id)
             DemandTabDataBase["Panels"][self.nodename].pop(self.uppernum)
         
@@ -152,9 +153,16 @@ class MP1H_L_Demand(QWidget):
             DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
         
         if mode == "delete":
-            for Des in DemandTabDataBase["Source_Destination"][Source]:
-                if id in DemandTabDataBase["Lightpathes"][(Source, Destination)]:
-                    DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
+            # deleting desired lightpath from database
+            DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
+
+            # correcting upper lightpath id's 
+            for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
+                for UpperId in sorted(list(DemandTabDataBase["Lightpathes"][(Source, Des)].keys())):
+                    if UpperId > id:
+                        DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1] = DemandTabDataBase["Lightpathes"][(Source, Des)].pop(UpperId)
+
+            # TODO: you have to find a way to correct all data and labels of 
         
         Data["ui"].update_Demand_lightpath_list()
     
