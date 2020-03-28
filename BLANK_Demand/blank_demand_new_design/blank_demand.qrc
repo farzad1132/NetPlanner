@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="blank_demand_new_design">
+    <file>BLANK.png</file>
+  </qresource>
+</RCC>
