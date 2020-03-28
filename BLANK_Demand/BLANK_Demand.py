@@ -77,7 +77,7 @@ class BLANK_Demand(QWidget):
             DemandTabDataBase["Panels"][self.nodename][self.id] = MP2X_L()
 
             Data["DemandPanel_" + self.uppernum].setWidget(MP2X_R_Demand(self.id, self.nodename))
-            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP2X_R(self.uppernum)
+            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP2X_R(self.uppernum, self.Destination)
 
 
         elif text == "MP1H":
@@ -85,13 +85,13 @@ class BLANK_Demand(QWidget):
             DemandTabDataBase["Panels"][self.nodename][self.id] = MP1H_L()
 
             Data["DemandPanel_" + self.uppernum].setWidget(MP1H_R_Demand(self.id, self.nodename))
-            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP1H_R(self.uppernum)
+            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP1H_R(self.uppernum, self.Destination)
         
         elif text == "TP1H":
             Data["DemandPanel_" + str(self.id)].setWidget(TP1H_L_Demand(self.id , self.nodename, self.Destination))
             DemandTabDataBase["Panels"][self.nodename][self.id] = TP1H_L()
 
             Data["DemandPanel_" + self.uppernum].setWidget(TP1H_R_Demand(self.id, self.nodename))
-            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = TP1H_R(self.uppernum)
+            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = TP1H_R(self.uppernum, self.Destination)
         
         super(BLANK_Demand, self).dropEvent(event)

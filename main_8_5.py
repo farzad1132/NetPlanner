@@ -2095,6 +2095,9 @@ class Ui_MainWindow(object):
         self.Max_Used_radiobutton.toggled["bool"].connect(self.change_radiobuttons_state)
         self.Max_available_radiobutton.toggled["bool"].connect(self.change_radiobuttons_state)
 
+        Data["Service_item_num"] = 0
+        Data["LightPath_item_num"] = 0
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -3052,7 +3055,9 @@ class Ui_MainWindow(object):
         for serviceId, service in Servicedict.items():
 
             serviceId = int(serviceId)
-            item = QListWidgetItem(service.Type)
+            setattr(self, "Service_item_" + str(Data["Service_item_num"]), QListWidgetItem(service.Type, self.Demand_ServiceList))
+            item = getattr(self, "Service_item_" + str(Data["Service_item_num"]))
+            Data["Service_item_num"] += 1
             item.setTextAlignment(Qt.AlignCenter)
             item.setToolTip(f"Type: {service.Type}\nSource: {Source}\nDestination: {Destination}")
             data = {"DemandId": id, "ServiceId": serviceId}
@@ -3103,7 +3108,9 @@ class Ui_MainWindow(object):
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
         #ServiceList = list(DemandTabDataBase["Services"][(Source,Destination)].values())
-        self.Demand_ServiceList.clear()
+        #self.Demand_ServiceList.clear()
+        for i in range(self.Demand_ServiceList.count()):
+            self.Demand_ServiceList.takeItem(i)
         for id in DemandTabDataBase["Services"][(Source,Destination)].keys():
             item = DemandTabDataBase["Services_static"][Source][id]
             self.Demand_ServiceList.addItem(item)
@@ -3228,7 +3235,8 @@ class Ui_MainWindow(object):
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
         #lightpath_list = list(DemandTabDataBase["Lightpathes"][(Source, Destination)].values())
-        self.Demand_LineList.clear()
+        for i in range(self.Demand_LineList.count()):
+            self.Demand_LineList.takeItem(i)
         for value in DemandTabDataBase["Lightpathes"][(Source, Destination)].values():
             self.Demand_LineList.addItem(value)
         
@@ -3847,8 +3855,10 @@ class Ui_MainWindow(object):
             type = lightpath.Type
             DemandId = lightpath.DemandId
             
-            item = QListWidgetItem(type)
-            UserData = {"DemandId": DemandId, "LightPathId":id}
+            setattr(self, "LightPath_item_" + str(Data["LightPath_item_num"]), QListWidgetItem(type, self.Demand_LineList))
+            item = getattr(self, "LightPath_item_" + str(Data["LightPath_item_num"]))
+            Data["LightPath_item_num"] += 1
+            UserData = {"LightPathId":id}
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)
 

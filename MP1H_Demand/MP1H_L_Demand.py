@@ -151,7 +151,7 @@ class MP1H_L_Demand(QWidget):
 
         if mode == "add":
             #DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
-            item = QListWidgetItem(type)
+            item = QListWidgetItem(type, Data["Demand_LightPath_list"])
             UserData = {"LightPathId":id}
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)
@@ -167,7 +167,7 @@ class MP1H_L_Demand(QWidget):
                 for UpperId in sorted(list(DemandTabDataBase["Lightpathes"][(Source, Des)].keys())):
                     if UpperId > id:
                         DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1] = DemandTabDataBase["Lightpathes"][(Source, Des)].pop(UpperId)
-                        UserData = DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].data(Qt.UserData)
+                        UserData = DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].data(Qt.UserRole)
                         UserData["LightPathId"] -= 1
                         DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) 
  
@@ -181,7 +181,7 @@ class MP1H_L_Demand(QWidget):
             DemandTabDataBase["Services"][(source, destination)].pop(key)
             
         elif mode == "add":
-            DemandTabDataBase["Services"][(source, destination)][key] = "[%s , %s] # %s" % (ids[0], ids[1], type)
+            DemandTabDataBase["Services"][(source, destination)][key] = None
             
         Data["ui"].UpdateDemand_ServiceList()
 
@@ -370,7 +370,7 @@ class customlabel(QLabel):
 
         if mode == "add":
             #DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
-            item = QListWidgetItem(type)
+            item = QListWidgetItem(type, Data["Demand_LightPath_list"])
             UserData = {"LightPathId":id}
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)
@@ -386,7 +386,7 @@ class customlabel(QLabel):
                 for UpperId in sorted(list(DemandTabDataBase["Lightpathes"][(Source, Des)].keys())):
                     if UpperId > id:
                         DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1] = DemandTabDataBase["Lightpathes"][(Source, Des)].pop(UpperId)
-                        UserData = DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].data(Qt.UserData)
+                        UserData = DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].data(Qt.UserRole)
                         UserData["LightPathId"] -= 1
                         DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) 
  
