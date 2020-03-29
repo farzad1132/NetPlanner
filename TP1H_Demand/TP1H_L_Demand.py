@@ -201,6 +201,9 @@ class customlabel(QLabel):
         if action == ClearAction:
             if DemandTabDataBase["Panels"][self.nodename][self.id].Line == "100GE":
                 self.setToolTip("")
+
+                # deleting lightpath from network object
+                Data["NetworkObj"].del_lightpath(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId)
                 
                 DemandTabDataBase["Panels"][self.nodename][self.id].Line = 0
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None
@@ -212,8 +215,7 @@ class customlabel(QLabel):
                 
                 #Network.Lightpath.update_id(-1)
 
-                # deleting lightpath from network object
-                Data["NetworkObj"].del_lightpath([self.ids[1]])
+                
     
 
     def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):

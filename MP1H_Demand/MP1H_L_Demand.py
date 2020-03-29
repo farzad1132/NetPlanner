@@ -18,62 +18,68 @@ class MP1H_L_Demand(QWidget):
         self.uppernum = str(int(Panel_ID) + 1)
 
         self.setFixedSize(116, 521)
+
+        self.line = QLabel(self)
+        self.line.setGeometry(QRect(40, 350, 55, 101))
+        self.line.setText("")
+        self.line.setPixmap(QPixmap(os.path.join("MP1H_Demand","line.png")))
+        self.line.setObjectName("line") 
         
-        self.client1 = customlabel(self, self.nodename, self.Destination, self.id, 1)
+        self.client1 = customlabel(self, self.nodename, self.Destination, self.id, 1, self.line)
         self.client1.setGeometry(QRect(40, 140, 31, 41))
         self.client1.setText("")
         self.client1.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
         self.client1.setObjectName("client1") 
 
-        self.client2 = customlabel(self, self.nodename, self.Destination, self.id, 2)
+        self.client2 = customlabel(self, self.nodename, self.Destination, self.id, 2, self.line)
         self.client2.setGeometry(QRect(60, 140, 31, 41))
         self.client2.setText("")
         self.client2.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
         self.client2.setObjectName("client2")
         
-        self.client3 = customlabel(self, self.nodename, self.Destination, self.id, 3)
+        self.client3 = customlabel(self, self.nodename, self.Destination, self.id, 3, self.line)
         self.client3.setGeometry(QRect(40, 180, 31, 41))
         self.client3.setText("")
         self.client3.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
         self.client3.setObjectName("client3") 
 
-        self.client4 = customlabel(self, self.nodename, self.Destination, self.id, 4)
+        self.client4 = customlabel(self, self.nodename, self.Destination, self.id, 4, self.line)
         self.client4.setGeometry(QRect(60, 180, 31, 41))
         self.client4.setText("")
         self.client4.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
         self.client4.setObjectName("client4") 
 
-        self.client5 = customlabel(self, self.nodename, self.Destination, self.id, 5)
+        self.client5 = customlabel(self, self.nodename, self.Destination, self.id, 5, self.line)
         self.client5.setGeometry(QRect(40, 220, 31, 41))
         self.client5.setText("")
         self.client5.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
         self.client5.setObjectName("client5") 
 
-        self.client6 = customlabel(self, self.nodename, self.Destination, self.id, 6)
+        self.client6 = customlabel(self, self.nodename, self.Destination, self.id, 6, self.line)
         self.client6.setGeometry(QRect(60, 220, 31, 41))
         self.client6.setText("")
         self.client6.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
         self.client6.setObjectName("client6") 
 
-        self.client7 = customlabel(self, self.nodename, self.Destination, self.id, 7)
+        self.client7 = customlabel(self, self.nodename, self.Destination, self.id, 7, self.line)
         self.client7.setGeometry(QRect(40, 260, 31, 41))
         self.client7.setText("")
         self.client7.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
         self.client7.setObjectName("client7") 
 
-        self.client8 = customlabel(self, self.nodename, self.Destination, self.id, 8)
+        self.client8 = customlabel(self, self.nodename, self.Destination, self.id, 8, self.line)
         self.client8.setGeometry(QRect(60, 260, 31, 41))
         self.client8.setText("")
         self.client8.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
         self.client8.setObjectName("client8") 
 
-        self.client9 = customlabel(self, self.nodename, self.Destination, self.id, 9)
+        self.client9 = customlabel(self, self.nodename, self.Destination, self.id, 9, self.line)
         self.client9.setGeometry(QRect(40, 300, 31, 41))
         self.client9.setText("")
         self.client9.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
         self.client9.setObjectName("client9") 
 
-        self.client10 = customlabel(self, self.nodename, self.Destination, self.id, 10)
+        self.client10 = customlabel(self, self.nodename, self.Destination, self.id, 10, self.line)
         self.client10.setGeometry(QRect(60, 300, 31, 41))
         self.client10.setText("")
         self.client10.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
@@ -86,11 +92,7 @@ class MP1H_L_Demand(QWidget):
         self.title.setPixmap(QPixmap(os.path.join("MP1H_Demand","title.png")))
         self.title.setObjectName("title") 
 
-        self.line = QLabel(self)
-        self.line.setGeometry(QRect(40, 350, 55, 101))
-        self.line.setText("")
-        self.line.setPixmap(QPixmap(os.path.join("MP1H_Demand","line.png")))
-        self.line.setObjectName("line") 
+        
 
         self.socket = QLabel(self)
         self.socket.setGeometry(QRect(20, 470, 55, 51))
@@ -115,7 +117,6 @@ class MP1H_L_Demand(QWidget):
         from BLANK_Demand.BLANK_Demand import BLANK_Demand
         ContextMenu = QMenu(self)
         CloseAction = ContextMenu.addAction("Close Panel")
-        RefreshAction = ContextMenu.addAction(" Refresh ")
             
         action = ContextMenu.exec_(self.mapToGlobal(event.pos()))
 
@@ -132,27 +133,35 @@ class MP1H_L_Demand(QWidget):
                         ids = [DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[i], DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[i]]
                         type = DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[i]
 
-                        self.modify_ServiceList(ids, self.nodename, self.Destination, "add", type)
+                        #self.modify_ServiceList(ids, self.nodename, self.Destination, "add", type)
+                        self.modify_ServiceList(ids= ids,
+                                                source= self.nodename,
+                                                destination= self.Destination,
+                                                mode= "add",
+                                                type= type)
 
                 LightPathId = DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId
 
                 
-                self.modify_LightPathList(LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
-                Data["NetworkObj"].del_lightpath(DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList)
+                #self.modify_LightPathList(LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
+                self.modify_LightPathList(  id= LightPathId,
+                                            Source= self.nodename,
+                                            Destination= self.Destination,
+                                            mode= "delete",
+                                            type= "100GE")
+                Data["NetworkObj"].del_lightpath(LightPathId)
 
             DemandTabDataBase["Panels"][self.nodename].pop(self.id)
             DemandTabDataBase["Panels"][self.nodename].pop(self.uppernum)
         
-        if action == RefreshAction:
-            # TODO: recalculate line capacity
-            pass
     
-    def modify_LightPathList(self, id, Source, Destination, mode = "add", type = None):
+    def modify_LightPathList(self, id, Source, Destination, Capacity = None, mode = "add", type = None):
 
         if mode == "add":
             #DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
             item = QListWidgetItem(type, Data["Demand_LightPath_list"])
-            UserData = {"LightPathId":id}
+            UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type}
+            item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)
 
@@ -186,10 +195,11 @@ class MP1H_L_Demand(QWidget):
         Data["ui"].UpdateDemand_ServiceList()
 
 class customlabel(QLabel):
-    def __init__(self, parent, nodename, Destination, ID, ClientNum, tooltip = None):
+    def __init__(self, parent, nodename, Destination, ID, ClientNum, LineVar, tooltip = None):
         super().__init__(parent)
         self.STM_64_BW = 10
         self.GE_10_BW = 10
+        self.LineVar = LineVar
         self.nodename = nodename
         self.id = ID
         self.ClientNum  = ClientNum - 1          # because list indices starts with 0
@@ -287,8 +297,19 @@ class customlabel(QLabel):
                 LightPathId = max(Data["NetworkObj"].LightPathDict.keys())
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = LightPathId
 
-                self.modify_LightPathList(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId, self.nodename, self.Destination, mode= "add", type="100GE")
+                #self.modify_LightPathList(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId, self.nodename, self.Destination, mode= "add", type="100GE")
+                self.modify_LightPathList(id= DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId,
+                                            Source= self.nodename,
+                                            Destination= self.Destination,
+                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity,
+                                            mode= "add",
+                                            type= "100GE")
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 1
+
+                # updating LightPath ListWidgetItem Capacity
+                self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][LightPathId],
+                                                        Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity)
+
 
             else:
                 ServiceIdList = [self.ids[1]]
@@ -297,6 +318,7 @@ class customlabel(QLabel):
 
             # TODO: be Careful !!!!!
             self.setAcceptDrops(False)
+            self.LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][LightPathId].toolTip())
         else:
             self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client.png")))
 
@@ -329,22 +351,37 @@ class customlabel(QLabel):
                 self.setAcceptDrops(True)
 
 
-                self.modify_ServiceList(self.ids, self.nodename, self.Destination, mode = "add", type = self.servicetype)
+                #self.modify_ServiceList(self.ids, self.nodename, self.Destination, mode = "add", type = self.servicetype)
+                self.modify_ServiceList(ids= self.ids,
+                                        source= self.nodename,
+                                        destination= self.Destination,
+                                        mode= "add",
+                                        type= self.servicetype)
                 x = check_clients(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity)
 
                 if x == 0:
                     
-                    self.modify_LightPathList(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
+                    #self.modify_LightPathList(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
+                    self.modify_LightPathList(  id= DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId,
+                                                Source= self.nodename,
+                                                Destination= self.Destination,
+                                                mode= "delete",
+                                                type= "100GE")
 
+                    # deleting lightpath object from network obj
+                    Data["NetworkObj"].del_lightpath(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId)
 
                     DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None
                     #Network.Lightpath.update_id(-1)
                     DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 0
 
-                    # deleting lightpath object from network obj
-                    Data["NetworkObj"].del_lightpath(list(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsList))
-            
-    
+                    
+    def Update_LineListWidgetItem_Tooltip(self, Item, Capacity):       
+        
+        UserData = Item.data(Qt.UserRole)
+        #UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type}
+        UserData["Capacity"] = Capacity
+        Item.setToolTip(f"Source: {UserData['Source']}\nDestination: {UserData['Destination']}\nCapacity: {Capacity}\nType: {UserData['Type']}")
 
     def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
         
@@ -367,12 +404,13 @@ class customlabel(QLabel):
             
         Data["ui"].UpdateDemand_ServiceList()
     
-    def modify_LightPathList(self, id, Source, Destination, mode = "add", type = None):
+    def modify_LightPathList(self, id, Source, Destination, Capacity = None, mode = "add", type = None):
 
         if mode == "add":
             #DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
             item = QListWidgetItem(type, Data["Demand_LightPath_list"])
-            UserData = {"LightPathId":id}
+            UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type}
+            item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)
 

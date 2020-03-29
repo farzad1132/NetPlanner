@@ -3863,11 +3863,13 @@ class Ui_MainWindow(object):
             Destination = self.IdNodeMap[lightpath.Destination]
             type = lightpath.Type
             DemandId = lightpath.DemandId
+            Capacity = lightpath.Capacity
             
             setattr(self, "LightPath_item_" + str(Data["LightPath_item_num"]), QListWidgetItem(type, self.Demand_LineList))
             item = getattr(self, "LightPath_item_" + str(Data["LightPath_item_num"]))
             Data["LightPath_item_num"] += 1
-            UserData = {"LightPathId":id}
+            UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type}
+            item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)
 

@@ -28,7 +28,7 @@ class Network:
         self.LightPathDict[Network.Lightpath.get_id()] = self.Lightpath(Source, Destination, Capacity, ServiceIdList, Type, DemandId, 
         MandatoryNodesIdList= MandatoryNodesIdList, IgnoringNodesIdList= IgnoringNodesIdList)
     
-    def del_lightpath(self, ServiceIdList):
+    def del_lightpath(self, LightPathId):
         
         # this function corrects lightpaths id that their id is bigger than deleted lightpath id
         def correct_UpperIds(id):
@@ -42,13 +42,13 @@ class Network:
 
 
         # finding object that we want to delete
-        for id, lightpath in list(self.LightPathDict.items()):
+        """ for id, lightpath in list(self.LightPathDict.items()):
             if lightpath.ServiceIdList == ServiceIdList:
                 del lightpath
-                if id in self.LightPathDict:
-                    self.LightPathDict.pop(id)
-                    correct_UpperIds(id + 1)
-                    break
+                if id in self.LightPathDict: """
+        del self.LightPathDict[LightPathId]
+        correct_UpperIds(LightPathId + 1)
+        
 
 
         # correcting ReferenceId
