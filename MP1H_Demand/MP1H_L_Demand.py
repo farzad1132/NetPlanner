@@ -272,18 +272,18 @@ class customlabel(QLabel):
             if self.ClientNum >= ServiceListLen:
                 for i in range(ServiceListLen - self.ClientNum + 1):
                     DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList.append(None) 
-            DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = ids[1]
+            DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = self.ids[1]
             #print(f"debug in MP1H--> demandid : {ids[0]}")
-            DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = ids[0]
-            self.modify_ServiceList(ids, self.nodename, self.Destination)
+            DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = self.ids[0]
+            self.modify_ServiceList(self.ids, self.nodename, self.Destination)
 
             if DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag == 0:
 
                 #DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = Network.Lightpath.get_id()
 
                 # updating networkobj
-                ServiceIdList = [ids[1]]
-                Data["NetworkObj"].add_lightpath(Data["NodeIdMap"][self.nodename], Data["NodeIdMap"][self.Destination], 10, ServiceIdList, "100GE", ids[0])
+                ServiceIdList = [self.ids[1]]
+                Data["NetworkObj"].add_lightpath(Data["NodeIdMap"][self.nodename], Data["NodeIdMap"][self.Destination], 10, ServiceIdList, "100GE", self.ids[0])
                 LightPathId = max(Data["NetworkObj"].LightPathDict.keys())
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = LightPathId
 
@@ -291,8 +291,9 @@ class customlabel(QLabel):
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 1
 
             else:
-                ServiceIdList = [ids[1]]
-                Data["NetWorkObj"].LightPathDict[LightPathId].ServiceIdList.extend(ServiceIdList)
+                ServiceIdList = [self.ids[1]]
+                LightPathId = DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId
+                Data["NetworkObj"].LightPathDict[LightPathId].ServiceIdList.extend(ServiceIdList)
 
             # TODO: be Careful !!!!!
             self.setAcceptDrops(False)

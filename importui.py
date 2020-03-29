@@ -335,9 +335,10 @@ class Ui_ImportMenuUI(object):
     
     def node_import_procedure(self):
 
-        nodepath = self.import_nodes_fun()
+        nodepath, Node_Success = self.import_nodes_fun()
         self.NodeLineEdit.setText(nodepath[0])
-        self.NodeButton.setStyleSheet("QPushButton {\n"
+        if Node_Success is True:
+            self.NodeButton.setStyleSheet("QPushButton {\n"
 "    border: 2px solid #8f8f91;\n"
 "    border-radius: 6px;\n"
 "    background-color: green;\n"
@@ -359,9 +360,10 @@ class Ui_ImportMenuUI(object):
 "}")
 
     def link_import_procedure(self):
-        linkpath = self.import_links_fun()
+        linkpath, Link_Success = self.import_links_fun()
         self.LinkLineEdit.setText(linkpath[0])
-        self.LinkButton.setStyleSheet("QPushButton {\n"
+        if Link_Success is True:
+            self.LinkButton.setStyleSheet("QPushButton {\n"
 "    border: 2px solid #8f8f91;\n"
 "    border-radius: 6px;\n"
 "    background-color: green;\n"
@@ -383,9 +385,10 @@ class Ui_ImportMenuUI(object):
 "}")
 
     def import_TM_procedure(self):
-        TMpath = self.LoadTM_fun()
+        TMpath, TM_Success = self.LoadTM_fun()
         self.TrafficLineEdit.setText(TMpath[0])
-        self.TrafficButton.setStyleSheet("QPushButton {\n"
+        if TM_Success is True:
+            self.TrafficButton.setStyleSheet("QPushButton {\n"
 "    border: 2px solid #8f8f91;\n"
 "    border-radius: 6px;\n"
 "    background-color: green;\n"
@@ -411,7 +414,7 @@ class Ui_ImportMenuUI(object):
         # this method imports Nodes Information
         name = QFileDialog.getOpenFileName(bus["ImportMenuUI"], "Open Topology")
 
-        if name[0] != 0 :
+        if name[0] != 0 and name[0] != "":
             with pd.ExcelFile(name[0]) as handle:
                 Temp_data = handle.parse(header=0, skipfooter=0)
             temp_dic ={}
@@ -434,14 +437,18 @@ class Ui_ImportMenuUI(object):
                 ProperDict[Id] = {"Node": Node, "Location": Location, "ROADM_Type":ROADM_Type}
 
             Data["Nodes"].update(ProperDict)
+            Node_success = True
+        
+        else:
+            Node_success = False
 
-        return name
+        return name, Node_success
     
     def import_links_fun(self):
         name = QFileDialog.getOpenFileName(bus["ImportMenuUI"], "Open Topology")
         
 
-        if name[0] != 0 :
+        if name[0] != 0 and name[0] != "":
             with pd.ExcelFile(name[0]) as handle:
                 Temp_data = handle.parse(header=0, skipfooter=0)
             temp_dic ={}
@@ -480,13 +487,17 @@ class Ui_ImportMenuUI(object):
                 "Dispersion": Dispersion}
 
             Data["Links"].update(ProperDict)
+            Link_Success = True
+        
+        else:
+            Link_Success = False
 
-        return name
+        return name, Link_Success
     
     def LoadTM_fun(self):
         name = QFileDialog.getOpenFileName(bus["ImportMenuUI"], "Load Traffic Matrix")
 
-        if name[0] != 0:
+        if name[0] != 0 and name[0] != "":
             with pd.ExcelFile(name[0]) as handle:
                 Temp_data = handle.parse(header=1, skipfooter=0)
 
@@ -540,8 +551,13 @@ class Ui_ImportMenuUI(object):
                             Data[m]["DataSection"][l1[k][j]].pop(keys)
                         else:
                             Data[m]["DataSection"][l1[k][j]][keys] = text
+            
+            TM_Success = True
+        
+        else:
+            TM_Success = False
 
-        return name
+        return name, TM_Success
 
 
 if __name__ == "__main__":

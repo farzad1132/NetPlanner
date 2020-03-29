@@ -3026,6 +3026,8 @@ class Ui_MainWindow(object):
             self.initialize_DemandTabDataBase(Source, Destination)
             self.FillDemandTabDataBase_Services(id ,Source, Destination, ServiceDict)
             self.initialize_GroomingTabDataBase(Source, Destination)
+
+        print(f"demandtabdatabase Services: {DemandTabDataBase['Services']}")
             
     def initialize_DemandTabDataBase(self, Source, Destination):
         DemandTabDataBase["Lightpathes"][(Source, Destination)] = {}
@@ -3066,6 +3068,7 @@ class Ui_MainWindow(object):
             ServiceDict_static[(id, serviceId)] = item
             ServiceDict_dynamic[(id, serviceId)] = None
 
+            
 
         DemandTabDataBase["Services"][(Source,Destination)] = ServiceDict_dynamic
         if Source in DemandTabDataBase["Services_static"]:
@@ -3073,6 +3076,8 @@ class Ui_MainWindow(object):
         else:
             DemandTabDataBase["Services_static"][Source] = {}
             DemandTabDataBase["Services_static"][Source].update(ServiceDict_static)
+    
+        
 
     
     def Fill_Demand_SourceandDestination_combobox(self):
@@ -3109,8 +3114,10 @@ class Ui_MainWindow(object):
         Destination = self.Demand_Destination_combobox.currentText()
         #ServiceList = list(DemandTabDataBase["Services"][(Source,Destination)].values())
         #self.Demand_ServiceList.clear()
-        for i in range(self.Demand_ServiceList.count()):
-            self.Demand_ServiceList.takeItem(i)
+        """ for i in range(self.Demand_ServiceList.count()):
+            self.Demand_ServiceList.takeItem(i) """
+        while self.Demand_ServiceList.count() > 0:
+            self.Demand_ServiceList.takeItem(0)
         for id in DemandTabDataBase["Services"][(Source,Destination)].keys():
             item = DemandTabDataBase["Services_static"][Source][id]
             self.Demand_ServiceList.addItem(item)
@@ -3235,8 +3242,10 @@ class Ui_MainWindow(object):
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
         #lightpath_list = list(DemandTabDataBase["Lightpathes"][(Source, Destination)].values())
-        for i in range(self.Demand_LineList.count()):
-            self.Demand_LineList.takeItem(i)
+        """ for i in range(self.Demand_LineList.count()):
+            self.Demand_LineList.takeItem(i) """
+        while self.Demand_LineList.count() > 0:
+            self.Demand_LineList.takeItem(0)
         for value in DemandTabDataBase["Lightpathes"][(Source, Destination)].values():
             self.Demand_LineList.addItem(value)
         
