@@ -303,12 +303,11 @@ class customlabel(QLabel):
                                             Destination= self.Destination,
                                             Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity,
                                             mode= "add",
-                                            type= "100GE")
+                                            type= "100GE",
+                                            PanelId= self.id)
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 1
 
-                # updating LightPath ListWidgetItem Capacity
-                self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][LightPathId],
-                                                        Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity)
+                
 
 
             else:
@@ -318,6 +317,12 @@ class customlabel(QLabel):
 
             # TODO: be Careful !!!!!
             self.setAcceptDrops(False)
+            
+            # updating LightPath ListWidgetItem Capacity
+            self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][LightPathId],
+                                                    Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity)
+
+            # setting line port tooltip                                        
             self.LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][LightPathId].toolTip())
         else:
             self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client.png")))
@@ -381,6 +386,7 @@ class customlabel(QLabel):
         UserData = Item.data(Qt.UserRole)
         #UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type}
         UserData["Capacity"] = Capacity
+        Item.setData(Qt.UserRole, UserData)
         Item.setToolTip(f"Source: {UserData['Source']}\nDestination: {UserData['Destination']}\nCapacity: {Capacity}\nType: {UserData['Type']}")
 
     def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
@@ -404,12 +410,12 @@ class customlabel(QLabel):
             
         Data["ui"].UpdateDemand_ServiceList()
     
-    def modify_LightPathList(self, id, Source, Destination, Capacity = None, mode = "add", type = None):
+    def modify_LightPathList(self, id, Source, Destination, Capacity = None, mode = "add", type = None, PanelId = None):
 
         if mode == "add":
             #DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
             item = QListWidgetItem(type, Data["Demand_LightPath_list"])
-            UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type}
+            UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": PanelId}
             item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)

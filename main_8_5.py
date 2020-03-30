@@ -2084,7 +2084,8 @@ class Ui_MainWindow(object):
 
         Data["NetworkObj"] = self.network
 
-        self.Demand_LineList.clicked['QModelIndex'].connect(self.Demand_LineList_fun)
+        #self.Demand_LineList.clicked['QModelIndex'].connect(self.Demand_LineList_fun)
+        self.Demand_LineList.currentItemChanged['QListWidgetItem*','QListWidgetItem*'].connect(self.Demand_LineList_fun)
 
         self.import_button.clicked.connect(self.open_ImportUI_fun)
 
@@ -2537,6 +2538,7 @@ class Ui_MainWindow(object):
         for i in range(1, 15):
             if str(i) in DemandTabDataBase["Panels"][Source]:
                 panel = DemandTabDataBase["Panels"][Source][str(i)]
+                
                 Destination = panel.Destination
                 if isinstance(panel , MP2X_L):
                     Data["DemandPanel_" + str(i)].setWidget(MP2X_L_Demand(str(i), Source, Destination))
@@ -2548,6 +2550,7 @@ class Ui_MainWindow(object):
                     Data["DemandPanel_" + str(i)].setWidget(MP2X_R_Demand(str(i), Source))
                 
                 elif isinstance(panel, MP1H_L):
+                    LightPathId = panel.LightPathId
                     Data["DemandPanel_" + str(i)].setWidget(MP1H_L_Demand(str(i), Source, Destination))
 
                     # finding panel widget
@@ -2568,6 +2571,10 @@ class Ui_MainWindow(object):
                             clientvar.Destination = Destination
                             clientvar.ids = [panel.DemandIdList[i], panel.ServiceIdList[i]]
                             clientvar.setAcceptDrops(False)
+
+                            # adding tooltip to line port
+                            linevar = getattr(widget, "line")
+                            linevar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
 
                 elif isinstance(panel, MP1H_R):
                     Data["DemandPanel_" + str(i)].setWidget(MP1H_R_Demand(str(i), Source))
@@ -2827,34 +2834,40 @@ class Ui_MainWindow(object):
                 self.Traffic_matrix.setCurrentCell(int(row),i)
                 self.Traffic_matrix.setItem(int(row),i,QTableWidgetItem(cell_data))
     
-    def Demand_LineList_fun(self):
-        CurrentText = str(self.Demand_LineList.currentItem().text())
+    def Demand_LineList_fun(self, CurItem, PreItem):
+        if CurItem is not None:
+            UserData = CurItem.data(Qt.UserRole)
+            Source = UserData["Source"]
+            Destination = UserData["Destination"]
+            LightpathId = UserData["LightPathId"]
 
-        # detecting Lightpath id, working path and protection path
-        LightpathId = CurrentText.split('#')[0]
-        LightpathId =int( LightpathId.strip() )
-        Source = self.Demand_Source_combobox.currentText()
-        Destination = self.Demand_Destination_combobox.currentText()
+            # adding border to current panel
+            LeftPanelId = UserData["PanelId"]
+            left_widget = getattr(self, "DemandPanel_" + str(LeftPanelId)).widget()
+            linevar = left_widget.line
+            linevar.setStyleSheet("border: 5px solid blue;")
+            
+            if PreItem is not None:
+                pre_UserData = PreItem.data(Qt.UserRole)
+                pre_LeftPanelId = pre_UserData["PanelId"]
+                pre_left_widget = getattr(self, "DemandPanel_" + str(pre_LeftPanelId)).widget()
+                pre_linevar = pre_left_widget.line
+                pre_linevar.setStyleSheet("")
 
-        if (Source, Destination) in GroomingTabDataBase["LightPathes"]:
-            key = (Source, Destination)
-        elif (Destination, Source) in GroomingTabDataBase["LightPathes"]:
-            key = (Destination, Source)
-        else:
-            print("key not found")
+            if self.RWA_Success is True:
 
-        WorkingPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Working"]
-        ProtectionPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Protection"]
-        RG_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_w"]
-        RG_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_p"]
-        SNR_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_w"]
-        SNR_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_p"]
+                WorkingPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Working"]
+                ProtectionPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Protection"]
+                RG_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_w"]
+                RG_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_p"]
+                SNR_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_w"]
+                SNR_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_p"]
 
-        #print(f"here for calling demand change function <before> ")
+                #print(f"here for calling demand change function <before> ")
 
-        # calling Demand map change function
-        self.DemandMap_Change(WorkingPath, ProtectionPath, WorkingRegeneratorsList = RG_w, ProtectionRegenaratorsList = RG_p
-                                ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p)
+                # calling Demand map change function
+                self.DemandMap_Change(WorkingPath, ProtectionPath, WorkingRegeneratorsList = RG_w, ProtectionRegenaratorsList = RG_p
+                                        ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p)
 
     # MHA EDITION:
     def SaveTM_fun(self):
@@ -3741,6 +3754,7 @@ class Ui_MainWindow(object):
 
     def SaveChanges_button_fun(self):
         # filling Network Object
+        self.RWA_Success = False
         self.set_flags()
         self.PhysicalTopologyToObject()
         self.TrafficMatrixToObject()
@@ -3855,7 +3869,7 @@ class Ui_MainWindow(object):
     # NOTE: this method just handles MP1H and TP1H
     def fill_DemandTabDataBase(self, netobj):
         
-        # lightpath and panel part
+        # lightpath and panel part ( part 1 )
         for id, lightpath in netobj.LightPathDict.items():
             
             
@@ -3865,15 +3879,7 @@ class Ui_MainWindow(object):
             DemandId = lightpath.DemandId
             Capacity = lightpath.Capacity
             
-            setattr(self, "LightPath_item_" + str(Data["LightPath_item_num"]), QListWidgetItem(type, self.Demand_LineList))
-            item = getattr(self, "LightPath_item_" + str(Data["LightPath_item_num"]))
-            Data["LightPath_item_num"] += 1
-            UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type}
-            item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
-            item.setData(Qt.UserRole, UserData)
-            item.setTextAlignment(Qt.AlignCenter)
-
-            DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = item
+            
 
             ## debug section
             print("Source: ", Source)
@@ -3935,6 +3941,17 @@ class Ui_MainWindow(object):
                     DemandTabDataBase["Services"][(Source, Destination)].pop((DemandId, ServiceId))
                 print(f"panels part--> Source:{Source} panels:{DemandTabDataBase['Panels'][Source]}")
                 print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+            
+            # lightPath part ( part 2 )
+            setattr(self, "LightPath_item_" + str(Data["LightPath_item_num"]), QListWidgetItem(type, self.Demand_LineList))
+            item = getattr(self, "LightPath_item_" + str(Data["LightPath_item_num"]))
+            Data["LightPath_item_num"] += 1
+            UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": panelid}
+            item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
+            item.setData(Qt.UserRole, UserData)
+            item.setTextAlignment(Qt.AlignCenter)
+
+            DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = item
 
     def fill_DemandTabDataBase_MP2X(self, full_MP2X_list, netobj):
 
@@ -4181,9 +4198,7 @@ class Ui_MainWindow(object):
         self.RWA_button_fun()
         RWA_Runtime = time.time() - RWA_Start_Time
         self.fill_GroomingTabDataBase(self.decoded_network, RWA_Runtime)
-        # NOTE: start debugging
-        print(f"Panels part of groomingTabDataBase: {GroomingTabDataBase['Panels']}")
-        # NOTE: end of debugging
+        self.RWA_Success = True
 
         self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
 "    border: 2px solid #8f8f91;\n"
