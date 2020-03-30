@@ -1375,6 +1375,7 @@ for Network Plan </string>
             <bool>true</bool>
            </property>
            <layout class="QGridLayout" name="gridLayout_5">
+<<<<<<< HEAD
             <item row="7" column="0">
              <widget class="QPushButton" name="insert_link_button">
               <property name="minimumSize">
@@ -1473,6 +1474,8 @@ QPushButton:default {
               </property>
              </widget>
             </item>
+=======
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
             <item row="0" column="0">
              <widget class="QLabel" name="label_7">
               <property name="text">
@@ -1657,6 +1660,16 @@ QPushButton:default {
               </property>
              </widget>
             </item>
+<<<<<<< HEAD
+=======
+            <item row="2" column="1">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
             <item row="3" column="0">
              <widget class="QPushButton" name="LoadTM_button">
               <property name="minimumSize">
@@ -1741,6 +1754,16 @@ QPushButton:default {
               </property>
              </widget>
             </item>
+<<<<<<< HEAD
+=======
+            <item row="4" column="1">
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>TextLabel</string>
+              </property>
+             </widget>
+            </item>
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
             <item row="5" column="0">
              <widget class="QPushButton" name="pushButton_10">
               <property name="minimumSize">
@@ -1783,6 +1806,7 @@ QPushButton:default {
               </property>
              </widget>
             </item>
+<<<<<<< HEAD
             <item row="4" column="1">
              <widget class="QLabel" name="label_5">
               <property name="text">
@@ -1792,11 +1816,109 @@ QPushButton:default {
             </item>
             <item row="2" column="1">
              <widget class="QLabel" name="label_2">
+=======
+            <item row="6" column="0">
+             <widget class="QPushButton" name="SaveChanges_button">
+              <property name="minimumSize">
+               <size>
+                <width>84</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+    border: 2px solid #8f8f91;
+    border-radius: 6px;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #f6f7fa, stop: 1 #dadbde);
+    min-width: 80px;
+	border-color: dark-orange;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
+}
+
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+              </property>
+              <property name="text">
+               <string>Save Changes</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QLabel" name="label_4">
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
               <property name="text">
                <string>TextLabel</string>
               </property>
              </widget>
             </item>
+<<<<<<< HEAD
+=======
+            <item row="7" column="0">
+             <widget class="QPushButton" name="insert_link_button">
+              <property name="minimumSize">
+               <size>
+                <width>84</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+    border: 2px solid #8f8f91;
+    border-radius: 6px;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #f6f7fa, stop: 1 #dadbde);
+    min-width: 80px;
+	border-color: dark-orange;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
+}
+
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+              </property>
+              <property name="text">
+               <string>Insert Links</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Load File</string>
+              </property>
+             </widget>
+            </item>
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
            </layout>
           </widget>
          </item>
@@ -2317,6 +2439,113 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
          <string>Demand tab</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_12">
+<<<<<<< HEAD
+=======
+         <item row="0" column="0">
+          <layout class="QFormLayout" name="formLayout_4">
+           <item row="0" column="0">
+            <widget class="QLabel" name="SelectNode_Label_13">
+             <property name="minimumSize">
+              <size>
+               <width>80</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>43</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+             </property>
+             <property name="text">
+              <string>Source:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QFontComboBox" name="Demand_Source_combobox">
+             <property name="minimumSize">
+              <size>
+               <width>119</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>226</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QComboBox {
+    border: 1px solid gray;
+    border-radius: 3px;
+    padding: 1px 18px 1px 3px;
+    min-width: 6em;
+}
+
+QComboBox:editable {
+    background: white;
+}
+
+QComboBox:!editable, QComboBox::drop-down:editable {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+}
+
+/* QComboBox gets the &quot;on&quot; state when the popup is open */
+QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,
+                                stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);
+}
+
+QComboBox:on { /* shift the text when the popup opens */
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+
+    border-left-width: 1px;
+    border-left-color: darkgray;
+    border-left-style: solid; /* just a single line */
+    border-top-right-radius: 3px; /* same radius as the QComboBox */
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox::down-arrow {
+    image: url(/usr/share/icons/crystalsvg/16x16/actions/1downarrow.png);
+}
+
+QComboBox::down-arrow:on { /* shift the arrow when popup is open */
+    top: 1px;
+    left: 1px;
+}</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
          <item row="0" column="2">
           <layout class="QFormLayout" name="formLayout">
            <item row="0" column="0">
@@ -2421,7 +2650,11 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
            </item>
           </layout>
          </item>
+<<<<<<< HEAD
          <item row="1" column="0">
+=======
+         <item row="1" column="0" rowspan="3">
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
           <layout class="QGridLayout" name="gridLayout_2">
            <item row="5" column="0">
             <widget class="QListWidget" name="Demand_ServiceList">
@@ -2854,6 +3087,7 @@ QListWidget::item:hover {
            </item>
           </layout>
          </item>
+<<<<<<< HEAD
          <item row="0" column="1">
           <spacer name="horizontalSpacer">
            <property name="orientation">
@@ -2892,10 +3126,120 @@ QListWidget::item:hover {
              </property>
              <property name="styleSheet">
               <string notr="true"> QLabel {
+=======
+         <item row="1" column="1" colspan="2">
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <widget class="QTabWidget" name="Demand_tab">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>821</width>
+               <height>442</height>
+              </size>
+             </property>
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <widget class="QWidget" name="tab_8">
+              <attribute name="title">
+               <string>Shelf</string>
+              </attribute>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QWidget" name="DemandPanel_1" native="true"/>
+               </item>
+               <item>
+                <widget class="QWidget" name="DemandPanel_2" native="true"/>
+               </item>
+               <item>
+                <widget class="QWidget" name="DemandPanel_3" native="true"/>
+               </item>
+               <item>
+                <widget class="QWidget" name="DemandPanel_4" native="true"/>
+               </item>
+               <item>
+                <widget class="QWidget" name="DemandPanel_5" native="true"/>
+               </item>
+               <item>
+                <widget class="QWidget" name="DemandPanel_6" native="true"/>
+               </item>
+               <item>
+                <widget class="QWidget" name="DemandPanel_7" native="true"/>
+               </item>
+               <item>
+                <widget class="QWidget" name="DemandPanel_8" native="true"/>
+               </item>
+               <item>
+                <widget class="QWidget" name="DemandPanel_9" native="true"/>
+               </item>
+               <item>
+                <widget class="QWidget" name="DemandPanel_10" native="true"/>
+               </item>
+               <item>
+                <widget class="QWidget" name="DemandPanel_11" native="true"/>
+               </item>
+               <item>
+                <widget class="QWidget" name="DemandPanel_12" native="true"/>
+               </item>
+               <item>
+                <widget class="QWidget" name="DemandPanel_13" native="true"/>
+               </item>
+               <item>
+                <widget class="QWidget" name="DemandPanel_14" native="true"/>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLabel" name="ClientLabel_25">
+           <property name="minimumSize">
+            <size>
+             <width>50</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>16</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"> QLabel {
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
     border: 2px solid green;
     border-radius: 4px;
     padding: 2px;
 }</string>
+<<<<<<< HEAD
              </property>
              <property name="text">
               <string>Source:</string>
@@ -2967,10 +3311,29 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
     left: 1px;
 }</string>
              </property>
+=======
+           </property>
+           <property name="text">
+            <string>Map:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1" colspan="2">
+          <layout class="QGridLayout" name="gridLayout_15">
+           <item row="0" column="0">
+            <widget class="MapWidget" name="MapWidget" native="true">
+             <property name="minimumSize">
+              <size>
+               <width>821</width>
+               <height>259</height>
+              </size>
+             </property>
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
             </widget>
            </item>
           </layout>
          </item>
+<<<<<<< HEAD
          <item row="1" column="1" colspan="2">
           <widget class="QSplitter" name="splitter">
            <property name="orientation">
@@ -3137,6 +3500,20 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
            </widget>
            <widget class="MapWidget" name="MapWidget" native="true"/>
           </widget>
+=======
+         <item row="0" column="1">
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
          </item>
         </layout>
        </widget>

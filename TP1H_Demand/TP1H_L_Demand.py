@@ -1,16 +1,26 @@
+<<<<<<< HEAD
+=======
+from PySide2 import QtWidgets, QtCore, QtGui
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 import sys
 import os
+<<<<<<< HEAD
 from data import *
 from Common_Object_def import Network
 
+=======
+
+from data import *
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
 
 class TP1H_L_Demand(QWidget):
     def __init__(self, Panel_ID, nodename , Destination):
         super(TP1H_L_Demand, self).__init__()
 
+<<<<<<< HEAD
         self.id = Panel_ID
         self.nodename = nodename
         self.Destination = Destination
@@ -19,6 +29,14 @@ class TP1H_L_Demand(QWidget):
         self.setFixedSize(112, 521)
         self.line = QLabel(self)
         self.line.setGeometry(QRect(30, 140, 55, 191))
+=======
+class TP1H_L_Demand(object):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(116, 521)
+        self.line = QtWidgets.QLabel(Form)
+        self.line.setGeometry(QtCore.QRect(30, 140, 55, 191))
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
         self.line.setText("")
         self.line.setPixmap(QPixmap(os.path.join("TP1H_Demand","tp1h_line.png")))
         self.line.setObjectName("line")

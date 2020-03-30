@@ -1,8 +1,13 @@
+<<<<<<< HEAD
+=======
+from PySide2 import QtWidgets, QtCore, QtGui
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 import sys
 import os
+<<<<<<< HEAD
 from data import *
 
 
@@ -16,6 +21,17 @@ class TP1H_R_Demand(QWidget):
         self.setFixedSize(112, 521)
         self.label_12 = QLabel(self)
         self.label_12.setGeometry(QRect(20, 230, 55, 16))
+=======
+
+from data import *
+
+class TP1H_R_Demand(QObject):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(112, 521)
+        self.label_12 = QtWidgets.QLabel(Form)
+        self.label_12.setGeometry(QtCore.QRect(20, 230, 55, 16))
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
         self.label_12.setObjectName("label_12")
         self.label_2 = QLabel(self)
         self.label_2.setGeometry(QRect(10, 230, 31, 16))

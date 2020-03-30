@@ -1,21 +1,39 @@
+<<<<<<< HEAD
+=======
+from PySide2 import QtWidgets, QtCore, QtGui
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 import sys
 import os
+<<<<<<< HEAD
 from data import *
 
+=======
+
+from data import *
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
 
 class MP1H_R_Demand(QWidget):
     def __init__(self, Panel_ID, nodename):
         super(MP1H_R_Demand, self).__init__()
 
+<<<<<<< HEAD
         self.id = Panel_ID
         self.nodename = nodename
         self.setFixedSize(112, 521)
 
         self.label = QLabel(self)
         self.label.setGeometry(QRect(10, 150, 31, 16))
+=======
+class MP1H_R_Demand(QWidget):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(112, 521)
+        self.label = QtWidgets.QLabel(Form)
+        self.label.setGeometry(QtCore.QRect(10, 150, 31, 16))
+>>>>>>> 90860f6dace01a70861946f38b5327974962c8c8
         self.label.setText("")
         self.label.setPixmap(QPixmap(os.path.join("MP1H_Demand","button.png")))
         self.label.setObjectName("label")
