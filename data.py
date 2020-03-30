@@ -17,10 +17,7 @@ Data["Last_Node_ID"] = 0
 Data["Last_Link_ID"] = 0
 Data["Nodes"] = {}  # TODO: write this parts structure
 Data["Links"] = {}  # TODO: write this parts structure
-
-Data["Clustering"] = {}
-# format :
-#          {<NodeName> : {"Color": <ColorName>, "Type" : <TypeName> , "SubNodes" : <SubNodesNameList> } }
+Data["Grouping"] = {}
 
 # keys are row numbers except nodes and links
 
@@ -135,14 +132,11 @@ Data["100GE"]["DataSection"]["SLA"]={}
 DemandTabDataBase = {}
 DemandTabDataBase["Source_Destination"] = {}
 # format:
-#       { <ClickedNode> : {"Source": <SourceName>, "DestinationList : <DestinationList>"} }
+#       { source :  [ Destinations ]}
 DemandTabDataBase["Services"] = {} # dynamic one : changes with user actions
 # format: 
 #       {(Tehran, karaj): { (1,3) : '[1 , 3] # 100G ' , ... }, ...}         (1 , 3) ---> 1 : Demand Id , 3 : Service Id
-
 DemandTabDataBase["Services_static"] = {}   # same as Services part but difference is that its not changing with user actions
-# format:
-#       { <SourceName> : { (<DemandId>, <ServiceId>) : '[1 , 3] # 100G ' >}}
 DemandTabDataBase["Lightpathes"] = {}
 # format:
 #       {(Tehran, Karaj): [ Lightpath Id # 100GE , ...]}

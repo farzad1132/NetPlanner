@@ -1982,7 +1982,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
 
-        # TODO: added
+        # NOTE: added
 
         self.SelectNode_combo.clear()
         self.NodeType_combobox.clear()
@@ -2102,7 +2102,7 @@ class Ui_MainWindow(object):
         self.Demand_Source_combobox.currentTextChanged.connect(self.Demand_Source_combobox_Change)
         self.Demand_Destination_combobox.currentTextChanged.connect(self.Demand_Destination_combobox_change)
 
-        Data["Demand_mdi"] = self.Demand_mdi
+        #Data["Demand_mdi"] = self.Demand_mdi
 
         #self.OpenLinks_pushbutton.clicked.connect(self.open_links_fun)
 
@@ -3623,13 +3623,17 @@ class Ui_MainWindow(object):
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
         for i in range(1,15):
-            setattr(self, "DemandPanel_" + str(i),QMdiSubWindow())
-            Data["DemandPanel_" + str(i)] = getattr(ui, "DemandPanel_" + str(i))
-            Data["DemandPanel_" + str(i)].setWindowFlag(Qt.FramelessWindowHint)
-            Data["DemandPanel_" + str(i)].setWidget(BLANK_Demand(str(i), Source, Destination))
+            
+            # TODO: add layouts to Data Dictionary
+            #Data["DemandPanel_" + str(i)] = getattr(ui, "DemandPanel_" + str(i))
 
-            self.Demand_mdi.addSubWindow(Data["DemandPanel_" + str(i)])
-            Data["DemandPanel_" + str(i)].show()
+            # TODO: set layouts margin to zero
+            
+
+            Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Destination))
+
+            #self.Demand_mdi.addSubWindow(Data["DemandPanel_" + str(i)])
+            #Data["DemandPanel_" + str(i)].show()
 
 
     # obsoleted 
@@ -4315,7 +4319,6 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     # NOTE: don't forget this
-    # added
-    Data["ui"] = ui
+    Data["ui"] = ui         # added
     MainWindow.show()
     sys.exit(app.exec_())

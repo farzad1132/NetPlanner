@@ -182,6 +182,7 @@ class Grooming_Window(object):
         self.Cancel_button.setText(_translate("grooming_window", "Cancel"))
 
     def start_grooming_fun(self):
+        print(f" we are in grooming window")
         MP1H_Threshold = str(self.MP1H_Threshold_combobox.currentText())
         
         Data["ui"].grooming_procedure(MP1H_Threshold)

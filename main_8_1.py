@@ -9,26 +9,20 @@ from PySide2 import QtWebEngineWidgets
 import folium,random
 from PySide2.QtCore import QUrl,Qt,QModelIndex
 from PySide2.QtGui import QStandardItemModel
+from geopy.geocoders import Nominatim
 import re
 from PySide2.QtWebChannel import QWebChannel
 import branca
 from branca.element import Element
-import xlrd
+import xlrd 
 import xlsxwriter
 from pandas import ExcelWriter 
 from newcheck import  Ui_checking
 from Common_Object_def import Network
-from math import ceil
-import requests
-import json
-import socketio  
-import time
-import copy , math, warnings
 
 from add_node import Ui_add_node_window
-from grooming_window import Grooming_Window
 
-from data import *
+from data import Data, DemandTabDataBase
 from Node_View_Data import Panel_Data
 
 
@@ -43,33 +37,6 @@ from MP2D_panel.MP2D_panel_L import MP2D_panel_L
 from MP2D_panel.MP2D_panel_R import MP2D_panel_R
 from TP2X_panel.TP2X_panel import TP2X_panel
 
-from TP1H_Grooming.TP1H_L_Grooming import TP1H_L_Grooming
-from TP1H_Grooming.TP1H_R_Grooming import TP1H_R_Grooming
-from MP1H_Grooming.MP1H_L_Grooming import MP1H_L_Grooming
-from MP1H_Grooming.MP1H_R_Grooming import MP1H_R_Grooming
-
-from BLANK_Demand.BLANK_Demand import BLANK_Demand
-from MP2X_Demand.MP2X_L_Demand import MP2X_L_Demand
-from MP2X_Demand.MP2X_R_Demand import MP2X_R_Demand
-from MP1H_Demand.MP1H_L_Demand import MP1H_L_Demand
-from MP1H_Demand.MP1H_R_Demand import MP1H_R_Demand
-from TP1H_Demand.TP1H_L_Demand import TP1H_L_Demand
-from TP1H_Demand.TP1H_R_Demand import TP1H_R_Demand
-
-#from mapwidget import MapWidget
-from mapwidget import MapWidget
-
-from  matplotlib.backends.backend_qt5agg  import  FigureCanvas
-from  matplotlib.figure  import  Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-#from mpl_toolkits.basemap import Basemap
-import matplotlib.pyplot as plt
-import networkx as nx
-from numpy import cos, sin
-import numpy
-
-
 class Backend_map(QObject):
 
     @Slot(str)
@@ -81,7 +48,7 @@ class Backend_map(QObject):
         print("we are grouping")
         Data["Grouping"][text] = {}
         Data["Grouping"][text]["Color"] = ui.lastgroup_color
-        Data["Grouping"][text]["Type"] = ui.lastgroup_type
+        Data["Grouping"][text]["ID"] = ui.lastgroup_id
         Data["Grouping"][text]["SubNodes"] = {}
 
 
@@ -113,21 +80,16 @@ class Backend_map(QObject):
     @Slot(str)
     def change_tab_to4(self,degreename):
         print(">>>>>>",degreename)
-        if Data["Stage_flag"] == "Grooming":
-            Data["TabWidget"].setCurrentIndex(3)
-            Data["SelectNodeCombo"].setCurrentText(degreename.strip())
-            # TODO: check this function and delete it
-            #ui.SelectNode_combo_change()
+        Data["TabWidget"].setCurrentIndex(3)
+        Data["SelectNodeCombo"].setCurrentText(degreename.strip())
+        ui.SelectNode_combo_change()
 
-        if Data["Stage_flag"] == "Demand":
-            Data["TabWidget"].setCurrentIndex(4)
-            Data["Demand_Source_combo"].setCurrentText(degreename.strip())
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
 
-        #TODO: commented
+        # TODO: commented
         #MainWindow.resize(1219, 841)
 
         self.gridLayout = QtWidgets.QGridLayout(MainWindow)
@@ -141,228 +103,50 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.tabWidget.setFont(font)
-        self.tabWidget.setStyleSheet("")
+        '''self.tabWidget.setStyleSheet("QTabWidget#tabWidget::pane{ /* The tab widget frame */\n"
+"    border-top: 2px solid #C2C7CB;\n"
+"}\n"
+"\n"
+"QTabWidget#tabWidget::tab-bar{\n"
+"    left: 5px; /* move to the right by 5px */\n"
+"}\n"
+"\n"
+"/* Style the tab using the tab sub-control. Note that\n"
+"    it reads QTabBar _not_ QTabWidget */\n"
+"QTabBar::tab {\n"
+"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,\n"
+"                                stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);\n"
+"    border: 2px solid #C4C4C3;\n"
+"    border-bottom-color: #C2C7CB; /* same as the pane color */\n"
+"    border-top-left-radius: 4px;\n"
+"    border-top-right-radius: 4px;\n"
+"    min-width: 8ex;\n"
+"    padding: 2px;\n"
+"}\n"
+"\n"
+"QTabBar::tab:selected , QTabBar::tab:hover{\n"
+"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                stop: 0 #fafafa, stop: 0.4 #f4f4f4,\n"
+"                                stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);\n"
+"    background-color : lightgreen;\n"
+"}\n"
+"\n"
+"QTabBar::tab:selected {\n"
+"    border-color: #9B9B9B;\n"
+"    border-bottom-color: #C2C7CB; /* same as pane color */\n"
+"}\n"
+"\n"
+"QTabBar::tab:!selected {\n"
+"    margin-top: 2px; /* make non-selected tabs look smaller */\n"
+"}")'''
         self.tabWidget.setObjectName("tabWidget")
         self.TopologyTab = QtWidgets.QWidget()
         self.TopologyTab.setObjectName("TopologyTab")
-        self.gridLayout_19 = QtWidgets.QGridLayout(self.TopologyTab)
-        self.gridLayout_19.setObjectName("gridLayout_19")
-        self.gridLayout_3 = QtWidgets.QGridLayout()
+        self.gridLayout_3 = QtWidgets.QGridLayout(self.TopologyTab)
         self.gridLayout_3.setObjectName("gridLayout_3")
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.OpenTopology_button = QtWidgets.QPushButton(self.TopologyTab)
-        self.OpenTopology_button.setMaximumSize(QtCore.QSize(81, 50))
-        font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
-        self.OpenTopology_button.setFont(font)
-        self.OpenTopology_button.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.OpenTopology_button.setObjectName("OpenTopology_button")
-        self.horizontalLayout_2.addWidget(self.OpenTopology_button)
-        self.SaveTopology_button = QtWidgets.QPushButton(self.TopologyTab)
-        self.SaveTopology_button.setMaximumSize(QtCore.QSize(81, 50))
-        font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
-        self.SaveTopology_button.setFont(font)
-        self.SaveTopology_button.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.SaveTopology_button.setObjectName("SaveTopology_button")
-        self.horizontalLayout_2.addWidget(self.SaveTopology_button)
-        self.add_node_button = QtWidgets.QPushButton(self.TopologyTab)
-        self.add_node_button.setMaximumSize(QtCore.QSize(81, 50))
-        font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
-        self.add_node_button.setFont(font)
-        self.add_node_button.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.add_node_button.setObjectName("add_node_button")
-        self.horizontalLayout_2.addWidget(self.add_node_button)
-        self.OpenLinks_pushbutton = QtWidgets.QPushButton(self.TopologyTab)
-        self.OpenLinks_pushbutton.setMinimumSize(QtCore.QSize(84, 30))
-        self.OpenLinks_pushbutton.setMaximumSize(QtCore.QSize(81, 50))
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
-        self.OpenLinks_pushbutton.setFont(font)
-        self.OpenLinks_pushbutton.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.OpenLinks_pushbutton.setObjectName("OpenLinks_pushbutton")
-        self.horizontalLayout_2.addWidget(self.OpenLinks_pushbutton)
-        self.pushButton_5 = QtWidgets.QPushButton(self.TopologyTab)
-        self.pushButton_5.setMinimumSize(QtCore.QSize(84, 30))
-        self.pushButton_5.setMaximumSize(QtCore.QSize(81, 50))
-        font = QtGui.QFont()
-        font.setBold(False)
-        font.setWeight(50)
-        self.pushButton_5.setFont(font)
-        self.pushButton_5.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.pushButton_5.setObjectName("pushButton_5")
-        self.horizontalLayout_2.addWidget(self.pushButton_5)
-        self.pushButton_7 = QtWidgets.QPushButton(self.TopologyTab)
-        self.pushButton_7.setMinimumSize(QtCore.QSize(84, 28))
-        self.pushButton_7.setMaximumSize(QtCore.QSize(81, 50))
-        font = QtGui.QFont()
-        font.setBold(False)
-        font.setWeight(50)
-        self.pushButton_7.setFont(font)
-        self.pushButton_7.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.pushButton_7.setObjectName("pushButton_7")
-        self.horizontalLayout_2.addWidget(self.pushButton_7)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_2.addItem(spacerItem)
-        self.gridLayout_3.addLayout(self.horizontalLayout_2, 0, 0, 1, 1)
-        self.pushButton_6 = QtWidgets.QPushButton(self.TopologyTab)
-        self.pushButton_6.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.pushButton_6.setObjectName("pushButton_6")
-        self.gridLayout_3.addWidget(self.pushButton_6, 0, 1, 1, 1)
-
-        #TODO: edited
-        self.webengine = QtWebEngineWidgets.QWebEngineView()
-        self.webengine.setObjectName("webengine")
-        self.gridLayout_3.addWidget(self.webengine, 1, 0, 1, 1)
-
         self.T_groupbox = QtWidgets.QGroupBox(self.TopologyTab)
         self.T_groupbox.setEnabled(True)
-        self.T_groupbox.setMaximumSize(QtCore.QSize(300, 16777215))
         self.T_groupbox.setStyleSheet("QGroupBox {\n"
 "    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                      stop: 0 #E0E0E0, stop: 1 #FFFFFF);\n"
@@ -382,131 +166,6 @@ class Ui_MainWindow(object):
         self.T_groupbox.setObjectName("T_groupbox")
         self.gridLayout_14 = QtWidgets.QGridLayout(self.T_groupbox)
         self.gridLayout_14.setObjectName("gridLayout_14")
-        self.Planning_groupbox = QtWidgets.QGroupBox(self.T_groupbox)
-        self.Planning_groupbox.setObjectName("Planning_groupbox")
-        self.gridLayout_11 = QtWidgets.QGridLayout(self.Planning_groupbox)
-        self.gridLayout_11.setObjectName("gridLayout_11")
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.PanelThreshold_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
-        font = QtGui.QFont()
-        #font.setPointSize(-1)
-        font.setBold(True)
-        font.setItalic(False)
-        font.setWeight(75)
-        self.PanelThreshold_pushbutton.setFont(font)
-        self.PanelThreshold_pushbutton.setStyleSheet("background-color: rgb(255, 129, 131);\n"
-"border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: dark-orange;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"    padding: 6px;\n"
-"")
-        self.PanelThreshold_pushbutton.setObjectName("PanelThreshold_pushbutton")
-        self.verticalLayout_2.addWidget(self.PanelThreshold_pushbutton)
-        self.Grooming_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
-        font = QtGui.QFont()
-        #font.setPointSize(-1)
-        font.setBold(True)
-        font.setItalic(False)
-        font.setWeight(75)
-        self.Grooming_pushbutton.setFont(font)
-        self.Grooming_pushbutton.setStyleSheet("\n"
-"background-color: rgb(255, 85, 88);\n"
-"border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: dark-orange;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"    padding: 6px;")
-        self.Grooming_pushbutton.setCheckable(False)
-        self.Grooming_pushbutton.setObjectName("Grooming_pushbutton")
-        self.verticalLayout_2.addWidget(self.Grooming_pushbutton)
-        self.RWA_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
-        font = QtGui.QFont()
-        #font.setPointSize(-1)
-        font.setBold(True)
-        font.setItalic(False)
-        font.setWeight(75)
-        self.RWA_pushbutton.setFont(font)
-        self.RWA_pushbutton.setStyleSheet("\n"
-"background-color: rgb(255, 44, 47);\n"
-"border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: dark-orange;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"    padding: 6px;")
-        self.RWA_pushbutton.setObjectName("RWA_pushbutton")
-        self.verticalLayout_2.addWidget(self.RWA_pushbutton)
-        self.FinalPlan_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
-        font = QtGui.QFont()
-        #font.setPointSize(-1)
-        font.setBold(True)
-        font.setItalic(False)
-        font.setWeight(75)
-        self.FinalPlan_pushbutton.setFont(font)
-        self.FinalPlan_pushbutton.setStyleSheet("\n"
-"background-color: rgb(255, 0, 4);\n"
-"border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: dark-orange;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"    padding: 6px;")
-        self.FinalPlan_pushbutton.setObjectName("FinalPlan_pushbutton")
-        self.verticalLayout_2.addWidget(self.FinalPlan_pushbutton)
-        self.gridLayout_11.addLayout(self.verticalLayout_2, 0, 0, 1, 1)
-        self.gridLayout_14.addWidget(self.Planning_groupbox, 1, 0, 1, 1)
-        self.ViewGroupbox = QtWidgets.QGroupBox(self.T_groupbox)
-        self.ViewGroupbox.setObjectName("ViewGroupbox")
-        self.gridLayout_18 = QtWidgets.QGridLayout(self.ViewGroupbox)
-        self.gridLayout_18.setObjectName("gridLayout_18")
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.NormalMode_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setBold(True)
-        font.setItalic(False)
-        font.setWeight(75)
-        self.NormalMode_checkbox.setFont(font)
-        self.NormalMode_checkbox.setStyleSheet("")
-        self.NormalMode_checkbox.setObjectName("NormalMode_checkbox")
-        self.verticalLayout_3.addWidget(self.NormalMode_checkbox)
-        self.Working_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setBold(True)
-        font.setWeight(75)
-        self.Working_checkbox.setFont(font)
-        self.Working_checkbox.setObjectName("Working_checkbox")
-        self.verticalLayout_3.addWidget(self.Working_checkbox)
-        self.Protection_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setBold(True)
-        font.setWeight(75)
-        self.Protection_checkbox.setFont(font)
-        self.Protection_checkbox.setObjectName("Protection_checkbox")
-        self.verticalLayout_3.addWidget(self.Protection_checkbox)
-        self.Restoration_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setBold(True)
-        font.setWeight(75)
-        self.Restoration_checkbox.setFont(font)
-        self.Restoration_checkbox.setObjectName("Restoration_checkbox")
-        self.verticalLayout_3.addWidget(self.Restoration_checkbox)
-        self.gridLayout_18.addLayout(self.verticalLayout_3, 0, 0, 1, 1)
-        self.gridLayout_14.addWidget(self.ViewGroupbox, 2, 0, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout_14.addItem(spacerItem1, 3, 0, 1, 1)
         self.Grouping_groupbox = QtWidgets.QGroupBox(self.T_groupbox)
         self.Grouping_groupbox.setObjectName("Grouping_groupbox")
         self.gridLayout_17 = QtWidgets.QGridLayout(self.Grouping_groupbox)
@@ -548,7 +207,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.GroupName.setObjectName("GroupName")
         self.gridLayout_16.addWidget(self.GroupName, 1, 0, 1, 1)
@@ -567,7 +226,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.GroupID.setObjectName("GroupID")
         self.gridLayout_16.addWidget(self.GroupID, 2, 0, 1, 1)
@@ -630,63 +289,39 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.GroupColor.setObjectName("GroupColor")
         self.gridLayout_16.addWidget(self.GroupColor, 3, 0, 1, 1)
-        self.ClusterColor_combobox = QtWidgets.QFontComboBox(self.Grouping_groupbox)
-        self.ClusterColor_combobox.setMaximumSize(QtCore.QSize(126, 22))
-        self.ClusterColor_combobox.setStyleSheet("QComboBox {\n"
-"    border: 1px solid gray;\n"
-"    border-radius: 3px;\n"
-"    padding: 1px 18px 1px 3px;\n"
-"    min-width: 6em;\n"
+        self.SelectColor_button = QtWidgets.QPushButton(self.Grouping_groupbox)
+        self.SelectColor_button.setMinimumSize(QtCore.QSize(84, 30))
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.SelectColor_button.setFont(font)
+        self.SelectColor_button.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"    border-color: dark-orange;\n"
 "}\n"
 "\n"
-"QComboBox:editable {\n"
-"    background: white;\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
 "}\n"
 "\n"
-"QComboBox:!editable, QComboBox::drop-down:editable {\n"
-"     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,\n"
-"                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
 "}\n"
 "\n"
-"/* QComboBox gets the \"on\" state when the popup is open */\n"
-"QComboBox:!editable:on, QComboBox::drop-down:editable:on {\n"
-"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,\n"
-"                                stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);\n"
-"}\n"
-"\n"
-"QComboBox:on { /* shift the text when the popup opens */\n"
-"    padding-top: 3px;\n"
-"    padding-left: 4px;\n"
-"}\n"
-"\n"
-"QComboBox::drop-down {\n"
-"    subcontrol-origin: padding;\n"
-"    subcontrol-position: top right;\n"
-"    width: 15px;\n"
-"\n"
-"    border-left-width: 1px;\n"
-"    border-left-color: darkgray;\n"
-"    border-left-style: solid; /* just a single line */\n"
-"    border-top-right-radius: 3px; /* same radius as the QComboBox */\n"
-"    border-bottom-right-radius: 3px;\n"
-"}\n"
-"\n"
-"QComboBox::down-arrow {\n"
-"    image: url(/usr/share/icons/crystalsvg/16x16/actions/1downarrow.png);\n"
-"}\n"
-"\n"
-"QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
-"    top: 1px;\n"
-"    left: 1px;\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
 "}")
-        self.ClusterColor_combobox.setObjectName("ClusterColor_combobox")
-        self.gridLayout_16.addWidget(self.ClusterColor_combobox, 3, 1, 1, 2)
+        self.SelectColor_button.setObjectName("SelectColor_button")
+        self.gridLayout_16.addWidget(self.SelectColor_button, 3, 1, 1, 2)
         self.SelectSubNode_button = QtWidgets.QPushButton(self.Grouping_groupbox)
         self.SelectSubNode_button.setMinimumSize(QtCore.QSize(84, 30))
         font = QtGui.QFont()
@@ -728,7 +363,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.SelectSubNode.setAlignment(QtCore.Qt.AlignCenter)
         self.SelectSubNode.setObjectName("SelectSubNode")
@@ -797,8 +432,325 @@ class Ui_MainWindow(object):
         self.gridLayout_16.addWidget(self.ShowSubNodes, 6, 0, 1, 2)
         self.gridLayout_17.addLayout(self.gridLayout_16, 0, 0, 1, 1)
         self.gridLayout_14.addWidget(self.Grouping_groupbox, 0, 0, 1, 1)
-        self.gridLayout_3.addWidget(self.T_groupbox, 1, 1, 1, 1)
-        self.gridLayout_19.addLayout(self.gridLayout_3, 0, 0, 1, 1)
+        self.Planning_groupbox = QtWidgets.QGroupBox(self.T_groupbox)
+        self.Planning_groupbox.setObjectName("Planning_groupbox")
+        self.gridLayout_11 = QtWidgets.QGridLayout(self.Planning_groupbox)
+        self.gridLayout_11.setObjectName("gridLayout_11")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.PanelThreshold_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
+        font = QtGui.QFont()
+        font.setPointSize(-1)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.PanelThreshold_pushbutton.setFont(font)
+        self.PanelThreshold_pushbutton.setStyleSheet("background-color: green;\n"
+"border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: dark-orange;\n"
+"    font: bold 14px;\n"
+"    min-width: 10em;\n"
+"    padding: 6px;")
+        self.PanelThreshold_pushbutton.setObjectName("PanelThreshold_pushbutton")
+        self.verticalLayout_2.addWidget(self.PanelThreshold_pushbutton)
+        self.Grooming_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
+        font = QtGui.QFont()
+        font.setPointSize(-1)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.Grooming_pushbutton.setFont(font)
+        self.Grooming_pushbutton.setStyleSheet("background-color: red;\n"
+"border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: dark-orange;\n"
+"    font: bold 14px;\n"
+"    min-width: 10em;\n"
+"    padding: 6px;")
+        self.Grooming_pushbutton.setCheckable(False)
+        self.Grooming_pushbutton.setObjectName("Grooming_pushbutton")
+        self.verticalLayout_2.addWidget(self.Grooming_pushbutton)
+        self.RWA_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
+        font = QtGui.QFont()
+        font.setPointSize(-1)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.RWA_pushbutton.setFont(font)
+        self.RWA_pushbutton.setStyleSheet("background-color: RGB(107,115,213);\n"
+"border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: dark-orange;\n"
+"    font: bold 14px;\n"
+"    min-width: 10em;\n"
+"    padding: 6px;")
+        self.RWA_pushbutton.setObjectName("RWA_pushbutton")
+        self.verticalLayout_2.addWidget(self.RWA_pushbutton)
+        self.FinalPlan_pushbutton = QtWidgets.QPushButton(self.Planning_groupbox)
+        font = QtGui.QFont()
+        font.setPointSize(-1)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.FinalPlan_pushbutton.setFont(font)
+        self.FinalPlan_pushbutton.setStyleSheet("background-color: yellow;\n"
+"border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-radius: 10px;\n"
+"    border-color: dark-orange;\n"
+"    font: bold 14px;\n"
+"    min-width: 10em;\n"
+"    padding: 6px;")
+        self.FinalPlan_pushbutton.setObjectName("FinalPlan_pushbutton")
+        self.verticalLayout_2.addWidget(self.FinalPlan_pushbutton)
+        self.gridLayout_11.addLayout(self.verticalLayout_2, 0, 0, 1, 1)
+        self.gridLayout_14.addWidget(self.Planning_groupbox, 1, 0, 1, 1)
+        self.ViewGroupbox = QtWidgets.QGroupBox(self.T_groupbox)
+        self.ViewGroupbox.setObjectName("ViewGroupbox")
+        self.gridLayout_18 = QtWidgets.QGridLayout(self.ViewGroupbox)
+        self.gridLayout_18.setObjectName("gridLayout_18")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.NormalMode_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setFamily("IRANSans")
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.NormalMode_checkbox.setFont(font)
+        self.NormalMode_checkbox.setStyleSheet("")
+        self.NormalMode_checkbox.setObjectName("NormalMode_checkbox")
+        self.verticalLayout_3.addWidget(self.NormalMode_checkbox)
+        self.Working_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setFamily("IRANSans")
+        font.setBold(True)
+        font.setWeight(75)
+        self.Working_checkbox.setFont(font)
+        self.Working_checkbox.setObjectName("Working_checkbox")
+        self.verticalLayout_3.addWidget(self.Working_checkbox)
+        self.Protection_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setFamily("IRANSans")
+        font.setBold(True)
+        font.setWeight(75)
+        self.Protection_checkbox.setFont(font)
+        self.Protection_checkbox.setObjectName("Protection_checkbox")
+        self.verticalLayout_3.addWidget(self.Protection_checkbox)
+        self.Restoration_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setFamily("IRANSans")
+        font.setBold(True)
+        font.setWeight(75)
+        self.Restoration_checkbox.setFont(font)
+        self.Restoration_checkbox.setObjectName("Restoration_checkbox")
+        self.verticalLayout_3.addWidget(self.Restoration_checkbox)
+        self.gridLayout_18.addLayout(self.verticalLayout_3, 0, 0, 1, 1)
+        self.gridLayout_14.addWidget(self.ViewGroupbox, 2, 0, 1, 1)
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_14.addItem(spacerItem, 3, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.T_groupbox, 2, 6, 1, 1)
+        self.pushButton_6 = QtWidgets.QPushButton(self.TopologyTab)
+        self.pushButton_6.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.pushButton_6.setObjectName("pushButton_6")
+        self.gridLayout_3.addWidget(self.pushButton_6, 0, 6, 1, 1)
+        self.pushButton_4 = QtWidgets.QPushButton(self.TopologyTab)
+        self.pushButton_4.setMinimumSize(QtCore.QSize(84, 30))
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushButton_4.setFont(font)
+        self.pushButton_4.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.pushButton_4.setObjectName("pushButton_4")
+        self.gridLayout_3.addWidget(self.pushButton_4, 0, 3, 1, 1)
+        self.pushButton_5 = QtWidgets.QPushButton(self.TopologyTab)
+        self.pushButton_5.setMinimumSize(QtCore.QSize(84, 30))
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushButton_5.setFont(font)
+        self.pushButton_5.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.pushButton_5.setObjectName("pushButton_5")
+        self.gridLayout_3.addWidget(self.pushButton_5, 0, 4, 1, 1)
+        self.add_node_button = QtWidgets.QPushButton(self.TopologyTab)
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.add_node_button.setFont(font)
+        self.add_node_button.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"    border-color: dark-orange;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.add_node_button.setObjectName("add_node_button")
+        self.gridLayout_3.addWidget(self.add_node_button, 0, 2, 1, 1)
+        self.SaveTopology_button = QtWidgets.QPushButton(self.TopologyTab)
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.SaveTopology_button.setFont(font)
+        self.SaveTopology_button.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"    border-color: dark-orange;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.SaveTopology_button.setObjectName("SaveTopology_button")
+        self.gridLayout_3.addWidget(self.SaveTopology_button, 0, 1, 1, 1)
+        self.OpenTopology_button = QtWidgets.QPushButton(self.TopologyTab)
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setWeight(75)
+        self.OpenTopology_button.setFont(font)
+        self.OpenTopology_button.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"    border-color: dark-orange;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.OpenTopology_button.setObjectName("OpenTopology_button")
+        self.gridLayout_3.addWidget(self.OpenTopology_button, 0, 0, 1, 1)
+        self.pushButton_7 = QtWidgets.QPushButton(self.TopologyTab)
+        self.pushButton_7.setMinimumSize(QtCore.QSize(84, 30))
+        font = QtGui.QFont()
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushButton_7.setFont(font)
+        self.pushButton_7.setStyleSheet("QPushButton {\n"
+"    border: 2px solid #8f8f91;\n"
+"    border-radius: 6px;\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
+"    min-width: 80px;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"}\n"
+"\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.pushButton_7.setObjectName("pushButton_7")
+        self.gridLayout_3.addWidget(self.pushButton_7, 0, 5, 1, 1)
+
+        # TODO: edited
+        self.webengine = QtWebEngineWidgets.QWebEngineView()
+        self.webengine.setObjectName("webengine")
+        self.gridLayout_3.addWidget(self.webengine, 2, 0, 1, 6)
+
         self.tabWidget.addTab(self.TopologyTab, "")
         self.TrafficMatrixTab = QtWidgets.QWidget()
         self.TrafficMatrixTab.setObjectName("TrafficMatrixTab")
@@ -1147,7 +1099,7 @@ class Ui_MainWindow(object):
         self.gridLayout_9 = QtWidgets.QGridLayout(self.Rack1)
         self.gridLayout_9.setObjectName("gridLayout_9")
         self.ShelfTab = QtWidgets.QTabWidget(self.Rack1)
-        self.ShelfTab.setMinimumSize(QtCore.QSize(1530, 810))
+        self.ShelfTab.setMinimumSize(QtCore.QSize(1530, 820))
         self.ShelfTab.setTabPosition(QtWidgets.QTabWidget.West)
         self.ShelfTab.setTabShape(QtWidgets.QTabWidget.Rounded)
         self.ShelfTab.setIconSize(QtCore.QSize(20, 20))
@@ -1171,7 +1123,7 @@ class Ui_MainWindow(object):
         self.Shelf2_grid = QtWidgets.QGridLayout(self.Shelf2)
         self.Shelf2_grid.setObjectName("Shelf2_grid")
         self.mdi_12 = QtWidgets.QMdiArea(self.Shelf2)
-        self.mdi_12.setMinimumSize(QtCore.QSize(1530, 810))
+        self.mdi_12.setMinimumSize(QtCore.QSize(805, 810))
         brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
         brush.setStyle(QtCore.Qt.SolidPattern)
         self.mdi_12.setBackground(brush)
@@ -1253,7 +1205,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.ClientLabel.setObjectName("ClientLabel")
         self.gridLayout_7.addWidget(self.ClientLabel, 0, 0, 1, 2)
@@ -1267,7 +1219,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.PanelLabel.setObjectName("PanelLabel")
         self.gridLayout_7.addWidget(self.PanelLabel, 4, 0, 1, 2)
@@ -1330,7 +1282,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.LineLabel.setObjectName("LineLabel")
         self.gridLayout_7.addWidget(self.LineLabel, 2, 0, 1, 2)
@@ -1373,12 +1325,11 @@ class Ui_MainWindow(object):
         self.gridLayout_8.addLayout(self.gridLayout_7, 0, 0, 2, 1)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem2)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem1)
         self.SelectNode_Label = QtWidgets.QLabel(self.NodeViewTab)
-        self.SelectNode_Label.setMaximumSize(QtCore.QSize(16777215, 20))
         font = QtGui.QFont()
-        font.setPointSize(8)
+        font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
         self.SelectNode_Label.setFont(font)
@@ -1386,13 +1337,13 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.SelectNode_Label.setObjectName("SelectNode_Label")
         self.horizontalLayout.addWidget(self.SelectNode_Label)
         self.SelectNode_combo = QtWidgets.QFontComboBox(self.NodeViewTab)
         self.SelectNode_combo.setMinimumSize(QtCore.QSize(119, 20))
-        self.SelectNode_combo.setMaximumSize(QtCore.QSize(16777215, 20))
+        self.SelectNode_combo.setMaximumSize(QtCore.QSize(119, 20))
         self.SelectNode_combo.setStyleSheet("QComboBox {\n"
 "    border: 1px solid gray;\n"
 "    border-radius: 3px;\n"
@@ -1464,13 +1415,13 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.SelectNode_Label_13.setObjectName("SelectNode_Label_13")
         self.formLayout_4.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.SelectNode_Label_13)
         self.Demand_Source_combobox = QtWidgets.QFontComboBox(self.tab)
         self.Demand_Source_combobox.setMinimumSize(QtCore.QSize(119, 30))
-        self.Demand_Source_combobox.setMaximumSize(QtCore.QSize(226, 30))
+        self.Demand_Source_combobox.setMaximumSize(QtCore.QSize(226, 16777215))
         self.Demand_Source_combobox.setStyleSheet("QComboBox {\n"
 "    border: 1px solid gray;\n"
 "    border-radius: 3px;\n"
@@ -1527,7 +1478,7 @@ class Ui_MainWindow(object):
         self.formLayout.setObjectName("formLayout")
         self.label_8 = QtWidgets.QLabel(self.tab)
         self.label_8.setMinimumSize(QtCore.QSize(120, 0))
-        self.label_8.setMaximumSize(QtCore.QSize(62, 30))
+        self.label_8.setMaximumSize(QtCore.QSize(62, 16777215))
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setBold(True)
@@ -1537,13 +1488,13 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.label_8.setObjectName("label_8")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label_8)
         self.Demand_Destination_combobox = QtWidgets.QFontComboBox(self.tab)
         self.Demand_Destination_combobox.setMinimumSize(QtCore.QSize(119, 30))
-        self.Demand_Destination_combobox.setMaximumSize(QtCore.QSize(743, 30))
+        self.Demand_Destination_combobox.setMaximumSize(QtCore.QSize(743, 16777215))
         self.Demand_Destination_combobox.setStyleSheet("QComboBox {\n"
 "    border: 1px solid gray;\n"
 "    border-radius: 3px;\n"
@@ -1682,7 +1633,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.ClientLabel_22.setObjectName("ClientLabel_22")
         self.gridLayout_2.addWidget(self.ClientLabel_22, 2, 0, 1, 1)
@@ -1734,7 +1685,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.ClientLabel_23.setObjectName("ClientLabel_23")
         self.gridLayout_2.addWidget(self.ClientLabel_23, 4, 0, 1, 1)
@@ -1750,7 +1701,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.ClientLabel_20.setObjectName("ClientLabel_20")
         self.gridLayout_2.addWidget(self.ClientLabel_20, 6, 0, 1, 1)
@@ -1820,7 +1771,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.label_9.setObjectName("label_9")
         self.gridLayout_2.addWidget(self.label_9, 8, 0, 1, 1)
@@ -1836,7 +1787,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.ClientLabel_21.setObjectName("ClientLabel_21")
         self.gridLayout_2.addWidget(self.ClientLabel_21, 0, 0, 1, 1)
@@ -1888,7 +1839,6 @@ class Ui_MainWindow(object):
         self.gridLayout_13 = QtWidgets.QGridLayout(self.tab_8)
         self.gridLayout_13.setObjectName("gridLayout_13")
         self.Demand_mdi = QtWidgets.QMdiArea(self.tab_8)
-        self.Demand_mdi.setMinimumSize(QtCore.QSize(1575, 521))
         self.Demand_mdi.setObjectName("Demand_mdi")
         self.gridLayout_13.addWidget(self.Demand_mdi, 0, 0, 1, 1)
         self.Demand_tab.addTab(self.tab_8, "")
@@ -1906,31 +1856,30 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    \n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.ClientLabel_25.setObjectName("ClientLabel_25")
         self.gridLayout_12.addWidget(self.ClientLabel_25, 2, 1, 1, 1)
         self.gridLayout_15 = QtWidgets.QGridLayout()
         self.gridLayout_15.setObjectName("gridLayout_15")
-        self.MapWidget = MapWidget(self.tab)
-        self.MapWidget.setMinimumSize(QtCore.QSize(821, 259))
-        self.MapWidget.setObjectName("MapWidget")
-        self.gridLayout_15.addWidget(self.MapWidget, 0, 0, 1, 1)
+        self.Demand_map = QtWidgets.QWidget(self.tab)
+        self.Demand_map.setMinimumSize(QtCore.QSize(821, 259))
+        self.Demand_map.setObjectName("Demand_map")
+        self.gridLayout_15.addWidget(self.Demand_map, 0, 0, 1, 1)
         self.gridLayout_12.addLayout(self.gridLayout_15, 3, 1, 1, 2)
-        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_12.addItem(spacerItem3, 0, 1, 1, 1)
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_12.addItem(spacerItem2, 0, 1, 1, 1)
         self.tabWidget.addTab(self.tab, "")
         self.gridLayout_10.addWidget(self.tabWidget, 0, 0, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_10, 0, 0, 1, 1)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(4)
-        self.List_tab.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(0)
+        self.List_tab.setCurrentIndex(1)
         self.RackTab.setCurrentIndex(0)
         self.ShelfTab.setCurrentIndex(3)
         self.Demand_tab.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
 
 
         # TODO: added
@@ -1940,16 +1889,6 @@ class Ui_MainWindow(object):
         self.Demand_Source_combobox.clear()
         self.Demand_Destination_combobox.clear()
         self.cluster_type_combobox.clear()
-        self.ClusterColor_combobox.clear()
-        
-        ClusterColors = ["green", "blue", "black", "orange", "yellow"]
-        self.ClusterColor_combobox.addItems(ClusterColors)
-
-        ClusterTypes = ["100GE", "10GE", "100GE and 10GE"]
-        self.cluster_type_combobox.addItems(ClusterTypes)
-
-        DemandPanels = ["MP2X" , "MP1H", "TP1H"]
-
 
         DemandTabPanels = ["MP2X", "PS6X", "MP1H", "TP1H"]
         self.Demand_PanelList.addItems(DemandTabPanels)
@@ -2032,7 +1971,6 @@ class Ui_MainWindow(object):
 
         self.network = Network()
 
-
         #TODO: edited
         self.listWidget.clicked['QModelIndex'].connect(self.list_click)
 
@@ -2048,49 +1986,24 @@ class Ui_MainWindow(object):
 
         Data["Demand_mdi"] = self.Demand_mdi
 
-        self.OpenLinks_pushbutton.clicked.connect(self.open_links_fun)
+        self.pushButton_4.clicked.connect(self.open_links_fun)
 
-        self.OK_button.clicked.connect(self.OK_button_fun)
-
-        Data["Stage_flag"] = "Demand"
-        Data["Demand_Source_combo"] = self.Demand_Source_combobox
-
-        Data["Demand_LightPath_list"] = self.Demand_LineList
-        Data["Demand_Service_list"] = self.Demand_ServiceList
-
-        Data["DemandTab_firststart_flag"] = False
-
-        self.Demand_ServiceList.setDragEnabled(True)
-        self.Demand_LineList.setDragEnabled(True)
-
-        self.Grooming_pushbutton.clicked.connect(self.grooming_button_fun)
-        self.RWA_pushbutton.clicked.connect(self.RWA_button_fun)
-        self.FinalPlan_pushbutton.clicked.connect(self.print_r)
-
-        self.window = MainWindow
-
-        Data["NetworkObj"] = self.network
-
-        self.Demand_LineList.clicked['QModelIndex'].connect(self.Demand_LineList_fun)
-
-        Data["Demand_first_run"] = False
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
         self.tabWidget.setAccessibleName(_translate("MainWindow", "maintab"))
-        self.OpenTopology_button.setText(_translate("MainWindow", "Open\n"
-" Nodes"))
-        self.SaveTopology_button.setText(_translate("MainWindow", "Save\n"
-" Topology"))
-        self.add_node_button.setText(_translate("MainWindow", "Add\n"
-" Node"))
-        self.OpenLinks_pushbutton.setText(_translate("MainWindow", "Open\n"
-" Links"))
-        self.pushButton_5.setText(_translate("MainWindow", "PushButton"))
-        self.pushButton_7.setText(_translate("MainWindow", "PushButton"))
-        self.pushButton_6.setText(_translate("MainWindow", "Help\n"
-" Ctrl + H"))
+        self.Grouping_groupbox.setTitle(_translate("MainWindow", "Clustering"))
+        self.SetGatewayNode_button.setText(_translate("MainWindow", "Set Node as Gateway"))
+        self.GroupName.setText(_translate("MainWindow", "Cluster Name:"))
+        self.GroupID.setText(_translate("MainWindow", "Cluster Type :"))
+        self.GroupColor.setText(_translate("MainWindow", "Cluster Color:"))
+        self.SelectColor_button.setText(_translate("MainWindow", "Select Color"))
+        self.SelectSubNode_button.setText(_translate("MainWindow", "Select Sub Nodes"))
+        self.SelectSubNode.setText(_translate("MainWindow", "Off"))
+        self.Cancel_button.setText(_translate("MainWindow", "Cancel"))
+        self.OK_button.setText(_translate("MainWindow", "Ok"))
+        self.ShowSubNodes.setText(_translate("MainWindow", "Show Sub Nodes"))
         self.Planning_groupbox.setTitle(_translate("MainWindow", "Planning"))
         self.PanelThreshold_pushbutton.setText(_translate("MainWindow", "Enter Panels Threshold"))
         self.Grooming_pushbutton.setText(_translate("MainWindow", "Grooming"))
@@ -2101,16 +2014,17 @@ class Ui_MainWindow(object):
         self.Working_checkbox.setText(_translate("MainWindow", "Working View"))
         self.Protection_checkbox.setText(_translate("MainWindow", "Protection View"))
         self.Restoration_checkbox.setText(_translate("MainWindow", "Restoration View"))
-        self.Grouping_groupbox.setTitle(_translate("MainWindow", "Clustering"))
-        self.SetGatewayNode_button.setText(_translate("MainWindow", "Set Node as Gateway"))
-        self.GroupName.setText(_translate("MainWindow", "Cluster Name:"))
-        self.GroupID.setText(_translate("MainWindow", "Cluster Type :"))
-        self.GroupColor.setText(_translate("MainWindow", "Cluster Color:"))
-        self.SelectSubNode_button.setText(_translate("MainWindow", "Select Sub Nodes"))
-        self.SelectSubNode.setText(_translate("MainWindow", "Off"))
-        self.Cancel_button.setText(_translate("MainWindow", "Cancel"))
-        self.OK_button.setText(_translate("MainWindow", "Ok"))
-        self.ShowSubNodes.setText(_translate("MainWindow", "Show Sub Nodes"))
+        self.pushButton_6.setText(_translate("MainWindow", "Help\n"
+" Ctrl + H"))
+        self.pushButton_4.setText(_translate("MainWindow", "PushButton"))
+        self.pushButton_5.setText(_translate("MainWindow", "PushButton"))
+        self.add_node_button.setText(_translate("MainWindow", "Add Node\n"
+" Ctrl + ?"))
+        self.SaveTopology_button.setText(_translate("MainWindow", "Save Topology\n"
+" Ctrl + S"))
+        self.OpenTopology_button.setText(_translate("MainWindow", "Open Topology\n"
+"Ctrl + O"))
+        self.pushButton_7.setText(_translate("MainWindow", "PushButton"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.TopologyTab), _translate("MainWindow", "Topology Tab"))
         self.Traffic_matrix.setSortingEnabled(False)
         item = self.General_TM.horizontalHeaderItem(0)
@@ -2216,131 +2130,6 @@ class Ui_MainWindow(object):
         self.ClientLabel_25.setText(_translate("MainWindow", "Map:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
     
-
-    def DemandMap_Change(self, Working = None, Protection = None, 
-        WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None):
-        self.MapWidget.canvas.axes.cla()
-        R = 6371 
-        Source = self.Demand_Source_combobox.currentText()
-        Destination = self.Demand_Destination_combobox.currentText()
-
-        for node in Data["Nodes"].values():
-
-
-            NodeName = node["Node"]
-            id = self.NodeIdMap[NodeName]
-            x, y = self.IdLocationMap[id]
-
-            if NodeName == Source or NodeName == Destination:
-                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'gold')
-            else:
-                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
-            
-
-            self.MapWidget.canvas.axes.text(x, y, NodeName, {'color': 'blueviolet'}, withdash=True,
-                dashdirection= 1,
-                dashlength= 0.0005,
-                rotation= 30,
-                dashrotation= 30 ,
-                dashpush= 10
-                )
-
-        for key in Data["Links"].keys():
-            InNodeName = key[0]
-            OutNodeName = key[1]
-
-            InNodeId = self.NodeIdMap[InNodeName]
-            OutNodeId = self.NodeIdMap[OutNodeName]
-
-            xIn , yIn = self.IdLocationMap[InNodeId]
-            xOut, yOut = self.IdLocationMap[OutNodeId]
-
-            xl = [xIn, xOut]
-            yl = [yIn, yOut]
-            self.MapWidget.canvas.axes.plot(xl,yl, c='black')
-
-        #self.MapWidget.canvas.axes.plot(G)
-        self.MapWidget.canvas.axes.get_xaxis().set_visible(False)
-        self.MapWidget.canvas.axes.get_yaxis().set_visible(False)
-        self.MapWidget.canvas.axes.set_frame_on(False)
-        
-
-        x_list_W = []
-        y_list_W = []
-        if Working != None:
-            for key in Working:
-
-                x1, y1 = self.IdLocationMap[key]
-
-
-                x_list_W.append(x1)
-                y_list_W.append(y1)
-
-            if WorkingSNR != None:
-                SNRList = str(WorkingSNR)
-                snr_label = "Working SNR = " + SNRList
-                self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label=snr_label)
-            else:
-                self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label="Working")
-            self.MapWidget.canvas.axes.legend(loc = 'best')
-
-
-        x_list_P = []
-        y_list_P = []
-        if Protection != None:
-            for key in Protection:
-
-                x1, y1 = self.IdLocationMap[key]
-
-
-                x_list_P.append(x1)
-                y_list_P.append(y1)
-
-            if ProtectionSNR != None:
-                SNRList = str(ProtectionSNR)
-                snr_label1 = "Protection SNR = " + SNRList          
-                self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label=snr_label1)
-            else:
-                self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label="Protection")
-            self.MapWidget.canvas.axes.legend(loc = 'best')
-
-            
-        if WorkingRegeneratorsList != None:
-            for key in WorkingRegeneratorsList:
-
-                x, y = self.IdLocationMap[key]
-
-
-                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'green')
-
-        if ProtectionRegenaratorsList != None:
-            for key in ProtectionRegenaratorsList:
-
-                x, y = self.IdLocationMap[key]
-
-                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'green')
-
-        self.MapWidget.canvas.draw()
-    
-    def OK_button_fun(self):
-        SubNodes = []
-        for node in Data["Grouping"][self.backend_map.LastGateWay]["SubNodes"].keys():
-            SubNodes.append(self.NodeIdMap[node])
-        
-        self.network.PhysicalTopology.add_cluster(self.NodeIdMap[self.backend_map.LastGateWay], SubNodes, Data["Grouping"][self.backend_map.LastGateWay]["Color"])
-        self.SelectSubNode_button_fun()
-        print(self.network.PhysicalTopology.ClusterDict[0].SubNodesId)
-
-    #TODO: complete this method
-    def working_view_fun(self):
-        for key in Data["Links"].keys():
-            InNodeName = key[0]
-            OutNodeName = key[1]
-            InNodeId = self.NodeIdMap[key[0]]
-            OutNodeId = self.NodeIdMap[key[1]]
-            
-
-    
     def SetNode_flag_javascript(self,text):
         self.webengine.page().runJavaScript('SetNode_flag_fun(\'%s\')' %text)
     
@@ -2369,9 +2158,9 @@ class Ui_MainWindow(object):
         self.backend_map.SetNode_flag_fun("False")
         self.SetNode_flag_javascript("False")
         self.lastgroup_name = self.GroupName_edit.text()
-        self.lastgroup_type = self.cluster_type_combobox.currentText()
-        self.lastgroup_color = self.Clustercolor_combobox.currentText()
-        if self.lastgroup_name == "":
+        self.lastgroup_id = self.GroupId_edit.text()
+        self.lastgroup_color = self.SelectColor_edit.text()
+        if self.lastgroup_name == "" and self.lastgroup_id == "" and self.lastgroup_color == "":
 
 
             #TODO: make a popup window for this
@@ -2405,153 +2194,51 @@ class Ui_MainWindow(object):
             if Data["Nodes"][nodename]["Line_Services"]["1"][service] != 0:
                 self.LineList.addItem(str(Data["Nodes"][nodename]["Line_Services"]["1"][service]) + " * "+service)'''
 
-    # FIXME: this code 
+
     def set_panels(self):
-        Source = self.SelectNode_combo.currentText()
-        
-        # getting tuple keys
-        DegreeList = list(self.GroomingTabDataBase["Panels"].keys())
+        nodename = self.SelectNode_combo.currentText()
+        #self.reset_panels()
+        #for id,panel in list(Data["Nodes"][nodename]["Panels"].items()):
+        for i in range(1,5):
+            for j in range(1,15):
+                if "1"+str(i)+str(j) in Data["Nodes"][nodename]["Panels"]:
+                    panel = Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Name"]
+                    if panel == "SC":
+                        Data["1"+str(i)+str(j)].setWidget(SC_panel("1"+str(i)+str(j),nodename))
+                    elif panel == "BAF3":
+                        Data["1"+str(i)+str(j)].setWidget(BAF3_panel("1"+str(i)+str(j),nodename))
+                    elif panel == "LAF3":
+                        Data["1"+str(i)+str(j)].setWidget(LAF3_panel("1"+str(i)+str(j),nodename))
+                    elif panel == "PAF3":
+                        Data["1"+str(i)+str(j)].setWidget(PAF3_panel("1"+str(i)+str(j),nodename))
+                    elif panel == "MP2X":
+                        Data["1"+str(i)+str(j)].setWidget(MP2X_panel("1"+str(i)+str(j),nodename))
+                    elif panel == "MP2D":
+                        position = Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Position"]
+                        if position == "L":
 
-        # getting ids list
-        DegreeIdList = list(map(lambda x : x[1], DegreeList))
+                            Data["1"+str(i)+str(j)].setWidget(MP2D_panel_L("1"+str(i)+str(j),nodename))
+                            if Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Client1"] == "green":
+                                Data["1"+str(i)+str(j)].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
+                            elif Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Client1"] == "red":
+                                Data["1"+str(i)+str(j)].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_red.png")))
 
-        for DegreeId in DegreeIdList:
+                            if Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Client2"] == "green":
+                                Data["1"+str(i)+str(j)].widget().label_client2.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
+                            elif Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Client2"] == "red":
+                                Data["1"+str(i)+str(j)].widget().label_client2.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_red.png")))
 
-        #for i in range(1, 5):
-            for j in range(1, 15):
-                id = "1" + str( DegreeId ) + str(j)
-                if id in GroomingTabDataBase["Panels"][nodename]:
-                    panel = GroomingTabDataBase["Panels"][nodename][id]
-
-                    if isinstance(panel , SC):
-                        Data[id].setWidget(SC_panel(id,nodename))
-
-                    elif isinstance(panel, BAF3):
-                        Data[id].setWidget(BAF3_panel(id,nodename))
-
-                    elif isinstance(panel , LAF3):
-                        Data[id].setWidget(LAF3_panel(id,nodename))
-
-                    elif isinstance(panel , PAF3):
-                        Data[id].setWidget(PAF3_panel(id,nodename))
-
-                    elif isinstance(panel, MP1H_L):
-                        Data[id].setWidget(MP2X_panel(id,nodename))
-
-                    elif isinstance(panel, MP2D_L):
-                        # FIXME: this block needs correction
-                        # from here
-                        Data[id].setWidget(MP2D_panel_L(id,nodename))
-                        if Data["Nodes"][nodename]["Panels"][id]["Sockets"]["Client1"] == "green":
-                            Data[id].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
-                        elif Data["Nodes"][nodename]["Panels"][id]["Sockets"]["Client1"] == "red":
-                            Data[id].widget().label_client1.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_red.png")))
-
-                        if Data["Nodes"][nodename]["Panels"][id]["Sockets"]["Client2"] == "green":
-                            Data[id].widget().label_client2.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
-                        elif Data["Nodes"][nodename]["Panels"][id]["Sockets"]["Client2"] == "red":
-                            Data[id].widget().label_client2.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_red.png")))
-
-                        if Data["Nodes"][nodename]["Panels"][id]["Sockets"]["Line"] == 2:
-                            Data[id].widget().label_line.setPixmap(QPixmap(os.path.join("MP2D_panel", "line_green.png")))
+                            if Data["Nodes"][nodename]["Panels"]["1"+str(i)+str(j)]["Sockets"]["Line"] == 2:
+                                Data["1"+str(i)+str(j)].widget().label_line.setPixmap(QPixmap(os.path.join("MP2D_panel", "line_green.png")))
                         
-                        # to here
+                        elif position == "R":
+                            Data["1"+str(i)+str(j)].setWidget(MP2D_panel_R("1"+str(i)+str(j),nodename))
 
-                    elif isinstance(panel, MP2D_R):
-                        Data[id].setWidget(MP2D_panel_R(id, nodename))
-
-                    elif isinstance(panel, TP2X):
-                        Data[id].setWidget(TP2X_panel(id, nodename))
-                    
-                    elif isinstance(panel, TP1H_L):
-                        Data[id].setWidget(TP1H_L_Grooming(id, nodename))
-                        # TODO: change color
-
-                    elif isinstance(panel, TP1H_R):
-                        Data[id].setWidget(TP1H_R_Grooming(id, nodename))
-
-                    elif isinstance(panel, MP1H_L):
-                        Data[id].setWidget(MP1H_L_Grooming(id, nodename))
-                        # TODO: change color
-                           
-                    elif isinstance(panel, MP1H_R):
-                        Data[id].setWidget(MP1H_R_Grooming(id, nodename))
+                    elif panel == "TP2X":
+                        Data["1"+str(i)+str(j)].setWidget(TP2X_panel("1"+str(i)+str(j),nodename))
                 else:
-                    Data[id].setWidget(BLANK_panel(id, nodename))
-    
-    
-    def set_demand_panels(self):
-
-
-        Source = self.Demand_Source_combobox.currentText()
-        Destination = self.Demand_Destination_combobox.currentText()
-        for i in range(1, 15):
-            if str(i) in DemandTabDataBase["Panels"][Source]:
-                panel = DemandTabDataBase["Panels"][Source][str(i)]
-                if isinstance(panel , MP2X_L):
-                    Data["DemandPanel_" + str(i)].setWidget(MP2X_L_Demand(str(i), Source, Destination))
-                    for client in panel.ClientsType:
-                        if client != 0:
-                            pass
-                            # TODO: changing client label to green
-                elif isinstance(panel, MP2X_R):
-                    Data["DemandPanel_" + str(i)].setWidget(MP2X_R_Demand(str(i), Source))
-                
-                elif isinstance(panel, MP1H_L):
-                    Data["DemandPanel_" + str(i)].setWidget(MP1H_L_Demand(str(i), Source, Destination))
-
-                    # finding panel widget
-                    widget = Data["DemandPanel_" + str(i)].widget()
-                        
-                    for i in range(len(panel.ClientsCapacity)):
-                        if panel.ClientsCapacity[i] != 0:
-
-                            # finding object of client customlabel
-                            text = "client" + str( i + 1 )
-                            clientvar = getattr(widget, text)
-
-                            # filling customlabel attributes
-                            clientvar.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
-                            clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])])
-                            clientvar.servicetype = panel.ClientsCapacity[i]
-                            clientvar.nodename = Source
-                            clientvar.Destination = Destination
-                            clientvar.ids = [panel.DemandIdList[i], panel.ServiceIdList[i]]
-                            clientvar.setAcceptDrops(False)
-
-                elif isinstance(panel, MP1H_R):
-                    Data["DemandPanel_" + str(i)].setWidget(MP1H_R_Demand(str(i), Source))
-                
-                elif isinstance(panel, TP1H_L):
-                    Data["DemandPanel_" + str(i)].setWidget(TP1H_L_Demand(str(i), Source, Destination))
-
-                    # finding panel widget
-                    widget = Data["DemandPanel_" + str(i)].widget()
-
-                    if panel.Line == "100GE":
-
-                        # finding object of client customlabel
-                        clientvar = getattr(widget, "client")
-
-                        # filling customlabel attributes 
-                        clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandId, panel.ServiceId)])
-                        clientvar.servicetype = "100GE"
-                        self.nodename = Source
-                        self.Destination = Destination
-                        self.ids = [panel.DemandId, panel.ServiceId]
-                        clientvar.setAcceptDrops(False)
-
-                        # TODO: change client color to green
-                
-                elif isinstance(panel, TP1H_R):
-                    Data["DemandPanel_" + str(i)].setWidget(TP1H_R_Demand(str(i), Source))
-            
-            else:
-                Data["DemandPanel_" + str(i)].setWidget(BLANK_Demand(str(i), Source, Destination))
-
-                         
-
-
+                    Data["1"+str(i)+str(j)].setWidget(BLANK_panel("1"+str(i)+str(j), nodename))
+        
 
 
     def SaveTopology_fun(self):
@@ -2595,7 +2282,7 @@ class Ui_MainWindow(object):
             
             
     
-    def open_links_fun(self):
+    def open_links_fun(self): 
         name = QFileDialog.getOpenFileName(MainWindow, "Open Topology")
         
 
@@ -2604,7 +2291,7 @@ class Ui_MainWindow(object):
                 Temp_data = handle.parse(header=0, skipfooter=0)
             temp_dic ={}
             handle.close()
-            headers = ["ID", "Source", "Destination", "Distance", "Fiber Type", "Loss Coefficient", "Beta", "Gamma", "Dispersion"]
+            headers = ["ID", "Source", "Destination", "Distance", "Fiber Type", "Loss Coefficient", "Beta", "Gamma", "Dispersion", "Snr"]
             
             for pointer in headers:
                 temp_dic[pointer] = {}
@@ -2632,10 +2319,12 @@ class Ui_MainWindow(object):
                 Dispersion = str(temp_dic["Dispersion"][Row]).split('+')
                 Dispersion = list(map(lambda x : float(x), Dispersion))
 
+                Snr = str(temp_dic["Snr"][Row]).split(',')
+                Snr = list(map(lambda x : float(x), Snr))
                 
                 # TODO: Some Data doesn't exist in Link Dictionary
                 ProperDict[(Source, Destination)] = {"NumSpan": len(Distance), "Length": Distance, "Loss":Loss, "Type":Fiber_Type, "Beta":Beta, "Gamma": Gamma,
-                "Dispersion": Dispersion}
+                "Dispersion": Dispersion, "Snr":Snr}
 
             Data["Links"].update(ProperDict)
         
@@ -2658,15 +2347,10 @@ class Ui_MainWindow(object):
                     self.shelfset(i)
                     Data["mdi_1"+str(i)+"_flag"] = True
 
-
             Data["first_run_flag"] = True
         if index == 4:
-            if Data["DemandTab_firststart_flag"] == False:
-                self.Demand_Shelf_set()
-                Data["DemandTab_firststart_flag"] = True
 
             self.UpdateDemand_ServiceList()
-            
 
             # TODO: run shelf set function for Demand Tab and turn its relevant flag on
     
@@ -2698,35 +2382,7 @@ class Ui_MainWindow(object):
                 cell_data = Data[item]["DataSection"][column_name][row]
                 self.Traffic_matrix.setCurrentCell(int(row),i)
                 self.Traffic_matrix.setItem(int(row),i,QTableWidgetItem(cell_data))
-    
-    def Demand_LineList_fun(self):
-        CurrentText = str(self.Demand_LineList.currentItem().text())
-
-        # detecting Lightpath id, working path and protection path
-        LightpathId = CurrentText.split('#')[0]
-        LightpathId =int( LightpathId.strip() )
-        Source = self.Demand_Source_combobox.currentText()
-        Destination = self.Demand_Destination_combobox.currentText()
-
-        if (Source, Destination) in GroomingTabDataBase["LightPathes"]:
-            key = (Source, Destination)
-        elif (Destination, Source) in GroomingTabDataBase["LightPathes"]:
-            key = (Destination, Source)
-        else:
-            print("key not found")
-
-        WorkingPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Working"]
-        ProtectionPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Protection"]
-        RG_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_w"]
-        RG_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_p"]
-        SNR_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_w"]
-        SNR_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_p"]
-
-        #print(f"here for calling demand change function <before> ")
-
-        # calling Demand map change function
-        self.DemandMap_Change(WorkingPath, ProtectionPath, WorkingRegeneratorsList = RG_w, ProtectionRegenaratorsList = RG_p
-                                ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p)
+            
 
     # MHA EDITION:
     def SaveTM_fun(self):
@@ -2894,12 +2550,9 @@ class Ui_MainWindow(object):
                   ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"]]
 
         for Row in RowsNumber:
-            #id = Data["General"]["DataSection"]["0"][Row]
-            
+            id = Data["General"]["DataSection"]["0"][Row]
             Source = Data["General"]["DataSection"]["1"][Row]
             Destination = Data["General"]["DataSection"]["2"][Row]
-            SourceId = int(self.NodeIdMap[Source])
-            DestinationId = int(self.NodeIdMap[Destination])
 
             # TODO: find Type in Traffic Matrix
             Type = None
@@ -2917,10 +2570,10 @@ class Ui_MainWindow(object):
                         PropertyDict[Prop] = Data[service]["DataSection"][Prop].get(Row, None)
                 i += 1
                 ServiceDict[service] = PropertyDict
-            self.network.TrafficMatrix.add_demand(SourceId,DestinationId,Type)
+            self.network.TrafficMatrix.add_demand(id,Source,Destination,Type)
 
-            
-            id = self.network.Traffic.Demand.DemandReferenceId - 1 
+            self.FillDemandTabDataBase_Services(Source, Destination, ServiceDict)
+
             for service in list(ServiceDict.keys()):
 
                 Sla = ServiceDict[service]["SLA"]
@@ -2949,96 +2602,16 @@ class Ui_MainWindow(object):
 
                 for i in range(ServiceDict[service]["Quantity"]):
                     self.network.TrafficMatrix.DemandDict[id].add_service(service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
-            
-            # initializing DataBases 
-            self.initialize_DemandTabDataBase(Source, Destination)
-            self.FillDemandTabDataBase_Services(id ,Source, Destination, ServiceDict)
-            self.initialize_GroomingTabDataBase(Source, Destination)
-            
-    def initialize_DemandTabDataBase(self, Source, Destination):
-        DemandTabDataBase["Lightpathes"][(Source, Destination)] = {}
-        DemandTabDataBase["Panels"][Source] = {}
-
-    def initialize_GroomingTabDataBase(self, Source, Destination):
-        GroomingTabDataBase["LightPathes"][(Source, Destination)] = {}
-        GroomingTabDataBase["Panels"][Source] = {}
-        #GroomingTabDataBase["Links"][(Source, Destination)] = []
+                    
+    def FillDemandTabDataBase_Services(self, Source, Destination, ServiceDict):
         
-    
-
-
-    def FillDemandTabDataBase_Services(self, id, Source, Destination, ServiceDict):
-        
-        ServiceDict_2 = {}
-        """ for Service in ServiceDict.keys():
+        ServiceList = []
+        for Service in ServiceDict.keys():
             Quantity = ServiceDict[Service]["Quantity"]
-            for i in range(Quantity):
-                item = "["+ str(id) + " - " + str ( Serviceid ) + "]" + "    " + str(Service)
+            if Quantity !=0:
+                item = str(Quantity) + " * " + str(Service)
                 ServiceList.append(item)
-        DemandTabDataBase["Services"][(Source,Destination)] = ServiceList """
-        Servicedict = self.network.TrafficMatrix.DemandDict[id].ServiceDict
-        #for servic
-        # check wheather ServiceId is int or str
-        for serviceId, service in Servicedict.items():
-            serviceId = int(serviceId)
-            if isinstance(service, Network.Traffic.Demand.E1):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "E1")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.STM_1_Electrical):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_1_Electrical")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.STM_1_Optical):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_1_Optical")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.STM_4):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_4")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.STM_16):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_16")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.STM_64):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "STM_64")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.FE):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "FE")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.G_1):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "1GE")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.G_10):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "10GE")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.G_40):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "40GE")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-
-            elif isinstance(service, Network.Traffic.Demand.G_100):
-                servicetitle = "[%s , %s] # %s" %(id, serviceId, "100GE")
-                ServiceDict_2[(id, serviceId)] = servicetitle
-        
-        """ def manual_update(ServiceDict):
-            print(f"before adding : {DemandTabDataBase['Services_static'][Source]}")
-            for key, value in ServiceDict.items():
-                DemandTabDataBase["Services_static"][Source][key] = value
-                print(f"key : {key}, value: {value}") """
-                
-
-        DemandTabDataBase["Services"][(Source,Destination)] = ServiceDict_2
-        if Source in DemandTabDataBase["Services_static"]:
-            DemandTabDataBase["Services_static"][Source].update(ServiceDict_2.copy())
-        else:
-            DemandTabDataBase["Services_static"][Source] = {}
-            DemandTabDataBase["Services_static"][Source].update(ServiceDict_2.copy())
-
+        DemandTabDataBase["Services"][(Source,Destination)] = ServiceList
     
     def Fill_Demand_SourceandDestination_combobox(self):
 
@@ -3061,7 +2634,7 @@ class Ui_MainWindow(object):
 
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
-        ServiceList = list(DemandTabDataBase["Services"][(Source,Destination)].values())
+        ServiceList = list(DemandTabDataBase["Services"][(Source,Destination)])
         self.Demand_ServiceList.clear()
         self.Demand_ServiceList.addItems(ServiceList)
     
@@ -3070,70 +2643,30 @@ class Ui_MainWindow(object):
 
         if Source != '':
             self.Demand_Destination_combobox.clear()
-            self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source])))
-
-        self.DemandMap_Change()
+            self.Demand_Destination_combobox.addItems(DemandTabDataBase["Source_Destination"][Source])
     
     def Demand_Destination_combobox_change(self):
-        Source = self.Demand_Source_combobox.currentText()
-        Destination = self.Demand_Destination_combobox.currentText()
 
         if self.Demand_Destination_combobox.currentText() != '':
             self.UpdateDemand_ServiceList()
-            self.update_Demand_lightpath_list()
-
-            if Data["Demand_first_run"] is True:
-                self.set_demand_panels()
-            else:
-                Data["Demand_first_run"] = True
-
-
-        self.DemandMap_Change()
         
-        
+        Destination = self.Demand_Destination_combobox.currentText()
             
 
 
     def PhysicalTopologyToObject(self):
-
-        R = 6371
-        def scale_calculation(lat, lon):
-            x = R * cos(lat) * cos(lon)
-            y = R * cos(lat) * sin(lon)
-            return [x,y]
-
-
-        self.NodeIdMap = {}        # { name: id }
-        self.IdNodeMap = {}        # {id : name}
-        self.IdLocationMap = {}     # {id : [x , y]}
+        self.NodeIdDict = {}
 
         for NodeData in Data["Nodes"].values():
-            
-            self.NodeIdMap[NodeData["Node"]] = self.network.Topology.Node.ReferenceId
-            self.IdNodeMap[self.network.Topology.Node.ReferenceId] = NodeData["Node"]
-            self.IdLocationMap[self.network.Topology.Node.ReferenceId] = scale_calculation(NodeData["Location"][0], NodeData["Location"][1])
+            self.NodeIdDict[NodeData["Node"]] = self.network.Topology.Node.ReferenceId
             self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["Type"])
         
         for LinkId , LinkData in Data["Links"].items():
-            self.network.PhysicalTopology.add_link(self.NodeIdMap[LinkId[0]], self.NodeIdMap[LinkId[1]], LinkData["NumSpan"])
-            
-            # NOTE : here we are initializing link part of GroomingTabDataBase
-            GroomingTabDataBase["Links"][(LinkId[0], LinkId[1])] = []
+            self.network.PhysicalTopology.add_link(self.NodeIdDict[LinkId[0]], self.NodeIdDict[LinkId[1]], LinkData["NumSpan"])
 
             for i in range(LinkData["NumSpan"]):
-                self.network.PhysicalTopology.LinkDict[(self.NodeIdMap[LinkId[0]], self.NodeIdMap[LinkId[1]])].put_fiber_Type(LinkData["Length"][i],
-                 LinkData["Loss"][i], LinkData["Dispersion"][i], LinkData["Beta"][i], LinkData["Gamma"][i], i)
-        
-        # for using in panels widget
-        Data["NodeIdMap"] = self.NodeIdMap
-    
-    def update_Demand_lightpath_list(self):
-        #if Data["Stage_flag"] == "Grooming":
-        Source = self.Demand_Source_combobox.currentText()
-        Destination = self.Demand_Destination_combobox.currentText()
-        lightpath_list = list(DemandTabDataBase["Lightpathes"][(Source, Destination)].values())
-        self.Demand_LineList.clear()
-        self.Demand_LineList.addItems(lightpath_list)
+                self.network.PhysicalTopology.LinkDict[(self.NodeIdDict[LinkId[0]], self.NodeIdDict[LinkId[1]])].put_fiber_Type(LinkData["Length"],
+                 LinkData["Loss"], LinkData["Dispersion"], LinkData["Beta"], LinkData["Gamma"], i, LinkData["Snr"])
         
                 
 
@@ -3211,8 +2744,7 @@ class Ui_MainWindow(object):
             NodeName = data["Node"]
             Node_cor = data["Location"]
             NodeCorDict[NodeName] = Node_cor
-            Icon = folium.features.CustomIcon('server_v5.png',icon_size=(30, 30),icon_anchor=(20,30))
-            folium.Marker(Node_cor ,icon = Icon, popup=  "<h2>%s</h2>" %NodeName).add_to(self.m)
+            folium.Marker(Node_cor ,icon=folium.Icon(color="red"), popup=  "<h2>%s</h2>" %NodeName).add_to(self.m)
         
         for link in Data["Links"].keys():
             Source_cor = NodeCorDict[link[0]]
@@ -3349,29 +2881,9 @@ class Ui_MainWindow(object):
         # filling Network Object
         self.PhysicalTopologyToObject()
         self.TrafficMatrixToObject()
-        self.DemandTabDataBase_Setup()
-        self.GroomingTabDataBase_Setup()
         self.Fill_Demand_SourceandDestination_combobox()
 
-
-
-        #self.SelectNode_combo_fun()
-    
-    def DemandTabDataBase_Setup(self):
-        for node in Data["Nodes"].values():
-            nodename = node["Node"]
-            DemandTabDataBase["Panels"][nodename] = {}
-        
-
-    def GroomingTabDataBase_Setup(self):
-
-        nodelist = []
-        for node in Data["Nodes"].values():
-            nodename = node["Node"]
-            nodelist.append(nodename)
-            GroomingTabDataBase["Panels"][nodename] = {}
-        self.SelectNode_combo.addItems(nodelist)
-        
+        self.SelectNode_combo_fun()
 
     def shelfset(self,shelfnum):
         nodename = self.SelectNode_combo.currentText()
@@ -3394,7 +2906,7 @@ class Ui_MainWindow(object):
             setattr(self, "DemandPanel_" + str(i),QMdiSubWindow())
             Data["DemandPanel_" + str(i)] = getattr(ui, "DemandPanel_" + str(i))
             Data["DemandPanel_" + str(i)].setWindowFlag(Qt.FramelessWindowHint)
-            Data["DemandPanel_" + str(i)].setWidget(BLANK_Demand(str(i), Source, Destination))
+            #Data["DemandPanel_" + str(i)].setWidget(Demand_blank_panel(str(i), Source, Destination))
 
             Data["Demand_mdi"].addSubWindow(Data["DemandPanel_" + str(i)])
             Data["DemandPanel_" + str(i)].show()
@@ -3412,513 +2924,6 @@ class Ui_MainWindow(object):
             Data["mdi_11"].addSubWindow(Data["11"+str(i)])              
 
             Data["11"+str(i)].show()
-    
-    def put_demandtab_results(self):
-        pass
-    
-    def put_groomingtab_results(self):
-        for id, lightpath in self.network.LightPathDict.items():
-            working = lightpath.WorkingPath
-            protection = lightpath.ProtectionPath
-
-            for i in range(0, len(working), 2):
-                innode = self.NodeIdMap[working[i]]
-                outnode = self.NodeIdMap[working[i+1]]
-
-                #if (innode, outnode) 
-
-
-
-
-    """ def grooming_fun(self):
-
-        MP1H_th = 7
-
-        for demand, demandobj in self.network.TrafficMatrix.DemandDict.items():
-            ServiceList =list(demandobj.ServiceDict.items())
-
-            STM_64_List = list(filter(lambda x : isinstance( x[1] , Network.Traffic.Demand.STM_64 ) , ServiceList))
-            STM_64_List = list(map(lambda x : x[0] , STM_64_List ))
-            NumSTM_64 = len(STM_64_List)
-
-            G10_List = list(filter(lambda x : isinstance( x[1] , Network.Traffic.Demand.G_10 ) , ServiceList))
-            G10_List = list(map(lambda x : x[0] , G10_List ))
-            NumG10 = len(G10_List)
-
-            G100_List = list(filter(lambda x : isinstance( x[1] , Network.Traffic.Demand.G_100 ) , ServiceList))
-            G100_List = list(map(lambda x : x[0] , G100_List ))
-            NumG100 = len(G100_List)
-
-            # Number Of MP1H Calculation
-
-            NumClientPorts_MP1H = NumSTM_64 + NumG10
-            MP1H_servicelist = G10_List + STM_64_List
-            NumFullLightPath = NumClientPorts_MP1H // 10
-            RemClients_MP1H = NumClientPorts_MP1H % 10
-            NumMP1H = ceil(NumClientPorts_MP1H / 10)
-
-            for no in range(NumFullLightPath):
-                self.network.add_lightpath(demandobj.Source, demandobj.Destination, "100GE", MP1H_servicelist[0:10]
-                ,"100GE", demand)
-                for i in reversed(range(10)) :
-                    DemandTabDataBase["Services"][(demandobj.Source, demandobj.Destination)][(demand, str(MP1H_servicelist[i]))]
-                    MP1H_servicelist.pop(i)
-
-            
-            if RemClients_MP1H >= MP1H_th:
-                print("th_List:" , MP1H_servicelist)
-                x = list(MP1H_servicelist)
-                for i in range(10-len(MP1H_servicelist)):
-                    x.append(None)
-                self.network.add_lightpath(demandobj.Source, demandobj.Destination, "100GE", x, "100GE", demand)
-
-                for i in reversed(range(len(MP1H_servicelist))):
-                    DemandTabDataBase["Services"][(demandobj.Source, demandobj.Destination)][(demand, str(MP1H_servicelist[i]))]
-                    MP1H_servicelist.pop(i)
-            
-            # Number Of TP1H Calculation
-            NumTP1H = NumG100
-
-
-            for no in reversed(range(NumG100)):
-                if isinstance(G100_List, int):
-                    x = [G100_List]
-                    for i in range(9):
-                        x.append(None)
-                else:
-                    x = [G100_List[no]]
-                    for i in range(9):
-                        x.append(None)
-                self.network.add_lightpath(demandobj.Source, demandobj.Destination, "100GE", G100_List[no], "100GE", demand)
-
-                DemandTabDataBase["Services"][(demandobj.Source, demandobj.Destination)][(demand, str(G100_List[no]))]
-                G100_List.pop(no) """
-
-
-
-
-    def print_r(self, obj):
-        with open('NetworkObj.obj', 'wb') as handle:
-            pickle.dump(self.network, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        handle.close()
-        
-    
-    def fill_lightpath(self):
-        for i in range(4):
-            path = [0, 1]
-            self.network.put_results(i, list(path), list(path), [i + 1], "x", "x", "x", "x", "x", "x")
-        
-        for i in range(4, 9):
-            path = [0 ,2]
-            self.network.put_results(i, list(path), list(path), [i - 3], "x", "x", "x", "x", "x", "x")
-        for i in range(9, 11):
-            path = [2, 1]
-            self.network.put_results(i, list(path), list(path), [i - 8], "x", "x", "x", "x", "x", "x")
-        
-        for i in range(11, 13):
-            path = [0 ,3]
-            self.network.put_results(i, list(path), list(path), [i - 10], "x", "x", "x", "x", "x", "x")
-        
-        path = [3, 0, 1]
-        self.network.put_results(13, list(path), list(path), [5], "x", "x", "x", "x", "x", "x")
-
-        path = [3, 0 ,2]
-        self.network.put_results(14, list(path), list(path), [6], "x", "x", "x", "x", "x", "x")
-    
-    def fill_DemandTabDataBase(self, netobj):
-
-        def get_panel_num(Source):
-            IdList = list(DemandTabDataBase["Panels"][Source].keys())
-            
-            # if shelf is empty this method must return 1 in ## string ##
-            if not IdList:
-                return "1"
-            IdList = list(map(lambda x : int(x), IdList))
-            MaxId = max(IdList)
-            return str(MaxId + 1)
-        
-        def create_ClientsCapacityList(DemandId, ServiceIdList):
-            OutputList = []
-            for ServiceId in ServiceIdList:
-                ServiceObj = netobj.TrafficMatrix.DemandDict[DemandId].ServiceDict[ServiceId]
-                if isinstance(ServiceObj, Network.Traffic.Demand.G_10):
-                    OutputList.append("10GE")
-                else:
-                    OutputList.append("STM_64")
-            
-            return OutputList
-
-        # lightpath and panel part
-        for id, lightpath in netobj.LightPathDict.items():
-            
-            
-            Source = self.IdNodeMap[lightpath.Source]
-            Destination = self.IdNodeMap[lightpath.Destination]
-            type = lightpath.Type
-            DemandId = lightpath.DemandId
-            DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
-
-            ## debug section
-            print("Source: ", Source)
-            print("Destination:" , Destination)
-            print("DemandId :", DemandId)
-            print("serviceIdList :", lightpath.ServiceIdList)
-
-            ## end of debug section
-            
-            # checking wheather lightpath is created by tp1h or not
-            if len(lightpath.ServiceIdList) == 1:
-                panelid = get_panel_num(Source)
-                DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
-
-                ## debug section
-                print(DemandTabDataBase["Panels"][Source][panelid].__dict__)
-
-                ## end of debug section
-                DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = TP1H_R(panelid)
-
-                # omitting handeled services from DemandTabDataBase
-                DemandTabDataBase["Services"][(Source, Destination)].pop((DemandId, lightpath.ServiceIdList[0]))
-            else:
-                panelid = get_panel_num(Source)
-                ClientCapacity = create_ClientsCapacityList(DemandId, lightpath.ServiceIdList)
-                LineCapacity = len(ClientCapacity) * 10
-                
-                ClientLen = len(ClientCapacity) 
-                if ClientLen != 10:
-                    for i in range(10 - ClientLen):
-                        ClientCapacity.append(0)
-                
-                
-                DemandTabDataBase["Panels"][Source][panelid] = MP1H_L(ClientCapacity, LineCapacity, lightpath.ServiceIdList, [DemandId for i in range(10)], id, LightPath_flag= 1)
-
-                ## debug section
-                print(DemandTabDataBase["Panels"][Source][panelid].__dict__)
-
-                ## end of debug section
-                DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = MP1H_R(panelid)
-
-                # omitting handeled services from DemandTabDataBase
-                for ServiceId in lightpath.ServiceIdList:
-                    DemandTabDataBase["Services"][(Source, Destination)].pop((DemandId, ServiceId))
-                print(f"panels part--> Source:{Source} panels:{DemandTabDataBase['Panels'][Source]}")
-                print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-    
-    def fill_GroomingTabDataBase(self, netobj):
-
-        def get_panel_num(Source):
-            IdList = list(DemandTabDataBase["Panels"][Source].keys())
-            
-            # if shelf is empty this method must return 1 in ## string ##
-            if not IdList:
-                return "1"
-            IdList = list(map(lambda x : int(x), IdList))
-            MaxId = max(IdList)
-            return str(MaxId + 1)
-        
-        def create_ClientsCapacityList(DemandId, ServiceIdList):
-            OutputList = []
-            for ServiceId in ServiceIdList:
-                
-                # FIXME: very important
-                if ServiceId in self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict:
-                    ServiceObj = self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict[ServiceId]
-                else:
-                    ServiceObj = 0
-                ##
-
-                if isinstance(ServiceObj, Network.Traffic.Demand.G_10):
-                    OutputList.append("10GE")
-                else:
-                    OutputList.append("STM_64")
-            
-            return OutputList
-        
-        
-        for id, lightpath in netobj.LightPathDict.items():
-            Source = self.IdNodeMap[lightpath.Source]
-            Destination = self.IdNodeMap[lightpath.Destination]
-            Working = lightpath.WorkingPath
-            Protection = lightpath.ProtectionPath
-            DemandId = lightpath.DemandId
-            WaveLength = lightpath.WaveLength
-            RG_w = lightpath.RegeneratorNode_w
-            RG_p = lightpath.RegeneratorNode_p
-            SNR_w = lightpath.SNR_w
-            SNR_p = lightpath.SNR_p
-
-            # adding pathes to to GroomingTabDataBase ( lightpath part )
-            GroomingTabDataBase["LightPathes"][(Source, Destination)][id] = {}
-            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["Working"] = Working
-            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["Protection"] = Protection
-            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["RG_w"] = RG_w
-            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["RG_p"] = RG_p
-            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_w"] = SNR_w
-            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_p"] = SNR_p
-
-            # Detecting Degrees and Filling GroomingTabDataBase ( Panels Part )
-
-            DegreeNode = self.IdNodeMap[Working[1]]     # second node of each lightpath
-
-            # BUG: be careful here we are calculating degrees based on working path only
-            if not( DegreeNode in GroomingTabDataBase["Panels"]):
-                DegreeId = len(GroomingTabDataBase["Panels"][Source]) + 1   
-                GroomingTabDataBase["Panels"][( DegreeNode, DegreeId )] = {}
-            
-            # TODO: separate lightpathes based on their degree
-            PanelId = get_panel_num(Source)
-
-            # checking the lightpath is TP1H or MP1H
-            if len(lightpath.ServiceIdList) == 1:
-                GroomingTabDataBase["Panels"][Source][PanelId] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
-                GroomingTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = TP1H_R(PanelId)
-
-            else:
-                ClientCapacity = create_ClientsCapacityList(DemandId ,lightpath.ServiceIdList)
-                GroomingTabDataBase["Panels"][Source][PanelId] = MP1H_L(ClientCapacity, "100GE", lightpath.ServiceIdList, [DemandId for i in range(10)], id)
-                GroomingTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = MP1H_R(PanelId)
-
-            # filling GroomingTabDataBase ( Links or lambdas part )
-            for i in range(len(Working) - 1):
-                InNodeName = self.IdNodeMap[Working[ i ]]
-                OutNodeName = self.IdNodeMap[Working[ i + 1 ]]
-
-                if ( InNodeName , OutNodeName) in GroomingTabDataBase["Links"]:
-                    keyW = ( InNodeName , OutNodeName)
-                elif ( OutNodeName , InNodeName ) in GroomingTabDataBase["Links"]:
-                    keyW = ( OutNodeName , InNodeName )
-                else:
-                    print(f"$$ key not found $$ and key : {( InNodeName , OutNodeName)}")
-
-                if WaveLength in GroomingTabDataBase["Links"][keyW]:
-                    # TODO: raise error --> this wavelength has been used
-                    pass
-                else:
-                    GroomingTabDataBase["Links"][keyW].append(WaveLength)
-            
-            for i in range(len(Protection) - 1):
-                InNodeName = self.IdNodeMap[Protection[ i ]]
-                OutNodeName = self.IdNodeMap[Protection[ i + 1 ]]
-
-                if ( InNodeName , OutNodeName) in GroomingTabDataBase["Links"]:
-                    keyP = ( InNodeName , OutNodeName)
-                elif ( OutNodeName , InNodeName ) in GroomingTabDataBase["Links"]:
-                    keyP = ( OutNodeName , InNodeName )
-                else:
-                    print(f"$$ key not found $$ and key : {( InNodeName , OutNodeName)}")
-
-                if WaveLength in GroomingTabDataBase["Links"][keyP]:
-                    pass
-                    # TODO: raise error --> this wavelength has been used
-                else:
-                    GroomingTabDataBase["Links"][keyP].append(WaveLength)
-
-        for tup in GroomingTabDataBase["LightPathes"]:
-            for key in GroomingTabDataBase["LightPathes"][tup]:
-                GroomingTabDataBase["LightPathes"][tup][int(key)] = GroomingTabDataBase["LightPathes"][tup].pop(key)
-
-                
-            
-
-    def grooming_fun(self, n, MP1H_Threshold):
-        # n: network object
-
-        service_lower10=[]
-        service_lower100=[]
-        output_10=[]                                            #(DemandId,Service)
-        output_100=[]
-        remain=[]
-        threshold = MP1H_Threshold
-        for i in n.TrafficMatrix.DemandDict:
-            y=[]
-            z=[]
-            for j in n.TrafficMatrix.DemandDict[i].ServiceDict:
-                if (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW < 10):
-                    y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
-                elif (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW == 10):
-                    z.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
-                else:
-                    n.add_lightpath(n.TrafficMatrix.DemandDict[i].Source, n.TrafficMatrix.DemandDict[i].Destination, 100, [n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id], 100, i)
-            if z:
-                service_lower100.append((i,z))
-            
-        for i in range(0,len(service_lower100)):
-            NO_LP= math.ceil(len(service_lower100[i][1])/10)
-            for j in range(0,NO_LP):
-                list_of_service=[]
-                cap=0
-                for k in range(j*10,(j+1)*10):
-                    if (k < len(service_lower100[i][1])):
-                        list_of_service.append(service_lower100[i][1][k][0])
-                        cap=cap+service_lower100[i][1][k][1]
-    #          print(service_lower100[2][0])
-                if cap ==10:
-                    typee="10GE"
-                else:
-                    typee="100GE"
-                if cap < threshold:
-                    remain.append((i,list_of_service))
-                else:
-                    n.add_lightpath(n.TrafficMatrix.DemandDict[service_lower100[i][0]].Source, n.TrafficMatrix.DemandDict[service_lower100[i][0]].Destination, cap, list_of_service, typee, service_lower100[i][0])    
-    #         
-        return remain
-         
-    def failed_grooming_nodes(self):
-        # detecting node where grooming algorithm has been failed
-
-        # changing their icon based on their cluster
-
-        # NOTE: keep this in mind that you have to change icons againg when ever 
-        #   Service section of that node gets empty ( based on its degree ) 
-        # this should be done in another method ( manual service manipulations method in panels object)
-        pass
-        
-        
-    
-    def grooming_button_fun(self):        
-
-        self.groomingwindow_dialog = QtWidgets.QDialog()
-        self.grooming_window_ui = Grooming_Window()
-        self.grooming_window_ui.setupUi(self.groomingwindow_dialog)
-        self.groomingwindow_dialog.show()
-        
-
-    def grooming_procedure(self, MP1H_Threshold):
-
-        RemainServices = self.grooming_fun(self.network, int(MP1H_Threshold))
-        print(f"remained services : {RemainServices}")
-
-        self.fill_DemandTabDataBase(self.network)
-
-        
-
-
-        
-
-    def RWA_button_fun(self):
-
-        for lightpath in self.network.LightPathDict.values():
-            print(lightpath.__dict__)
-
-        # socketio event handling
-
-        sio = socketio.Client()
-
-        @sio.event
-        def connect():
-            print('connection established')
-            #sio.emit('my_message', {'response': 'Connection on client side'})
-
-        @sio.on('rwa_toClient_message')
-        def message(data):
-            print('Server log (RWA): ', data)
-            sio.emit('rwa_message:', "log received on client")
-            
-        @sio.on('grooming_toClient_message')
-        def message(data):
-            print('Server log (Grooming): ', data)
-            sio.emit('grooming_message:', "log received on client")    
-
-        @sio.event
-        def disconnect():
-            print('disconnected from the server.')
-
-        def convert_to_dict(obj):
-            """
-            A function takes in a custom object and returns a dictionary representation of the object.
-            This dict representation includes meta data such as the object's module and class names.
-            """
-
-            #  Populate the dictionary with object meta data 
-            if isinstance(obj, numpy.int64):
-                obj_dict = int(obj)
-                return obj_dict
-            else:
-                obj_dict = {
-                    "__class__": obj.__class__.__name__,
-                    "__module__": obj.__module__
-                }
-                #  Populate the dictionary with object properties
-                obj_dict.update(obj.__dict__)
-                return obj_dict
-
-        net = copy.copy(self.network)
-
-        # Convert keys to String
-        tuple_keys = list(net.PhysicalTopology.LinkDict.keys())
-        for key in tuple_keys:
-            net.PhysicalTopology.LinkDict[str(key)] = net.PhysicalTopology.LinkDict.pop(key)
-
-            
-        ##############################################
-        # Convert the Network object to JSON message
-        data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
-        # print(data)
-
-        decoded_network = Network.from_json(json.loads(data)) 
-        str_keys = list(decoded_network.PhysicalTopology.LinkDict.keys())
-        for key in str_keys:
-            Lkey = list(key)
-            ActualKey =( int(Lkey[1]) , int(Lkey[-2]) )
-            decoded_network.PhysicalTopology.LinkDict[ActualKey] = decoded_network.PhysicalTopology.LinkDict.pop(key)
-
-        # assert False
-        # This line tests whether the JSON encoded common object is reconstructable!
-        decoded_n = Network.from_json(json.loads(data)) 
-        assert(isinstance(decoded_n, Network))
-
-        # Establishing a socket.io connection for logging purposes
-        sio.connect('http://localhost:5000')
-
-        ##Run the grooming function on the server
-        # print('####################################################')
-        # print('Transmitting data to server for client side grooming.')
-        # res = requests.get('http://localhost:5000/grooming/', json = data)
-
-        # if res.ok:
-            # print(res.json())
-            # print('Grooming finished successfully!')
-            
-        print('####################################################')
-        print('Transmitting data to server to solve RWA planning.') 
-        # Run the RWA planner on the server
-        res = requests.get('http://localhost:5000/RWA/', json = data)
-
-        if res.ok:
-            # print('####################################################')
-            # print(json.dumps(res.json()))
-            decoded_network = Network.from_json(json.loads(json.dumps(res.json())))
-            # Converting keys to original version ( Server Side )
-            str_keys = list(decoded_network.PhysicalTopology.LinkDict.keys())
-            for key in str_keys:
-                n_key = ''.join(key.split())
-                Lkey = n_key[1:-1].split(',')
-                ActualKey =( int(Lkey[1]) , int(Lkey[-2]) )
-                decoded_network.PhysicalTopology.LinkDict[ActualKey] = decoded_network.PhysicalTopology.LinkDict.pop(key)
-                
-            str_keys = decoded_network.LightPathDict.keys()
-            for key in str_keys:
-                decoded_network.LightPathDict[int(key)] = decoded_network.LightPathDict.pop(key)
-            
-
-        sio.disconnect()
-        time.sleep(3)
-        print('RWA finished and data received in client') 
-        try:
-            print('Sample WaveLength output', decoded_network.LightPathDict[0].WaveLength)
-            print('Sample Path output', decoded_network.LightPathDict[0].WorkingPath)
-        except:
-            pass
-        
-        for lightpath in decoded_network.LightPathDict.values():
-            print(lightpath.__dict__)
-
-        self.fill_GroomingTabDataBase(decoded_network)
-        
-
-        
-
-
 
 
 if __name__ == "__main__":
@@ -3927,8 +2932,5 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QWidget()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
-    # NOTE: don't forget this
-    # added
-    Data["ui"] = ui
     MainWindow.show()
     sys.exit(app.exec_())

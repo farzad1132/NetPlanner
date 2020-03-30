@@ -1,17 +1,11 @@
 map.html
 .vscode/settings.json
 <<<<<<< HEAD
-<<<<<<< HEAD
 =======
 main_7.py
 BAF3_panel/__pycache__/BAF3_panel.cpython-37.pyc
 BLANK_panel/BLANK_panel.py
 >>>>>>> master_v2
-=======
-main_7.py
-BAF3_panel/__pycache__/BAF3_panel.cpython-37.pyc
-BLANK_panel/BLANK_panel.py
->>>>>>> grom_notification_feature
 BLANK_panel/__pycache__/__init__.cpython-37.pyc
 BLANK_panel/__pycache__/BLANK_panel.cpython-37.pyc
 LAF3_panel/__pycache__/__init__.cpython-37.pyc
@@ -23,7 +17,6 @@ MP2X_panel/__pycache__/__init__.cpython-37.pyc
 MP2X_panel/__pycache__/MP2X_panel.cpython-37.pyc
 PAF3_panel/__pycache__/__init__.cpython-37.pyc
 <<<<<<< HEAD
-<<<<<<< HEAD
 SC_panel_final/__pycache__/__init__.cpython-37.pyc
 SC_panel_final/__pycache__/SC_panel.cpython-37.pyc
 TP2X_panel/__pycache__/TP2X_panel.cpython-37.pyc
@@ -31,8 +24,6 @@ __pycache__/add_node.cpython-37.pyc
 __pycache__/newcheck.cpython-37.pyc
 __pycache__/Node_View_Data.cpython-37.pyc
 =======
-=======
->>>>>>> grom_notification_feature
 PAF3_panel/__pycache__/PAF3_panel.cpython-37.pyc
 SC_panel_final/__pycache__/__init__.cpython-37.pyc
 SC_panel_final/__pycache__/SC_panel.cpython-37.pyc
@@ -42,9 +33,5 @@ __pycache__/add_node.cpython-37.pyc
 __pycache__/Common_Object_def.cpython-37.pyc
 __pycache__/data.cpython-37.pyc
 __pycache__/newcheck.cpython-37.pyc
-<<<<<<< HEAD
 __pycache__/Node_View_Data.cpython-37.pyc
 >>>>>>> master_v2
-=======
-__pycache__/Node_View_Data.cpython-37.pyc
->>>>>>> grom_notification_feature
