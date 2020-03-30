@@ -1,9 +1,11 @@
+from PySide2 import QtWidgets, QtCore, QtGui
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 import sys
 import os
 
+from data import *
 
 
 class MP2X_L_Demand(QWidget):

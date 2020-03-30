@@ -1,10 +1,11 @@
-# -*- coding: utf-8 -*-
+from PySide2 import QtWidgets, QtCore, QtGui
+from PySide2.QtWidgets import *
+from PySide2.QtCore import *
+from PySide2.QtGui import *
+import sys
+import os
 
-# self implementation generated from reading ui file 'MP1H_L.ui'
-#
-# Created by: PyQt5 UI code generator 5.13.0
-#
-# WARNING! All changes made in this file will be lost!
+from data import *
 
 
 class MP1H_L_Demand(QWidget):
