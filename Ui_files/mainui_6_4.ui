@@ -71,7 +71,7 @@ QTabBar::tab:selected {
 }</string>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="TopologyTab">
         <attribute name="title">
@@ -123,7 +123,7 @@ QPushButton:default {
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="SaveTopology_button">
+            <widget class="QPushButton" name="export_result_button">
              <property name="maximumSize">
               <size>
                <width>81</width>
@@ -698,6 +698,19 @@ QGroupBox::title {
             <string/>
            </property>
            <layout class="QGridLayout" name="gridLayout_14">
+            <item row="2" column="0">
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
             <item row="0" column="0">
              <widget class="QGroupBox" name="Grouping_groupbox">
               <property name="title">
@@ -1109,88 +1122,55 @@ QPushButton:default {
             <item row="1" column="0">
              <widget class="QGroupBox" name="ViewGroupbox">
               <property name="title">
-               <string>View Modes</string>
+               <string>Google View Modes</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_18">
                <item row="0" column="0">
-                <layout class="QVBoxLayout" name="verticalLayout_3">
-                 <item>
-                  <widget class="QCheckBox" name="NormalMode_checkbox">
-                   <property name="font">
-                    <font>
-                     <family>IRANSans</family>
-                     <weight>75</weight>
-                     <italic>false</italic>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true"/>
-                   </property>
-                   <property name="text">
-                    <string>Normal Mode</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="Working_checkbox">
-                   <property name="font">
-                    <font>
-                     <family>IRANSans</family>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Working View</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="Protection_checkbox">
-                   <property name="font">
-                    <font>
-                     <family>IRANSans</family>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Protection View</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QCheckBox" name="Restoration_checkbox">
-                   <property name="font">
-                    <font>
-                     <family>IRANSans</family>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Restoration View</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+                <widget class="QRadioButton" name="Max_available_radiobutton">
+                 <property name="font">
+                  <font>
+                   <italic>true</italic>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Use Max Availabe as Reference</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QRadioButton" name="Max_Used_radiobutton">
+                 <property name="font">
+                  <font>
+                   <italic>true</italic>
+                   <strikeout>false</strikeout>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Use Max used Wavelength in a Link
+ as Reference</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QCheckBox" name="Enable_google_view_checkbox">
+                 <property name="font">
+                  <font>
+                   <family>IRANSans</family>
+                   <weight>75</weight>
+                   <italic>false</italic>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="text">
+                  <string>Enable</string>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
-            </item>
-            <item row="2" column="0">
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
             </item>
            </layout>
           </widget>
@@ -2350,6 +2330,110 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
          <string>Demand tab</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="2">
+          <layout class="QFormLayout" name="formLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_8">
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>62</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"> QLabel {
+    border: 2px solid green;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+             </property>
+             <property name="text">
+              <string>Destination:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QFontComboBox" name="Demand_Destination_combobox">
+             <property name="minimumSize">
+              <size>
+               <width>119</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>743</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QComboBox {
+    border: 1px solid gray;
+    border-radius: 3px;
+    padding: 1px 18px 1px 3px;
+    min-width: 6em;
+}
+
+QComboBox:editable {
+    background: white;
+}
+
+QComboBox:!editable, QComboBox::drop-down:editable {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+}
+
+/* QComboBox gets the &quot;on&quot; state when the popup is open */
+QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,
+                                stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);
+}
+
+QComboBox:on { /* shift the text when the popup opens */
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+
+    border-left-width: 1px;
+    border-left-color: darkgray;
+    border-left-style: solid; /* just a single line */
+    border-top-right-radius: 3px; /* same radius as the QComboBox */
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox::down-arrow {
+    image: url(/usr/share/icons/crystalsvg/16x16/actions/1downarrow.png);
+}
+
+QComboBox::down-arrow:on { /* shift the arrow when popup is open */
+    top: 1px;
+    left: 1px;
+}</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
          <item row="0" column="0">
           <layout class="QFormLayout" name="formLayout_4">
            <item row="0" column="0">
@@ -2466,110 +2550,6 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
             </size>
            </property>
           </spacer>
-         </item>
-         <item row="0" column="2">
-          <layout class="QFormLayout" name="formLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_8">
-             <property name="minimumSize">
-              <size>
-               <width>120</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>62</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>10</pointsize>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true"> QLabel {
-    border: 2px solid green;
-    border-radius: 4px;
-    padding: 2px;
-}</string>
-             </property>
-             <property name="text">
-              <string>Destination:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QFontComboBox" name="Demand_Destination_combobox">
-             <property name="minimumSize">
-              <size>
-               <width>119</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>743</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QComboBox {
-    border: 1px solid gray;
-    border-radius: 3px;
-    padding: 1px 18px 1px 3px;
-    min-width: 6em;
-}
-
-QComboBox:editable {
-    background: white;
-}
-
-QComboBox:!editable, QComboBox::drop-down:editable {
-     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
-                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
-}
-
-/* QComboBox gets the &quot;on&quot; state when the popup is open */
-QComboBox:!editable:on, QComboBox::drop-down:editable:on {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,
-                                stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);
-}
-
-QComboBox:on { /* shift the text when the popup opens */
-    padding-top: 3px;
-    padding-left: 4px;
-}
-
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: top right;
-    width: 15px;
-
-    border-left-width: 1px;
-    border-left-color: darkgray;
-    border-left-style: solid; /* just a single line */
-    border-top-right-radius: 3px; /* same radius as the QComboBox */
-    border-bottom-right-radius: 3px;
-}
-
-QComboBox::down-arrow {
-    image: url(/usr/share/icons/crystalsvg/16x16/actions/1downarrow.png);
-}
-
-QComboBox::down-arrow:on { /* shift the arrow when popup is open */
-    top: 1px;
-    left: 1px;
-}</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
          </item>
          <item row="1" column="0">
           <layout class="QGridLayout" name="gridLayout_2">
@@ -3026,146 +3006,65 @@ QListWidget::item:hover {
              <attribute name="title">
               <string>Shelf</string>
              </attribute>
-             <widget class="QWidget" name="DemandPanel_1" native="true">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>58</width>
-                <height>407</height>
-               </rect>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <property name="spacing">
+               <number>0</number>
               </property>
-             </widget>
-             <widget class="QWidget" name="DemandPanel_2" native="true">
-              <property name="geometry">
-               <rect>
-                <x>58</x>
-                <y>0</y>
-                <width>58</width>
-                <height>407</height>
-               </rect>
+              <property name="leftMargin">
+               <number>0</number>
               </property>
-             </widget>
-             <widget class="QWidget" name="DemandPanel_3" native="true">
-              <property name="geometry">
-               <rect>
-                <x>116</x>
-                <y>0</y>
-                <width>59</width>
-                <height>407</height>
-               </rect>
+              <property name="topMargin">
+               <number>0</number>
               </property>
-             </widget>
-             <widget class="QWidget" name="DemandPanel_4" native="true">
-              <property name="geometry">
-               <rect>
-                <x>175</x>
-                <y>0</y>
-                <width>58</width>
-                <height>407</height>
-               </rect>
+              <property name="rightMargin">
+               <number>0</number>
               </property>
-             </widget>
-             <widget class="QWidget" name="DemandPanel_5" native="true">
-              <property name="geometry">
-               <rect>
-                <x>233</x>
-                <y>0</y>
-                <width>58</width>
-                <height>407</height>
-               </rect>
+              <property name="bottomMargin">
+               <number>0</number>
               </property>
-             </widget>
-             <widget class="QWidget" name="DemandPanel_6" native="true">
-              <property name="geometry">
-               <rect>
-                <x>291</x>
-                <y>0</y>
-                <width>58</width>
-                <height>407</height>
-               </rect>
-              </property>
-             </widget>
-             <widget class="QWidget" name="DemandPanel_7" native="true">
-              <property name="geometry">
-               <rect>
-                <x>349</x>
-                <y>0</y>
-                <width>58</width>
-                <height>407</height>
-               </rect>
-              </property>
-             </widget>
-             <widget class="QWidget" name="DemandPanel_8" native="true">
-              <property name="geometry">
-               <rect>
-                <x>407</x>
-                <y>0</y>
-                <width>59</width>
-                <height>407</height>
-               </rect>
-              </property>
-             </widget>
-             <widget class="QWidget" name="DemandPanel_9" native="true">
-              <property name="geometry">
-               <rect>
-                <x>466</x>
-                <y>0</y>
-                <width>58</width>
-                <height>407</height>
-               </rect>
-              </property>
-             </widget>
-             <widget class="QWidget" name="DemandPanel_10" native="true">
-              <property name="geometry">
-               <rect>
-                <x>524</x>
-                <y>0</y>
-                <width>58</width>
-                <height>407</height>
-               </rect>
-              </property>
-             </widget>
-             <widget class="QWidget" name="DemandPanel_11" native="true">
-              <property name="geometry">
-               <rect>
-                <x>582</x>
-                <y>0</y>
-                <width>58</width>
-                <height>407</height>
-               </rect>
-              </property>
-             </widget>
-             <widget class="QWidget" name="DemandPanel_12" native="true">
-              <property name="geometry">
-               <rect>
-                <x>640</x>
-                <y>0</y>
-                <width>59</width>
-                <height>407</height>
-               </rect>
-              </property>
-             </widget>
-             <widget class="QWidget" name="DemandPanel_13" native="true">
-              <property name="geometry">
-               <rect>
-                <x>699</x>
-                <y>0</y>
-                <width>58</width>
-                <height>407</height>
-               </rect>
-              </property>
-             </widget>
-             <widget class="QWidget" name="DemandPanel_14" native="true">
-              <property name="geometry">
-               <rect>
-                <x>757</x>
-                <y>0</y>
-                <width>58</width>
-                <height>407</height>
-               </rect>
-              </property>
-             </widget>
+              <item>
+               <widget class="QWidget" name="DemandPanel_1" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_2" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_3" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_4" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_5" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_6" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_7" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_8" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_9" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_10" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_11" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_12" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_13" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_14" native="true"/>
+              </item>
+             </layout>
             </widget>
            </widget>
            <widget class="MapWidget" name="MapWidget" native="true">
