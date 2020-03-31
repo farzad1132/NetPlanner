@@ -157,7 +157,40 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.tabWidget.setFont(font)
-        self.tabWidget.setStyleSheet("")
+        self.tabWidget.setStyleSheet("QTabWidget::pane { /* The tab widget frame */\n"
+"    border-top: 2px solid #C2C7CB;\n"
+"    position: absolute;\n"
+"    top: -0.5em;\n"
+"}\n"
+"\n"
+"QTabWidget::tab-bar {\n"
+"    alignment: center;\n"
+"}\n"
+"\n"
+"/* Style the tab using the tab sub-control. Note that\n"
+"    it reads QTabBar _not_ QTabWidget */\n"
+"QTabBar::tab {\n"
+"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,\n"
+"                                stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);\n"
+"    border: 2px solid #C4C4C3;\n"
+"    border-bottom-color: #C2C7CB; /* same as the pane color */\n"
+"    border-top-left-radius: 4px;\n"
+"    border-top-right-radius: 4px;\n"
+"    min-width: 8ex;\n"
+"    padding: 2px;\n"
+"}\n"
+"\n"
+"QTabBar::tab:selected, QTabBar::tab:hover {\n"
+"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                stop: 0 #fafafa, stop: 0.4 #f4f4f4,\n"
+"                                stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);\n"
+"}\n"
+"\n"
+"QTabBar::tab:selected {\n"
+"    border-color: #9B9B9B;\n"
+"    border-bottom-color: #C2C7CB; /* same as pane color */\n"
+"}")
         self.tabWidget.setObjectName("tabWidget")
         self.TopologyTab = QtWidgets.QWidget()
         self.TopologyTab.setObjectName("TopologyTab")
@@ -194,13 +227,13 @@ class Ui_MainWindow(object):
 "}")
         self.import_button.setObjectName("import_button")
         self.horizontalLayout_3.addWidget(self.import_button)
-        self.export_result_button = QtWidgets.QPushButton(self.TopologyTab)
-        self.export_result_button.setMaximumSize(QtCore.QSize(81, 50))
+        self.SaveTopology_button = QtWidgets.QPushButton(self.TopologyTab)
+        self.SaveTopology_button.setMaximumSize(QtCore.QSize(81, 50))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
-        self.export_result_button.setFont(font)
-        self.export_result_button.setStyleSheet("QPushButton {\n"
+        self.SaveTopology_button.setFont(font)
+        self.SaveTopology_button.setStyleSheet("QPushButton {\n"
 "    border: 2px solid #8f8f91;\n"
 "    border-radius: 6px;\n"
 "    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
@@ -221,8 +254,8 @@ class Ui_MainWindow(object):
 "QPushButton:default {\n"
 "    border-color: navy; /* make the default button prominent */\n"
 "}")
-        self.export_result_button.setObjectName("export_result_button")
-        self.horizontalLayout_3.addWidget(self.export_result_button)
+        self.SaveTopology_button.setObjectName("SaveTopology_button")
+        self.horizontalLayout_3.addWidget(self.SaveTopology_button)
         self.add_node_button = QtWidgets.QPushButton(self.TopologyTab)
         self.add_node_button.setMaximumSize(QtCore.QSize(81, 50))
         font = QtGui.QFont()
@@ -497,8 +530,6 @@ class Ui_MainWindow(object):
         self.T_groupbox.setObjectName("T_groupbox")
         self.gridLayout_14 = QtWidgets.QGridLayout(self.T_groupbox)
         self.gridLayout_14.setObjectName("gridLayout_14")
-        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout_14.addItem(spacerItem1, 2, 0, 1, 1)
         self.Grouping_groupbox = QtWidgets.QGroupBox(self.T_groupbox)
         self.Grouping_groupbox.setObjectName("Grouping_groupbox")
         self.gridLayout_17 = QtWidgets.QGridLayout(self.Grouping_groupbox)
@@ -789,30 +820,46 @@ class Ui_MainWindow(object):
         self.ViewGroupbox.setObjectName("ViewGroupbox")
         self.gridLayout_18 = QtWidgets.QGridLayout(self.ViewGroupbox)
         self.gridLayout_18.setObjectName("gridLayout_18")
-        self.Max_available_radiobutton = QtWidgets.QRadioButton(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setItalic(True)
-        self.Max_available_radiobutton.setFont(font)
-        self.Max_available_radiobutton.setObjectName("Max_available_radiobutton")
-        self.gridLayout_18.addWidget(self.Max_available_radiobutton, 0, 0, 1, 1)
-        self.Max_Used_radiobutton = QtWidgets.QRadioButton(self.ViewGroupbox)
-        font = QtGui.QFont()
-        font.setItalic(True)
-        font.setStrikeOut(False)
-        self.Max_Used_radiobutton.setFont(font)
-        self.Max_Used_radiobutton.setObjectName("Max_Used_radiobutton")
-        self.gridLayout_18.addWidget(self.Max_Used_radiobutton, 1, 0, 1, 1)
-        self.Enable_google_view_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.NormalMode_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
         font = QtGui.QFont()
         font.setFamily("IRANSans")
         font.setBold(True)
         font.setItalic(False)
         font.setWeight(75)
-        self.Enable_google_view_checkbox.setFont(font)
-        self.Enable_google_view_checkbox.setStyleSheet("")
-        self.Enable_google_view_checkbox.setObjectName("Enable_google_view_checkbox")
-        self.gridLayout_18.addWidget(self.Enable_google_view_checkbox, 2, 0, 1, 1)
+        self.NormalMode_checkbox.setFont(font)
+        self.NormalMode_checkbox.setStyleSheet("")
+        self.NormalMode_checkbox.setObjectName("NormalMode_checkbox")
+        self.verticalLayout_3.addWidget(self.NormalMode_checkbox)
+        self.Working_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setFamily("IRANSans")
+        font.setBold(True)
+        font.setWeight(75)
+        self.Working_checkbox.setFont(font)
+        self.Working_checkbox.setObjectName("Working_checkbox")
+        self.verticalLayout_3.addWidget(self.Working_checkbox)
+        self.Protection_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setFamily("IRANSans")
+        font.setBold(True)
+        font.setWeight(75)
+        self.Protection_checkbox.setFont(font)
+        self.Protection_checkbox.setObjectName("Protection_checkbox")
+        self.verticalLayout_3.addWidget(self.Protection_checkbox)
+        self.Restoration_checkbox = QtWidgets.QCheckBox(self.ViewGroupbox)
+        font = QtGui.QFont()
+        font.setFamily("IRANSans")
+        font.setBold(True)
+        font.setWeight(75)
+        self.Restoration_checkbox.setFont(font)
+        self.Restoration_checkbox.setObjectName("Restoration_checkbox")
+        self.verticalLayout_3.addWidget(self.Restoration_checkbox)
+        self.gridLayout_18.addLayout(self.verticalLayout_3, 0, 0, 1, 1)
         self.gridLayout_14.addWidget(self.ViewGroupbox, 1, 0, 1, 1)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_14.addItem(spacerItem1, 2, 0, 1, 1)
         self.gridLayout_11.addWidget(self.T_groupbox, 1, 1, 2, 1)
         self.webengine = QtWebEngineWidgets.QWebEngineView(self.TopologyTab)
         self.webengine.setMinimumSize(QtCore.QSize(1570, 840))
@@ -1463,8 +1510,8 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.NodeViewTab, "")
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
-        self.gridLayout_12 = QtWidgets.QGridLayout(self.tab)
-        self.gridLayout_12.setObjectName("gridLayout_12")
+        self.gridLayout_4 = QtWidgets.QGridLayout(self.tab)
+        self.gridLayout_4.setObjectName("gridLayout_4")
         self.formLayout_4 = QtWidgets.QFormLayout()
         self.formLayout_4.setObjectName("formLayout_4")
         self.SelectNode_Label_13 = QtWidgets.QLabel(self.tab)
@@ -1536,7 +1583,9 @@ class Ui_MainWindow(object):
 "}")
         self.Demand_Source_combobox.setObjectName("Demand_Source_combobox")
         self.formLayout_4.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.Demand_Source_combobox)
-        self.gridLayout_12.addLayout(self.formLayout_4, 0, 0, 1, 1)
+        self.gridLayout_4.addLayout(self.formLayout_4, 0, 0, 1, 1)
+        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_4.addItem(spacerItem3, 0, 1, 1, 1)
         self.formLayout = QtWidgets.QFormLayout()
         self.formLayout.setObjectName("formLayout")
         self.label_8 = QtWidgets.QLabel(self.tab)
@@ -1608,7 +1657,7 @@ class Ui_MainWindow(object):
 "}")
         self.Demand_Destination_combobox.setObjectName("Demand_Destination_combobox")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.Demand_Destination_combobox)
-        self.gridLayout_12.addLayout(self.formLayout, 0, 2, 1, 1)
+        self.gridLayout_4.addLayout(self.formLayout, 0, 2, 1, 1)
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.Demand_ServiceList = QtWidgets.QListWidget(self.tab)
@@ -1845,6 +1894,7 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
+"    background-image: url(images/welcome.png);\n"
 "}")
         self.ClientLabel_21.setObjectName("ClientLabel_21")
         self.gridLayout_2.addWidget(self.ClientLabel_21, 0, 0, 1, 1)
@@ -1884,48 +1934,63 @@ class Ui_MainWindow(object):
 "}")
         self.listWidget_8.setObjectName("listWidget_8")
         self.gridLayout_2.addWidget(self.listWidget_8, 7, 0, 1, 1)
-        self.gridLayout_12.addLayout(self.gridLayout_2, 1, 0, 3, 1)
-        self.gridLayout_4 = QtWidgets.QGridLayout()
-        self.gridLayout_4.setObjectName("gridLayout_4")
-        self.Demand_tab = QtWidgets.QTabWidget(self.tab)
+        self.gridLayout_4.addLayout(self.gridLayout_2, 1, 0, 1, 1)
+        self.splitter = QtWidgets.QSplitter(self.tab)
+        self.splitter.setOrientation(QtCore.Qt.Vertical)
+        self.splitter.setObjectName("splitter")
+        self.Demand_tab = QtWidgets.QTabWidget(self.splitter)
         self.Demand_tab.setEnabled(True)
-        self.Demand_tab.setMinimumSize(QtCore.QSize(821, 442))
+        self.Demand_tab.setMinimumSize(QtCore.QSize(0, 100))
         self.Demand_tab.setObjectName("Demand_tab")
         self.tab_8 = QtWidgets.QWidget()
         self.tab_8.setObjectName("tab_8")
-        self.gridLayout_13 = QtWidgets.QGridLayout(self.tab_8)
-        self.gridLayout_13.setObjectName("gridLayout_13")
-        self.Demand_mdi = QtWidgets.QMdiArea(self.tab_8)
-        self.Demand_mdi.setMinimumSize(QtCore.QSize(1575, 521))
-        self.Demand_mdi.setObjectName("Demand_mdi")
-        self.gridLayout_13.addWidget(self.Demand_mdi, 0, 0, 1, 1)
+        self.DemandPanel_1 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_1.setGeometry(QtCore.QRect(0, 0, 58, 407))
+        self.DemandPanel_1.setObjectName("DemandPanel_1")
+        self.DemandPanel_2 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_2.setGeometry(QtCore.QRect(58, 0, 58, 407))
+        self.DemandPanel_2.setObjectName("DemandPanel_2")
+        self.DemandPanel_3 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_3.setGeometry(QtCore.QRect(116, 0, 59, 407))
+        self.DemandPanel_3.setObjectName("DemandPanel_3")
+        self.DemandPanel_4 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_4.setGeometry(QtCore.QRect(175, 0, 58, 407))
+        self.DemandPanel_4.setObjectName("DemandPanel_4")
+        self.DemandPanel_5 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_5.setGeometry(QtCore.QRect(233, 0, 58, 407))
+        self.DemandPanel_5.setObjectName("DemandPanel_5")
+        self.DemandPanel_6 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_6.setGeometry(QtCore.QRect(291, 0, 58, 407))
+        self.DemandPanel_6.setObjectName("DemandPanel_6")
+        self.DemandPanel_7 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_7.setGeometry(QtCore.QRect(349, 0, 58, 407))
+        self.DemandPanel_7.setObjectName("DemandPanel_7")
+        self.DemandPanel_8 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_8.setGeometry(QtCore.QRect(407, 0, 59, 407))
+        self.DemandPanel_8.setObjectName("DemandPanel_8")
+        self.DemandPanel_9 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_9.setGeometry(QtCore.QRect(466, 0, 58, 407))
+        self.DemandPanel_9.setObjectName("DemandPanel_9")
+        self.DemandPanel_10 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_10.setGeometry(QtCore.QRect(524, 0, 58, 407))
+        self.DemandPanel_10.setObjectName("DemandPanel_10")
+        self.DemandPanel_11 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_11.setGeometry(QtCore.QRect(582, 0, 58, 407))
+        self.DemandPanel_11.setObjectName("DemandPanel_11")
+        self.DemandPanel_12 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_12.setGeometry(QtCore.QRect(640, 0, 59, 407))
+        self.DemandPanel_12.setObjectName("DemandPanel_12")
+        self.DemandPanel_13 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_13.setGeometry(QtCore.QRect(699, 0, 58, 407))
+        self.DemandPanel_13.setObjectName("DemandPanel_13")
+        self.DemandPanel_14 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_14.setGeometry(QtCore.QRect(757, 0, 58, 407))
+        self.DemandPanel_14.setObjectName("DemandPanel_14")
         self.Demand_tab.addTab(self.tab_8, "")
-        self.gridLayout_4.addWidget(self.Demand_tab, 0, 0, 1, 1)
-        self.gridLayout_12.addLayout(self.gridLayout_4, 1, 1, 1, 2)
-        self.ClientLabel_25 = QtWidgets.QLabel(self.tab)
-        self.ClientLabel_25.setMinimumSize(QtCore.QSize(50, 30))
-        self.ClientLabel_25.setMaximumSize(QtCore.QSize(60, 16))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.ClientLabel_25.setFont(font)
-        self.ClientLabel_25.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
-"}")
-        self.ClientLabel_25.setObjectName("ClientLabel_25")
-        self.gridLayout_12.addWidget(self.ClientLabel_25, 2, 1, 1, 1)
-        self.gridLayout_15 = QtWidgets.QGridLayout()
-        self.gridLayout_15.setObjectName("gridLayout_15")
-        self.MapWidget = MapWidget(self.tab)
+        self.MapWidget = MapWidget(self.splitter)
         self.MapWidget.setMinimumSize(QtCore.QSize(821, 259))
         self.MapWidget.setObjectName("MapWidget")
-        self.gridLayout_15.addWidget(self.MapWidget, 0, 0, 1, 1)
-        self.gridLayout_12.addLayout(self.gridLayout_15, 3, 1, 1, 2)
-        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_12.addItem(spacerItem3, 0, 1, 1, 1)
+        self.gridLayout_4.addWidget(self.splitter, 1, 1, 1, 2)
         self.tabWidget.addTab(self.tab, "")
         self.gridLayout_10.addWidget(self.tabWidget, 0, 0, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_10, 0, 0, 1, 1)
@@ -1938,7 +2003,7 @@ class Ui_MainWindow(object):
         self.Demand_tab.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
+        # NOTE: added
 
         self.SelectNode_combo.clear()
         self.NodeType_combobox.clear()
@@ -2030,8 +2095,6 @@ class Ui_MainWindow(object):
 
         self.SelectNode_combo.currentIndexChanged["int"].connect(self.SelectNode_combo_change)
 
-        
-        # NOTE: added
 
         Data["ClientList"] = self.ClientList
         Data["LineList"] = self.LineList
@@ -2045,7 +2108,6 @@ class Ui_MainWindow(object):
         self.network = Network()
 
 
-        #TODO: edited
         self.listWidget.clicked['QModelIndex'].connect(self.list_click)
 
         self.SelectSubNode.setText("Off")
@@ -2099,7 +2161,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
         self.tabWidget.setAccessibleName(_translate("MainWindow", "maintab"))
         self.import_button.setText(_translate("MainWindow", "Imports"))
-        self.export_result_button.setText(_translate("MainWindow", "Export \n"
+        self.SaveTopology_button.setText(_translate("MainWindow", "Export \n"
 "Rresult"))
         self.add_node_button.setText(_translate("MainWindow", "Add\n"
 " Node"))
@@ -2119,11 +2181,11 @@ class Ui_MainWindow(object):
         self.Cancel_button.setText(_translate("MainWindow", "Cancel"))
         self.OK_button.setText(_translate("MainWindow", "Ok"))
         self.ShowSubNodes.setText(_translate("MainWindow", "Show Sub Nodes"))
-        self.ViewGroupbox.setTitle(_translate("MainWindow", "Google View Modes"))
-        self.Max_available_radiobutton.setText(_translate("MainWindow", "Use Max Availabe as Reference"))
-        self.Max_Used_radiobutton.setText(_translate("MainWindow", "Use Max used Wavelength in a Link\n"
-" as Reference"))
-        self.Enable_google_view_checkbox.setText(_translate("MainWindow", "Enable"))
+        self.ViewGroupbox.setTitle(_translate("MainWindow", "View Modes"))
+        self.NormalMode_checkbox.setText(_translate("MainWindow", "Normal Mode"))
+        self.Working_checkbox.setText(_translate("MainWindow", "Working View"))
+        self.Protection_checkbox.setText(_translate("MainWindow", "Protection View"))
+        self.Restoration_checkbox.setText(_translate("MainWindow", "Restoration View"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.TopologyTab), _translate("MainWindow", "Topology Tab"))
         self.Traffic_matrix.setSortingEnabled(False)
         item = self.General_TM.horizontalHeaderItem(0)
@@ -2226,9 +2288,7 @@ class Ui_MainWindow(object):
         self.label_9.setText(_translate("MainWindow", "Node Type:"))
         self.ClientLabel_21.setText(_translate("MainWindow", "List Of Network Panels:"))
         self.Demand_tab.setTabText(self.Demand_tab.indexOf(self.tab_8), _translate("MainWindow", "Shelf"))
-        self.ClientLabel_25.setText(_translate("MainWindow", "Map:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
-
 
     def create_obj(self):
         """with open("NetworkObj_greedy.obj", 'wb') as handle:
@@ -4491,7 +4551,6 @@ class Ui_MainWindow(object):
         except:
             pass
         self.decoded_network = decoded_network
-
 
 
 if __name__ == "__main__":
