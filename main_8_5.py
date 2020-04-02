@@ -3563,23 +3563,44 @@ class Ui_MainWindow(object):
 
         function drawDetailBox(lambdaList) {
 
+            canvas.height = 90;
+            canvas.width = 806;
+
             var h = canvas.height;
-            console.log(h);
+
+            const lineYStart = 15;
+            const lineYEnd = h - 20;
 
             var ctx = canvas.getContext("2d");
 
             for (var i = 1; i <= 100; i++) {
 
+                const lineX = (i * 8) - 4
                 ctx.beginPath();
-                ctx.moveTo(i * 4, 0);
-                ctx.lineTo(i * 4, h);
+                ctx.moveTo(lineX, lineYStart);
+                ctx.lineTo(lineX, lineYEnd);
                 ctx.lineWidth = 2;
-                if (lambdaList.includes(i))
-                    ctx.strokeStyle = "black"
-                else
+                if (lambdaList.includes(i)) {
+                    ctx.strokeStyle = "black";
+                } else {
                     ctx.strokeStyle = "gray";
+                }
                 ctx.stroke();
 
+                ctx.save();
+
+                var textX = lineX - 4;
+                var textY = h - lineYStart;
+                if (i %% 5 == 0) {
+                    textY = 12;
+                    ctx.translate(textX, textY);
+                    ctx.rotate(-Math.PI / 5);
+                    ctx.translate(-textX, -textY);
+                    ctx.fillText(i, textX, lineYStart);
+
+                }
+
+                ctx.restore();
             }
 
             return wrapper;
@@ -3593,25 +3614,25 @@ class Ui_MainWindow(object):
         }
 
         function showLineNumberInBox(e, lambdaList) {
+            console.log(e.offsetX);
             x = e.clientX;
             y = e.clientY;
             var lineNum = 0;
             const xOff = e.offsetX;
-            if (xOff %% 4 <= 2) {
+            if (xOff %% 8 >= 2 && xOff %% 8 <= 4) {
                 cursor = " ";
-                lineNum = parseInt(xOff / 4);
-                if(lambdaList.includes(lineNum)){
+                lineNum = 1 + parseInt(xOff / 8);
+                if (lambdaList.includes(lineNum)) {
                     cursor = lineNum;
                 }
             } else {
                 cursor = " ";
             }
             document.getElementById("displayArea").style.display = 'block';
-            document.getElementById("displayArea").innerHTML = 'Wavelength Number: '+ cursor;
+            document.getElementById("displayArea").innerHTML = 'Wavelength Number: ' + cursor;
             document.getElementById("displayArea").style.right = x + 'px';
             document.getElementById("displayArea").style.top = y + 'px';
         }
-
         
         function unshowLineNumberInBox() {
                 document.getElementById("displayArea").innerHTML = "Wavelength Number: ";
