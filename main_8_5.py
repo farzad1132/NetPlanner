@@ -2585,7 +2585,7 @@ class Ui_MainWindow(object):
             self.horizontalLayout.removeWidget(panel_widget)
             panel_widget.deleteLater()
 
-            print(f"count: {Data['DemandPanel_' + str(i)].count()}")
+            #print(f"count: {Data['DemandPanel_' + str(i)].count()}")
 
             if str(i) in DemandTabDataBase["Panels"][Source]:
                 panel = DemandTabDataBase["Panels"][Source][str(i)]
@@ -2593,29 +2593,31 @@ class Ui_MainWindow(object):
                 
 
                 if isinstance(panel , MP2X_L):
-                    Data["DemandPanel_" + str(i)].setWidget(MP2X_L_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(MP2X_L_Demand(str(i), Source, Destination))
                     for client in panel.ClientsType:
                         if client != 0:
                             pass
                             # TODO: changing client label to green
                 elif isinstance(panel, MP2X_R):
-                    Data["DemandPanel_" + str(i)].setWidget(MP2X_R_Demand(str(i), Source))
+                    Data["DemandPanel_" + str(i)].addWidget(MP2X_R_Demand(str(i), Source))
                 
                 elif isinstance(panel, MP1H_L):
-                    Data["DemandPanel_" + str(i)].setWidget(MP1H_L_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(MP1H_L_Demand(str(i), Source, Destination))
 
                     # finding panel widget
-                    widget = Data["DemandPanel_" + str(i)].widget()
+                    widget = Data["DemandPanel_" + str(i)].itemAt(0).widget()
                         
                     for i in range(len(panel.ClientsCapacity)):
                         if panel.ClientsCapacity[i] != 0:
 
                             # finding object of client customlabel
-                            text = "client" + str( i + 1 )
+                            text = "Client" + str( i + 1 )
                             clientvar = getattr(widget, text)
 
                             # filling customlabel attributes
-                            clientvar.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
+                            #clientvar.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
+                            oldstyle = clientvar.styleSheet()
+                            clientvar.setStyleSheet(oldstyle + "border: 5px solid green;")
                             clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])])
                             clientvar.servicetype = panel.ClientsCapacity[i]
                             clientvar.nodename = Source
@@ -2624,13 +2626,13 @@ class Ui_MainWindow(object):
                             clientvar.setAcceptDrops(False)
 
                 elif isinstance(panel, MP1H_R):
-                    Data["DemandPanel_" + str(i)].setWidget(MP1H_R_Demand(str(i), Source))
+                    Data["DemandPanel_" + str(i)].addWidget(MP1H_R_Demand(str(i), Source, Destination))
                 
                 elif isinstance(panel, TP1H_L):
-                    Data["DemandPanel_" + str(i)].setWidget(TP1H_L_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(TP1H_L_Demand(str(i), Source, Destination))
 
                     # finding panel widget
-                    widget = Data["DemandPanel_" + str(i)].widget()
+                    widget = Data["DemandPanel_" + str(i)].itemAt(0).widget()
 
                     if panel.Line == "100GE":
 
@@ -2648,7 +2650,7 @@ class Ui_MainWindow(object):
                         # TODO: change client color to green
                 
                 elif isinstance(panel, TP1H_R):
-                    Data["DemandPanel_" + str(i)].setWidget(TP1H_R_Demand(str(i), Source))
+                    Data["DemandPanel_" + str(i)].addWidget(TP1H_R_Demand(str(i), Source, Destination))
             
             else:
                 Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Destination))

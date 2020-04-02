@@ -70,30 +70,34 @@ class BLANK_Demand(QtWidgets.QWidget):
         #self.label.setText(text)
 
         # TODO: Take Care of this very soon
+        # removing old panel
+        panel_widget = Data["DemandPanel_" + str(self.id)].takeAt(0).widget()
+        self.horizontalLayout.removeWidget(panel_widget)
+        panel_widget.deleteLater()
 
         if text == "SC":
-            #Data["DemandPanel_" + str(self.id)].setWidget(SC_Demand(self.id, self.nodename))
+            #Data["DemandPanel_" + str(self.id)].addWidget(SC_Demand(self.id, self.nodename))
             DemandTabDataBase["Panels"][self.nodename][self.id] = SC()
         elif text == "MP2X":
-            Data["DemandPanel_" + str(self.id)].setWidget(MP2X_L_Demand(self.id , self.nodename, self.Destination))
+            Data["DemandPanel_" + str(self.id)].addWidget(MP2X_L_Demand(self.id , self.nodename, self.Destination))
             DemandTabDataBase["Panels"][self.nodename][self.id] = MP2X_L()
 
-            Data["DemandPanel_" + self.uppernum].setWidget(MP2X_R_Demand(self.id, self.nodename))
+            Data["DemandPanel_" + self.uppernum].addWidget(MP2X_R_Demand(self.id, self.nodename))
             DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP2X_R(self.uppernum, self.Destination)
 
 
         elif text == "MP1H":
-            Data["DemandPanel_" + str(self.id)].setWidget(MP1H_L_Demand(self.id , self.nodename, self.Destination))
+            Data["DemandPanel_" + str(self.id)].addWidget(MP1H_L_Demand(self.id , self.nodename, self.Destination))
             DemandTabDataBase["Panels"][self.nodename][self.id] = MP1H_L()
 
-            Data["DemandPanel_" + self.uppernum].setWidget(MP1H_R_Demand(self.id, self.nodename))
+            Data["DemandPanel_" + self.uppernum].addWidget(MP1H_R_Demand(self.id, self.nodename))
             DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP1H_R(self.uppernum, self.Destination)
         
         elif text == "TP1H":
-            Data["DemandPanel_" + str(self.id)].setWidget(TP1H_L_Demand(self.id , self.nodename, self.Destination))
+            Data["DemandPanel_" + str(self.id)].addWidget(TP1H_L_Demand(self.id , self.nodename, self.Destination))
             DemandTabDataBase["Panels"][self.nodename][self.id] = TP1H_L()
 
-            Data["DemandPanel_" + self.uppernum].setWidget(TP1H_R_Demand(self.id, self.nodename))
+            Data["DemandPanel_" + self.uppernum].addWidget(TP1H_R_Demand(self.id, self.nodename))
             DemandTabDataBase["Panels"][self.nodename][self.uppernum] = TP1H_R(self.uppernum, self.Destination)
         
         super(BLANK_Demand, self).dropEvent(event)
