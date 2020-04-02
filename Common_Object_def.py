@@ -35,10 +35,11 @@ class Network:
             """ for UpperId in list(self.LightPathDict.keys()).sort():
                 if UpperId > id:
                     self.LightPathDict[UpperId - 1] = self.LightPathDict.pop(UpperId) """
-            sorted_keys = sorted(list(self.LightPathDict.keys()))
-            index = sorted_keys.index(id)
-            for key in sorted_keys[index:]:
-                self.LightPathDict[key - 1] = self.LightPathDict.pop(key)
+            if id in self.LightPathDict:
+                sorted_keys = sorted(list(self.LightPathDict.keys()))
+                index = sorted_keys.index(id)
+                for key in sorted_keys[index:]:
+                    self.LightPathDict[key - 1] = self.LightPathDict.pop(key)
 
 
         # finding object that we want to delete
