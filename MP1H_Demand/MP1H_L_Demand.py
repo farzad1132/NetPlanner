@@ -344,8 +344,10 @@ class customlabel(QLabel):
         if action == ClearAction:
             if DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] != 0:
                 self.setToolTip("")
+                
                 if self.servicetype == "10GE":
                     DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity -= self.GE_10_BW
+
                 else:
                     DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity -= self.STM_64_BW
                 #DemandTabDataBase["Panels"][self.nodename][self.id].Line = 0
@@ -362,19 +364,31 @@ class customlabel(QLabel):
                                         destination= self.Destination,
                                         mode= "add",
                                         type= self.servicetype)
+
+                # removing service id from lightpath object in common object
+                LightPathId = DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId
+                Data["NetworkObj"].LightPathDict[LightPathId].ServiceIdList.remove(self.ids[1])
+
+                # updating LightPath ListWidgetItem Capacity
+                self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][LightPathId],
+                                                        Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity)
+
+                # setting line port tooltip                                        
+                self.LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][LightPathId].toolTip())
+
                 x = check_clients(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity)
 
                 if x == 0:
                     
                     #self.modify_LightPathList(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
-                    self.modify_LightPathList(  id= DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId,
+                    self.modify_LightPathList(  id= LightPathId,
                                                 Source= self.nodename,
                                                 Destination= self.Destination,
                                                 mode= "delete",
                                                 type= "100GE")
 
                     # deleting lightpath object from network obj
-                    Data["NetworkObj"].del_lightpath(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId)
+                    Data["NetworkObj"].del_lightpath(LightPathId)
 
                     DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None
                     #Network.Lightpath.update_id(-1)
