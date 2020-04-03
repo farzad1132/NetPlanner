@@ -213,7 +213,7 @@ class MP2X_L:
             self.LinesCapacity = LinesCapacity
     
         if ServiceIdList is None:
-            self.ServiceIdList = [None for i in range(10)]
+            self.ServiceIdList = [None for i in range(16)]
         else:
             self.ServiceIdList = ServiceIdList
         
@@ -231,12 +231,6 @@ class MP2X_L:
             self.LineService_flagList = [0 for i in range(2)]
         else:
             self.LineService_flagList = LineService_flagList
-    
-    """ def add_client(self, ClientNum, Type):
-        self.ClientsType[ClientNum] = Type
-    
-    def del_client(self, ClientNum):
-        self.ClientsType[ClientNum] = 0 """
 
 class MP2X_R:
     def __init__(self, LeftId, Destination):
