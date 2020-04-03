@@ -1925,7 +1925,7 @@ class Ui_MainWindow(object):
         self.splitter.setObjectName("splitter")
         self.Demand_tab = QtWidgets.QTabWidget(self.splitter)
         self.Demand_tab.setEnabled(True)
-        self.Demand_tab.setMinimumSize(QtCore.QSize(0, 100))
+        self.Demand_tab.setMinimumSize(QtCore.QSize(0, 0))
         self.Demand_tab.setObjectName("Demand_tab")
         self.tab_8 = QtWidgets.QWidget()
         self.tab_8.setObjectName("tab_8")
@@ -1977,7 +1977,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.addWidget(self.DemandPanel_14)
         self.Demand_tab.addTab(self.tab_8, "")
         self.MapWidget = MapWidget(self.splitter)
-        self.MapWidget.setMinimumSize(QtCore.QSize(821, 259))
+        self.MapWidget.setMinimumSize(QtCore.QSize(821, 0))
         self.MapWidget.setObjectName("MapWidget")
         self.gridLayout_4.addWidget(self.splitter, 1, 1, 1, 2)
         self.tabWidget.addTab(self.tab, "")
@@ -2320,7 +2320,7 @@ class Ui_MainWindow(object):
     def DemandMap_Change(self, Working = None, Protection = None, 
         WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None):
         #mpl.rcParams["figure.figsize"] = [18.4, 7.8]
-        self.MapWidget.canvas.figure.subplots_adjust(left = -0.04, right = 1, top = 0.85)
+        self.MapWidget.canvas.figure.subplots_adjust(left = -0.04, right = 1.025, top = 1.02, bottom = -0.02)
         self.MapWidget.canvas.axes.cla()
         R = 6371 
         Source = self.Demand_Source_combobox.currentText()
