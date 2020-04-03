@@ -2375,7 +2375,8 @@ class Ui_MainWindow(object):
 
             if WorkingSNR != None:
                 SNRList = str(WorkingSNR)
-                snr_label = "Working SNR = " + SNRList
+                WavelengthNumber = str(LambdaList)
+                snr_label = "Working SNR = " + SNRList + '\n' + "Wavelength Number = " + WavelengthNumber
                 self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label=snr_label)
             else:
                 self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label="Working")
@@ -2395,7 +2396,8 @@ class Ui_MainWindow(object):
 
             if ProtectionSNR != None:
                 SNRList = str(ProtectionSNR)
-                snr_label1 = "Protection SNR = " + SNRList          
+                WavelengthNumber = str(LambdaList)
+                snr_label1 = "Protection SNR = " + SNRList + '\n' + "Wavelength Number = " + WavelengthNumber          
                 self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label=snr_label1)
             else:
                 self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label="Protection")
@@ -3292,7 +3294,7 @@ class Ui_MainWindow(object):
         R = 6371
         def scale_calculation(lat, lon):
             x = R * cos(lat) * cos(lon)
-            y = R * cos(lat) * sin(lon)
+            y = -R * cos(lat) * sin(lon)
             return [x,y]
 
 
