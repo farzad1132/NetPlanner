@@ -1849,10 +1849,10 @@ class Ui_MainWindow(object):
 "}")
         self.ClientLabel_21.setObjectName("ClientLabel_21")
         self.gridLayout_2.addWidget(self.ClientLabel_21, 0, 0, 1, 1)
-        self.listWidget_8 = QtWidgets.QListWidget(self.tab)
-        self.listWidget_8.setMinimumSize(QtCore.QSize(256, 135))
-        self.listWidget_8.setMaximumSize(QtCore.QSize(256, 135))
-        self.listWidget_8.setStyleSheet("QListWidget {\n"
+        self.groomout10_list = QtWidgets.QListWidget(self.tab)
+        self.groomout10_list.setMinimumSize(QtCore.QSize(256, 135))
+        self.groomout10_list.setMaximumSize(QtCore.QSize(256, 135))
+        self.groomout10_list.setStyleSheet("QListWidget {\n"
 "    alternate-background-color: yellow;\n"
 "    border: 5px double;\n"
 "    border-color: blue;\n"
@@ -1883,8 +1883,8 @@ class Ui_MainWindow(object):
 "    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                stop: 0 #FAFBFE, stop: 1 #DCDEF1);\n"
 "}")
-        self.listWidget_8.setObjectName("listWidget_8")
-        self.gridLayout_2.addWidget(self.listWidget_8, 7, 0, 1, 1)
+        self.groomout10_list.setObjectName("groomout10_list")
+        self.gridLayout_2.addWidget(self.groomout10_list, 7, 0, 1, 1)
         self.gridLayout_12.addLayout(self.gridLayout_2, 1, 0, 3, 1)
         self.gridLayout_4 = QtWidgets.QGridLayout()
         self.gridLayout_4.setObjectName("gridLayout_4")
@@ -1932,14 +1932,14 @@ class Ui_MainWindow(object):
         self.gridLayout.addLayout(self.gridLayout_10, 0, 0, 1, 1)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(4)
         self.List_tab.setCurrentIndex(0)
         self.RackTab.setCurrentIndex(0)
         self.ShelfTab.setCurrentIndex(3)
         self.Demand_tab.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
+        # NOTE: added
 
         self.SelectNode_combo.clear()
         self.NodeType_combobox.clear()
@@ -2227,13 +2227,12 @@ class Ui_MainWindow(object):
         self.label_8.setText(_translate("MainWindow", "Destination:"))
         self.ClientLabel_22.setText(_translate("MainWindow", "List of LightPathes :"))
         self.ClientLabel_23.setText(_translate("MainWindow", "Client Side Services:"))
-        self.ClientLabel_20.setText(_translate("MainWindow", "Setting:"))
+        self.ClientLabel_20.setText(_translate("MainWindow", "Groom Out 10:"))
         self.label_9.setText(_translate("MainWindow", "Node Type:"))
         self.ClientLabel_21.setText(_translate("MainWindow", "List Of Network Panels:"))
         self.Demand_tab.setTabText(self.Demand_tab.indexOf(self.tab_8), _translate("MainWindow", "Shelf"))
         self.ClientLabel_25.setText(_translate("MainWindow", "Map:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
-
 
     def create_obj(self):
         """with open("NetworkObj_greedy.obj", 'wb') as handle:
@@ -4359,7 +4358,6 @@ class Ui_MainWindow(object):
         except:
             pass
         self.decoded_network = decoded_network
-
 
 
 if __name__ == "__main__":

@@ -452,7 +452,7 @@ class Network:
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
-                    self.Type = "SYM_4"
+                    self.Type = "STM_4"
                     self.sDemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
