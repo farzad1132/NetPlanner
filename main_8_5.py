@@ -2318,7 +2318,7 @@ class Ui_MainWindow(object):
     
 
     def DemandMap_Change(self, Working = None, Protection = None, 
-        WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None):
+        WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None, LambdaList = None):
         #mpl.rcParams["figure.figsize"] = [18.4, 7.8]
         self.MapWidget.canvas.figure.subplots_adjust(left = -0.04, right = 1.025, top = 1.02, bottom = -0.02)
         self.MapWidget.canvas.axes.cla()
@@ -2905,12 +2905,13 @@ class Ui_MainWindow(object):
         RG_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_p"]
         SNR_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_w"]
         SNR_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_p"]
+        LambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["LambdaList"]
 
         #print(f"here for calling demand change function <before> ")
 
         # calling Demand map change function
         self.DemandMap_Change(WorkingPath, ProtectionPath, WorkingRegeneratorsList = RG_w, ProtectionRegenaratorsList = RG_p
-                                ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p)
+                                ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p, LambdaList = LambdaList)
 
     # MHA EDITION:
     def SaveTM_fun(self):
@@ -4135,6 +4136,7 @@ class Ui_MainWindow(object):
             RG_p = lightpath.RegeneratorNode_p
             SNR_w = list(map(lambda x : round(x, 2), lightpath.SNR_w))
             SNR_p = list(map(lambda x : round(x, 2), lightpath.SNR_p))
+            LambdaList = lightpath.WaveLength
 
             # adding pathes to to GroomingTabDataBase ( lightpath part )
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id] = {}
@@ -4144,6 +4146,7 @@ class Ui_MainWindow(object):
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["RG_p"] = RG_p
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_w"] = SNR_w
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_p"] = SNR_p
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["LambdaList"] = LambdaList
 
             # Detecting Degrees and Filling GroomingTabDataBase ( Panels Part )
 
