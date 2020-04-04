@@ -285,6 +285,7 @@ class customlabel(QLabel):
             DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = self.ids[1]
             #print(f"debug in MP1H--> demandid : {ids[0]}")
             DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = self.ids[0]
+            
             self.modify_ServiceList(self.ids, self.nodename, self.Destination)
 
             if DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag == 0:

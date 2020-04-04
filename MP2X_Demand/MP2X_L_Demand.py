@@ -218,33 +218,48 @@ class MP2X_L_Demand(QWidget):
 
 class customlabel(QLabel):
     Stateflag = 0           # this flag shows that this panel is on or off
-    def __init__(self, parent, nodename, ID, ClientNum):
+    def __init__(self, parent, nodename, Destination, ID, ClientNum , LineVar_1, LineVar_2):
         super().__init__(parent)
         self.nodename = nodename
         self.id = ID
+        self.Destination = Destination
+        self.LineVar_1 = LineVar_1
+        self.LineVar_2 = LineVar_2
         self.ClientNum = ClientNum - 1  # because list indices starts with 0
         self.setAcceptDrops(True)
+
+        self.BWDict = {"E1": 58.84 / 1024, "STM_1_Electrical": 155.52 / 1024, "STM_1_Optical": 155.52 / 1024, "STM_4": 622.08 / 1024, "STM_16": 2.49}
     
     def dragEnterEvent(self, event):
         e = event.mimeData()
         model = QStandardItemModel()
         model.dropMimeData(event.mimeData(), Qt.CopyAction, 0,0, QModelIndex())
         dragtext = model.item(0,0).text()
+        UserData = model.item(0).data(Qt.UserRole)
         """ servicetype = dragtext.split("*")[1]
         servicetype = servicetype.strip() """
         self.allowedservices = ["E1", "STM_1_Electrical", "STM_1_Optical", "STM_4", "STM_16"]
-        dragtext = dragtext.split("#")
+        """ dragtext = dragtext.split("#")
         servicetype = dragtext[1].strip()
         ids = list(dragtext[0].strip())
-        ids = [ids[1], ids[-2]]
+        ids = [ids[1], ids[-2]] """
+        servicetype = dragtext.strip()
+        ids = [UserData["DemandId"], UserData["ServiceId"]]
         if servicetype in self.allowedservices:
             #self.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
-            
-            self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client_green.png")))
-            
+            Line_1_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0]
+            Line_2_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1]
+            DropCapacity = self.BWDict[self.servicetype]
+
+            # checking wheater lines have enough capacity or not
+            if Line_1_old_capacity + DropCapacity < 10 or Line_2_old_capacity + DropCapacity < 10:
+
+                self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client_green.png")))
+                event.accept()
+
         else:
             self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client_red.png")))
-        event.accept()
+        
 
         super(customlabel,self).dragEnterEvent(event)
     
@@ -258,20 +273,118 @@ class customlabel(QLabel):
         model = QStandardItemModel()
         model.dropMimeData(event.mimeData(), Qt.CopyAction, 0,0, QModelIndex())
         dragtext = model.item(0,0).text()
+        UserData = model.item(0).data(Qt.UserRole)
 
-        dragtext = dragtext.split("#")
-        servicetype = dragtext[1].strip()   # service type = 100Ge , 10GE , ....
-        ids = list(dragtext[0].strip())
-        ids = [ids[1], ids[-2]]        # [ Demand Number, Service Number]
+        
+        servicetype = dragtext.strip()
+
 
         if servicetype in self.allowedservices:
-            DemandTabDataBase["Panels"][self.nodename][self.id].add_client(self.ClientNum, servicetype)
-            self.flag = 1           # this flag means that this client is full
-            self.servicetype = servicetype
-            self.ids = [ids[0], ids[1]]
-            self.modify_ServiceList(ids, self.nodename, self.Destination)
 
-            # TODO: be Careful !!!!!
+            self.servicetype = servicetype
+            self.ids = (UserData["DemandId"], UserData["ServiceId"])            # ids : [ serviceId, DemandId ]
+            
+            self.setToolTip(DemandTabDataBase["Services_static"][self.nodename][self.ids].toolTip())
+
+            # DemandTabDataBase["Panels"][self.nodename][self.id].add_client(self.ClientNum, servicetype)
+            Line_1_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0]
+            Line_2_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1]
+
+            # updating ClientsCapacity in panel object
+            DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = servicetype
+
+            ServiceListLen = len(DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList)
+            if self.ClientNum >= ServiceListLen:
+                for i in range(ServiceListLen - self.ClientNum + 1):
+                    DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList.append(None)
+
+            # updating service id and demand id in panel object 
+            DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = self.ids[1]
+            DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = self.ids[0]
+
+
+            
+            DropCapacity = self.BWDict[self.servicetype]
+            
+
+            self.modify_ServiceList(    ids= self.ids,
+                                        source= self.nodename,
+                                        destination= self.Destination,
+                                        mode= "delete")
+
+            # check if line 1 in on or not
+            if Line_1_old_capacity == 0:
+
+                # updating line 1 capacity
+                DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] += DropCapacity
+                
+                # creating new groom out 10
+                Data["NetworkObj"].add_groom_out_10(Source= self.nodename,
+                                                    Destination= self.Destination,
+                                                    DemandId= self.ids[1],
+                                                    Capacity= self.BWDict[self.servicetype],
+                                                    ServiceIdDict= [self.ids[0]])
+
+                GroomOutId = max(Data["NetworkObj"].GroomOut10Dict.keys())
+
+                # updating LineIdList in panel object
+                DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0] = GroomOutId
+
+                self.modify_GroomOut10List(id= GroomOutId,
+                                            Source= self.nodename,
+                                            Destination= self.Destination,
+                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0],
+                                            mode= "add",
+                                            type= "GroomOut10",
+                                            PanelId= self.id)
+
+            elif Line_1_old_capacity + DropCapacity < 10 :
+                
+                # updating line 1 capacity
+                DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] += DropCapacity
+
+                GroomOutId = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0]
+
+                ServiceIdList = [self.ids[1]]
+                Data["NetworkObj"].GroomOut10Dict[GroomOutId].ServiceIdList.extend(ServiceIdList)
+            
+            elif Line_2_old_capacity == 0:
+
+                # updating line 2 capacity
+                DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] += DropCapacity
+
+                # creating new groom out 10
+                Data["NetworkObj"].add_groom_out_10(Source= self.nodename,
+                                                    Destination= self.Destination,
+                                                    DemandId= self.ids[1],
+                                                    Capacity= self.BWDict[self.servicetype],
+                                                    ServiceIdDict= [self.ids[0]])
+
+                GroomOutId = max(Data["NetworkObj"].GroomOut10Dict.keys())
+
+                # updating LineIdList in panel object
+                DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1] = GroomOutId
+
+                self.modify_GroomOut10List(id= GroomOutId,
+                                            Source= self.nodename,
+                                            Destination= self.Destination,
+                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1],
+                                            mode= "add",
+                                            type= "GroomOut10",
+                                            PanelId= self.id)
+            
+            else:
+
+                # updating line 2 capacity
+                DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] += DropCapacity
+
+                GroomOutId = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1]
+
+                ServiceIdList = [self.ids[1]]
+                Data["NetworkObj"].GroomOut10Dict[GroomOutId].ServiceIdList.extend(ServiceIdList)
+
+
+            # NOTE: be Careful !!!!!
             self.setAcceptDrops(False)  
         else:
             self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client.png")))
@@ -311,18 +424,33 @@ class customlabel(QLabel):
                 Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
-            DemandTabDataBase["Services"][(source, destination)][key] = "[%s , %s] # %s" % (ids[0], ids[1], type)
+            DemandTabDataBase["Services"][(source, destination)][key] = None
             
         Data["ui"].UpdateDemand_ServiceList()
     
-    def modify_LightPathList(self, id, Source, Destination, mode = "add", type = None):
+    def modify_GroomOut10List(self, id, Source, Destination, Capacity = None, mode = "add", type = None, PanelId = None):
 
         if mode == "add":
-            DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
+            #DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
+            item = QListWidgetItem(type, Data["GroomOu10_list"])
+            UserData = {"GroomOut10d":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": PanelId}
+            item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
+            item.setData(Qt.UserRole, UserData)
+            item.setTextAlignment(Qt.AlignCenter)
+
+            DemandTabDataBase["GroomOut10"][(Source, Destination)][id] = item
         
         if mode == "delete":
-            for Des in DemandTabDataBase["Source_Destination"][Source]:
-                if id in DemandTabDataBase["Lightpathes"][(Source, Destination)]:
-                    DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
-        
-        Data["ui"].update_Demand_lightpath_list()
+            # deleting desired lightpath from database
+            DemandTabDataBase["GroomOut10"][(Source, Destination)].pop(id)
+
+            # correcting upper lightpath id's 
+            for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
+                for UpperId in sorted(list(DemandTabDataBase["GroomOut10"][(Source, Des)].keys())):
+                    if UpperId > id:
+                        DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1] = DemandTabDataBase["GroomOut10"][(Source, Des)].pop(UpperId)
+                        UserData = DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1].data(Qt.UserRole)
+                        UserData["GroomOut10Id"] -= 1
+                        DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) 
+ 
+        Data["ui"].update_Demand_groomout10_list()

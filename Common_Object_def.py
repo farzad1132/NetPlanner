@@ -319,10 +319,39 @@ class Network:
 
         def __init__(self):
             self.DemandDict = {}    # in { id : DemandObj } format
+            self.GroomOut10Dict = {}            # format: { id: GroomOut10 object }
         
         def add_demand(self, Source, Destination, Type):
             Id = self.GenerateDemandId()
             self.DemandDict[Id] = self.Demand(Id, Source, Destination, Type)
+        
+        def add_groom_out_10(self, Source, Destination, DemandId, Capacity, ServiceIdList,
+                                IgnoringNodesIdList = None, MandatoryNodesIdList = None, LightPathId = None, Sla = None):
+            Id = Network.Traffic.Demand.GenerateId()
+            self.GroomOut10Dict[id] = self.Groom_out10( Id= Id,
+                                                        DemandId = DemandId,
+                                                        Capacity = Capacity,
+                                                        ServiceIdList = ServiceIdList,
+                                                        IgnoringNodesIdList= IgnoringNodesIdList,
+                                                        MandatoryNodesIdList= MandatoryNodesIdList,
+                                                        LightPathId= LightPathId,
+                                                        Sla= Sla)
+        
+        def delete_groom_out_10(self, Id):
+
+            def correct_UpperIds(id):
+                if id in self.LightPathDict:
+                    sorted_keys = sorted(list(self.LightPathDict.keys()))
+                    index = sorted_keys.index(id)
+                    for key in sorted_keys[index:]:
+                        self.LightPathDict[key - 1] = self.LightPathDict.pop(key)
+
+            del self.GroomOut10Dict[Id]
+            correct_UpperIds(Id + 1)
+
+            Network.Traffic.Demand.ServiceReferencedId -= 1
+            
+            
         
         def del_demand(self, Id):
             del self.DemandDict[Id]
@@ -332,6 +361,22 @@ class Network:
         def GenerateDemandId(self):
                 Network.Traffic.Demand.DemandReferenceId += 1
                 return ( Network.Traffic.Demand.DemandReferenceId - 1 )
+        
+        class Groom_out10:
+                BW=10
+
+                def __init__(self, Id, DemandId, Capacity, ServiceIdList, IgnoringNodesIdList = None, MandatoryNodesIdList = None,
+                                    LightPathId = None, Sla = None):
+
+                    self.Id = Id
+                    self.DemandId = DemandId
+                    self.Sla = Sla
+                    self.Capacity = Capacity
+                    self.ServiceIdList = ServiceIdList
+                    self.Type = "Groom_out10"
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
+                    self.IgnoringNodesIdList = IgnoringNodesIdList
+                    self.LightPathId = LightPathId
 
         class Demand:
             ServiceReferencedId = 0
@@ -492,7 +537,7 @@ class Network:
                 # BW : Band Width in Gb/s
                 BW = 58.84 / 1024
 
-                def __init__(self, Id, Sla,DemandId, IgnoringNodes, LightPathId = None):
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, LightPathId = None):
                     self.Id = Id
                     self.Sla = Sla
                     self.Type = "E1"
@@ -500,21 +545,7 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
-            class Groom_out10:
-                BW=10
-
-                def __init__(self, Id, Sla, Capacity, ServiceIdList, IgnoringNodesIdList = None, MandatoryNodesIdList = None,
-                                    LightPathId = None):
-
-                    self.Id = Id
             
-                    self.Sla = Sla
-                    self.Capacity = Capacity
-                    self.ServiceIdList = ServiceIdList
-                    self.Type = "Groom_out10"
-                    self.MandatoryNodesIdList = MandatoryNodesIdList
-                    self.IgnoringNodesIdList = IgnoringNodesIdList
-                    self.LightPathId = LightPathId
 
                     
             
@@ -560,17 +591,8 @@ class Network:
                 elif ServiceType == "100GE":
                     self.ServiceDict[ServiceId] = self.G_100(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
                 
-                elif ServiceType == "Groom_out10":
-                    self.ServiceDict[ServiceId] = self.Groom_out10(ServiceId, Sla, Capacity, ServiceIdList, IgnoringNodes, MandatoryNodesIdList, LightPathId)
         
-            def delete_groom_out_10(self, ServiceId):
-                self.ServiceDict.pop(ServiceId)
-
-                for key in list(self.ServiceDict.keys).sort():
-                    if key > ServiceId:
-                        self.ServiceDict[key - 1] = self.ServiceDict.pop(key)
-                
-                Network.Traffic.Demand.ServiceReferencedId -= 1
+            
 
                 
 

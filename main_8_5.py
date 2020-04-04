@@ -2099,6 +2099,8 @@ class Ui_MainWindow(object):
         Data["Service_item_num"] = 0
         Data["LightPath_item_num"] = 0
 
+        Data["GroomOu10_list"] = self.groomout10_list
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -3043,6 +3045,7 @@ class Ui_MainWindow(object):
             
     def initialize_DemandTabDataBase(self, Source, Destination):
         DemandTabDataBase["Lightpathes"][(Source, Destination)] = {}
+        DemandTabDataBase["GroomOut10"][(Source, Destination)] = {}
         DemandTabDataBase["Panels"][Source] = {}
 
     def initialize_GroomingTabDataBase(self, Source, Destination):
@@ -3260,6 +3263,18 @@ class Ui_MainWindow(object):
             self.Demand_LineList.takeItem(0)
         for value in DemandTabDataBase["Lightpathes"][(Source, Destination)].values():
             self.Demand_LineList.addItem(value)
+
+    
+    def update_Demand_groomout10_list(self):
+
+        Source = self.Demand_Source_combobox.currentText()
+        Destination = self.Demand_Destination_combobox.currentText()
+
+        while self.groomout10_list.count() > 0:
+            self.groomout10_list.takeItem(0)
+        for value in DemandTabDataBase["GroomOut10"][(Source, Destination)].values():
+            self.groomout10_list.addItem(value)
+
         
                 
 
