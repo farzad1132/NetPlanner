@@ -5,7 +5,7 @@ from PySide2.QtGui import *
 import sys
 import os
 
-'''from data import *
+from data import *
 from Common_Object_def import Network
 from MP1H_Demand import CLIENT_R
 from MP1H_Demand import MP1H_Title
@@ -14,22 +14,14 @@ from MP1H_Demand import Socket_top
 from MP1H_Demand import client
 from MP1H_Demand import line
 from MP1H_Demand import CLIENT_L_Selected
-from MP1H_Demand import CLIENT_R_Selected'''
+from MP1H_Demand import CLIENT_R_Selected
 
-import CLIENT_R
-import MP1H_Title
-import Socket_bottom
-import Socket_top
-import client
-import line
-import CLIENT_L_Selected
-import CLIENT_R_Selected
 
 # USE THIS CODE TO CHANGE THE CLIENT TO SELECTED CLIENT:
-
+#1)
 # For left clients:
 # self.Client(number of client).setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
-
+#2)
 # For left clients:
 # self.Client(number of client).setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
 
