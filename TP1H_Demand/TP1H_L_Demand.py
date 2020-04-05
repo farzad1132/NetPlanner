@@ -53,7 +53,7 @@ class TP1H_L_Demand(QtWidgets.QWidget):
         self.Socket_Bottom.setText("")
         self.Socket_Bottom.setObjectName("Socket_Bottom")
         self.gridLayout.addWidget(self.Socket_Bottom, 7, 0, 1, 1)
-        self.Client = QtWidgets.QLabel(self)
+        self.Client = customlabel(self, self.nodename, self.Destination, self.id)
         self.Client.setMinimumSize(QtCore.QSize(0, 25))
         self.Client.setStyleSheet("image: url(:/Client/TP1H_CLIENT.png);")
         self.Client.setText("")
