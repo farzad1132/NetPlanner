@@ -6,17 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>94</width>
-    <height>455</height>
+    <width>108</width>
+    <height>541</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">
-
-</string>
+   <string notr="true"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
@@ -67,7 +65,7 @@ image: url(:/CLIENT_L1/CLIENT_L.png);</string>
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>100</height>
+       <height>125</height>
       </size>
      </property>
      <property name="styleSheet">
@@ -194,8 +192,9 @@ image: url(:/CLIENT_L1/CLIENT_L.png);</string>
  </widget>
  <resources>
   <include location="Socket_bottom.qrc"/>
-  <include location="rrr.qrc"/>
+  <include location="CLIENT_L_Selected.qrc"/>
   <include location="MP1H_Title.qrc"/>
+  <include location="CLIENT_R_Selected.qrc"/>
   <include location="line.qrc"/>
   <include location="client.qrc"/>
   <include location="CLIENT_R.qrc"/>
