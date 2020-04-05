@@ -230,7 +230,7 @@ class MP2X_L:
             self.DemandIdList = DemandIdList
         
         if LineIdList is None:
-            self.LineServiceIdList = [None for i in range(2)]
+            self.LineIdList = [None for i in range(2)]
         else:
             self.LineIdList = LineIdList
         

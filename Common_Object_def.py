@@ -327,8 +327,12 @@ class Network:
         
         def add_groom_out_10(self, Source, Destination, DemandId, Capacity, ServiceIdList,
                                 IgnoringNodesIdList = None, MandatoryNodesIdList = None, LightPathId = None, Sla = None):
-            Id = Network.Traffic.Demand.GenerateId()
-            self.GroomOut10Dict[id] = self.Groom_out10( Id= Id,
+                                
+            Network.Traffic.Demand.ServiceReferencedId += 1
+
+            Id = Network.Traffic.Demand.ServiceReferencedId - 1 
+
+            self.GroomOut10Dict[Id] = self.Groom_out10( Id= Id,
                                                         DemandId = DemandId,
                                                         Capacity = Capacity,
                                                         ServiceIdList = ServiceIdList,
@@ -340,11 +344,11 @@ class Network:
         def delete_groom_out_10(self, Id):
 
             def correct_UpperIds(id):
-                if id in self.LightPathDict:
-                    sorted_keys = sorted(list(self.LightPathDict.keys()))
+                if id in self.GroomOut10Dict:
+                    sorted_keys = sorted(list(self.GroomOut10Dict.keys()))
                     index = sorted_keys.index(id)
                     for key in sorted_keys[index:]:
-                        self.LightPathDict[key - 1] = self.LightPathDict.pop(key)
+                        self.GroomOut10Dict[key - 1] = self.GroomOut10Dict.pop(key)
 
             del self.GroomOut10Dict[Id]
             correct_UpperIds(Id + 1)

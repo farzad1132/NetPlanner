@@ -16,109 +16,6 @@ class MP2X_L_Demand(QWidget):
         self.Destination = Destination
         self.uppernum = str(int(Panel_ID) + 1)
         
-        
-        
-        #self.setObjectName("self")
-        self.setFixedSize(116, 521)
-        #self.resize(116, 521)
-        self.client1 = customlabel(self, self.nodename, self.id, 1)
-        self.client1.setGeometry(QRect(30, 120, 21, 71))
-        self.client1.setText("")
-        self.client1.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client1.setObjectName("client1")  
-
-        self.client2 = customlabel(self, self.nodename, self.id, 2)
-        self.client2.setGeometry(QRect(50, 120, 21, 71))
-        self.client2.setText("")
-        self.client2.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client2.setObjectName("client2")  
-
-        self.client3 = customlabel(self, self.nodename, self.id, 3)
-        self.client3.setGeometry(QRect(30, 160, 21, 71))
-        self.client3.setText("")
-        self.client3.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client3.setObjectName("client3") 
-
-        self.client4 = customlabel(self, self.nodename, self.id, 4)
-        self.client4.setGeometry(QRect(50, 160, 21, 71))
-        self.client4.setText("")
-        self.client4.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client4.setObjectName("client4")
-        
-        
-        self.client5 = customlabel(self, self.nodename, self.id, 5)
-        self.client5.setGeometry(QRect(30, 200, 21, 71))
-        self.client5.setText("")
-        self.client5.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client5.setObjectName("client5") 
-
-        self.client6 = customlabel(self, self.nodename, self.id, 6)
-        self.client6.setGeometry(QRect(50, 200, 21, 71))
-        self.client6.setText("")
-        self.client6.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client6.setObjectName("client6") 
-
-        self.client7 = customlabel(self, self.nodename, self.id, 7)
-        self.client7.setGeometry(QRect(30, 240, 21, 71))
-        self.client7.setText("")
-        self.client7.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client7.setObjectName("client7") 
-
-        self.client8 = customlabel(self, self.nodename, self.id, 8)
-        self.client8.setGeometry(QRect(50, 240, 21, 71))
-        self.client8.setText("")
-        self.client8.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client8.setObjectName("client8")  
-
-        self.client9 = customlabel(self, self.nodename, self.id, 9)
-        self.client9.setGeometry(QRect(30, 280, 21, 71))
-        self.client9.setText("")
-        self.client9.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client9.setObjectName("client9") 
-
-        self.client10 = customlabel(self, self.nodename, self.id, 10)
-        self.client10.setGeometry(QRect(50, 280, 21, 71))
-        self.client10.setText("")
-        self.client10.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client10.setObjectName("client10") 
-
-        self.client11 = customlabel(self, self.nodename, self.id, 11)
-        self.client11.setGeometry(QRect(30, 320, 21, 71))
-        self.client11.setText("")
-        self.client11.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client11.setObjectName("client11") 
-
-        self.client12 = customlabel(self, self.nodename, self.id, 12)
-        self.client12.setGeometry(QRect(50, 320, 21, 71))
-        self.client12.setText("")
-        self.client12.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client12.setObjectName("client12") 
-
-        self.client13 = customlabel(self, self.nodename, self.id, 13)
-        self.client13.setGeometry(QRect(30, 360, 21, 71))
-        self.client13.setText("")
-        self.client13.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client13.setObjectName("client13") 
-
-        self.client14 = customlabel(self, self.nodename, self.id, 14)
-        self.client14.setGeometry(QRect(50, 360, 21, 71))
-        self.client14.setText("")
-        self.client14.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client14.setObjectName("client14")
-        
-        
-        self.client15 = customlabel(self, self.nodename, self.id, 15)
-        self.client15.setGeometry(QRect(30, 400, 21, 71))
-        self.client15.setText("")
-        self.client15.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client15.setObjectName("client15") 
-
-        self.client16 = customlabel(self, self.nodename, self.id, 16)
-        self.client16.setGeometry(QRect(50, 400, 21, 71))
-        self.client16.setText("")
-        self.client16.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
-        self.client16.setObjectName("client16") 
-
         self.line1 = QLabel(self)
         self.line1.setGeometry(QRect(30, 100, 41, 31))
         self.line1.setText("")
@@ -130,6 +27,109 @@ class MP2X_L_Demand(QWidget):
         self.line2.setText("")
         self.line2.setPixmap(QPixmap(os.path.join("MP2X_Demand","line2.png")))
         self.line2.setObjectName("line2")
+        
+        #self.setObjectName("self")
+        self.setFixedSize(116, 521)
+        #self.resize(116, 521)
+        self.client1 = customlabel(self, self.nodename, self.Destination, self.id, 1, self.line1, self.line2)
+        self.client1.setGeometry(QRect(30, 120, 21, 71))
+        self.client1.setText("")
+        self.client1.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client1.setObjectName("client1")  
+
+        self.client2 = customlabel(self, self.nodename, self.Destination, self.id, 2, self.line1, self.line2)
+        self.client2.setGeometry(QRect(50, 120, 21, 71))
+        self.client2.setText("")
+        self.client2.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client2.setObjectName("client2")  
+
+        self.client3 = customlabel(self, self.nodename, self.Destination, self.id, 3, self.line1, self.line2)
+        self.client3.setGeometry(QRect(30, 160, 21, 71))
+        self.client3.setText("")
+        self.client3.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client3.setObjectName("client3") 
+
+        self.client4 = customlabel(self, self.nodename, self.Destination, self.id, 4, self.line1, self.line2)
+        self.client4.setGeometry(QRect(50, 160, 21, 71))
+        self.client4.setText("")
+        self.client4.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client4.setObjectName("client4")
+        
+        
+        self.client5 = customlabel(self, self.nodename, self.Destination, self.id, 5, self.line1, self.line2)
+        self.client5.setGeometry(QRect(30, 200, 21, 71))
+        self.client5.setText("")
+        self.client5.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client5.setObjectName("client5") 
+
+        self.client6 = customlabel(self, self.nodename, self.Destination, self.id, 6, self.line1, self.line2)
+        self.client6.setGeometry(QRect(50, 200, 21, 71))
+        self.client6.setText("")
+        self.client6.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client6.setObjectName("client6") 
+
+        self.client7 = customlabel(self, self.nodename, self.Destination, self.id, 7, self.line1, self.line2)
+        self.client7.setGeometry(QRect(30, 240, 21, 71))
+        self.client7.setText("")
+        self.client7.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client7.setObjectName("client7") 
+
+        self.client8 = customlabel(self, self.nodename, self.Destination, self.id, 8, self.line1, self.line2)
+        self.client8.setGeometry(QRect(50, 240, 21, 71))
+        self.client8.setText("")
+        self.client8.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client8.setObjectName("client8")  
+
+        self.client9 = customlabel(self, self.nodename, self.Destination, self.id, 9, self.line1, self.line2)
+        self.client9.setGeometry(QRect(30, 280, 21, 71))
+        self.client9.setText("")
+        self.client9.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client9.setObjectName("client9") 
+
+        self.client10 = customlabel(self, self.nodename, self.Destination, self.id, 10, self.line1, self.line2)
+        self.client10.setGeometry(QRect(50, 280, 21, 71))
+        self.client10.setText("")
+        self.client10.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client10.setObjectName("client10") 
+
+        self.client11 = customlabel(self, self.nodename, self.Destination, self.id, 11, self.line1, self.line2)
+        self.client11.setGeometry(QRect(30, 320, 21, 71))
+        self.client11.setText("")
+        self.client11.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client11.setObjectName("client11") 
+
+        self.client12 = customlabel(self, self.nodename, self.Destination, self.id, 12, self.line1, self.line2)
+        self.client12.setGeometry(QRect(50, 320, 21, 71))
+        self.client12.setText("")
+        self.client12.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client12.setObjectName("client12") 
+
+        self.client13 = customlabel(self, self.nodename, self.Destination, self.id, 13, self.line1, self.line2)
+        self.client13.setGeometry(QRect(30, 360, 21, 71))
+        self.client13.setText("")
+        self.client13.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client13.setObjectName("client13") 
+
+        self.client14 = customlabel(self, self.nodename, self.Destination, self.id, 14, self.line1, self.line2)
+        self.client14.setGeometry(QRect(50, 360, 21, 71))
+        self.client14.setText("")
+        self.client14.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client14.setObjectName("client14")
+        
+        
+        self.client15 = customlabel(self, self.nodename, self.Destination, self.id, 15, self.line1, self.line2)
+        self.client15.setGeometry(QRect(30, 400, 21, 71))
+        self.client15.setText("")
+        self.client15.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client15.setObjectName("client15") 
+
+        self.client16 = customlabel(self, self.nodename, self.Destination, self.id, 16, self.line1, self.line2)
+        self.client16.setGeometry(QRect(50, 400, 21, 71))
+        self.client16.setText("")
+        self.client16.setPixmap(QPixmap(os.path.join("MP2X_Demand","client.png")))
+        self.client16.setObjectName("client16") 
+
+        
         
         self.upper_socket = QLabel(self)
         self.upper_socket.setGeometry(QRect(20, -20, 41, 81))
@@ -236,22 +236,18 @@ class customlabel(QLabel):
         model.dropMimeData(event.mimeData(), Qt.CopyAction, 0,0, QModelIndex())
         dragtext = model.item(0,0).text()
         UserData = model.item(0).data(Qt.UserRole)
-        """ servicetype = dragtext.split("*")[1]
-        servicetype = servicetype.strip() """
+        
         self.allowedservices = ["E1", "STM_1_Electrical", "STM_1_Optical", "STM_4", "STM_16"]
-        """ dragtext = dragtext.split("#")
-        servicetype = dragtext[1].strip()
-        ids = list(dragtext[0].strip())
-        ids = [ids[1], ids[-2]] """
+        
         servicetype = dragtext.strip()
         ids = [UserData["DemandId"], UserData["ServiceId"]]
         if servicetype in self.allowedservices:
             #self.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
             Line_1_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0]
             Line_2_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1]
-            DropCapacity = self.BWDict[self.servicetype]
+            DropCapacity = self.BWDict[servicetype]
 
-            # checking wheater lines have enough capacity or not
+            # checking weather lines have enough capacity or not
             if Line_1_old_capacity + DropCapacity < 10 or Line_2_old_capacity + DropCapacity < 10:
 
                 self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client_green.png")))
@@ -322,13 +318,13 @@ class customlabel(QLabel):
                 DemandTabDataBase["Panels"][self.nodename][self.id].Line_1_ServiceIdList.append(self.ids[1])
                 
                 # creating new groom out 10
-                Data["NetworkObj"].add_groom_out_10(Source= self.nodename,
+                Data["NetworkObj"].TrafficMatrix.add_groom_out_10(Source= self.nodename,
                                                     Destination= self.Destination,
                                                     DemandId= self.ids[1],
                                                     Capacity= self.BWDict[self.servicetype],
-                                                    ServiceIdDict= [self.ids[0]])
+                                                    ServiceIdList= [self.ids[0]])
 
-                GroomOutId = max(Data["NetworkObj"].GroomOut10Dict.keys())
+                GroomOutId = max(Data["NetworkObj"].TrafficMatrix.GroomOut10Dict.keys())
 
                 # updating LineIdList in panel object
                 DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0] = GroomOutId
@@ -355,7 +351,7 @@ class customlabel(QLabel):
                 GroomOutId = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0]
 
                 ServiceIdList = [self.ids[1]]
-                Data["NetworkObj"].GroomOut10Dict[GroomOutId].ServiceIdList.extend(ServiceIdList)
+                Data["NetworkObj"].TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList.extend(ServiceIdList)
 
                 # updating LightPath ListWidgetItem Capacity
                 self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
@@ -373,13 +369,14 @@ class customlabel(QLabel):
                 DemandTabDataBase["Panels"][self.nodename][self.id].Line_2_ServiceIdList.append(self.ids[1])
 
                 # creating new groom out 10
-                Data["NetworkObj"].add_groom_out_10(Source= self.nodename,
+                Data["NetworkObj"].TrafficMatrix.add_groom_out_10(Source= self.nodename,
                                                     Destination= self.Destination,
                                                     DemandId= self.ids[1],
                                                     Capacity= self.BWDict[self.servicetype],
-                                                    ServiceIdDict= [self.ids[0]])
+                                                    ServiceIdList= [self.ids[0]])
+                
 
-                GroomOutId = max(Data["NetworkObj"].GroomOut10Dict.keys())
+                GroomOutId = max(Data["NetworkObj"].TrafficMatrix.GroomOut10Dict.keys())
 
                 # updating LineIdList in panel object
                 DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1] = GroomOutId
@@ -406,7 +403,7 @@ class customlabel(QLabel):
                 GroomOutId = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1]
 
                 ServiceIdList = [self.ids[1]]
-                Data["NetworkObj"].GroomOut10Dict[GroomOutId].ServiceIdList.extend(ServiceIdList)
+                Data["NetworkObj"].TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList.extend(ServiceIdList)
 
 
                 # updating LightPath ListWidgetItem Capacity
@@ -419,8 +416,7 @@ class customlabel(QLabel):
 
             # NOTE: be Careful !!!!!
             self.setAcceptDrops(False)  
-        else:
-            self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client.png")))
+        
 
     def contextMenuEvent(self, event):
         ContextMenu = QMenu(self)
@@ -431,11 +427,88 @@ class customlabel(QLabel):
         if action == ClearAction:
             if DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] != 0:
                 self.setToolTip("")
+
+                ServiceId = DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum]
+
+                GroomOutId_1 = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0]
+                GroomOutId_2 = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1]
+
+                # updating linescapacity part on panel object
+                if ServiceId in DemandTabDataBase["Panels"][self.nodename][self.id].Line_1_ServiceIdList:
+                    # updating line 1 capacity
+                    DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] -= self.BWDict[DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum]]
+
+                    # updating line 1 id service id list
+                    DemandTabDataBase["Panels"][self.nodename][self.id].Line_1_ServiceIdList.remove(ServiceId)
+
+                    
+
+                    # updating LightPath ListWidgetItem Capacity
+                    self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_1],
+                                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
+
+                    # setting line port tooltip                                        
+                    self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_1].toolTip())
+
+                else:
+                    # updating line 2 capacity
+                    DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] -= self.BWDict[DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum]]
+
+                    # updating line 2 id service id list
+                    DemandTabDataBase["Panels"][self.nodename][self.id].Line_2_ServiceIdList.remove(ServiceId)
+
+                    # updating LightPath ListWidgetItem Capacity
+                    self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_2],
+                                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
+
+                    # setting line port tooltip                                        
+                    self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_2].toolTip())
+
+                # updating client capacity part of panel object
+                DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = 0
                 
-                DemandTabDataBase["Panels"][self.nodename][self.id].del_client(self.ClientNum)
-                self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client.png")))
+                # update ServiceIdList part of panel object
+                DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = None
+
+                # updating DemandIdList part in panel object
+                DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = None
+
                 self.setAcceptDrops(True)
-                self.modify_ServiceList(self.ids, self.nodename, self.Destination, mode = "add", type = servicetype)
+                self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client.png")))
+
+                self.modify_ServiceList(ids= self.ids,
+                                        source = self.nodename,
+                                        destination= self.Destination,
+                                        mode= "add",
+                                        type= self.servicetype)
+
+                if DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] == 0:
+
+                    # updating LineIdList part of panel object
+                    DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0] = None
+
+                    self.modify_GroomOut10List(id= GroomOutId_1,
+                                                Source= self.nodename,
+                                                Destination= self.Destination,
+                                                mode= "delete",
+                                                type= "GroomOut10")
+                    
+                    # deleting groomout10 from common object
+                    Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOutId_1)
+
+                elif DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] == 0:
+
+                    # updating LineIdList part of panel object
+                    DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1] = None
+
+                    self.modify_GroomOut10List(id= GroomOutId_2,
+                                                Source= self.nodename,
+                                                Destination= self.Destination,
+                                                mode= "delete",
+                                                type= "GroomOut10")
+
+                    # deleting groomout10 from common object
+                    Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOutId_2)
 
     
 
