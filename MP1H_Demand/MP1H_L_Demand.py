@@ -5,7 +5,7 @@ from PySide2.QtGui import *
 import sys
 import os
 
-from data import *
+'''from data import *
 from Common_Object_def import Network
 from MP1H_Demand import CLIENT_R
 from MP1H_Demand import MP1H_Title
@@ -13,6 +13,25 @@ from MP1H_Demand import Socket_bottom
 from MP1H_Demand import Socket_top
 from MP1H_Demand import client
 from MP1H_Demand import line
+from MP1H_Demand import CLIENT_L_Selected
+from MP1H_Demand import CLIENT_R_Selected'''
+
+import CLIENT_R
+import MP1H_Title
+import Socket_bottom
+import Socket_top
+import client
+import line
+import CLIENT_L_Selected
+import CLIENT_R_Selected
+
+# USE THIS CODE TO CHANGE THE CLIENT TO SELECTED CLIENT:
+
+# For left clients:
+# self.Client(number of client).setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+
+# For left clients:
+# self.Client(number of client).setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
 
 class MP1H_L_Demand(QtWidgets.QWidget):
 
@@ -46,7 +65,7 @@ class MP1H_L_Demand(QtWidgets.QWidget):
         self.Client7.setObjectName("Client7")
         self.gridLayout.addWidget(self.Client7, 5, 0, 1, 1)
         self.Line = QtWidgets.QLabel(self)
-        self.Line.setMinimumSize(QtCore.QSize(0, 100))
+        self.Line.setMinimumSize(QtCore.QSize(0, 125))
         self.Line.setStyleSheet("image: url(:/line/line.png);")
         self.Line.setText("")
         self.Line.setObjectName("Line")
@@ -103,254 +122,6 @@ class MP1H_L_Demand(QtWidgets.QWidget):
         self.MP1H_Title.setText("")
         self.MP1H_Title.setObjectName("MP1H_Title")
         self.gridLayout.addWidget(self.MP1H_Title, 1, 2, 2, 1)
-    
-
-    def contextMenuEvent(self, event):
-        from BLANK_Demand.BLANK_Demand import BLANK_Demand
-        ContextMenu = QMenu(self)
-        CloseAction = ContextMenu.addAction("Close Panel")
-        RefreshAction = ContextMenu.addAction(" Refresh ")
-            
-        action = ContextMenu.exec_(self.mapToGlobal(event.pos()))
-
-        if action == CloseAction:
-            # removing old left panel
-            panel_widget = Data["DemandPanel_" + str(self.id)].takeAt(0).widget()
-            self.horizontalLayout.removeWidget(panel_widget)
-            panel_widget.deleteLater()
-            Data["DemandPanel_" + self.id].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
-
-            # removing old right panel
-            panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
-            self.horizontalLayout.removeWidget(panel_widget)
-            panel_widget.deleteLater()
-            Data["DemandPanel_" + self.uppernum].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
-
-            # TODO: undo every service or lightpath that is created in this panel
-            if DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity != 0:
-
-                for i in range(len(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity)):
-                    if DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[i] != 0:
-                        ids = [DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[i], DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[i]]
-                        type = DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[i]
-
-                        self.modify_ServiceList(ids, self.nodename, self.Destination, "add", type)
-
-                LightPathId = DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId
-
-                
-                self.modify_LightPathList(LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
-                Network.Lightpath.update_id(-1)
-            DemandTabDataBase["Panels"][self.nodename].pop(self.id)
-            DemandTabDataBase["Panels"][self.nodename].pop(self.uppernum)
-        
-        if action == RefreshAction:
-            # TODO: recalculate line capacity
-            pass
-    
-    def modify_LightPathList(self, id, Source, Destination, mode = "add", type = None):
-
-        if mode == "add":
-            DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
-        
-        if mode == "delete":
-            for Des in DemandTabDataBase["Source_Destination"][Source]:
-                if id in DemandTabDataBase["Lightpathes"][(Source, Destination)]:
-                    DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
-        
-        Data["ui"].update_Demand_lightpath_list()
-    
-    def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
-
-        key = (ids[0] , ids[1])
-        if mode == "delete":
-            DemandTabDataBase["Services"][(source, destination)].pop(key)
-            
-        elif mode == "add":
-            DemandTabDataBase["Services"][(source, destination)][key] = "[%s , %s] # %s" % (ids[0], ids[1], type)
-            
-        Data["ui"].UpdateDemand_ServiceList()
-
-class customlabel(QLabel):
-    def __init__(self, parent, nodename, Destination, ID, ClientNum, tooltip = None):
-        super().__init__(parent)
-        self.STM_64_BW = 10
-        self.GE_10_BW = 10
-        self.nodename = nodename
-        self.id = ID
-        self.ClientNum  = ClientNum - 1          # because list indices starts with 0
-        self.Destination = Destination
-        self.tooltip = tooltip
-        self.setAcceptDrops(True)
-
-        if tooltip != None:
-            self.setToolTip(tooltip)
-
-
-    
-    def dragEnterEvent(self, event):
-        e = event.mimeData()
-        model = QStandardItemModel()
-        model.dropMimeData(event.mimeData(), Qt.CopyAction, 0,0, QModelIndex())
-        dragtext = model.item(0,0).text()
-        
-
-        self.allowedservices = ["10GE", "STM_64"]
-        text = dragtext
-        # FIXME: why we need this if ????
-        if text != "MP1H":
-            text = text.split("#")
-            n_key = "".join(text[0].split())
-            ids = n_key[1:-1].split(',')
-            ids = list(map(lambda x : int(x), ids))          # [ Demand Number, Service Number ]
-            servicetype = text[1].strip()   # service type = 100Ge , 10GE , ....
-
-            if servicetype in self.allowedservices:
-                self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
-                
-            else:
-                self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_red.png")))
-
-            event.accept()
-
-            super(customlabel,self).dragEnterEvent(event)
-    
-
-    def dragLeaveEvent(self, event):
-        self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client.png")))
-
-    def dropEvent(self, event):
-        event.accept()
-        e = event.mimeData()
-        model = QStandardItemModel()
-        model.dropMimeData(event.mimeData(), Qt.CopyAction, 0,0, QModelIndex())
-        dragtext = model.item(0,0).text()
-
-        text = dragtext
-        text = text.split("#")
-        n_key = "".join(text[0].split())
-        ids = n_key[1:-1].split(',')
-        ids = list(map(lambda x : int(x), ids))          # [ Demand Number, Service Number ]
-        servicetype = text[1].strip()   # service type = 100Ge , 10GE , ....
-
-        if servicetype in self.allowedservices:
-
-            self.setToolTip(dragtext)
-            self.servicetype = servicetype
-            self.ids = [ids[0], ids[1]]
-            if servicetype == "10GE":
-                DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity += self.GE_10_BW
-            else:
-                DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity += self.STM_64_BW
-            #DemandTabDataBase["Panels"][self.nodename][self.id].Line = "100GE"
-            DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = servicetype
-
-            ServiceListLen = len(DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList)
-            if self.ClientNum >= ServiceListLen:
-                for i in range(ServiceListLen - self.ClientNum + 1):
-                    DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList.append(None) 
-            DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = ids[1]
-            #print(f"debug in MP1H--> demandid : {ids[0]}")
-            DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = ids[0]
-            self.modify_ServiceList(ids, self.nodename, self.Destination)
-
-            if DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag == 0:
-
-                #DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = Network.Lightpath.get_id()
-
-                # updating networkobj
-                ServiceIdList = [ids[1]]
-                Data["NetworkObj"].add_lightpath(Data["NodeIdMap"][self.nodename], Data["NodeIdMap"][self.Destination], 10, ServiceIdList, "100GE", ids[0])
-                LightPathId = max(Data["NetworkObj"].LightPathDict.keys())
-                DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = LightPathId
-
-                self.modify_LightPathList(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId, self.nodename, self.Destination, mode= "add", type="100GE")
-                DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 1
-
-
-            # TODO: be Careful !!!!!
-            self.setAcceptDrops(False)
-        else:
-            self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client.png")))
-
-    def contextMenuEvent(self, event):
-
-        def check_clients(ClientsList):
-                x = 0
-                for i in range(10):
-                    if ClientsList[i] != 0:
-                        x = 1
-                return x
-
-        ContextMenu = QMenu(self)
-        ClearAction = ContextMenu.addAction("..Clear Socket..")
-        
-        action = ContextMenu.exec_(self.mapToGlobal(event.pos()))
-
-        if action == ClearAction:
-            if DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] != 0:
-                self.setToolTip("")
-                if self.servicetype == "10GE":
-                    DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity -= self.GE_10_BW
-                else:
-                    DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity -= self.STM_64_BW
-                #DemandTabDataBase["Panels"][self.nodename][self.id].Line = 0
-                DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = 0
-                
-                DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = None
-                self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client.png")))
-                self.setAcceptDrops(True)
-
-
-                self.modify_ServiceList(self.ids, self.nodename, self.Destination, mode = "add", type = self.servicetype)
-                x = check_clients(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity)
-
-                if x == 0:
-                    
-                    self.modify_LightPathList(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
-
-
-                    DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None
-                    #Network.Lightpath.update_id(-1)
-                    DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 0
-
-                    # deleting lightpath object from network obj
-                    Data["NetworkObj"].del_lightpath(list(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsList))
-            
-    
-
-    def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
-        
-
-        key = (int(ids[0]) , int(ids[1]))
-        if mode == "delete":
-            DemandTabDataBase["Services"][(source, destination)].pop(key)
-
-            # statement bellow checks for removing notification
-            x = 0
-            for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
-                if DemandTabDataBase["Services"][(source, dest)]:
-                    x = 1
-                    break
-            if x == 0:        
-                Data["ui"].set_failed_nodes_default(source)
-            
-        elif mode == "add":
-            DemandTabDataBase["Services"][(source, destination)][key] = "[%s , %s] # %s" % (ids[0], ids[1], type)
-            
-        Data["ui"].UpdateDemand_ServiceList()
-    
-    def modify_LightPathList(self, id, Source, Destination, mode = "add", type = None):
-
-        if mode == "add":
-            DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
-        
-        if mode == "delete":
-            for Des in DemandTabDataBase["Source_Destination"][Source]:
-                if id in DemandTabDataBase["Lightpathes"][(Source, Destination)]:
-                    DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
-        
-        Data["ui"].update_Demand_lightpath_list()
 
 
 if __name__ == "__main__":
