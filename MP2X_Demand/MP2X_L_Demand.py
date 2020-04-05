@@ -307,16 +307,19 @@ class customlabel(QLabel):
             DropCapacity = self.BWDict[self.servicetype]
             
 
-            self.modify_ServiceList(    ids= self.ids,
-                                        source= self.nodename,
-                                        destination= self.Destination,
-                                        mode= "delete")
+            self.modify_ServiceList(ids= self.ids,
+                                    source= self.nodename,
+                                    destination= self.Destination,
+                                    mode= "delete")
 
             # check if line 1 in on or not
             if Line_1_old_capacity == 0:
 
                 # updating line 1 capacity
                 DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] += DropCapacity
+
+                # updating Line_1_ServiceIdList
+                DemandTabDataBase["Panels"][self.nodename][self.id].Line_1_ServiceIdList.append(self.ids[1])
                 
                 # creating new groom out 10
                 Data["NetworkObj"].add_groom_out_10(Source= self.nodename,
@@ -337,21 +340,37 @@ class customlabel(QLabel):
                                             mode= "add",
                                             type= "GroomOut10",
                                             PanelId= self.id)
+                
+                # setting line port tooltip                                        
+                self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
 
             elif Line_1_old_capacity + DropCapacity < 10 :
                 
                 # updating line 1 capacity
                 DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] += DropCapacity
 
+                # updating Line_1_ServiceIdList
+                DemandTabDataBase["Panels"][self.nodename][self.id].Line_1_ServiceIdList.append(self.ids[1])
+
                 GroomOutId = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0]
 
                 ServiceIdList = [self.ids[1]]
                 Data["NetworkObj"].GroomOut10Dict[GroomOutId].ServiceIdList.extend(ServiceIdList)
+
+                # updating LightPath ListWidgetItem Capacity
+                self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
+                                                        Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
+
+                # setting line port tooltip                                        
+                self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
             
             elif Line_2_old_capacity == 0:
 
                 # updating line 2 capacity
                 DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] += DropCapacity
+
+                # updating Line_2_ServiceIdList
+                DemandTabDataBase["Panels"][self.nodename][self.id].Line_2_ServiceIdList.append(self.ids[1])
 
                 # creating new groom out 10
                 Data["NetworkObj"].add_groom_out_10(Source= self.nodename,
@@ -372,16 +391,30 @@ class customlabel(QLabel):
                                             mode= "add",
                                             type= "GroomOut10",
                                             PanelId= self.id)
+                
+                # setting line port tooltip                                        
+                self.LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
             
             else:
 
                 # updating line 2 capacity
                 DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] += DropCapacity
 
+                # updating Line_2_ServiceIdList
+                DemandTabDataBase["Panels"][self.nodename][self.id].Line_2_ServiceIdList.append(self.ids[1])
+
                 GroomOutId = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1]
 
                 ServiceIdList = [self.ids[1]]
                 Data["NetworkObj"].GroomOut10Dict[GroomOutId].ServiceIdList.extend(ServiceIdList)
+
+
+                # updating LightPath ListWidgetItem Capacity
+                self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
+                                                        Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
+
+                # setting line port tooltip                                        
+                self.LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
 
 
             # NOTE: be Careful !!!!!
@@ -396,16 +429,23 @@ class customlabel(QLabel):
         action = ContextMenu.exec_(self.mapToGlobal(event.pos()))
 
         if action == ClearAction:
-            if customlabel.Stateflag == 0:
-                if self.flag == 1:
-                    DemandTabDataBase["Panels"][self.nodename][self.id].del_client(self.ClientNum)
-                    self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client.png")))
-                    self.setAcceptDrops(True)
-                    self.modify_ServiceList(self.ids, self.nodename, self.Destination, mode = "add", type = servicetype)
+            if DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] != 0:
+                self.setToolTip("")
+                
+                DemandTabDataBase["Panels"][self.nodename][self.id].del_client(self.ClientNum)
+                self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client.png")))
+                self.setAcceptDrops(True)
+                self.modify_ServiceList(self.ids, self.nodename, self.Destination, mode = "add", type = servicetype)
 
-            else:
-                print("Please First Turn off Panel")
     
+
+    def Update_LineListWidgetItem_Tooltip(self, Item, Capacity):       
+        
+        UserData = Item.data(Qt.UserRole)
+        #UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type}
+        UserData["Capacity"] = Capacity
+        Item.setData(Qt.UserRole, UserData)
+        Item.setToolTip(f"Source: {UserData['Source']}\nDestination: {UserData['Destination']}\nCapacity: {Capacity}\nType: {UserData['Type']}")
 
     def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
         
