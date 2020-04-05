@@ -185,10 +185,11 @@ class MP1H_L_Demand(QtWidgets.QWidget):
         Data["ui"].UpdateDemand_ServiceList()
 
 class customlabel(QLabel):
-    def __init__(self, parent, nodename, Destination, ID, ClientNum, tooltip = None):
+    def __init__(self, parent, nodename, Destination, ID, ClientNum, LineVar, tooltip = None):
         super().__init__(parent)
         self.STM_64_BW = 10
         self.GE_10_BW = 10
+        self.LineVar = LineVar
         self.nodename = nodename
         self.id = ID
         self.ClientNum  = ClientNum - 1          # because list indices starts with 0
@@ -219,10 +220,11 @@ class customlabel(QLabel):
             servicetype = text[1].strip()   # service type = 100Ge , 10GE , ....
 
             if servicetype in self.allowedservices:
-                self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
+                if self.ClientNum % 2 == 0:
+                    self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                else:
+                    self.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
                 
-            else:
-                self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_red.png")))
 
             event.accept()
 
@@ -230,7 +232,10 @@ class customlabel(QLabel):
     
 
     def dragLeaveEvent(self, event):
-        self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client.png")))
+        if self.ClientNum % 2 == 0:
+            self.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+        else:
+            self.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
 
     def dropEvent(self, event):
         event.accept()
@@ -284,7 +289,10 @@ class customlabel(QLabel):
             # TODO: be Careful !!!!!
             self.setAcceptDrops(False)
         else:
-            self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client.png")))
+            if self.ClientNum % 2 == 0:
+                self.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+            else:
+                self.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
 
     def contextMenuEvent(self, event):
 
@@ -311,7 +319,12 @@ class customlabel(QLabel):
                 DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = 0
                 
                 DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = None
-                self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client.png")))
+
+                if self.ClientNum % 2 == 0:
+                    self.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+                else:
+                    self.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
+
                 self.setAcceptDrops(True)
 
 

@@ -2618,8 +2618,12 @@ class Ui_MainWindow(object):
 
                             # filling customlabel attributes
                             #clientvar.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
-                            oldstyle = clientvar.styleSheet()
-                            clientvar.setStyleSheet(oldstyle + "border: 5px solid green;")
+                            """ oldstyle = clientvar.styleSheet()
+                            clientvar.setStyleSheet(oldstyle + "border: 5px solid green;") """
+                            if clientvar.ClientNum % 2 == 0:
+                                clientvar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                            else:
+                                clientvar.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
                             clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])])
                             clientvar.servicetype = panel.ClientsCapacity[i]
                             clientvar.nodename = Source
