@@ -247,6 +247,8 @@
  </widget>
  <resources>
   <include location="Socket_bottom.qrc"/>
+  <include location="CLIENT_R_Selected.qrc"/>
+  <include location="CLIENT_L_Selected.qrc"/>
   <include location="LINE_R.qrc"/>
   <include location="LINE_L.qrc"/>
   <include location="MP2X_Title.qrc"/>
