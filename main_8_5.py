@@ -2320,7 +2320,7 @@ class Ui_MainWindow(object):
     def DemandMap_Change(self, Working = None, Protection = None, 
         WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None, LambdaList = None):
         #mpl.rcParams["figure.figsize"] = [18.4, 7.8]
-        self.MapWidget.canvas.figure.subplots_adjust(left = -0.04, right = 1.025, top = 1.02, bottom = -0.02)
+        self.MapWidget.canvas.figure.subplots_adjust(left = -0.0001, right = 1, top = 1, bottom = -0.02)
         self.MapWidget.canvas.axes.cla()
         R = 6371 
         Source = self.Demand_Source_combobox.currentText()
