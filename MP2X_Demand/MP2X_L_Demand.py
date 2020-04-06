@@ -14,6 +14,16 @@ from MP2X_Demand import LINE_R
 from MP2X_Demand import MP2X_Title
 from MP2X_Demand import Socket_bottom
 from MP2X_Demand import Socket_top
+from MP2X_Demand import CLIENT_L_Selected
+from MP2X_Demand import CLIENT_R_Selected
+
+# USE THIS CODE TO CHANGE THE CLIENT TO SELECTED CLIENT:
+#1)
+# For left clients:
+# self.Client(number of client).setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+#2)
+# For left clients:
+# self.Client(number of client).setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
 
 class MP2X_L_Demand(QtWidgets.QWidget):
 
@@ -31,6 +41,16 @@ class MP2X_L_Demand(QtWidgets.QWidget):
         self.gridLayout = QtWidgets.QGridLayout(self)
         self.gridLayout.setContentsMargins(5, 9, 5, 5)
         self.gridLayout.setObjectName("gridLayout")
+        self.LINE1 = QtWidgets.QLabel(self)
+        self.LINE1.setStyleSheet("image: url(:/Line_L_SOURCE/LINE_L.png);")
+        self.LINE1.setText("")
+        self.LINE1.setObjectName("LINE1")
+        self.gridLayout.addWidget(self.LINE1, 3, 0, 1, 1)
+        self.LINE2 = QtWidgets.QLabel(self)
+        self.LINE2.setStyleSheet("image: url(:/Line_R_SOURCE/LINE_R.png);")
+        self.LINE2.setText("")
+        self.LINE2.setObjectName("LINE2")
+        self.gridLayout.addWidget(self.LINE2, 3, 1, 1, 1)
         self.CLIENT11 = QtWidgets.QLabel(self)
         self.CLIENT11.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
         self.CLIENT11.setText("")
@@ -46,11 +66,6 @@ class MP2X_L_Demand(QtWidgets.QWidget):
         self.Socket_bottom.setText("")
         self.Socket_bottom.setObjectName("Socket_bottom")
         self.gridLayout.addWidget(self.Socket_bottom, 14, 0, 1, 1)
-        self.LINE1 = QtWidgets.QLabel(self)
-        self.LINE1.setStyleSheet("image: url(:/Line_L_SOURCE/LINE_L.png);")
-        self.LINE1.setText("")
-        self.LINE1.setObjectName("LINE1")
-        self.gridLayout.addWidget(self.LINE1, 3, 0, 1, 1)
         self.CLIENT3 = QtWidgets.QLabel(self)
         self.CLIENT3.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
         self.CLIENT3.setText("")
@@ -86,11 +101,6 @@ class MP2X_L_Demand(QtWidgets.QWidget):
         self.CLIENT13.setText("")
         self.CLIENT13.setObjectName("CLIENT13")
         self.gridLayout.addWidget(self.CLIENT13, 10, 0, 1, 1)
-        self.LINE2 = QtWidgets.QLabel(self)
-        self.LINE2.setStyleSheet("image: url(:/Line_R_SOURCE/LINE_R.png);")
-        self.LINE2.setText("")
-        self.LINE2.setObjectName("LINE2")
-        self.gridLayout.addWidget(self.LINE2, 3, 1, 1, 1)
         self.CLIENT4 = QtWidgets.QLabel(self)
         self.CLIENT4.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
         self.CLIENT4.setText("")
