@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="CLIENT_R_Selected_SOURCE">
+    <file>CLIENT_R_Selected.png</file>
+  </qresource>
+</RCC>

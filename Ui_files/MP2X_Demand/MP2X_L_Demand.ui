@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MP2X_L_Demand</class>
+ <widget class="QWidget" name="MP2X_L_Demand">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>106</width>
+    <height>694</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>5</number>
+   </property>
+   <property name="topMargin">
+    <number>9</number>
+   </property>
+   <property name="rightMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
+    <number>5</number>
+   </property>
+   <item row="9" column="0">
+    <widget class="QLabel" name="CLIENT11">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_L_Source/CLIENT_L.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="CLIENT1">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_L_Source/CLIENT_L.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="0">
+    <widget class="QLabel" name="Socket_bottom">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Socket_bottom_Source/Socket_bottom.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="LINE1">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Line_L_SOURCE/LINE_L.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="CLIENT3">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_L_Source/CLIENT_L.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2" rowspan="2">
+    <widget class="QLabel" name="MP2X_Title">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/MP2X_Title_Source/MP2X_Title.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QLabel" name="CLIENT10">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_R_Source/CLIENT_R.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0">
+    <widget class="QLabel" name="CLIENT15">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_L_Source/CLIENT_L.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1">
+    <widget class="QLabel" name="CLIENT14">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_R_Source/CLIENT_R.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QLabel" name="CLIENT12">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_R_Source/CLIENT_R.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0">
+    <widget class="QLabel" name="CLIENT13">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_L_Source/CLIENT_L.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="LINE2">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Line_R_SOURCE/LINE_R.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLabel" name="CLIENT4">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_R_Source/CLIENT_R.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLabel" name="CLIENT6">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_R_Source/CLIENT_R.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0">
+    <widget class="QLabel" name="Not_used">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLabel" name="CLIENT8">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_R_Source/CLIENT_R.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="1">
+    <widget class="QLabel" name="CLIENT16">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_R_Source/CLIENT_R.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="CLIENT7">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_L_Source/CLIENT_L.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="CLIENT5">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_L_Source/CLIENT_L.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="CLIENT9">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_L_Source/CLIENT_L.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLabel" name="CLIENT2">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Client_R_Source/CLIENT_R.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="Socket_Top">
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Socket_Top_Source/Socket_top.png);</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="Socket_bottom.qrc"/>
+  <include location="CLIENT_R_Selected.qrc"/>
+  <include location="CLIENT_L_Selected.qrc"/>
+  <include location="LINE_R.qrc"/>
+  <include location="LINE_L.qrc"/>
+  <include location="MP2X_Title.qrc"/>
+  <include location="CLIENT_R.qrc"/>
+  <include location="CLIENT_L.qrc"/>
+  <include location="Socket_top.qrc"/>
+ </resources>
+ <connections/>
+</ui>

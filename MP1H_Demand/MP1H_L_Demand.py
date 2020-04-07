@@ -1,115 +1,122 @@
+from PySide2 import QtWidgets, QtCore, QtGui
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 import sys
 import os
+
 from data import *
 from Common_Object_def import Network
+from MP1H_Demand import CLIENT_R
+from MP1H_Demand import MP1H_Title
+from MP1H_Demand import Socket_bottom
+from MP1H_Demand import Socket_top
+from MP1H_Demand import client
+from MP1H_Demand import line
+from MP1H_Demand import CLIENT_L_Selected
+from MP1H_Demand import CLIENT_R_Selected
 
 
+# USE THIS CODE TO CHANGE THE CLIENT TO SELECTED CLIENT:
+#1)
+# For left clients:
+# self.Client(number of client).setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+#2)
+# For left clients:
+# self.Client(number of client).setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
 
-class MP1H_L_Demand(QWidget):
+class MP1H_L_Demand(QtWidgets.QWidget):
+
     def __init__(self, Panel_ID, nodename, Destination):
         super(MP1H_L_Demand, self).__init__()
 
-        self.id = Panel_ID
+        self.resize(118, 633)
+
+        self.id = str(Panel_ID)
+        # nodename == Source in Demand Tab
         self.nodename = nodename
         self.Destination = Destination
-        self.uppernum = str(int(Panel_ID) + 1)
+        self.uppernum = str(int(self.id) + 1)
 
-        self.setFixedSize(116, 521)
+
+        self.Line = QtWidgets.QLabel(self)
+        self.Line.setMinimumSize(QtCore.QSize(0, 125))
+        self.Line.setStyleSheet("image: url(:/line/line.png);")
+        self.Line.setText("")
+        self.Line.setObjectName("Line")
+
+        self.gridLayout = QtWidgets.QGridLayout(self)
+        self.gridLayout.setContentsMargins(5, 5, 5, 5)
+        self.gridLayout.setObjectName("gridLayout")
+        self.Client8 = customlabel(self, self.nodename, self.Destination, self.id, 8, self.Line)
+        self.Client8.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
+        self.Client8.setText("")
+        self.Client8.setObjectName("Client8")
+        self.gridLayout.addWidget(self.Client8, 5, 1, 1, 1)
+        self.Client5 = customlabel(self, self.nodename, self.Destination, self.id, 5, self.Line)
+        self.Client5.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+        self.Client5.setText("")
+        self.Client5.setObjectName("Client5")
+        self.gridLayout.addWidget(self.Client5, 4, 0, 1, 1)
+        self.Client7 = customlabel(self, self.nodename, self.Destination, self.id, 7, self.Line)
+        self.Client7.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+        self.Client7.setText("")
+        self.Client7.setObjectName("Client7")
+        self.gridLayout.addWidget(self.Client7, 5, 0, 1, 1)
         
-        self.client1 = customlabel(self, self.nodename, self.Destination, self.id, 1)
-        self.client1.setGeometry(QRect(40, 140, 31, 41))
-        self.client1.setText("")
-        self.client1.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
-        self.client1.setObjectName("client1") 
-
-        self.client2 = customlabel(self, self.nodename, self.Destination, self.id, 2)
-        self.client2.setGeometry(QRect(60, 140, 31, 41))
-        self.client2.setText("")
-        self.client2.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
-        self.client2.setObjectName("client2")
-        
-        self.client3 = customlabel(self, self.nodename, self.Destination, self.id, 3)
-        self.client3.setGeometry(QRect(40, 180, 31, 41))
-        self.client3.setText("")
-        self.client3.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
-        self.client3.setObjectName("client3") 
-
-        self.client4 = customlabel(self, self.nodename, self.Destination, self.id, 4)
-        self.client4.setGeometry(QRect(60, 180, 31, 41))
-        self.client4.setText("")
-        self.client4.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
-        self.client4.setObjectName("client4") 
-
-        self.client5 = customlabel(self, self.nodename, self.Destination, self.id, 5)
-        self.client5.setGeometry(QRect(40, 220, 31, 41))
-        self.client5.setText("")
-        self.client5.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
-        self.client5.setObjectName("client5") 
-
-        self.client6 = customlabel(self, self.nodename, self.Destination, self.id, 6)
-        self.client6.setGeometry(QRect(60, 220, 31, 41))
-        self.client6.setText("")
-        self.client6.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
-        self.client6.setObjectName("client6") 
-
-        self.client7 = customlabel(self, self.nodename, self.Destination, self.id, 7)
-        self.client7.setGeometry(QRect(40, 260, 31, 41))
-        self.client7.setText("")
-        self.client7.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
-        self.client7.setObjectName("client7") 
-
-        self.client8 = customlabel(self, self.nodename, self.Destination, self.id, 8)
-        self.client8.setGeometry(QRect(60, 260, 31, 41))
-        self.client8.setText("")
-        self.client8.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
-        self.client8.setObjectName("client8") 
-
-        self.client9 = customlabel(self, self.nodename, self.Destination, self.id, 9)
-        self.client9.setGeometry(QRect(40, 300, 31, 41))
-        self.client9.setText("")
-        self.client9.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
-        self.client9.setObjectName("client9") 
-
-        self.client10 = customlabel(self, self.nodename, self.Destination, self.id, 10)
-        self.client10.setGeometry(QRect(60, 300, 31, 41))
-        self.client10.setText("")
-        self.client10.setPixmap(QPixmap(os.path.join("MP1H_Demand","client.png")))
-        self.client10.setObjectName("client10") 
-
-        
-        self.title = QLabel(self)
-        self.title.setGeometry(QRect(70, 10, 41, 121))
-        self.title.setText("")
-        self.title.setPixmap(QPixmap(os.path.join("MP1H_Demand","title.png")))
-        self.title.setObjectName("title") 
-
-        self.line = QLabel(self)
-        self.line.setGeometry(QRect(40, 350, 55, 101))
-        self.line.setText("")
-        self.line.setPixmap(QPixmap(os.path.join("MP1H_Demand","line.png")))
-        self.line.setObjectName("line") 
-
-        self.socket = QLabel(self)
-        self.socket.setGeometry(QRect(20, 470, 55, 51))
-        self.socket.setText("")
-        self.socket.setPixmap(QPixmap(os.path.join("MP1H_Demand","socket2.png")))
-        self.socket.setObjectName("socket") 
-
-        self.upper_socket = QLabel(self)
-        self.upper_socket.setGeometry(QRect(20, 0, 55, 41))
-        self.upper_socket.setText("")
-        self.upper_socket.setPixmap(QPixmap(os.path.join("MP1H_Demand","socket1.png")))
-        self.upper_socket.setObjectName("upper_socket")
-
-        self.retranslateUi()
-        QMetaObject.connectSlotsByName(self)
-
-
-    def retranslateUi(self):
-        _translate = QCoreApplication.translate
+        self.gridLayout.addWidget(self.Line, 7, 0, 1, 1)
+        self.Socket_Top = QtWidgets.QLabel(self)
+        self.Socket_Top.setMaximumSize(QtCore.QSize(16777215, 50))
+        self.Socket_Top.setStyleSheet("image: url(:/Socket_top/Socket_top.png);")
+        self.Socket_Top.setText("")
+        self.Socket_Top.setObjectName("Socket_Top")
+        self.gridLayout.addWidget(self.Socket_Top, 1, 0, 1, 1)
+        self.Client1 = customlabel(self, self.nodename, self.Destination, self.id, 1, self.Line)
+        self.Client1.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+        self.Client1.setText("")
+        self.Client1.setObjectName("Client1")
+        self.gridLayout.addWidget(self.Client1, 2, 0, 1, 1)
+        self.Client6 = customlabel(self, self.nodename, self.Destination, self.id, 6, self.Line)
+        self.Client6.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
+        self.Client6.setText("")
+        self.Client6.setObjectName("Client6")
+        self.gridLayout.addWidget(self.Client6, 4, 1, 1, 1)
+        self.Client4 = customlabel(self, self.nodename, self.Destination, self.id, 4, self.Line)
+        self.Client4.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
+        self.Client4.setText("")
+        self.Client4.setObjectName("Client4")
+        self.gridLayout.addWidget(self.Client4, 3, 1, 1, 1)
+        self.Socket_Bottom = QtWidgets.QLabel(self)
+        self.Socket_Bottom.setMaximumSize(QtCore.QSize(16777215, 50))
+        self.Socket_Bottom.setStyleSheet("image: url(:/Socket_Bottom/Socket_bottom.png);")
+        self.Socket_Bottom.setText("")
+        self.Socket_Bottom.setObjectName("Socket_Bottom")
+        self.gridLayout.addWidget(self.Socket_Bottom, 8, 0, 1, 1)
+        self.Client10 = customlabel(self, self.nodename, self.Destination, self.id, 10, self.Line)
+        self.Client10.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
+        self.Client10.setText("")
+        self.Client10.setObjectName("Client10")
+        self.gridLayout.addWidget(self.Client10, 6, 1, 1, 1)
+        self.Client2 = customlabel(self, self.nodename, self.Destination, self.id, 2, self.Line)
+        self.Client2.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
+        self.Client2.setText("")
+        self.Client2.setObjectName("Client2")
+        self.gridLayout.addWidget(self.Client2, 2, 1, 1, 1)
+        self.Client9 = customlabel(self, self.nodename, self.Destination, self.id, 9, self.Line)
+        self.Client9.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+        self.Client9.setText("")
+        self.Client9.setObjectName("Client9")
+        self.gridLayout.addWidget(self.Client9, 6, 0, 1, 1)
+        self.Client3 = customlabel(self, self.nodename, self.Destination, self.id, 3, self.Line)
+        self.Client3.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+        self.Client3.setText("")
+        self.Client3.setObjectName("Client3")
+        self.gridLayout.addWidget(self.Client3, 3, 0, 1, 1)
+        self.MP1H_Title = QtWidgets.QLabel(self)
+        self.MP1H_Title.setStyleSheet("image: url(:/title/MP1H_title.png);")
+        self.MP1H_Title.setText("")
+        self.MP1H_Title.setObjectName("MP1H_Title")
+        self.gridLayout.addWidget(self.MP1H_Title, 1, 2, 2, 1)
 
     def contextMenuEvent(self, event):
         from BLANK_Demand.BLANK_Demand import BLANK_Demand
@@ -120,9 +127,17 @@ class MP1H_L_Demand(QWidget):
         action = ContextMenu.exec_(self.mapToGlobal(event.pos()))
 
         if action == CloseAction:
+            # removing old left panel
+            panel_widget = Data["DemandPanel_" + str(self.id)].takeAt(0).widget()
+            self.horizontalLayout.removeWidget(panel_widget)
+            panel_widget.deleteLater()
+            Data["DemandPanel_" + self.id].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
 
-            Data["DemandPanel_" + self.id].setWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
-            Data["DemandPanel_" + self.uppernum].setWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
+            # removing old right panel
+            panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
+            self.horizontalLayout.removeWidget(panel_widget)
+            panel_widget.deleteLater()
+            Data["DemandPanel_" + self.uppernum].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
 
             # TODO: undo every service or lightpath that is created in this panel
             if DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity != 0:
@@ -170,10 +185,11 @@ class MP1H_L_Demand(QWidget):
         Data["ui"].UpdateDemand_ServiceList()
 
 class customlabel(QLabel):
-    def __init__(self, parent, nodename, Destination, ID, ClientNum, tooltip = None):
+    def __init__(self, parent, nodename, Destination, ID, ClientNum, LineVar, tooltip = None):
         super().__init__(parent)
         self.STM_64_BW = 10
         self.GE_10_BW = 10
+        self.LineVar = LineVar
         self.nodename = nodename
         self.id = ID
         self.ClientNum  = ClientNum - 1          # because list indices starts with 0
@@ -204,10 +220,11 @@ class customlabel(QLabel):
             servicetype = text[1].strip()   # service type = 100Ge , 10GE , ....
 
             if servicetype in self.allowedservices:
-                self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
+                if self.ClientNum % 2 == 0:
+                    self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                else:
+                    self.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
                 
-            else:
-                self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_red.png")))
 
             event.accept()
 
@@ -215,7 +232,10 @@ class customlabel(QLabel):
     
 
     def dragLeaveEvent(self, event):
-        self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client.png")))
+        if self.ClientNum % 2 == 0:
+            self.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+        else:
+            self.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
 
     def dropEvent(self, event):
         event.accept()
@@ -269,7 +289,10 @@ class customlabel(QLabel):
             # TODO: be Careful !!!!!
             self.setAcceptDrops(False)
         else:
-            self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client.png")))
+            if self.ClientNum % 2 == 0:
+                self.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+            else:
+                self.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
 
     def contextMenuEvent(self, event):
 
@@ -296,7 +319,12 @@ class customlabel(QLabel):
                 DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = 0
                 
                 DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = None
-                self.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client.png")))
+
+                if self.ClientNum % 2 == 0:
+                    self.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+                else:
+                    self.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
+
                 self.setAcceptDrops(True)
 
 
@@ -349,3 +377,11 @@ class customlabel(QLabel):
                     DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
         
         Data["ui"].update_Demand_lightpath_list()
+
+
+if __name__ == "__main__":
+
+    app = QtWidgets.QApplication([])
+    window = MP1H_L_Demand(1,2,3)
+    window.show()
+    sys.exit(app.exec_())

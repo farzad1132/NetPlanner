@@ -157,7 +157,40 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.tabWidget.setFont(font)
-        self.tabWidget.setStyleSheet("")
+        self.tabWidget.setStyleSheet("QTabWidget::pane { /* The tab widget frame */\n"
+"    border-top: 2px solid #C2C7CB;\n"
+"    position: absolute;\n"
+"    top: -0.5em;\n"
+"}\n"
+"\n"
+"QTabWidget::tab-bar {\n"
+"    alignment: center;\n"
+"}\n"
+"\n"
+"/* Style the tab using the tab sub-control. Note that\n"
+"    it reads QTabBar _not_ QTabWidget */\n"
+"QTabBar::tab {\n"
+"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,\n"
+"                                stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);\n"
+"    border: 2px solid #C4C4C3;\n"
+"    border-bottom-color: #C2C7CB; /* same as the pane color */\n"
+"    border-top-left-radius: 4px;\n"
+"    border-top-right-radius: 4px;\n"
+"    min-width: 8ex;\n"
+"    padding: 2px;\n"
+"}\n"
+"\n"
+"QTabBar::tab:selected, QTabBar::tab:hover {\n"
+"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                stop: 0 #fafafa, stop: 0.4 #f4f4f4,\n"
+"                                stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);\n"
+"}\n"
+"\n"
+"QTabBar::tab:selected {\n"
+"    border-color: #9B9B9B;\n"
+"    border-bottom-color: #C2C7CB; /* same as pane color */\n"
+"}")
         self.tabWidget.setObjectName("tabWidget")
         self.TopologyTab = QtWidgets.QWidget()
         self.TopologyTab.setObjectName("TopologyTab")
@@ -1463,80 +1496,8 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.NodeViewTab, "")
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
-        self.gridLayout_12 = QtWidgets.QGridLayout(self.tab)
-        self.gridLayout_12.setObjectName("gridLayout_12")
-        self.formLayout_4 = QtWidgets.QFormLayout()
-        self.formLayout_4.setObjectName("formLayout_4")
-        self.SelectNode_Label_13 = QtWidgets.QLabel(self.tab)
-        self.SelectNode_Label_13.setMinimumSize(QtCore.QSize(80, 0))
-        self.SelectNode_Label_13.setMaximumSize(QtCore.QSize(43, 30))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.SelectNode_Label_13.setFont(font)
-        self.SelectNode_Label_13.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
-"}")
-        self.SelectNode_Label_13.setObjectName("SelectNode_Label_13")
-        self.formLayout_4.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.SelectNode_Label_13)
-        self.Demand_Source_combobox = QtWidgets.QFontComboBox(self.tab)
-        self.Demand_Source_combobox.setMinimumSize(QtCore.QSize(119, 30))
-        self.Demand_Source_combobox.setMaximumSize(QtCore.QSize(226, 30))
-        self.Demand_Source_combobox.setStyleSheet("QComboBox {\n"
-"    border: 1px solid gray;\n"
-"    border-radius: 3px;\n"
-"    padding: 1px 18px 1px 3px;\n"
-"    min-width: 6em;\n"
-"}\n"
-"\n"
-"QComboBox:editable {\n"
-"    background: white;\n"
-"}\n"
-"\n"
-"QComboBox:!editable, QComboBox::drop-down:editable {\n"
-"     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,\n"
-"                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);\n"
-"}\n"
-"\n"
-"/* QComboBox gets the \"on\" state when the popup is open */\n"
-"QComboBox:!editable:on, QComboBox::drop-down:editable:on {\n"
-"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,\n"
-"                                stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);\n"
-"}\n"
-"\n"
-"QComboBox:on { /* shift the text when the popup opens */\n"
-"    padding-top: 3px;\n"
-"    padding-left: 4px;\n"
-"}\n"
-"\n"
-"QComboBox::drop-down {\n"
-"    subcontrol-origin: padding;\n"
-"    subcontrol-position: top right;\n"
-"    width: 15px;\n"
-"\n"
-"    border-left-width: 1px;\n"
-"    border-left-color: darkgray;\n"
-"    border-left-style: solid; /* just a single line */\n"
-"    border-top-right-radius: 3px; /* same radius as the QComboBox */\n"
-"    border-bottom-right-radius: 3px;\n"
-"}\n"
-"\n"
-"QComboBox::down-arrow {\n"
-"    image: url(/usr/share/icons/crystalsvg/16x16/actions/1downarrow.png);\n"
-"}\n"
-"\n"
-"QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
-"    top: 1px;\n"
-"    left: 1px;\n"
-"}")
-        self.Demand_Source_combobox.setObjectName("Demand_Source_combobox")
-        self.formLayout_4.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.Demand_Source_combobox)
-        self.gridLayout_12.addLayout(self.formLayout_4, 0, 0, 1, 1)
+        self.gridLayout_4 = QtWidgets.QGridLayout(self.tab)
+        self.gridLayout_4.setObjectName("gridLayout_4")
         self.formLayout = QtWidgets.QFormLayout()
         self.formLayout.setObjectName("formLayout")
         self.label_8 = QtWidgets.QLabel(self.tab)
@@ -1608,7 +1569,81 @@ class Ui_MainWindow(object):
 "}")
         self.Demand_Destination_combobox.setObjectName("Demand_Destination_combobox")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.Demand_Destination_combobox)
-        self.gridLayout_12.addLayout(self.formLayout, 0, 2, 1, 1)
+        self.gridLayout_4.addLayout(self.formLayout, 0, 2, 1, 1)
+        self.formLayout_4 = QtWidgets.QFormLayout()
+        self.formLayout_4.setObjectName("formLayout_4")
+        self.SelectNode_Label_13 = QtWidgets.QLabel(self.tab)
+        self.SelectNode_Label_13.setMinimumSize(QtCore.QSize(80, 0))
+        self.SelectNode_Label_13.setMaximumSize(QtCore.QSize(43, 30))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.SelectNode_Label_13.setFont(font)
+        self.SelectNode_Label_13.setStyleSheet(" QLabel {\n"
+"    border: 2px solid green;\n"
+"    border-radius: 4px;\n"
+"    padding: 2px;\n"
+"}")
+        self.SelectNode_Label_13.setObjectName("SelectNode_Label_13")
+        self.formLayout_4.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.SelectNode_Label_13)
+        self.Demand_Source_combobox = QtWidgets.QFontComboBox(self.tab)
+        self.Demand_Source_combobox.setMinimumSize(QtCore.QSize(119, 30))
+        self.Demand_Source_combobox.setMaximumSize(QtCore.QSize(226, 30))
+        self.Demand_Source_combobox.setStyleSheet("QComboBox {\n"
+"    border: 1px solid gray;\n"
+"    border-radius: 3px;\n"
+"    padding: 1px 18px 1px 3px;\n"
+"    min-width: 6em;\n"
+"}\n"
+"\n"
+"QComboBox:editable {\n"
+"    background: white;\n"
+"}\n"
+"\n"
+"QComboBox:!editable, QComboBox::drop-down:editable {\n"
+"     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,\n"
+"                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);\n"
+"}\n"
+"\n"
+"/* QComboBox gets the \"on\" state when the popup is open */\n"
+"QComboBox:!editable:on, QComboBox::drop-down:editable:on {\n"
+"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,\n"
+"                                stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);\n"
+"}\n"
+"\n"
+"QComboBox:on { /* shift the text when the popup opens */\n"
+"    padding-top: 3px;\n"
+"    padding-left: 4px;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    subcontrol-origin: padding;\n"
+"    subcontrol-position: top right;\n"
+"    width: 15px;\n"
+"\n"
+"    border-left-width: 1px;\n"
+"    border-left-color: darkgray;\n"
+"    border-left-style: solid; /* just a single line */\n"
+"    border-top-right-radius: 3px; /* same radius as the QComboBox */\n"
+"    border-bottom-right-radius: 3px;\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow {\n"
+"    image: url(/usr/share/icons/crystalsvg/16x16/actions/1downarrow.png);\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
+"    top: 1px;\n"
+"    left: 1px;\n"
+"}")
+        self.Demand_Source_combobox.setObjectName("Demand_Source_combobox")
+        self.formLayout_4.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.Demand_Source_combobox)
+        self.gridLayout_4.addLayout(self.formLayout_4, 0, 0, 1, 1)
+        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_4.addItem(spacerItem3, 0, 1, 1, 1)
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.Demand_ServiceList = QtWidgets.QListWidget(self.tab)
@@ -1884,61 +1919,80 @@ class Ui_MainWindow(object):
 "}")
         self.listWidget_8.setObjectName("listWidget_8")
         self.gridLayout_2.addWidget(self.listWidget_8, 7, 0, 1, 1)
-        self.gridLayout_12.addLayout(self.gridLayout_2, 1, 0, 3, 1)
-        self.gridLayout_4 = QtWidgets.QGridLayout()
-        self.gridLayout_4.setObjectName("gridLayout_4")
-        self.Demand_tab = QtWidgets.QTabWidget(self.tab)
+        self.gridLayout_4.addLayout(self.gridLayout_2, 1, 0, 1, 1)
+        self.splitter = QtWidgets.QSplitter(self.tab)
+        self.splitter.setOrientation(QtCore.Qt.Vertical)
+        self.splitter.setObjectName("splitter")
+        self.Demand_tab = QtWidgets.QTabWidget(self.splitter)
         self.Demand_tab.setEnabled(True)
-        self.Demand_tab.setMinimumSize(QtCore.QSize(821, 442))
+        self.Demand_tab.setMinimumSize(QtCore.QSize(0, 0))
         self.Demand_tab.setObjectName("Demand_tab")
         self.tab_8 = QtWidgets.QWidget()
         self.tab_8.setObjectName("tab_8")
-        self.gridLayout_13 = QtWidgets.QGridLayout(self.tab_8)
-        self.gridLayout_13.setObjectName("gridLayout_13")
-        self.Demand_mdi = QtWidgets.QMdiArea(self.tab_8)
-        self.Demand_mdi.setMinimumSize(QtCore.QSize(1575, 521))
-        self.Demand_mdi.setObjectName("Demand_mdi")
-        self.gridLayout_13.addWidget(self.Demand_mdi, 0, 0, 1, 1)
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.tab_8)
+        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_4.setSpacing(0)
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.DemandPanel_1 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_1.setObjectName("DemandPanel_1")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_1)
+        self.DemandPanel_2 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_2.setObjectName("DemandPanel_2")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_2)
+        self.DemandPanel_3 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_3.setObjectName("DemandPanel_3")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_3)
+        self.DemandPanel_4 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_4.setObjectName("DemandPanel_4")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_4)
+        self.DemandPanel_5 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_5.setObjectName("DemandPanel_5")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_5)
+        self.DemandPanel_6 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_6.setObjectName("DemandPanel_6")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_6)
+        self.DemandPanel_7 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_7.setObjectName("DemandPanel_7")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_7)
+        self.DemandPanel_8 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_8.setObjectName("DemandPanel_8")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_8)
+        self.DemandPanel_9 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_9.setObjectName("DemandPanel_9")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_9)
+        self.DemandPanel_10 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_10.setObjectName("DemandPanel_10")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_10)
+        self.DemandPanel_11 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_11.setObjectName("DemandPanel_11")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_11)
+        self.DemandPanel_12 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_12.setObjectName("DemandPanel_12")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_12)
+        self.DemandPanel_13 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_13.setObjectName("DemandPanel_13")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_13)
+        self.DemandPanel_14 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_14.setObjectName("DemandPanel_14")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_14)
         self.Demand_tab.addTab(self.tab_8, "")
-        self.gridLayout_4.addWidget(self.Demand_tab, 0, 0, 1, 1)
-        self.gridLayout_12.addLayout(self.gridLayout_4, 1, 1, 1, 2)
-        self.ClientLabel_25 = QtWidgets.QLabel(self.tab)
-        self.ClientLabel_25.setMinimumSize(QtCore.QSize(50, 30))
-        self.ClientLabel_25.setMaximumSize(QtCore.QSize(60, 16))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.ClientLabel_25.setFont(font)
-        self.ClientLabel_25.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
-"}")
-        self.ClientLabel_25.setObjectName("ClientLabel_25")
-        self.gridLayout_12.addWidget(self.ClientLabel_25, 2, 1, 1, 1)
-        self.gridLayout_15 = QtWidgets.QGridLayout()
-        self.gridLayout_15.setObjectName("gridLayout_15")
-        self.MapWidget = MapWidget(self.tab)
-        self.MapWidget.setMinimumSize(QtCore.QSize(821, 259))
+        self.MapWidget = MapWidget(self.splitter)
+        self.MapWidget.setMinimumSize(QtCore.QSize(821, 0))
         self.MapWidget.setObjectName("MapWidget")
-        self.gridLayout_15.addWidget(self.MapWidget, 0, 0, 1, 1)
-        self.gridLayout_12.addLayout(self.gridLayout_15, 3, 1, 1, 2)
-        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_12.addItem(spacerItem3, 0, 1, 1, 1)
+        self.gridLayout_4.addWidget(self.splitter, 1, 1, 1, 2)
         self.tabWidget.addTab(self.tab, "")
         self.gridLayout_10.addWidget(self.tabWidget, 0, 0, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_10, 0, 0, 1, 1)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(4)
         self.List_tab.setCurrentIndex(0)
         self.RackTab.setCurrentIndex(0)
         self.ShelfTab.setCurrentIndex(3)
         self.Demand_tab.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
+        # NOTE: added
 
         self.SelectNode_combo.clear()
         self.NodeType_combobox.clear()
@@ -2030,8 +2084,6 @@ class Ui_MainWindow(object):
 
         self.SelectNode_combo.currentIndexChanged["int"].connect(self.SelectNode_combo_change)
 
-        
-        # NOTE: added
 
         Data["ClientList"] = self.ClientList
         Data["LineList"] = self.LineList
@@ -2045,7 +2097,6 @@ class Ui_MainWindow(object):
         self.network = Network()
 
 
-        #TODO: edited
         self.listWidget.clicked['QModelIndex'].connect(self.list_click)
 
         self.SelectSubNode.setText("Off")
@@ -2058,7 +2109,7 @@ class Ui_MainWindow(object):
         self.Demand_Source_combobox.currentTextChanged.connect(self.Demand_Source_combobox_Change)
         self.Demand_Destination_combobox.currentTextChanged.connect(self.Demand_Destination_combobox_change)
 
-        Data["Demand_mdi"] = self.Demand_mdi
+        #Data["Demand_mdi"] = self.Demand_mdi
 
         #self.OpenLinks_pushbutton.clicked.connect(self.open_links_fun)
 
@@ -2218,17 +2269,15 @@ class Ui_MainWindow(object):
         self.LineLabel.setText(_translate("MainWindow", "Line side Services:"))
         self.SelectNode_Label.setText(_translate("MainWindow", "Select A Node:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.NodeViewTab), _translate("MainWindow", "Grooming Tab"))
-        self.SelectNode_Label_13.setText(_translate("MainWindow", "Source:"))
         self.label_8.setText(_translate("MainWindow", "Destination:"))
+        self.SelectNode_Label_13.setText(_translate("MainWindow", "Source:"))
         self.ClientLabel_22.setText(_translate("MainWindow", "List of LightPathes :"))
         self.ClientLabel_23.setText(_translate("MainWindow", "Client Side Services:"))
         self.ClientLabel_20.setText(_translate("MainWindow", "Setting:"))
         self.label_9.setText(_translate("MainWindow", "Node Type:"))
         self.ClientLabel_21.setText(_translate("MainWindow", "List Of Network Panels:"))
         self.Demand_tab.setTabText(self.Demand_tab.indexOf(self.tab_8), _translate("MainWindow", "Shelf"))
-        self.ClientLabel_25.setText(_translate("MainWindow", "Map:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
-
 
     def create_obj(self):
         """with open("NetworkObj_greedy.obj", 'wb') as handle:
@@ -2269,9 +2318,9 @@ class Ui_MainWindow(object):
     
 
     def DemandMap_Change(self, Working = None, Protection = None, 
-        WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None):
+        WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None, LambdaList = None):
         #mpl.rcParams["figure.figsize"] = [18.4, 7.8]
-        self.MapWidget.canvas.figure.subplots_adjust(left = -0.04, right = 1, top = 0.85)
+        self.MapWidget.canvas.figure.subplots_adjust(left = -0.001, right = 1, top = 1, bottom = -0.02)
         self.MapWidget.canvas.axes.cla()
         R = 6371 
         Source = self.Demand_Source_combobox.currentText()
@@ -2326,7 +2375,8 @@ class Ui_MainWindow(object):
 
             if WorkingSNR != None:
                 SNRList = str(WorkingSNR)
-                snr_label = "Working SNR = " + SNRList
+                WavelengthNumber = str(LambdaList)
+                snr_label = "Working SNR = " + SNRList + '\n' + "Wavelength Number = " + WavelengthNumber
                 self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label=snr_label)
             else:
                 self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label="Working")
@@ -2346,7 +2396,8 @@ class Ui_MainWindow(object):
 
             if ProtectionSNR != None:
                 SNRList = str(ProtectionSNR)
-                snr_label1 = "Protection SNR = " + SNRList          
+                WavelengthNumber = str(LambdaList)
+                snr_label1 = "Protection SNR = " + SNRList + '\n' + "Wavelength Number = " + WavelengthNumber          
                 self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label=snr_label1)
             else:
                 self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label="Protection")
@@ -2531,32 +2582,48 @@ class Ui_MainWindow(object):
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
         for i in range(1, 15):
+            # removing old panel
+            panel_widget = Data["DemandPanel_" + str(i)].takeAt(0).widget()
+            self.horizontalLayout.removeWidget(panel_widget)
+            panel_widget.deleteLater()
+
+            #print(f"count: {Data['DemandPanel_' + str(i)].count()}")
+
             if str(i) in DemandTabDataBase["Panels"][Source]:
                 panel = DemandTabDataBase["Panels"][Source][str(i)]
+
+                
+
                 if isinstance(panel , MP2X_L):
-                    Data["DemandPanel_" + str(i)].setWidget(MP2X_L_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(MP2X_L_Demand(str(i), Source, Destination))
                     for client in panel.ClientsType:
                         if client != 0:
                             pass
                             # TODO: changing client label to green
                 elif isinstance(panel, MP2X_R):
-                    Data["DemandPanel_" + str(i)].setWidget(MP2X_R_Demand(str(i), Source))
+                    Data["DemandPanel_" + str(i)].addWidget(MP2X_R_Demand(str(i), Source))
                 
                 elif isinstance(panel, MP1H_L):
-                    Data["DemandPanel_" + str(i)].setWidget(MP1H_L_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(MP1H_L_Demand(str(i), Source, Destination))
 
                     # finding panel widget
-                    widget = Data["DemandPanel_" + str(i)].widget()
+                    widget = Data["DemandPanel_" + str(i)].itemAt(0).widget()
                         
                     for i in range(len(panel.ClientsCapacity)):
                         if panel.ClientsCapacity[i] != 0:
 
                             # finding object of client customlabel
-                            text = "client" + str( i + 1 )
+                            text = "Client" + str( i + 1 )
                             clientvar = getattr(widget, text)
 
                             # filling customlabel attributes
-                            clientvar.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
+                            #clientvar.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
+                            """ oldstyle = clientvar.styleSheet()
+                            clientvar.setStyleSheet(oldstyle + "border: 5px solid green;") """
+                            if clientvar.ClientNum % 2 == 0:
+                                clientvar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                            else:
+                                clientvar.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
                             clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])])
                             clientvar.servicetype = panel.ClientsCapacity[i]
                             clientvar.nodename = Source
@@ -2565,18 +2632,18 @@ class Ui_MainWindow(object):
                             clientvar.setAcceptDrops(False)
 
                 elif isinstance(panel, MP1H_R):
-                    Data["DemandPanel_" + str(i)].setWidget(MP1H_R_Demand(str(i), Source))
+                    Data["DemandPanel_" + str(i)].addWidget(MP1H_R_Demand(str(i), Source, Destination))
                 
                 elif isinstance(panel, TP1H_L):
-                    Data["DemandPanel_" + str(i)].setWidget(TP1H_L_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(TP1H_L_Demand(str(i), Source, Destination))
 
                     # finding panel widget
-                    widget = Data["DemandPanel_" + str(i)].widget()
+                    widget = Data["DemandPanel_" + str(i)].itemAt(0).widget()
 
                     if panel.Line == "100GE":
 
                         # finding object of client customlabel
-                        clientvar = getattr(widget, "client")
+                        clientvar = getattr(widget, "Client")
 
                         # filling customlabel attributes 
                         clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandId, panel.ServiceId)])
@@ -2586,13 +2653,13 @@ class Ui_MainWindow(object):
                         self.ids = [panel.DemandId, panel.ServiceId]
                         clientvar.setAcceptDrops(False)
 
-                        # TODO: change client color to green
+                        clientvar.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
                 
                 elif isinstance(panel, TP1H_R):
-                    Data["DemandPanel_" + str(i)].setWidget(TP1H_R_Demand(str(i), Source))
+                    Data["DemandPanel_" + str(i)].addWidget(TP1H_R_Demand(str(i), Source, Destination))
             
             else:
-                Data["DemandPanel_" + str(i)].setWidget(BLANK_Demand(str(i), Source, Destination))
+                Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Destination))
 
     def export_excel_fun(self):
         
@@ -2844,12 +2911,13 @@ class Ui_MainWindow(object):
         RG_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_p"]
         SNR_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_w"]
         SNR_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_p"]
+        LambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["LambdaList"]
 
         #print(f"here for calling demand change function <before> ")
 
         # calling Demand map change function
         self.DemandMap_Change(WorkingPath, ProtectionPath, WorkingRegeneratorsList = RG_w, ProtectionRegenaratorsList = RG_p
-                                ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p)
+                                ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p, LambdaList = LambdaList)
 
     # MHA EDITION:
     def SaveTM_fun(self):
@@ -3230,7 +3298,7 @@ class Ui_MainWindow(object):
         R = 6371
         def scale_calculation(lat, lon):
             x = R * cos(lat) * cos(lon)
-            y = R * cos(lat) * sin(lon)
+            y = -R * cos(lat) * sin(lon)
             return [x,y]
 
 
@@ -3563,44 +3631,23 @@ class Ui_MainWindow(object):
 
         function drawDetailBox(lambdaList) {
 
-            canvas.height = 90;
-            canvas.width = 806;
-
             var h = canvas.height;
-
-            const lineYStart = 15;
-            const lineYEnd = h - 20;
+            console.log(h);
 
             var ctx = canvas.getContext("2d");
 
             for (var i = 1; i <= 100; i++) {
 
-                const lineX = (i * 8) - 4
                 ctx.beginPath();
-                ctx.moveTo(lineX, lineYStart);
-                ctx.lineTo(lineX, lineYEnd);
+                ctx.moveTo(i * 4, 0);
+                ctx.lineTo(i * 4, h);
                 ctx.lineWidth = 2;
-                if (lambdaList.includes(i)) {
-                    ctx.strokeStyle = "black";
-                } else {
+                if (lambdaList.includes(i))
+                    ctx.strokeStyle = "black"
+                else
                     ctx.strokeStyle = "gray";
-                }
                 ctx.stroke();
 
-                ctx.save();
-
-                var textX = lineX - 4;
-                var textY = h - lineYStart;
-                if (i %% 5 == 0) {
-                    textY = 12;
-                    ctx.translate(textX, textY);
-                    ctx.rotate(-Math.PI / 5);
-                    ctx.translate(-textX, -textY);
-                    ctx.fillText(i, textX, lineYStart);
-
-                }
-
-                ctx.restore();
             }
 
             return wrapper;
@@ -3614,25 +3661,25 @@ class Ui_MainWindow(object):
         }
 
         function showLineNumberInBox(e, lambdaList) {
-            console.log(e.offsetX);
             x = e.clientX;
             y = e.clientY;
             var lineNum = 0;
             const xOff = e.offsetX;
-            if (xOff %% 8 >= 2 && xOff %% 8 <= 4) {
+            if (xOff %% 4 <= 2) {
                 cursor = " ";
-                lineNum = 1 + parseInt(xOff / 8);
-                if (lambdaList.includes(lineNum)) {
+                lineNum = parseInt(xOff / 4);
+                if(lambdaList.includes(lineNum)){
                     cursor = lineNum;
                 }
             } else {
                 cursor = " ";
             }
             document.getElementById("displayArea").style.display = 'block';
-            document.getElementById("displayArea").innerHTML = 'Wavelength Number: ' + cursor;
+            document.getElementById("displayArea").innerHTML = 'Wavelength Number: '+ cursor;
             document.getElementById("displayArea").style.right = x + 'px';
             document.getElementById("displayArea").style.top = y + 'px';
         }
+
         
         function unshowLineNumberInBox() {
                 document.getElementById("displayArea").innerHTML = "Wavelength Number: ";
@@ -3833,13 +3880,15 @@ class Ui_MainWindow(object):
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
         for i in range(1,15):
-            setattr(self, "DemandPanel_" + str(i),QMdiSubWindow())
-            Data["DemandPanel_" + str(i)] = getattr(ui, "DemandPanel_" + str(i))
-            Data["DemandPanel_" + str(i)].setWindowFlag(Qt.FramelessWindowHint)
-            Data["DemandPanel_" + str(i)].setWidget(BLANK_Demand(str(i), Source, Destination))
+            Data["DemandPanel_" + str(i)] = QtWidgets.QGridLayout(getattr(self, "DemandPanel_" + str(i)))
+            #setattr(self, "DemandPanel_" + str(i),QMdiSubWindow())
+            #Data["DemandPanel_" + str(i)] = getattr(ui, "DemandPanel_" + str(i))
+            #Data["DemandPanel_" + str(i)].setWindowFlag(Qt.FramelessWindowHint)
+            Data["DemandPanel_" + str(i)].setMargin(0)
+            Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Destination))
 
-            self.Demand_mdi.addSubWindow(Data["DemandPanel_" + str(i)])
-            Data["DemandPanel_" + str(i)].show()
+            #self.Demand_mdi.addSubWindow(Data["DemandPanel_" + str(i)])
+            #Data["DemandPanel_" + str(i)].show()
 
 
     # obsoleted 
@@ -4093,6 +4142,7 @@ class Ui_MainWindow(object):
             RG_p = lightpath.RegeneratorNode_p
             SNR_w = list(map(lambda x : round(x, 2), lightpath.SNR_w))
             SNR_p = list(map(lambda x : round(x, 2), lightpath.SNR_p))
+            LambdaList = lightpath.WaveLength
 
             # adding pathes to to GroomingTabDataBase ( lightpath part )
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id] = {}
@@ -4102,6 +4152,7 @@ class Ui_MainWindow(object):
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["RG_p"] = RG_p
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_w"] = SNR_w
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_p"] = SNR_p
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["LambdaList"] = LambdaList
 
             # Detecting Degrees and Filling GroomingTabDataBase ( Panels Part )
 
@@ -4512,7 +4563,6 @@ class Ui_MainWindow(object):
         except:
             pass
         self.decoded_network = decoded_network
-
 
 
 if __name__ == "__main__":

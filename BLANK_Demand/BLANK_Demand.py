@@ -1,8 +1,10 @@
+from PySide2 import QtWidgets, QtCore, QtGui
 from PySide2.QtWidgets import *
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 import sys
 import os
+
 from data import *
 from MP2X_Demand.MP2X_L_Demand import MP2X_L_Demand
 from MP2X_Demand.MP2X_R_Demand import MP2X_R_Demand
@@ -10,32 +12,32 @@ from MP1H_Demand.MP1H_L_Demand import MP1H_L_Demand
 from MP1H_Demand.MP1H_R_Demand import MP1H_R_Demand
 from TP1H_Demand.TP1H_L_Demand import TP1H_L_Demand
 from TP1H_Demand.TP1H_R_Demand import TP1H_R_Demand
+from BLANK_Demand import BLANK_SOURCE
 
-
-class BLANK_Demand(QWidget):
+class BLANK_Demand(QtWidgets.QWidget):
 
     def __init__(self, Panel_ID, nodename, Destination):
         super(BLANK_Demand, self).__init__()
-         
+
+        self.resize(159, 639)
+
         self.id = str(Panel_ID)
         # nodename == Source in Demand Tab
         self.nodename = nodename
         self.Destination = Destination
         self.uppernum = str(int(self.id) + 1)
-         
-        self.setFixedSize(112, 521)
 
-        self.label = QLabel(self)
-        self.label.setGeometry(QRect(0, 0, 121, 521))
-        self.label.setText("")
-        self.label.setPixmap(QPixmap(os.path.join("blank_Demand", "BLANK.png")))
-        self.label.setObjectName("label")
-
-        _translate = QCoreApplication.translate
+        self.setStyleSheet("background-color: rgb(0, 0, 0);")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self)
+        self.horizontalLayout.setContentsMargins(4, 4, 4, 4)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.BLANK_Demand_1 = QtWidgets.QLabel(self)
+        self.BLANK_Demand_1.setStyleSheet("border-image: url(:/BLANK_DEMAND_SOURCE/BLANK.png);")
+        self.horizontalLayout.addWidget(self.BLANK_Demand_1)
+        self.BLANK_Demand_1.setText("")
+        self.BLANK_Demand_1.setObjectName("BLANK_Demand_1")
 
         self.setAcceptDrops(True)
-        self.setStyleSheet("border: 3px solid black")
-        
 
     def dragEnterEvent(self, event):
         
@@ -68,30 +70,43 @@ class BLANK_Demand(QWidget):
         #self.label.setText(text)
 
         # TODO: Take Care of this very soon
+        # removing old panel
+        panel_widget = Data["DemandPanel_" + str(self.id)].takeAt(0).widget()
+        self.horizontalLayout.removeWidget(panel_widget)
+        panel_widget.deleteLater()
 
         if text == "SC":
-            #Data["DemandPanel_" + str(self.id)].setWidget(SC_Demand(self.id, self.nodename))
+            #Data["DemandPanel_" + str(self.id)].addWidget(SC_Demand(self.id, self.nodename))
             DemandTabDataBase["Panels"][self.nodename][self.id] = SC()
         elif text == "MP2X":
-            Data["DemandPanel_" + str(self.id)].setWidget(MP2X_L_Demand(self.id , self.nodename, self.Destination))
+            Data["DemandPanel_" + str(self.id)].addWidget(MP2X_L_Demand(self.id , self.nodename, self.Destination))
             DemandTabDataBase["Panels"][self.nodename][self.id] = MP2X_L()
 
-            Data["DemandPanel_" + self.uppernum].setWidget(MP2X_R_Demand(self.id, self.nodename))
-            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP2X_R(self.uppernum)
+            Data["DemandPanel_" + self.uppernum].addWidget(MP2X_R_Demand(self.id, self.nodename))
+            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP2X_R(self.uppernum, self.Destination)
 
 
         elif text == "MP1H":
-            Data["DemandPanel_" + str(self.id)].setWidget(MP1H_L_Demand(self.id , self.nodename, self.Destination))
+            Data["DemandPanel_" + str(self.id)].addWidget(MP1H_L_Demand(self.id , self.nodename, self.Destination))
             DemandTabDataBase["Panels"][self.nodename][self.id] = MP1H_L()
 
-            Data["DemandPanel_" + self.uppernum].setWidget(MP1H_R_Demand(self.id, self.nodename))
-            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP1H_R(self.uppernum)
+            Data["DemandPanel_" + self.uppernum].addWidget(MP1H_R_Demand(self.id, self.nodename))
+            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP1H_R(self.uppernum, self.Destination)
         
         elif text == "TP1H":
-            Data["DemandPanel_" + str(self.id)].setWidget(TP1H_L_Demand(self.id , self.nodename, self.Destination))
+            Data["DemandPanel_" + str(self.id)].addWidget(TP1H_L_Demand(self.id , self.nodename, self.Destination))
             DemandTabDataBase["Panels"][self.nodename][self.id] = TP1H_L()
 
-            Data["DemandPanel_" + self.uppernum].setWidget(TP1H_R_Demand(self.id, self.nodename))
-            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = TP1H_R(self.uppernum)
+            Data["DemandPanel_" + self.uppernum].addWidget(TP1H_R_Demand(self.id, self.nodename))
+            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = TP1H_R(self.uppernum, self.Destination)
         
         super(BLANK_Demand, self).dropEvent(event)
+
+
+
+if __name__ == "__main__":
+
+    app = QtWidgets.QApplication([])
+    window = BLANK_Demand(1,2,3)
+    window.show()
+    sys.exit(app.exec_())
