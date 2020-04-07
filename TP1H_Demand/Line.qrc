@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="Line">
+    <file>tp1h_line.png</file>
+  </qresource>
+</RCC>

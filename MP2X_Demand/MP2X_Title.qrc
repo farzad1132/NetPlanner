@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="MP2X_Title_Source">
+    <file>MP2X_Title.png</file>
+  </qresource>
+</RCC>

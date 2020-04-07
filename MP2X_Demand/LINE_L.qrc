@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="Line_L_SOURCE">
+    <file>LINE_L.png</file>
+  </qresource>
+</RCC>
