@@ -2643,7 +2643,7 @@ class Ui_MainWindow(object):
                     if panel.Line == "100GE":
 
                         # finding object of client customlabel
-                        clientvar = getattr(widget, "client")
+                        clientvar = getattr(widget, "Client")
 
                         # filling customlabel attributes 
                         clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandId, panel.ServiceId)])
@@ -2653,7 +2653,7 @@ class Ui_MainWindow(object):
                         self.ids = [panel.DemandId, panel.ServiceId]
                         clientvar.setAcceptDrops(False)
 
-                        # TODO: change client color to green
+                        clientvar.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
                 
                 elif isinstance(panel, TP1H_R):
                     Data["DemandPanel_" + str(i)].addWidget(TP1H_R_Demand(str(i), Source, Destination))

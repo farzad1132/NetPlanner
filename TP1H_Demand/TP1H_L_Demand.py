@@ -75,7 +75,6 @@ class TP1H_L_Demand(QtWidgets.QWidget):
         from BLANK_Demand.BLANK_Demand import BLANK_Demand
         ContextMenu = QMenu(self)
         CloseAction = ContextMenu.addAction("Close Panel")
-        RefreshAction = ContextMenu.addAction(" Refresh ")
             
         action = ContextMenu.exec_(self.mapToGlobal(event.pos()))
 
@@ -93,12 +92,10 @@ class TP1H_L_Demand(QtWidgets.QWidget):
                 
                 self.modify_LightPathList(LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
                 Network.Lightpath.update_id(-1)
+                self.Line.setStyleSheet("image:  url(:/Client/TP1H_CLIENT.png);")
             DemandTabDataBase["Panels"][self.nodename].pop(self.id)
             DemandTabDataBase["Panels"][self.nodename].pop(self.uppernum)
         
-        if action == RefreshAction:
-            # TODO: recalculate line capacity
-            pass
     
     def modify_LightPathList(self, id, Source, Destination, mode = "add", type = None):
 
@@ -153,9 +150,9 @@ class customlabel(QLabel):
         servicetype = text[1].strip()   # service type = 100Ge , 10GE , ....
 
         if servicetype in self.allowedservices:
-            #TODO: change client color to green
-            #self.setPixmap(QPixmap(os.path.join("TP1H_Demand", "client_green.png")))
-            pass
+            
+            self.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
+
             
         else:
             #TODO: change client color to red
@@ -167,7 +164,7 @@ class customlabel(QLabel):
     
 
     def dragLeaveEvent(self, event):
-        self.setPixmap(QPixmap(os.path.join("TP1H_Demand", "TP1H_CLIENT.png")))
+        self.setStyleSheet("image:  url(:/Client/TP1H_CLIENT.png);")
 
     def dropEvent(self, event):
         event.accept()
@@ -194,7 +191,7 @@ class customlabel(QLabel):
             DemandTabDataBase["Panels"][self.nodename][self.id].DemandId = ids[0]
             self.modify_ServiceList(ids, self.nodename, self.Destination)
 
-
+            self.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
             # self.LightPathId = Network.Lightpath.get_id()
 
             # adding lightpath to network obj
@@ -210,7 +207,7 @@ class customlabel(QLabel):
             # TODO: be Careful !!!!!
             self.setAcceptDrops(False)  
         else:
-            self.setPixmap(QPixmap(os.path.join("TP1H_Demand", "TP1H_CLIENT.png")))
+            self.setStyleSheet("image:  url(:/Client/TP1H_CLIENT.png);")
 
     def contextMenuEvent(self, event):
         ContextMenu = QMenu(self)
@@ -225,7 +222,7 @@ class customlabel(QLabel):
                 DemandTabDataBase["Panels"][self.nodename][self.id].Line = 0
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None
                 DemandTabDataBase["Panels"][self.nodename][self.id].ServiceId = None
-                self.setPixmap(QPixmap(os.path.join("TP1H_Demand", "TP1H_CLIENT.png")))
+                self.setStyleSheet("image:  url(:/Client/TP1H_CLIENT.png);")
                 self.setAcceptDrops(True)
                 self.modify_ServiceList(self.ids, self.nodename, self.Destination, mode = "add", type = "100GE")
                 self.modify_LightPathList(self.LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
