@@ -81,7 +81,7 @@ class BLANK_Demand(QtWidgets.QWidget):
             DemandTabDataBase["Panels"][self.nodename][self.id] = SC()
         elif text == "MP2X":
             Data["DemandPanel_" + str(self.id)].addWidget(MP2X_L_Demand(self.id , self.nodename, self.Destination))
-            DemandTabDataBase["Panels"][self.nodename][self.id] = MP2X_L()
+            DemandTabDataBase["Panels"][self.nodename][self.id] = MP2X_L(Destination= self.Destination)
 
             Data["DemandPanel_" + self.uppernum].addWidget(MP2X_R_Demand(self.id, self.nodename, self.Destination))
             DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP2X_R(self.uppernum, self.Destination)
@@ -89,7 +89,7 @@ class BLANK_Demand(QtWidgets.QWidget):
 
         elif text == "MP1H":
             Data["DemandPanel_" + str(self.id)].addWidget(MP1H_L_Demand(self.id , self.nodename, self.Destination))
-            DemandTabDataBase["Panels"][self.nodename][self.id] = MP1H_L()
+            DemandTabDataBase["Panels"][self.nodename][self.id] = MP1H_L(Destination= self.Destination)
 
             # removing old right panel
             panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
@@ -101,7 +101,7 @@ class BLANK_Demand(QtWidgets.QWidget):
         
         elif text == "TP1H":
             Data["DemandPanel_" + str(self.id)].addWidget(TP1H_L_Demand(self.id , self.nodename, self.Destination))
-            DemandTabDataBase["Panels"][self.nodename][self.id] = TP1H_L()
+            DemandTabDataBase["Panels"][self.nodename][self.id] = TP1H_L(Destination= self.Destination)
 
             # removing old right panel
             panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()

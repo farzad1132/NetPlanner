@@ -1881,7 +1881,6 @@ class Ui_MainWindow(object):
 "    border: 2px solid green;\n"
 "    border-radius: 4px;\n"
 "    padding: 2px;\n"
-"    background-image: url(images/welcome.png);\n"
 "}")
         self.ClientLabel_21.setObjectName("ClientLabel_21")
         self.gridLayout_2.addWidget(self.ClientLabel_21, 0, 0, 1, 1)
@@ -3108,7 +3107,7 @@ class Ui_MainWindow(object):
             self.FillDemandTabDataBase_Services(id ,Source, Destination, ServiceDict)
             self.initialize_GroomingTabDataBase(Source, Destination)
 
-        print(f"demandtabdatabase Services: {DemandTabDataBase['Services']}")
+        #print(f"demandtabdatabase Services: {DemandTabDataBase['Services']}")
             
     def initialize_DemandTabDataBase(self, Source, Destination):
         DemandTabDataBase["Lightpathes"][(Source, Destination)] = {}
@@ -3951,13 +3950,13 @@ class Ui_MainWindow(object):
             
             
 
-            ## debug section
+            """ ## debug section
             print("Source: ", Source)
             print("Destination:" , Destination)
             print("DemandId :", DemandId)
             print("serviceIdList :", lightpath.ServiceIdList)
 
-            ## end of debug section
+            ## end of debug section """
             
             # checking wheather lightpath is created by tp1h or not
             if len(lightpath.ServiceIdList) == 1:
@@ -3969,10 +3968,10 @@ class Ui_MainWindow(object):
                                                                         LightPathId= id,
                                                                         Destination= Destination)
 
-                ## debug section
+                """ ## debug section
                 print(DemandTabDataBase["Panels"][Source][panelid].__dict__)
 
-                ## end of debug section
+                ## end of debug section """
                 DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = TP1H_R(    LeftId= panelid,
                                                                                         Destination= Destination)
 
@@ -3999,10 +3998,10 @@ class Ui_MainWindow(object):
                                                                         Destination= Destination)
 
 
-                ## debug section
+                """ ## debug section
                 print(DemandTabDataBase["Panels"][Source][panelid].__dict__)
 
-                ## end of debug section
+                ## end of debug section """
                 DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = MP1H_R(    LeftId= panelid,
                                                                                         Destination= Destination)
 
@@ -4126,7 +4125,7 @@ class Ui_MainWindow(object):
         NotifiedNodes = self.find_grooming_failed_sources()
 
         # finding failed nodes cluster and their color and creating a dictionary for senting to JS
-        print(f" -- >> clustering database : {Data['Clustering']}")
+        #print(f" -- >> clustering database : {Data['Clustering']}")
         failed_nodes = {}
         Num_failed_nodes = len(NotifiedNodes)
         for GateWay , value in Data["Clustering"].items():
@@ -4157,6 +4156,7 @@ class Ui_MainWindow(object):
             def __str__(self):
                 return json.dumps(self)
         failed_nodes = Double_quote(failed_nodes) """
+        self.failed_nodes = failed_nodes
         print(f" -->> failed nodes : {failed_nodes}")
         self.failed_nodes_javascript(failed_nodes)
 
@@ -4208,9 +4208,9 @@ class Ui_MainWindow(object):
         # filling Demand DataBase 
         self.fill_DemandTabDataBase(self.network)
 
-        # NOTE: start debugging
+        """ # NOTE: start debugging
         print(f"Panels part of DemandTabDataBase: {DemandTabDataBase['Panels']}")
-        # NOTE: end of debugging
+        # NOTE: end of debugging """
 
         # changing failed nodes icon ( change to notified version )
         self.failed_grooming_nodes()
