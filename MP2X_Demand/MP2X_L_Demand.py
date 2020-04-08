@@ -159,7 +159,6 @@ class MP2X_L_Demand(QWidget):
         from BLANK_Demand.BLANK_Demand import BLANK_Demand
         ContextMenu = QMenu(self)
         CloseAction = ContextMenu.addAction("Close Panel")
-        RefreshAction = ContextMenu.addAction(" Refresh ")
             
         action = ContextMenu.exec_(self.mapToGlobal(event.pos()))
 
@@ -169,51 +168,92 @@ class MP2X_L_Demand(QWidget):
             Data["DemandPanel_" + self.uppernum].setWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
 
             # undoing every service or lightpath that is created in this panel
-            if not(DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity) != [0, 0]:
+            if DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity != [0, 0]:
 
                 for i in range(len(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity)):
                     if DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[i] != 0:
                         ids = [DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[i], DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[i]]
                         type = DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[i]
 
-                        self.modify_ServiceList(ids, self.nodename, self.Destination, "add", type)
+                        self.modify_ServiceList(ids= ids,
+                                                source= self.nodename,
+                                                destination= self.Destination,
+                                                mode= "add",
+                                                type= type)
 
-                LineServiceId = DemandTabDataBase["Panels"][self.nodename][self.id].LineServiceIdList
+                GroomOut_1_Id = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0]
+                GroomOut_2_Id = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1]
 
-                if LineServiceId[0] != None:
+                # deleteing GroomOut10 1 from database
+                self.modify_GroomOut10List(id= GroomOut_1_Id,
+                                            Source= self.nodename,
+                                            Destination= self.Destination,
+                                            mode= "delete")
 
-                    self.modify_LightPathList(LineServiceId[0], self.nodename, self.Destination, mode="delete", type="MP2X Line")
+                # deleting groomout10 from common object ( line 1 )
+                Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOut_1_Id)
 
-                #Network.Lightpath.update_id(-1)
+                if GroomOut_2_Id is not None:
+                    # deleteing GroomOut10 2 from database
+                    self.modify_GroomOut10List(id= GroomOut_2_Id,
+                                                Source= self.nodename,
+                                                Destination= self.Destination,
+                                                mode= "delete")
+
+                    # deleting groomout10 from common object ( line 2 )
+                    Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOut_2_Id)
+
             DemandTabDataBase["Panels"][self.nodename].pop(self.id)
             DemandTabDataBase["Panels"][self.nodename].pop(self.uppernum)
         
-        if action == RefreshAction:
-            # TODO: recalculate line capacity
-            pass
-    
-    def modify_groom_out_10(self, mp2x_line_id, Source, Destination, mode = "add", type = None):
-
-        if mode == "add":
-            DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
-        
-        if mode == "delete":
-            for Des in DemandTabDataBase["Source_Destination"][Source]:
-                if id in DemandTabDataBase["Services"][(Source, Destination)]:
-                    DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
-        
-        Data["ui"].update_Demand_lightpath_list()
     
     def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
+        
 
-        key = (ids[0] , ids[1])
+        key = (int(ids[0]) , int(ids[1]))
         if mode == "delete":
             DemandTabDataBase["Services"][(source, destination)].pop(key)
+
+            # statement bellow checks for removing notification
+            x = 0
+            for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
+                if DemandTabDataBase["Services"][(source, dest)]:
+                    x = 1
+                    break
+            if x == 0:        
+                Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
-            DemandTabDataBase["Services"][(source, destination)][key] = "[%s , %s] # %s" % (ids[0], ids[1], type)
+            DemandTabDataBase["Services"][(source, destination)][key] = None
             
         Data["ui"].UpdateDemand_ServiceList()
+    
+    def modify_GroomOut10List(self, id, Source, Destination, Capacity = None, mode = "add", type = None, PanelId = None):
+
+        if mode == "add":
+            #DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
+            item = QListWidgetItem(type, Data["GroomOu10_list"])
+            UserData = {"GroomOut10d":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": PanelId}
+            item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
+            item.setData(Qt.UserRole, UserData)
+            item.setTextAlignment(Qt.AlignCenter)
+
+            DemandTabDataBase["GroomOut10"][(Source, Destination)][id] = item
+        
+        if mode == "delete":
+            # deleting desired lightpath from database
+            DemandTabDataBase["GroomOut10"][(Source, Destination)].pop(id)
+
+            # correcting upper lightpath id's 
+            for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
+                for UpperId in sorted(list(DemandTabDataBase["GroomOut10"][(Source, Des)].keys())):
+                    if UpperId > id:
+                        DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1] = DemandTabDataBase["GroomOut10"][(Source, Des)].pop(UpperId)
+                        UserData = DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1].data(Qt.UserRole)
+                        UserData["GroomOut10Id"] -= 1
+                        DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) 
+ 
+        Data["ui"].update_Demand_groomout10_list()
 
 
 class customlabel(QLabel):
