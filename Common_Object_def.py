@@ -786,45 +786,16 @@ if __name__ == "__main__":
     print(f"Params result: {n.ParamsObj.__dict__}")
 
     # example of adding groom_out10
-    n.TrafficMatrix.DemandDict[0].add_service(ServiceType= "Groom_out10",
-                                              Sla= 2,
-                                              Capacity = 20,
-                                              ServiceIdList = [1, 2])
-    
-    ## Testing JSON
-    n.ResultObj.Num_RG = 10
-    n.PhysicalTopology.LinkDict[(0, 1)].LinkState = [1, 2, 3]
-    
-    import json
-    import numpy
-    def convert_to_dict(obj):
-        """
-        A function takes in a custom object and returns a dictionary representation of the object.
-        This dict representation includes meta data such as the object's module and class names.
-        """
+    # NOTE: assign *LightPathId* if this GroomOut10 is connected to MP1H, otherwise leave it
+    # NOTE: GroomOut10 uses Services ReferenceId so they are unique among themselves and Services
+    n.TrafficMatrix.add_groom_out_10(Source= "Tehran",
+                                    Destination= "Mashhad",
+                                    DemandId= 1,
+                                    Capacity= 9.6,
+                                    ServiceIdList= [1,5,9,4,2],
+                                    LightPathId= 4)
 
-        #  Populate the dictionary with object meta data 
-        if isinstance(obj, numpy.int64):
-            obj_dict = int(obj)
-            return obj_dict
-        else:
-            obj_dict = {
-                "__class__": obj.__class__.__name__,
-                "__module__": obj.__module__
-            }
-            #  Populate the dictionary with object properties
-            obj_dict.update(obj.__dict__)
-            return obj_dict
-    net = n
-    # Convert keys to String
-    tuple_keys = list(net.PhysicalTopology.LinkDict.keys())
-    for key in tuple_keys:
-        net.PhysicalTopology.LinkDict[str(key)] = net.PhysicalTopology.LinkDict.pop(key)
+    # NOTE: Grooming Algorithm must return a Dictionary of paired GroomOut10's that belong to same MP2X in format bellow:
+    # { <DemandId> : ( <GroomOut10Id_1>, <GroomOut10Id_2> ) }
+    
 
-    ##############################################
-    # Convert the Network object to JSON message
-    data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
-    # print(data)
-    # This line tests whether the JSON encoded common object is reconstructable!
-    decoded_n = Network.from_json(json.loads(data)) 
-    assert(isinstance(decoded_n, Network))
