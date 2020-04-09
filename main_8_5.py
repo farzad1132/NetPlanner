@@ -2929,12 +2929,13 @@ class Ui_MainWindow(object):
                 RG_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_p"]
                 SNR_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_w"]
                 SNR_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_p"]
+                LambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["LambdaList"]
 
                 #print(f"here for calling demand change function <before> ")
 
                 # calling Demand map change function
                 self.DemandMap_Change(WorkingPath, ProtectionPath, WorkingRegeneratorsList = RG_w, ProtectionRegenaratorsList = RG_p
-                                        ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p)
+                                        ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p, LambdaList= LambdaList)
 
     # MHA EDITION:
     def SaveTM_fun(self):
