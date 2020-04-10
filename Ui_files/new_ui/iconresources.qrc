@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>dropup.png</file>
+    <file>dropdown.png</file>
+  </qresource>
+</RCC>
