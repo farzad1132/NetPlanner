@@ -1924,7 +1924,13 @@ class Ui_MainWindow(object):
         self.splitter.setOrientation(QtCore.Qt.Vertical)
         self.splitter.setObjectName("splitter")
         self.Demand_tab = QtWidgets.QTabWidget(self.splitter)
-        self.Demand_tab.setEnabled(True)
+        # NOTE:EDITTED 
+        if self.splitter.moveSplitter(0, 0):
+            self.Demand_tab.setEnabled(False)
+        else:
+            self.Demand_tab.setEnabled(True)
+
+        #self.Demand_tab.setEnabled(True)
         self.Demand_tab.setMinimumSize(QtCore.QSize(0, 0))
         self.Demand_tab.setObjectName("Demand_tab")
         self.tab_8 = QtWidgets.QWidget()
