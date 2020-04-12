@@ -153,10 +153,17 @@ DemandTabDataBase["Lightpathes"] = {}
 #       { (<SourceName>, <DestinationName>) : { <LightPathId> : QlistWidgetItem}}
 #   QlistWidgetItem:
 #   text: LightPath Type
-#   data: { "LightPathId": <LightPathId> }
+#   data: { "LightPathId": <LightPathId>, "Capacity": <Capacity> , "Type": <Type>, "Source": <SourceName>, "Destination": <DestinationName>, "PanelId": <PanelId>}
 DemandTabDataBase["Panels"] = {}
 # format:
 #       { Tehran:{1: MP2X, 2: MP1H, ..} , Karaj:{}, ...}
+
+DemandTabDataBase["GroomOut10"] = {}
+# format:
+#       { ( <SourceName> , <DestinationName> ) : { <GroomGou10_Id> : QlistWidgetItem } }
+#   QlistWidgetItem:
+#   text:  "GroomOut10"
+#   data:   { "GroomOut10Id": <GroomOutId>, "Capacity": <Capacity> , "Type": <Type>, "Source": <SourceName>, "Destination": <DestinationName>, "PanelId": <PanelId>}
 
 GroomingTabDataBase = {}
 GroomingTabDataBase["LightPathes"] = {}
@@ -200,7 +207,7 @@ class MP2D_R:
 
 class MP2X_L:
     def __init__(self, ClientsCapacity = None, LinesCapacity = None, ServiceIdList = None, DemandIdList = None
-                    , LineServiceIdList = None, LineService_flagList = None, Destination = None):
+                    , LineIdList = None, Line_1_ServiceIdList = None, Line_2_ServiceIdList = None, Destination = None):
 
         if ClientsCapacity is None:
             self.ClientsCapacity = [0 for i in range(16)]
@@ -222,15 +229,22 @@ class MP2X_L:
         else:
             self.DemandIdList = DemandIdList
         
-        if LineServiceIdList is None:
-            self.LineServiceIdList = [None for i in range(2)]
+        if LineIdList is None:
+            self.LineIdList = [None for i in range(2)]
         else:
-            self.LineServiceIdList = LineServiceIdList
+            self.LineIdList = LineIdList
         
-        if LineService_flagList is None:
-            self.LineService_flagList = [0 for i in range(2)]
+        if Line_1_ServiceIdList is None:
+            self.Line_1_ServiceIdList = []
         else:
-            self.LineService_flagList = LineService_flagList
+            self.Line_1_ServiceIdList = Line_1_ServiceIdList
+
+        if Line_2_ServiceIdList is None:
+            self.Line_2_ServiceIdList = []
+        else:
+            self.Line_2_ServiceIdList = Line_2_ServiceIdList
+        
+        self.Destination = Destination
 
 class MP2X_R:
     def __init__(self, LeftId, Destination):

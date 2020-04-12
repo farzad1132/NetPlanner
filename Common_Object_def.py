@@ -319,10 +319,43 @@ class Network:
 
         def __init__(self):
             self.DemandDict = {}    # in { id : DemandObj } format
+            self.GroomOut10Dict = {}            # format: { id: GroomOut10 object }
         
         def add_demand(self, Source, Destination, Type):
             Id = self.GenerateDemandId()
             self.DemandDict[Id] = self.Demand(Id, Source, Destination, Type)
+        
+        def add_groom_out_10(self, Source, Destination, DemandId, Capacity, ServiceIdList,
+                                IgnoringNodesIdList = None, MandatoryNodesIdList = None, LightPathId = None, Sla = None):
+                                
+            Network.Traffic.Demand.ServiceReferencedId += 1
+
+            Id = Network.Traffic.Demand.ServiceReferencedId - 1 
+
+            self.GroomOut10Dict[Id] = self.Groom_out10( Id= Id,
+                                                        DemandId = DemandId,
+                                                        Capacity = Capacity,
+                                                        ServiceIdList = ServiceIdList,
+                                                        IgnoringNodesIdList= IgnoringNodesIdList,
+                                                        MandatoryNodesIdList= MandatoryNodesIdList,
+                                                        LightPathId= LightPathId,
+                                                        Sla= Sla)
+        
+        def delete_groom_out_10(self, Id):
+
+            def correct_UpperIds(id):
+                if id in self.GroomOut10Dict:
+                    sorted_keys = sorted(list(self.GroomOut10Dict.keys()))
+                    index = sorted_keys.index(id)
+                    for key in sorted_keys[index:]:
+                        self.GroomOut10Dict[key - 1] = self.GroomOut10Dict.pop(key)
+
+            del self.GroomOut10Dict[Id]
+            correct_UpperIds(Id + 1)
+
+            Network.Traffic.Demand.ServiceReferencedId -= 1
+            
+            
         
         def del_demand(self, Id):
             del self.DemandDict[Id]
@@ -332,6 +365,22 @@ class Network:
         def GenerateDemandId(self):
                 Network.Traffic.Demand.DemandReferenceId += 1
                 return ( Network.Traffic.Demand.DemandReferenceId - 1 )
+        
+        class Groom_out10:
+                BW=10
+
+                def __init__(self, Id, DemandId, Capacity, ServiceIdList, IgnoringNodesIdList = None, MandatoryNodesIdList = None,
+                                    LightPathId = None, Sla = None):
+
+                    self.Id = Id
+                    self.DemandId = DemandId
+                    self.Sla = Sla
+                    self.Capacity = Capacity
+                    self.ServiceIdList = ServiceIdList
+                    self.Type = "Groom_out10"
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
+                    self.IgnoringNodesIdList = IgnoringNodesIdList
+                    self.LightPathId = LightPathId
 
         class Demand:
             ServiceReferencedId = 0
@@ -492,7 +541,7 @@ class Network:
                 # BW : Band Width in Gb/s
                 BW = 58.84 / 1024
 
-                def __init__(self, Id, Sla,DemandId, IgnoringNodes, LightPathId = None):
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, LightPathId = None):
                     self.Id = Id
                     self.Sla = Sla
                     self.Type = "E1"
@@ -500,21 +549,7 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
-            class Groom_out10:
-                BW=10
-
-                def __init__(self, Id, Sla, Capacity, ServiceIdList, IgnoringNodesIdList = None, MandatoryNodesIdList = None,
-                                    LightPathId = None):
-
-                    self.Id = Id
             
-                    self.Sla = Sla
-                    self.Capacity = Capacity
-                    self.ServiceIdList = ServiceIdList
-                    self.Type = "Groom_out10"
-                    self.MandatoryNodesIdList = MandatoryNodesIdList
-                    self.IgnoringNodesIdList = IgnoringNodesIdList
-                    self.LightPathId = LightPathId
 
                     
             
@@ -560,17 +595,8 @@ class Network:
                 elif ServiceType == "100GE":
                     self.ServiceDict[ServiceId] = self.G_100(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
                 
-                elif ServiceType == "Groom_out10":
-                    self.ServiceDict[ServiceId] = self.Groom_out10(ServiceId, Sla, Capacity, ServiceIdList, IgnoringNodes, MandatoryNodesIdList, LightPathId)
         
-            def delete_groom_out_10(self, ServiceId):
-                self.ServiceDict.pop(ServiceId)
-
-                for key in list(self.ServiceDict.keys).sort():
-                    if key > ServiceId:
-                        self.ServiceDict[key - 1] = self.ServiceDict.pop(key)
-                
-                Network.Traffic.Demand.ServiceReferencedId -= 1
+            
 
                 
 
@@ -760,45 +786,16 @@ if __name__ == "__main__":
     print(f"Params result: {n.ParamsObj.__dict__}")
 
     # example of adding groom_out10
-    n.TrafficMatrix.DemandDict[0].add_service(ServiceType= "Groom_out10",
-                                              Sla= 2,
-                                              Capacity = 20,
-                                              ServiceIdList = [1, 2])
-    
-    ## Testing JSON
-    n.ResultObj.Num_RG = 10
-    n.PhysicalTopology.LinkDict[(0, 1)].LinkState = [1, 2, 3]
-    
-    import json
-    import numpy
-    def convert_to_dict(obj):
-        """
-        A function takes in a custom object and returns a dictionary representation of the object.
-        This dict representation includes meta data such as the object's module and class names.
-        """
+    # NOTE: assign *LightPathId* if this GroomOut10 is connected to MP1H, otherwise leave it
+    # NOTE: GroomOut10 uses Services ReferenceId so they are unique among themselves and Services
+    n.TrafficMatrix.add_groom_out_10(Source= "Tehran",
+                                    Destination= "Mashhad",
+                                    DemandId= 1,
+                                    Capacity= 9.6,
+                                    ServiceIdList= [1,5,9,4,2],
+                                    LightPathId= 4)
 
-        #  Populate the dictionary with object meta data 
-        if isinstance(obj, numpy.int64):
-            obj_dict = int(obj)
-            return obj_dict
-        else:
-            obj_dict = {
-                "__class__": obj.__class__.__name__,
-                "__module__": obj.__module__
-            }
-            #  Populate the dictionary with object properties
-            obj_dict.update(obj.__dict__)
-            return obj_dict
-    net = n
-    # Convert keys to String
-    tuple_keys = list(net.PhysicalTopology.LinkDict.keys())
-    for key in tuple_keys:
-        net.PhysicalTopology.LinkDict[str(key)] = net.PhysicalTopology.LinkDict.pop(key)
+    # NOTE: Grooming Algorithm must return a Dictionary of paired GroomOut10's that belong to same MP2X in format bellow:
+    # { <DemandId> : ( <GroomOut10Id_1>, <GroomOut10Id_2> ) }
+    
 
-    ##############################################
-    # Convert the Network object to JSON message
-    data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
-    # print(data)
-    # This line tests whether the JSON encoded common object is reconstructable!
-    decoded_n = Network.from_json(json.loads(data)) 
-    assert(isinstance(decoded_n, Network))
