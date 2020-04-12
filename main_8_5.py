@@ -1942,45 +1942,103 @@ class Ui_MainWindow(object):
         self.DemandPanel_1 = QtWidgets.QWidget(self.tab_8)
         self.DemandPanel_1.setObjectName("DemandPanel_1")
         self.horizontalLayout_4.addWidget(self.DemandPanel_1)
+        # NOTE: EDITTED
+        if self.splitter.moveSplitter(0, 0):
+            self.DemandPanel_1.setEnabled(False)
+        else:
+            self.DemandPanel_1.setEnabled(True)
         self.DemandPanel_2 = QtWidgets.QWidget(self.tab_8)
         self.DemandPanel_2.setObjectName("DemandPanel_2")
         self.horizontalLayout_4.addWidget(self.DemandPanel_2)
+        if self.splitter.moveSplitter(0, 0):
+            self.DemandPanel_2.setEnabled(False)
+        else:
+            self.DemandPanel_2.setEnabled(True)
         self.DemandPanel_3 = QtWidgets.QWidget(self.tab_8)
         self.DemandPanel_3.setObjectName("DemandPanel_3")
         self.horizontalLayout_4.addWidget(self.DemandPanel_3)
+        if self.splitter.moveSplitter(0, 0):
+            self.DemandPanel_3.setEnabled(False)
+        else:
+            self.DemandPanel_3.setEnabled(True)
         self.DemandPanel_4 = QtWidgets.QWidget(self.tab_8)
         self.DemandPanel_4.setObjectName("DemandPanel_4")
         self.horizontalLayout_4.addWidget(self.DemandPanel_4)
+        if self.splitter.moveSplitter(0, 0):
+            self.DemandPanel_4.setEnabled(False)
+        else:
+            self.DemandPanel_4.setEnabled(True)
         self.DemandPanel_5 = QtWidgets.QWidget(self.tab_8)
         self.DemandPanel_5.setObjectName("DemandPanel_5")
         self.horizontalLayout_4.addWidget(self.DemandPanel_5)
+        if self.splitter.moveSplitter(0, 0):
+            self.DemandPanel_5.setEnabled(False)
+        else:
+            self.DemandPanel_5.setEnabled(True)
         self.DemandPanel_6 = QtWidgets.QWidget(self.tab_8)
         self.DemandPanel_6.setObjectName("DemandPanel_6")
         self.horizontalLayout_4.addWidget(self.DemandPanel_6)
+        if self.splitter.moveSplitter(0, 0):
+            self.DemandPanel_6.setEnabled(False)
+        else:
+            self.DemandPanel_6.setEnabled(True)
         self.DemandPanel_7 = QtWidgets.QWidget(self.tab_8)
         self.DemandPanel_7.setObjectName("DemandPanel_7")
         self.horizontalLayout_4.addWidget(self.DemandPanel_7)
+        if self.splitter.moveSplitter(0, 0):
+            self.DemandPanel_7.setEnabled(False)
+        else:
+            self.DemandPanel_7.setEnabled(True)
         self.DemandPanel_8 = QtWidgets.QWidget(self.tab_8)
         self.DemandPanel_8.setObjectName("DemandPanel_8")
         self.horizontalLayout_4.addWidget(self.DemandPanel_8)
+        if self.splitter.moveSplitter(0, 0):
+            self.DemandPanel_8.setEnabled(False)
+        else:
+            self.DemandPanel_8.setEnabled(True)
         self.DemandPanel_9 = QtWidgets.QWidget(self.tab_8)
         self.DemandPanel_9.setObjectName("DemandPanel_9")
         self.horizontalLayout_4.addWidget(self.DemandPanel_9)
+        if self.splitter.moveSplitter(0, 0):
+            self.DemandPanel_9.setEnabled(False)
+        else:
+            self.DemandPanel_9.setEnabled(True)
         self.DemandPanel_10 = QtWidgets.QWidget(self.tab_8)
         self.DemandPanel_10.setObjectName("DemandPanel_10")
         self.horizontalLayout_4.addWidget(self.DemandPanel_10)
+        if self.splitter.moveSplitter(0, 0):
+            self.DemandPanel_10.setEnabled(False)
+        else:
+            self.DemandPanel_10.setEnabled(True)
         self.DemandPanel_11 = QtWidgets.QWidget(self.tab_8)
         self.DemandPanel_11.setObjectName("DemandPanel_11")
         self.horizontalLayout_4.addWidget(self.DemandPanel_11)
+        if self.splitter.moveSplitter(0, 0):
+            self.DemandPanel_11.setEnabled(False)
+        else:
+            self.DemandPanel_11.setEnabled(True)
         self.DemandPanel_12 = QtWidgets.QWidget(self.tab_8)
         self.DemandPanel_12.setObjectName("DemandPanel_12")
         self.horizontalLayout_4.addWidget(self.DemandPanel_12)
+        if self.splitter.moveSplitter(0, 0):
+            self.DemandPanel_12.setEnabled(False)
+        else:
+            self.DemandPanel_12.setEnabled(True)
         self.DemandPanel_13 = QtWidgets.QWidget(self.tab_8)
         self.DemandPanel_13.setObjectName("DemandPanel_13")
         self.horizontalLayout_4.addWidget(self.DemandPanel_13)
+        if self.splitter.moveSplitter(0, 0):
+            self.DemandPanel_13.setEnabled(False)
+        else:
+            self.DemandPanel_13.setEnabled(True)
         self.DemandPanel_14 = QtWidgets.QWidget(self.tab_8)
         self.DemandPanel_14.setObjectName("DemandPanel_14")
         self.horizontalLayout_4.addWidget(self.DemandPanel_14)
+        if self.splitter.moveSplitter(0, 0):
+            self.DemandPanel_14.setEnabled(False)
+        else:
+            self.DemandPanel_14.setEnabled(True)
+
         self.Demand_tab.addTab(self.tab_8, "")
         self.MapWidget = MapWidget(self.splitter)
         self.MapWidget.setMinimumSize(QtCore.QSize(821, 0))
