@@ -2,10 +2,24 @@ from Common_Object_def import Network
 import pickle
 import copy
 from pulp import LpProblem, LpMinimize, LpVariable, lpSum, LpStatus
-
 import networkx as nx
-
 import math
+
+
+""" # loading saved object from directory
+with open('NetWorkObj.obj', 'rb') as handle:
+    n = pickle.load(handle)                   
+    handle.close()
+
+Ref = 0
+for demand, value in n.TrafficMatrix.DemandDict.items():
+    for id in value.ServiceDict.keys():
+        if id > Ref:
+            Ref = id
+
+Network.Traffic.ServiceReferencedId = Ref + 1
+Network.Traffic.Demand.ServiceReferencedId = Ref + 1
+# from here you can access network object by 'network_obj' variable """
 
 
 def MP2X(Services_lower10):
@@ -42,7 +56,11 @@ def MP2X(Services_lower10):
     
 #    prob += lpSum([x[(i,j)] for j in range(1,NO_service_lower10+1) for i in range(1,max_number_device+1)])
     prob += lpSum([y[i-1] for i in range(1,max_number_device+1)]) 
-
+#    prob += lpSum([y[i-1] for i in range(1,max_number_device+1)])
+#     for j in range(1,max_number_device+1):
+#        prob +=lpSum(Services_lower10[i-1][1]*x[(i,j)] for i in range(1,NO_service_lower10+1))
+    
+    
     for i in range(1,NO_service_lower10+1):
         prob +=lpSum(x[(i,j)] for j in range(1,max_number_device+1) ) ==1,""
     
@@ -131,8 +149,11 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
         service_lower10_E=[]
         service_lower100=[]
         remaining_service_lower10=[]
-        MP2x_list=[]                                      #(DemandId,Service)
+        MP2x_list=[]   
+        MP2x_Dict={}                                 #(DemandId,Service)
         output_100=[]
+        remain_lower100_dict={}
+        remaining_service_lower10_dict={}
         groom_out10_list=[]
         remain_lower100=[]
         for i in n.TrafficMatrix.DemandDict:
@@ -143,12 +164,16 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
             for j in n.TrafficMatrix.DemandDict[i].ServiceDict:
                 if ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_1_Optical") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_4") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_16")):
                     y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
-                elif ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "FE") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "1GE")):
+                elif ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "FE") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "G_1")):
                     x.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                 elif (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW == 10):
                     z.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                 else:
                     n.add_lightpath(n.TrafficMatrix.DemandDict[i].Source, n.TrafficMatrix.DemandDict[i].Destination, 100, [n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id], 100, i)
+                    LastId = n.Lightpath.ReferenceId -1
+#                    print(len(n.LightPathDict),"**")
+                    n.TrafficMatrix.DemandDict[i].ServiceDict[j].LightPathId=LastId
+#                    print(LastId,"***")
             if y:
                 service_lower10_SDH.append((i,y))
                 output_10.append((i,MP2X(y)))
@@ -161,11 +186,13 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                     for nu in range(0,len(output_10[0][1][num])):
                         listofs.append(output_10[0][1][num][nu][0])
                         cap = cap + output_10[0][1][num][nu][1]
-                    n.TrafficMatrix.DemandDict[i].add_service(ServiceType= "Groom_out10" ,Sla= 2, Capacity=cap, ServiceIdList=listofs)    
+#                    n.TrafficMatrix.DemandDict[i].add_service(ServiceType= "Groom_out10" ,Sla= 2, Capacity=cap, ServiceIdList=listofs)    
+                    n.TrafficMatrix.add_groom_out_10(Source=n.TrafficMatrix.DemandDict[i].Source, Destination=n.TrafficMatrix.DemandDict[i].Destination, DemandId=i, Capacity=cap, ServiceIdList=listofs)
                     LastId = n.TrafficMatrix.Demand.ServiceReferencedId - 1
                     ffff=[(LastId,10)]
                     hhhh.append((LastId,cap,len(listofs)))
-                    service_lower100.append((i,ffff))
+                    z.append((LastId,cap))
+#                    service_lower100.append((i,ffff))
                 groom_out10_list.append((i,hhhh))
 #                print(groom_out10_list)
             if x:
@@ -182,13 +209,15 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                 for k in range(0,len(groom_out10_list[i][1])):
                     if ((k not in nooo) and (j not in nooo) and (j!=k) and (groom_out10_list[i][1][j][2] + groom_out10_list[i][1][k][2]) <=16):
                         MP2x_list.append((groom_out10_list[i][0],(groom_out10_list[i][1][j][0],groom_out10_list[i][1][k][0])))
+                        MP2x_Dict.update({groom_out10_list[i][0]:(groom_out10_list[i][1][j][0],groom_out10_list[i][1][k][0])})
                         nooo.append(j)
                         nooo.append(k)
             for m in range(0,len(groom_out10_list[i][1])):
                 if m not in nooo:
-                    remaining_service_lower10.append((groom_out10_list[i][0],groom_out10_list[i][1][m][0]))  
+                    remaining_service_lower10.append((groom_out10_list[i][0],groom_out10_list[i][1][m][0])) 
+                    remaining_service_lower10_dict.update({groom_out10_list[i][0]:groom_out10_list[i][1][m][0]})
                     
-                    
+           
         for i in range(0,len(service_lower100)):
             NO_LP= math.ceil(len(service_lower100[i][1])/10)
             for j in range(0,NO_LP):
@@ -198,64 +227,39 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                     if (k < len(service_lower100[i][1])):
                         list_of_service.append(service_lower100[i][1][k][0])
                         cap=cap+service_lower100[i][1][k][1]
-
                 if cap ==10:
                     typee="10GE"
                 else:
                     typee="100GE"
                 if cap < MP1H_Threshold:
-                    remain_lower100.append((i,list_of_service))
+                    remain_lower100.append((service_lower100[i][0],list_of_service))
+                    remain_lower100_dict.update({service_lower100[i][0]:list_of_service})
                 else:
-                    n.add_lightpath(n.TrafficMatrix.DemandDict[service_lower100[i][0]].Source, n.TrafficMatrix.DemandDict[service_lower100[i][0]].Destination, cap, list_of_service, typee, service_lower100[i][0])    
+                    n.add_lightpath(n.TrafficMatrix.DemandDict[service_lower100[i][0]].Source, n.TrafficMatrix.DemandDict[service_lower100[i][0]].Destination, Capacity=cap, ServiceIdList=list_of_service, Type=typee, DemandId=service_lower100[i][0])    
+                    LastId = n.Lightpath.ReferenceId -1
+#                    print(LastId)
+                    for idd in list_of_service:
+                        if idd in n.TrafficMatrix.DemandDict[service_lower100[i][0]].ServiceDict:
+                           n.TrafficMatrix.DemandDict[service_lower100[i][0]].ServiceDict[idd].LightPathId= LastId
+                        if idd in n.TrafficMatrix.GroomOut10Dict:
+                            n.TrafficMatrix.GroomOut10Dict[idd].LightPathId= LastId
+                            
+        
      
-        return remain_lower100,MP2x_list,remaining_service_lower10
-        #  remain_lower100            (the services which are not assigned tolightpath)  (DemandId,[ServiceId])
+        return remain_lower100_dict,MP2x_Dict,remaining_service_lower10_dict
+        #  remain_lower100            (the services which are not assigned to lightpath)  (DemandId,[ServiceId])
         #  MP2x_list                  (MP2X with 2 output)                               (DemandId,[ServiceId(groomout10),ServiceId(groomout10)])
         #  remaining_service_lower10  (MP2X with 1 output)                               (DemandId,ServiceId(groomout10))
     
     
     
     
-    
+""" ans = grooming_fun(n,10)
+#Clustering(n)
+
+print("successful")
+ """
 
 
 
 
-
-
-
-
-
-
-
-if __name__ == "__main__":
-
-
-    """ LastId = 0
-    n.TrafficMatrix.DemandDict[LastId].add_service("1GE",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("STM_4",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("STM_4",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("STM_4",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("STM_4",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("STM_4",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("STM_4",2)
-
-    n.TrafficMatrix.DemandDict[1].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[1].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[1].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[1].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[1].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[1].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[1].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[1].add_service("STM_16",2)
-    n.TrafficMatrix.DemandDict[1].add_service("STM_4",2)
-    n.TrafficMatrix.DemandDict[1].add_service("STM_4",2)
-    ans = grooming_fun(n,70) """
-    pass

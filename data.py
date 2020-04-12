@@ -243,6 +243,8 @@ class MP2X_L:
             self.Line_2_ServiceIdList = []
         else:
             self.Line_2_ServiceIdList = Line_2_ServiceIdList
+        
+        self.Destination = Destination
 
 class MP2X_R:
     def __init__(self, LeftId, Destination):

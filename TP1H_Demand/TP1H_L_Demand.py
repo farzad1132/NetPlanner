@@ -22,7 +22,7 @@ class TP1H_L_Demand(QWidget):
         self.line.setText("")
         self.line.setPixmap(QPixmap(os.path.join("TP1H_Demand","tp1h_line.png")))
         self.line.setObjectName("line")
-        self.client = customlabel(self, self.nodename, self.Destination, self.id)
+        self.client = customlabel(self, self.nodename, self.Destination, self.id, self.line)
         self.client.setGeometry(QRect(30, 320, 55, 141))
         self.client.setText("")
         self.client.setPixmap(QPixmap(os.path.join("TP1H_Demand","TP1H_CLIENT.png")))
