@@ -1884,10 +1884,10 @@ class Ui_MainWindow(object):
 "}")
         self.ClientLabel_21.setObjectName("ClientLabel_21")
         self.gridLayout_2.addWidget(self.ClientLabel_21, 0, 0, 1, 1)
-        self.listWidget_8 = QtWidgets.QListWidget(self.tab)
-        self.listWidget_8.setMinimumSize(QtCore.QSize(256, 135))
-        self.listWidget_8.setMaximumSize(QtCore.QSize(256, 135))
-        self.listWidget_8.setStyleSheet("QListWidget {\n"
+        self.groomout10_list = QtWidgets.QListWidget(self.tab)
+        self.groomout10_list.setMinimumSize(QtCore.QSize(256, 135))
+        self.groomout10_list.setMaximumSize(QtCore.QSize(256, 135))
+        self.groomout10_list.setStyleSheet("QListWidget {\n"
 "    alternate-background-color: yellow;\n"
 "    border: 5px double;\n"
 "    border-color: blue;\n"
@@ -1918,8 +1918,8 @@ class Ui_MainWindow(object):
 "    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                stop: 0 #FAFBFE, stop: 1 #DCDEF1);\n"
 "}")
-        self.listWidget_8.setObjectName("listWidget_8")
-        self.gridLayout_2.addWidget(self.listWidget_8, 7, 0, 1, 1)
+        self.groomout10_list.setObjectName("groomout10_list")
+        self.gridLayout_2.addWidget(self.groomout10_list, 7, 0, 1, 1)
         self.gridLayout_4.addLayout(self.gridLayout_2, 1, 0, 1, 1)
         self.splitter = QtWidgets.QSplitter(self.tab)
         self.splitter.setOrientation(QtCore.Qt.Vertical)
@@ -1992,6 +1992,7 @@ class Ui_MainWindow(object):
         self.ShelfTab.setCurrentIndex(3)
         self.Demand_tab.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
 
         # NOTE: added
 
@@ -2280,7 +2281,7 @@ class Ui_MainWindow(object):
         self.SelectNode_Label_13.setText(_translate("MainWindow", "Source:"))
         self.ClientLabel_22.setText(_translate("MainWindow", "List of LightPathes :"))
         self.ClientLabel_23.setText(_translate("MainWindow", "Client Side Services:"))
-        self.ClientLabel_20.setText(_translate("MainWindow", "Setting:"))
+        self.ClientLabel_20.setText(_translate("MainWindow", "Groom Out 10:"))
         self.label_9.setText(_translate("MainWindow", "Node Type:"))
         self.ClientLabel_21.setText(_translate("MainWindow", "List Of Network Panels:"))
         self.Demand_tab.setTabText(self.Demand_tab.indexOf(self.tab_8), _translate("MainWindow", "Shelf"))
@@ -2603,19 +2604,42 @@ class Ui_MainWindow(object):
                 if isinstance(panel , MP2X_L):
                     Data["DemandPanel_" + str(i)].addWidget(MP2X_L_Demand(str(i), Source, Destination))
 
+                    GroomOutId_1, GroomOutId_2 = panel.LineIdList
+                    
+
                     # finding panel widget
-                    widget = Data["DemandPanel_" + str(i)].widget()
+                    widget = Data["DemandPanel_" + str(i)].itemAt(0).widget()
 
                     for i in range(len(panel.ClientsCapacity)):
                         if panel.ClientsCapacity[i] != 0:
 
                             # finding object of client customlabel
-                            text = "client" + str( i + 1 )
+                            text = "CLIENT" + str( i + 1 )
                             clientvar = getattr(widget, text)
+
+                            if clientvar.ClientNum % 2 == 0:
+                                clientvar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                            else:
+                                clientvar.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
                             
-                            # TODO: changing client label to green
+                            clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])].toolTip())
+
+                            clientvar.servicetype = panel.ClientsCapacity[i]
+                            clientvar.nodename = Source
+                            clientvar.Destination = Destination
+                            clientvar.ids = [panel.DemandIdList[i], panel.ServiceIdList[i]]
+                            clientvar.setAcceptDrops(False)
+
+                            # adding tooltip to line port
+                            linevar_1 = getattr(widget, "LINE1")
+                            linevar_1.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][GroomOutId_1].toolTip())
+
+                            if GroomOutId_2 is not None:
+                                linevar_2 = getattr(widget, "LINE2")
+                                linevar_2.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][GroomOutId_2].toolTip())
+                            
                 elif isinstance(panel, MP2X_R):
-                    Data["DemandPanel_" + str(i)].setWidget(MP2X_R_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(MP2X_R_Demand(str(i), Source, Destination))
                 
                 elif isinstance(panel, MP1H_L):
                     LightPathId = panel.LightPathId
@@ -2631,10 +2655,6 @@ class Ui_MainWindow(object):
                             text = "Client" + str( i + 1 )
                             clientvar = getattr(widget, text)
 
-                            # filling customlabel attributes
-                            #clientvar.setPixmap(QPixmap(os.path.join("MP1H_Demand", "client_green.png")))
-                            """ oldstyle = clientvar.styleSheet()
-                            clientvar.setStyleSheet(oldstyle + "border: 5px solid green;") """
                             if clientvar.ClientNum % 2 == 0:
                                 clientvar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
                             else:
@@ -3269,6 +3289,7 @@ class Ui_MainWindow(object):
 
             self.UpdateDemand_ServiceList()
             self.update_Demand_lightpath_list()
+            self.update_Demand_groomout10_list()
             self.set_demand_panels()        
             self.DemandMap_Change()
         
@@ -3277,6 +3298,7 @@ class Ui_MainWindow(object):
 
             self.UpdateDemand_ServiceList()
             self.update_Demand_lightpath_list()
+            self.update_Demand_groomout10_list()
             self.set_demand_panels()        
             self.DemandMap_Change()
         
@@ -4550,7 +4572,6 @@ class Ui_MainWindow(object):
         except:
             pass
         self.decoded_network = decoded_network
-
 
 
 if __name__ == "__main__":
