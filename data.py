@@ -163,7 +163,7 @@ DemandTabDataBase["GroomOut10"] = {}
 #       { ( <SourceName> , <DestinationName> ) : { <GroomGou10_Id> : QlistWidgetItem } }
 #   QlistWidgetItem:
 #   text:  "GroomOut10"
-#   data:   { "GroomOut10Id": <GroomOutId>, "Capacity": <Capacity> , "Type": <Type>, "Source": <SourceName>, "Destination": <DestinationName>, "PanelId": <PanelId>}
+#   data:   { "GroomOut10Id": <GroomOutId>, "Capacity": <Capacity> , "Type": <Type>, "Source": <SourceName>, "Destination": <DestinationName>, "PanelId": <PanelId>, "DemandId": <DemandId>}
 
 GroomingTabDataBase = {}
 GroomingTabDataBase["LightPathes"] = {}

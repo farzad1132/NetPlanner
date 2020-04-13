@@ -2153,6 +2153,8 @@ class Ui_MainWindow(object):
 
         Data["GroomOu10_list"] = self.groomout10_list
 
+        self.groomout10_list.setDragEnabled(True)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -2668,6 +2670,11 @@ class Ui_MainWindow(object):
                             clientvar.nodename = Source
                             clientvar.Destination = Destination
                             clientvar.ids = [panel.DemandIdList[i], panel.ServiceIdList[i]]
+
+                            if panel.ClientsCapacity[i] == "GroomOut10":
+                                UserData = DemandTabDataBase["GroomOut10"][(Source, Destination)][panel.ServiceIdList[i]].data(Qt.UserRole)
+                                clientvar.GroomOut_Capacity = UserData["Capacity"]
+
                             clientvar.setAcceptDrops(False)
 
                             # adding tooltip to line port
@@ -4130,7 +4137,7 @@ class Ui_MainWindow(object):
 
             # creating Qlistwidgetitem item part
             item_1 = QListWidgetItem("GroomOut10", self.groomout10_list)
-            UserData_1 = {"GroomOut10d":Servicetuple[0], "Source":Source, "Destination":Destination, "Capacity":LineCapacity_1, "Type": "GroomOut10", "PanelId": PanelId}
+            UserData_1 = {"GroomOut10Id":Servicetuple[0], "Source":Source, "Destination":Destination, "Capacity":LineCapacity_1, "Type": "GroomOut10", "PanelId": PanelId, "DemandId": DemandId}
             item_1.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {LineCapacity_1}\nType: GroomOut10")
             item_1.setData(Qt.UserRole, UserData_1)
             item_1.setTextAlignment(Qt.AlignCenter)
@@ -4138,7 +4145,7 @@ class Ui_MainWindow(object):
             DemandTabDataBase["GroomOut10"][(Source, Destination)][Servicetuple[0]] = item_1
 
             item_2 = QListWidgetItem("GroomOut10", self.groomout10_list)
-            UserData_2 = {"GroomOut10d":Servicetuple[1], "Source":Source, "Destination":Destination, "Capacity":LineCapacity_2, "Type": "GroomOut10", "PanelId": PanelId}
+            UserData_2 = {"GroomOut10Id":Servicetuple[1], "Source":Source, "Destination":Destination, "Capacity":LineCapacity_2, "Type": "GroomOut10", "PanelId": PanelId, "DemandId": DemandId}
             item_2.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {LineCapacity_2}\nType: GroomOut10")
             item_2.setData(Qt.UserRole, UserData_2)
             item_2.setTextAlignment(Qt.AlignCenter)
@@ -4180,7 +4187,7 @@ class Ui_MainWindow(object):
 
             # creating Qlistwidgetitem item part
             item = QListWidgetItem("GroomOut10", self.groomout10_list)
-            UserData = {"GroomOut10d":GroomOutId, "Source":Source, "Destination":Destination, "Capacity":LineCapacity, "Type": "GroomOut10", "PanelId": PanelId}
+            UserData = {"GroomOut10Id":GroomOutId, "Source":Source, "Destination":Destination, "Capacity":LineCapacity, "Type": "GroomOut10", "PanelId": PanelId, "DemandId": DemandId}
             item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {LineCapacity}\nType: GroomOut10")
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)

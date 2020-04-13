@@ -138,7 +138,6 @@ class MP1H_L_Demand(QtWidgets.QWidget):
             panel_widget.deleteLater()
             Data["DemandPanel_" + self.uppernum].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
 
-            # TODO: undo every service or lightpath that is created in this panel
             if DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity != 0:
 
                 for i in range(len(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity)):
@@ -146,7 +145,6 @@ class MP1H_L_Demand(QtWidgets.QWidget):
                         ids = [DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[i], DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[i]]
                         type = DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[i]
 
-                        #self.modify_ServiceList(ids, self.nodename, self.Destination, "add", type)
                         self.modify_ServiceList(ids= ids,
                                                 source= self.nodename,
                                                 destination= self.Destination,
@@ -156,7 +154,6 @@ class MP1H_L_Demand(QtWidgets.QWidget):
                 LightPathId = DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId
 
                 
-                #self.modify_LightPathList(LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
                 self.modify_LightPathList(  id= LightPathId,
                                             Source= self.nodename,
                                             Destination= self.Destination,
@@ -171,7 +168,7 @@ class MP1H_L_Demand(QtWidgets.QWidget):
     def modify_LightPathList(self, id, Source, Destination, Capacity = None, mode = "add", type = None):
 
         if mode == "add":
-            #DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
+            
             item = QListWidgetItem(type, Data["Demand_LightPath_list"])
             UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type}
             item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
@@ -197,15 +194,36 @@ class MP1H_L_Demand(QtWidgets.QWidget):
         Data["ui"].update_Demand_lightpath_list()
     
     def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
+        
 
-        key = (ids[0] , ids[1])
+        key = (int(ids[0]) , int(ids[1]))
         if mode == "delete":
-            DemandTabDataBase["Services"][(source, destination)].pop(key)
+
+            # check if its a normal service or not
+            if key in DemandTabDataBase["Services"][(source, destination)]:
+                DemandTabDataBase["Services"][(source, destination)].pop(key)
+            
+            else:
+                DemandTabDataBase["GroomOut10"][(source, destination)].pop(key[1])
+            
+            # statement bellow checks for removing notification ( if there is such a node)
+            if source in Data["ui"].failed_nodes:
+                x = 0
+                for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
+                    if DemandTabDataBase["Services"][(source, dest)]:
+                        x = 1
+                        break
+                if x == 0:        
+                    Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
-            DemandTabDataBase["Services"][(source, destination)][key] = None
+            if self.servicetype != "GroomOut10":
+                DemandTabDataBase["Services"][(source, destination)][key] = None
+
+                Data["ui"].update_Demand_groomout10_list()
             
         Data["ui"].UpdateDemand_ServiceList()
+        
 
 class customlabel(QLabel):
     def __init__(self, parent, nodename, Destination, ID, ClientNum, LineVar, tooltip = None):
@@ -230,20 +248,11 @@ class customlabel(QLabel):
         model = QStandardItemModel()
         model.dropMimeData(event.mimeData(), Qt.CopyAction, 0,0, QModelIndex())
         dragtext = model.item(0,0).text()
-        UserData = model.item(0).data(Qt.UserRole)
         
-
-        self.allowedservices = ["10GE", "STM_64"]
-        #text = dragtext
-        # FIXME: why we need this if ????
+        self.allowedservices = ["10GE", "STM_64", "GroomOut10"]
+        
         if dragtext != "MP1H":
             servicetype = dragtext.strip()
-            ids = [UserData["DemandId"], UserData["ServiceId"]]         # [ Demand Number, Service Number ]
-            """ text = text.split("#")
-            n_key = "".join(text[0].split())
-            ids = n_key[1:-1].split(',')
-            ids = list(map(lambda x : int(x), ids))          
-            servicetype = text[1].strip()   # service type = 100Ge , 10GE , .... """
 
             if servicetype in self.allowedservices:
                 if self.ClientNum % 2 == 0:
@@ -251,7 +260,6 @@ class customlabel(QLabel):
                 else:
                     self.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
                 
-
             event.accept()
 
             super(customlabel,self).dragEnterEvent(event)
@@ -271,43 +279,47 @@ class customlabel(QLabel):
         dragtext = model.item(0,0).text()
         UserData = model.item(0).data(Qt.UserRole)
 
-        """ text = dragtext
-        text = text.split("#")
-        n_key = "".join(text[0].split())
-        ids = n_key[1:-1].split(',')
-        ids = list(map(lambda x : int(x), ids))          # [ Demand Number, Service Number ]
-        servicetype = text[1].strip()   # service type = 100Ge , 10GE , .... """
         servicetype = dragtext.strip()
-
 
         if servicetype in self.allowedservices:
 
-            
             self.servicetype = servicetype
-            self.ids = (UserData["DemandId"], UserData["ServiceId"])
-            self.setToolTip(DemandTabDataBase["Services_static"][self.nodename][self.ids].toolTip())
+            if self.servicetype != "GroomOut10":
+                self.ids = (UserData["DemandId"], UserData["ServiceId"])
+                self.setToolTip(DemandTabDataBase["Services_static"][self.nodename][self.ids].toolTip())
+            else:
+                self.ids = (UserData["DemandId"], UserData["GroomOut10Id"])
+                self.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][self.ids[1]].toolTip())
+            
+            
 
-
+            # updating LineCapacity part of panel object
             if servicetype == "10GE":
                 DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity += self.GE_10_BW
-            else:
+            elif servicetype == "STM_64":
                 DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity += self.STM_64_BW
-            #DemandTabDataBase["Panels"][self.nodename][self.id].Line = "100GE"
+            else:
+                # if its GroomOut10
+                DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity += UserData["Capacity"]
+                self.GroomOut_Capacity = UserData["Capacity"]
+
+            # updating ClientsCapacity part of Panel object
             DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = servicetype
 
             ServiceListLen = len(DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList)
             if self.ClientNum >= ServiceListLen:
                 for i in range(ServiceListLen - self.ClientNum + 1):
-                    DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList.append(None) 
+                    DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList.append(None)
+
+            # updating ServiceIdList of Panel Object         
             DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = self.ids[1]
-            #print(f"debug in MP1H--> demandid : {ids[0]}")
+            
+            # updating DemandIdList of Panel Object
             DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = self.ids[0]
             
             self.modify_ServiceList(self.ids, self.nodename, self.Destination)
 
             if DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag == 0:
-
-                #DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = Network.Lightpath.get_id()
 
                 # updating networkobj
                 ServiceIdList = [self.ids[1]]
@@ -315,7 +327,6 @@ class customlabel(QLabel):
                 LightPathId = max(Data["NetworkObj"].LightPathDict.keys())
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = LightPathId
 
-                #self.modify_LightPathList(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId, self.nodename, self.Destination, mode= "add", type="100GE")
                 self.modify_LightPathList(id= DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId,
                                             Source= self.nodename,
                                             Destination= self.Destination,
@@ -326,14 +337,15 @@ class customlabel(QLabel):
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 1
 
                 
-
-
             else:
                 ServiceIdList = [self.ids[1]]
                 LightPathId = DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId
                 Data["NetworkObj"].LightPathDict[LightPathId].ServiceIdList.extend(ServiceIdList)
 
-            # TODO: be Careful !!!!!
+            # adding LightPathId to groomOut object
+            if self.servicetype == "GroomOut10":
+                Data["NetworkObj"].TrafficMatrix.GroomOut10Dict[UserData["GroomOut10Id"]].LightPathId = LightPathId
+
             self.setAcceptDrops(False)
             
             # updating LightPath ListWidgetItem Capacity
@@ -369,12 +381,19 @@ class customlabel(QLabel):
                 if self.servicetype == "10GE":
                     DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity -= self.GE_10_BW
 
-                else:
+                elif self.servicetype == "STM_64":
                     DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity -= self.STM_64_BW
-                #DemandTabDataBase["Panels"][self.nodename][self.id].Line = 0
-                DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = 0
+                else:
+                    DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity -= self.GroomOut_Capacity
                 
-                DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = None
+                DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = 0
+
+                # removing service id from lightpath object in common object
+                LightPathId = DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId
+                Data["NetworkObj"].LightPathDict[LightPathId].ServiceIdList.remove(self.ids[1])
+                
+                if self.servicetype != "GroomOut10":
+                    DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = None
 
                 if self.ClientNum % 2 == 0:
                     self.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
@@ -384,16 +403,13 @@ class customlabel(QLabel):
                 self.setAcceptDrops(True)
 
 
-                #self.modify_ServiceList(self.ids, self.nodename, self.Destination, mode = "add", type = self.servicetype)
                 self.modify_ServiceList(ids= self.ids,
                                         source= self.nodename,
                                         destination= self.Destination,
                                         mode= "add",
                                         type= self.servicetype)
 
-                # removing service id from lightpath object in common object
-                LightPathId = DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId
-                Data["NetworkObj"].LightPathDict[LightPathId].ServiceIdList.remove(self.ids[1])
+                
 
                 # updating LightPath ListWidgetItem Capacity
                 self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][LightPathId],
@@ -406,7 +422,6 @@ class customlabel(QLabel):
 
                 if x == 0:
                     
-                    #self.modify_LightPathList(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
                     self.modify_LightPathList(  id= LightPathId,
                                                 Source= self.nodename,
                                                 Destination= self.Destination,
@@ -417,14 +432,13 @@ class customlabel(QLabel):
                     Data["NetworkObj"].del_lightpath(LightPathId)
 
                     DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None
-                    #Network.Lightpath.update_id(-1)
+                    
                     DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 0
 
                     
     def Update_LineListWidgetItem_Tooltip(self, Item, Capacity):       
         
         UserData = Item.data(Qt.UserRole)
-        #UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type}
         UserData["Capacity"] = Capacity
         Item.setData(Qt.UserRole, UserData)
         Item.setToolTip(f"Source: {UserData['Source']}\nDestination: {UserData['Destination']}\nCapacity: {Capacity}\nType: {UserData['Type']}")
@@ -434,8 +448,14 @@ class customlabel(QLabel):
 
         key = (int(ids[0]) , int(ids[1]))
         if mode == "delete":
-            DemandTabDataBase["Services"][(source, destination)].pop(key)
 
+            # check if its a normal service or not
+            if key in DemandTabDataBase["Services"][(source, destination)]:
+                DemandTabDataBase["Services"][(source, destination)].pop(key)
+            
+            else:
+                DemandTabDataBase["GroomOut10"][(source, destination)].pop(key[1])
+            
             # statement bellow checks for removing notification ( if there is such a node)
             if source in Data["ui"].failed_nodes:
                 x = 0
@@ -447,14 +467,18 @@ class customlabel(QLabel):
                     Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
-            DemandTabDataBase["Services"][(source, destination)][key] = None
+            if self.servicetype != "GroomOut10":
+                DemandTabDataBase["Services"][(source, destination)][key] = None
+
+                Data["ui"].update_Demand_groomout10_list()
             
         Data["ui"].UpdateDemand_ServiceList()
+        
     
     def modify_LightPathList(self, id, Source, Destination, Capacity = None, mode = "add", type = None, PanelId = None):
 
         if mode == "add":
-            #DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
+            
             item = QListWidgetItem(type, Data["Demand_LightPath_list"])
             UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": PanelId}
             item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")

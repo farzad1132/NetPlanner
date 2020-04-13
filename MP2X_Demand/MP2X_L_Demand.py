@@ -224,12 +224,12 @@ class MP2X_L_Demand(QtWidgets.QWidget):
             
         Data["ui"].UpdateDemand_ServiceList()
     
-    def modify_GroomOut10List(self, id, Source, Destination, Capacity = None, mode = "add", type = None, PanelId = None):
+    def modify_GroomOut10List(self, id, Source, Destination, Capacity = None, mode = "add", type = None, PanelId = None, DemandId = None):
 
         if mode == "add":
             #DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
             item = QListWidgetItem(type, Data["GroomOu10_list"])
-            UserData = {"GroomOut10d":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": PanelId}
+            UserData = {"GroomOut10d":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": PanelId, "DemandId": DemandId}
             item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)
@@ -371,7 +371,8 @@ class customlabel(QLabel):
                                             Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0],
                                             mode= "add",
                                             type= "GroomOut10",
-                                            PanelId= self.id)
+                                            PanelId= self.id,
+                                            DemandId= self.ids[0])
                 
                 # setting line port tooltip                                        
                 self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
@@ -423,7 +424,8 @@ class customlabel(QLabel):
                                             Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1],
                                             mode= "add",
                                             type= "GroomOut10",
-                                            PanelId= self.id)
+                                            PanelId= self.id,
+                                            DemandId = self.ids[0])
                 
                 # setting line port tooltip                                        
                 self.LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
@@ -577,12 +579,12 @@ class customlabel(QLabel):
             
         Data["ui"].UpdateDemand_ServiceList()
     
-    def modify_GroomOut10List(self, id, Source, Destination, Capacity = None, mode = "add", type = None, PanelId = None):
+    def modify_GroomOut10List(self, id, Source, Destination, Capacity = None, mode = "add", type = None, PanelId = None, DemandId = None):
 
         if mode == "add":
             #DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
             item = QListWidgetItem(type, Data["GroomOu10_list"])
-            UserData = {"GroomOut10d":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": PanelId}
+            UserData = {"GroomOut10d":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": PanelId, "DemandId": DemandId}
             item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)

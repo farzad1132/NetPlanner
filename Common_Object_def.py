@@ -32,23 +32,23 @@ class Network:
         
         # this function corrects lightpaths id that their id is bigger than deleted lightpath id
         def correct_UpperIds(id):
-            """ for UpperId in list(self.LightPathDict.keys()).sort():
-                if UpperId > id:
-                    self.LightPathDict[UpperId - 1] = self.LightPathDict.pop(UpperId) """
+            
             if id in self.LightPathDict:
                 sorted_keys = sorted(list(self.LightPathDict.keys()))
                 index = sorted_keys.index(id)
                 for key in sorted_keys[index:]:
                     self.LightPathDict[key - 1] = self.LightPathDict.pop(key)
+        
+        def correct_LightPathIds(id):
+            for key, value in self.TrafficMatrix.GroomOut10Dict.items():
+                if value.LightPathId > id :
+                    value.LightPathId -= 1
+                elif value.LightPathId == id:
+                    value.LightPathId = None
 
-
-        # finding object that we want to delete
-        """ for id, lightpath in list(self.LightPathDict.items()):
-            if lightpath.ServiceIdList == ServiceIdList:
-                del lightpath
-                if id in self.LightPathDict: """
         del self.LightPathDict[LightPathId]
         correct_UpperIds(LightPathId + 1)
+        correct_LightPathIds(LightPathId)
         
 
 
@@ -377,7 +377,7 @@ class Network:
                     self.Sla = Sla
                     self.Capacity = Capacity
                     self.ServiceIdList = ServiceIdList
-                    self.Type = "Groom_out10"
+                    self.Type = "GroomOut10"
                     self.MandatoryNodesIdList = MandatoryNodesIdList
                     self.IgnoringNodesIdList = IgnoringNodesIdList
                     self.LightPathId = LightPathId
