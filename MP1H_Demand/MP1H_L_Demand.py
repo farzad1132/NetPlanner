@@ -193,7 +193,7 @@ class MP1H_L_Demand(QtWidgets.QWidget):
         
         Data["ui"].update_Demand_lightpath_list()
     
-    def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
+    def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None, LightPathId = None):
         
 
         key = (int(ids[0]) , int(ids[1]))
@@ -204,7 +204,17 @@ class MP1H_L_Demand(QtWidgets.QWidget):
                 DemandTabDataBase["Services"][(source, destination)].pop(key)
             
             else:
-                DemandTabDataBase["GroomOut10"][(source, destination)].pop(key[1])
+                # adding MP1h_Client_Id to GroomOut10 Item
+                UserData = DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].data(Qt.UserRole)
+
+                MP1H_data = DemandTabDataBase["Lightpathes"][(source, destination)][LightPathId].data(Qt.UserRole)
+                MP1H_Id = MP1H_data["PanelId"]
+
+                index = DemandTabDataBase["Panels"][source][MP1H_Id].ServiceIdList.index(ids[1])
+                UserData["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
+
+                DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].setData(Qt.UserRole, UserData)
+            
             
             # statement bellow checks for removing notification ( if there is such a node)
             if source in Data["ui"].failed_nodes:
@@ -220,7 +230,19 @@ class MP1H_L_Demand(QtWidgets.QWidget):
             if self.servicetype != "GroomOut10":
                 DemandTabDataBase["Services"][(source, destination)][key] = None
 
-                Data["ui"].update_Demand_groomout10_list()
+            else:
+                font = DemandTabDataBase["GroomOut10"][(source, destination)][key[1]].font()
+                font.setStrikeOut(False)
+                DemandTabDataBase["GroomOut10"][(source, destination)][key[1]].setFont(font)
+
+                # deleting MP1h_Client_Id from GroomOut10 Item
+                UserData = DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].data(Qt.UserRole)
+
+                UserData.pop("MP1H_Client_Id")
+
+                DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].setData(Qt.UserRole, UserData)
+
+
             
         Data["ui"].UpdateDemand_ServiceList()
         
@@ -255,10 +277,17 @@ class customlabel(QLabel):
             servicetype = dragtext.strip()
 
             if servicetype in self.allowedservices:
-                if self.ClientNum % 2 == 0:
-                    self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                if servicetype == "GroomOut10":
+                    if not model.item(0).font().strikeOut():
+                        if self.ClientNum % 2 == 0:
+                            self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                        else:
+                            self.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
                 else:
-                    self.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
+                    if self.ClientNum % 2 == 0:
+                        self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                    else:
+                        self.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
                 
             event.accept()
 
@@ -317,7 +346,7 @@ class customlabel(QLabel):
             # updating DemandIdList of Panel Object
             DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = self.ids[0]
             
-            self.modify_ServiceList(self.ids, self.nodename, self.Destination)
+            
 
             if DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag == 0:
 
@@ -336,15 +365,24 @@ class customlabel(QLabel):
                                             PanelId= self.id)
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 1
 
+                self.modify_ServiceList(self.ids, self.nodename, self.Destination, LightPathId= LightPathId)
+
                 
             else:
                 ServiceIdList = [self.ids[1]]
                 LightPathId = DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId
                 Data["NetworkObj"].LightPathDict[LightPathId].ServiceIdList.extend(ServiceIdList)
 
+                self.modify_ServiceList(self.ids, self.nodename, self.Destination, LightPathId= LightPathId)
+
             # adding LightPathId to groomOut object
             if self.servicetype == "GroomOut10":
                 Data["NetworkObj"].TrafficMatrix.GroomOut10Dict[UserData["GroomOut10Id"]].LightPathId = LightPathId
+
+                # stricking out item
+                font = DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][UserData["GroomOut10Id"]].font()
+                font.setStrikeOut(True)
+                DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][UserData["GroomOut10Id"]].setFont(font)
 
             self.setAcceptDrops(False)
             
@@ -443,7 +481,7 @@ class customlabel(QLabel):
         Item.setData(Qt.UserRole, UserData)
         Item.setToolTip(f"Source: {UserData['Source']}\nDestination: {UserData['Destination']}\nCapacity: {Capacity}\nType: {UserData['Type']}")
 
-    def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
+    def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None, LightPathId = None):
         
 
         key = (int(ids[0]) , int(ids[1]))
@@ -454,7 +492,17 @@ class customlabel(QLabel):
                 DemandTabDataBase["Services"][(source, destination)].pop(key)
             
             else:
-                DemandTabDataBase["GroomOut10"][(source, destination)].pop(key[1])
+                # adding MP1h_Client_Id to GroomOut10 Item
+                UserData = DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].data(Qt.UserRole)
+
+                MP1H_data = DemandTabDataBase["Lightpathes"][(source, destination)][LightPathId].data(Qt.UserRole)
+                MP1H_Id = MP1H_data["PanelId"]
+
+                index = DemandTabDataBase["Panels"][source][MP1H_Id].ServiceIdList.index(ids[1])
+                UserData["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
+
+                DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].setData(Qt.UserRole, UserData)
+            
             
             # statement bellow checks for removing notification ( if there is such a node)
             if source in Data["ui"].failed_nodes:
@@ -470,7 +518,19 @@ class customlabel(QLabel):
             if self.servicetype != "GroomOut10":
                 DemandTabDataBase["Services"][(source, destination)][key] = None
 
-                Data["ui"].update_Demand_groomout10_list()
+            else:
+                font = DemandTabDataBase["GroomOut10"][(source, destination)][key[1]].font()
+                font.setStrikeOut(False)
+                DemandTabDataBase["GroomOut10"][(source, destination)][key[1]].setFont(font)
+
+                # deleting MP1h_Client_Id from GroomOut10 Item
+                UserData = DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].data(Qt.UserRole)
+
+                UserData.pop("MP1H_Client_Id")
+
+                DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].setData(Qt.UserRole, UserData)
+
+
             
         Data["ui"].UpdateDemand_ServiceList()
         

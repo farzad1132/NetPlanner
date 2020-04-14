@@ -160,8 +160,17 @@ class MP2X_L_Demand(QtWidgets.QWidget):
 
         if action == CloseAction:
 
-            Data["DemandPanel_" + self.id].setWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
-            Data["DemandPanel_" + self.uppernum].setWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
+            # removing old left panel
+            panel_widget = Data["DemandPanel_" + str(self.id)].takeAt(0).widget()
+            Data["ui"].horizontalLayout.removeWidget(panel_widget)
+            panel_widget.deleteLater()
+            Data["DemandPanel_" + self.id].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
+
+            # removing old right panel
+            panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
+            Data["ui"].horizontalLayout.removeWidget(panel_widget)
+            panel_widget.deleteLater()
+            Data["DemandPanel_" + self.uppernum].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
 
             # undoing every service or lightpath that is created in this panel
             if DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity != [0, 0]:
@@ -229,7 +238,7 @@ class MP2X_L_Demand(QtWidgets.QWidget):
         if mode == "add":
             #DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
             item = QListWidgetItem(type, Data["GroomOu10_list"])
-            UserData = {"GroomOut10d":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": PanelId, "DemandId": DemandId}
+            UserData = {"GroomOut10Id":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": PanelId, "DemandId": DemandId}
             item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)
@@ -285,19 +294,28 @@ class customlabel(QLabel):
 
             # checking weather lines have enough capacity or not
             if Line_1_old_capacity + DropCapacity < 10 or Line_2_old_capacity + DropCapacity < 10:
-
-                self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client_green.png")))
+                
+                if self.ClientNum % 2 == 0:
+                    self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                else:
+                    self.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
                 event.accept()
 
         else:
-            self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client_red.png")))
+            if self.ClientNum % 2 == 0:
+                self.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
+            else:
+                self.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
         
 
         super(customlabel,self).dragEnterEvent(event)
     
 
     def dragLeaveEvent(self, event):
-        self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client.png")))
+        if self.ClientNum % 2 == 0:
+            self.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
+        else:
+            self.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
 
     def dropEvent(self, event):
         event.accept()
@@ -512,7 +530,11 @@ class customlabel(QLabel):
                 DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = None
 
                 self.setAcceptDrops(True)
-                self.setPixmap(QPixmap(os.path.join("MP2X_Demand", "client.png")))
+
+                if self.ClientNum % 2 == 0:
+                    self.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
+                else:
+                    self.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
 
                 self.modify_ServiceList(ids= self.ids,
                                         source = self.nodename,
@@ -584,7 +606,7 @@ class customlabel(QLabel):
         if mode == "add":
             #DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
             item = QListWidgetItem(type, Data["GroomOu10_list"])
-            UserData = {"GroomOut10d":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": PanelId, "DemandId": DemandId}
+            UserData = {"GroomOut10Id":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": PanelId, "DemandId": DemandId}
             item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)

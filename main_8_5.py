@@ -2139,6 +2139,8 @@ class Ui_MainWindow(object):
         #self.Demand_LineList.clicked['QModelIndex'].connect(self.Demand_LineList_fun)
         self.Demand_LineList.currentItemChanged['QListWidgetItem*','QListWidgetItem*'].connect(self.Demand_LineList_fun)
 
+        self.groomout10_list.currentItemChanged['QListWidgetItem*','QListWidgetItem*'].connect(self.groomout10_list_fun)
+
         self.import_button.clicked.connect(self.open_ImportUI_fun)
 
         #self.Demand_Shelf_set()
@@ -2977,6 +2979,62 @@ class Ui_MainWindow(object):
                 # calling Demand map change function
                 self.DemandMap_Change(WorkingPath, ProtectionPath, WorkingRegeneratorsList = RG_w, ProtectionRegenaratorsList = RG_p
                                         ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p, LambdaList= LambdaList)
+    
+    def groomout10_list_fun(self, CurItem, PreItem):
+        if CurItem is not None:
+            UserData = CurItem.data(Qt.UserRole)
+            Source = UserData["Source"]
+            Destination = UserData["Destination"]
+            GroomOut10Id = UserData["GroomOut10Id"]
+
+            PanelId = UserData["PanelId"]
+            widget = Data["DemandPanel_" + str(PanelId)].itemAt(0).widget()
+
+            index = DemandTabDataBase["Panels"][Source][PanelId].LineIdList.index(GroomOut10Id)
+
+            if index == 0:
+                widget.LINE1.setStyleSheet("image: url(:/Line_L_SOURCE/LINE_L.png); border: 5px solid blue;")
+            else:
+                widget.LINE2.setStyleSheet("image: url(:/Line_R_SOURCE/LINE_R.png); border: 5px solid blue;")
+            
+            if "MP1H_Client_Id" in UserData:
+                MP1H_Id , Client_Id = UserData["MP1H_Client_Id"]
+                MP1H_widget = Data["DemandPanel_" + str(MP1H_Id)].itemAt(0).widget()
+
+                clientvar = getattr(MP1H_widget, "Client" + Client_Id )
+
+                if ( int(Client_Id) - 1 ) % 2 == 1:
+                    clientvar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png); border: 5px solid blue;")
+                else:
+                    clientvar.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png); border: 5px solid blue;")
+
+
+            if PreItem is not None:
+                UserData = PreItem.data(Qt.UserRole)
+
+                GroomOut10Id = UserData["GroomOut10Id"]
+
+                PanelId = UserData["PanelId"]
+                widget = Data["DemandPanel_" + str(PanelId)].itemAt(0).widget()
+
+                index = DemandTabDataBase["Panels"][Source][PanelId].LineIdList.index(GroomOut10Id)
+
+                if index == 0:
+                    widget.LINE1.setStyleSheet("image: url(:/Line_L_SOURCE/LINE_L.png);")
+                else:
+                    widget.LINE2.setStyleSheet("image: url(:/Line_R_SOURCE/LINE_R.png);")
+                
+                if "MP1H_Client_Id" in UserData:
+                    MP1H_Id , Client_Id = UserData["MP1H_Client_Id"]
+                    MP1H_widget = Data["DemandPanel_" + str(MP1H_Id)].itemAt(0).widget()
+
+                    clientvar = getattr(MP1H_widget, "Client" + Client_Id )
+
+                    if ( int(Client_Id) - 1 ) % 2 == 1:
+                        clientvar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                    else:
+                        clientvar.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
+
 
     # MHA EDITION:
     def SaveTM_fun(self):
@@ -4111,6 +4169,9 @@ class Ui_MainWindow(object):
             ServiceIdList.extend(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].ServiceIdList)
             ServiceIdList.extend(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].ServiceIdList)
 
+            LightPathId_1 = netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].LightPathId
+            LightPathId_2 = netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].LightPathId
+
             ClientLen = len(ClientsCapacity) 
             if ClientLen != 16:
                 for i in range(16 - ClientLen):
@@ -4142,6 +4203,20 @@ class Ui_MainWindow(object):
             item_1.setData(Qt.UserRole, UserData_1)
             item_1.setTextAlignment(Qt.AlignCenter)
 
+            # stricking out item if its assigned to a lightpath
+            if LightPathId_1 is not None:
+                font = item_1.font()
+                font.setStrikeOut(True)
+                item_1.setFont(font)
+
+                MP1H_data = DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId_1].data(Qt.UserRole)
+                MP1H_Id = MP1H_data["PanelId"]
+
+                index = DemandTabDataBase["Panels"][Source][MP1H_Id].ServiceIdList.index(Servicetuple[0])
+                UserData_1["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
+
+                item_1.setData(Qt.UserRole, UserData_1)
+
             DemandTabDataBase["GroomOut10"][(Source, Destination)][Servicetuple[0]] = item_1
 
             item_2 = QListWidgetItem("GroomOut10", self.groomout10_list)
@@ -4150,6 +4225,20 @@ class Ui_MainWindow(object):
             item_2.setData(Qt.UserRole, UserData_2)
             item_2.setTextAlignment(Qt.AlignCenter)
 
+            # stricking out item if its assigned to a lightpath
+            if LightPathId_2 is not None:
+                font = item_2.font()
+                font.setStrikeOut(True)
+                item_2.setFont(font)
+
+                MP1H_data = DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId_2].data(Qt.UserRole)
+                MP1H_Id = MP1H_data["PanelId"]
+
+                index = DemandTabDataBase["Panels"][Source][MP1H_Id].ServiceIdList.index(Servicetuple[1])
+                UserData_2["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
+
+                item_2.setData(Qt.UserRole, UserData_2)
+
             DemandTabDataBase["GroomOut10"][(Source, Destination)][Servicetuple[1]] = item_2
         
         # Half MP2X Part
@@ -4157,6 +4246,8 @@ class Ui_MainWindow(object):
 
             Source = self.IdNodeMap[netobj.TrafficMatrix.DemandDict[DemandId].Source]
             Destination = self.IdNodeMap[netobj.TrafficMatrix.DemandDict[DemandId].Destination]
+
+            LightPathId = netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].LightPathId
             
             # panel part ( creating panels object )
             PanelId = self.get_panel_num(Source)
@@ -4191,6 +4282,21 @@ class Ui_MainWindow(object):
             item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {LineCapacity}\nType: GroomOut10")
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)
+
+            # stricking out item if its assigned to a lightpath
+            if LightPathId is not None:
+                font = item.font()
+                font.setStrikeOut(True)
+                item.setFont(font)
+
+                # finding MP1H_Client_id
+                MP1H_data = DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].data(Qt.UserRole)
+                MP1H_Id = MP1H_data["PanelId"]
+
+                index = DemandTabDataBase["Panels"][Source][MP1H_Id].ServiceIdList.index(GroomOutId)
+                UserData["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
+
+                item.setData(Qt.UserRole, UserData)
 
             DemandTabDataBase["GroomOut10"][(Source, Destination)][GroomOutId] = item
 
