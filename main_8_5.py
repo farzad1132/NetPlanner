@@ -2778,6 +2778,15 @@ class Ui_MainWindow(object):
         self.SelectNode_Label_13.setText(_translate("MainWindow", "Source:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
 
+        # NOTE:ADDED
+        
+        if self.splitter.moveSplitter(0, 0):
+            self.Demand_tab.setEnabled(False)
+        else:
+            self.Demand_tab.setEnabled(True)
+
+
+
     def create_obj(self):
         """with open("NetworkObj_greedy.obj", 'wb') as handle:
             pickle.dump(self.network, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -2819,7 +2828,7 @@ class Ui_MainWindow(object):
     def DemandMap_Change(self, Working = None, Protection = None, 
         WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None, LambdaList = None):
         #mpl.rcParams["figure.figsize"] = [18.4, 7.8]
-        self.MapWidget.canvas.figure.subplots_adjust(left = -0.001, right = 1, top = 1, bottom = -0.02)
+        self.MapWidget.canvas.figure.subplots_adjust(left = -0.001, right = 1, top = 1, bottom = -0.005)
         self.MapWidget.canvas.axes.cla()
         R = 6371 
         Source = self.Demand_Source_combobox.currentText()
