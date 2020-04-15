@@ -4040,7 +4040,6 @@ class Ui_MainWindow(object):
         window.backend = channel.objects.backend;
         });"""))'''
         Fig.script.add_child(Element("""
-
         var  SetNodeGateWay_flag = null;
         var SelectSubNode_flag = null;
         var groupcolor = null;
@@ -4048,8 +4047,6 @@ class Ui_MainWindow(object):
         var failed_nodes = new Object();
         var failed_nodes_list = [];
         var lambdas = new Object();
-
-
         var wrapper = document.createElement("div");
         var canvas = document.createElement("canvas");
         canvas.setAttribute("class", "focusArea");
@@ -4061,32 +4058,24 @@ class Ui_MainWindow(object):
         canvas.width = 420
         wrapper.appendChild(canvas);
         wrapper.appendChild(displayArea);
-
-
         var Num_WL = null;
         var Num_RG = null;
         var Algorithm = null;
         var Worst_SNR = null;
-
         //handleMouseOverLines();
-
         function setcolor(text){
             groupcolor = text;
         }
-
-
         function SetNode_flag_fun(text){
             SetNodeGateWay_flag = text;
         }
         function SelectSubNode_flag_fun(text){
             SelectSubNode_flag = text;
         }
-
         function receive_failed_nodes(NodeName, Color, SubNode){
             failed_nodes[NodeName] = {"Color":Color, "SubNode":parseInt(SubNode)};
             failed_nodes_list.push(NodeName);
         }
-
         function change_failed_nodes_icon(){
             
             // loop on nodes group feature and notify their icon
@@ -4095,12 +4084,10 @@ class Ui_MainWindow(object):
                 var doc = new DOMParser().parseFromString(x, "text/xml");
                 var z = doc.documentElement.textContent;
                 NodeName = z.replace(/\s/g, '');
-
                 if (failed_nodes_list.includes(NodeName)){
                     value = failed_nodes[NodeName]
                     Color = value["Color"]
                     SubNode = value["SubNode"]
-
                     index = failed_nodes_list.indexOf(NodeName);
                     failed_nodes_list.splice(index, 1);
                     
@@ -4108,38 +4095,32 @@ class Ui_MainWindow(object):
                     latlng = layer.getLatLng()
                     %s.removeLayer(layer);
                     layer.remove();
-
                     if (SubNode == 0){
                         change_icon(NodeName, latlng, Color, 1, "notified")
                     } else{
                         change_icon(NodeName, latlng, Color, 0.6, "notified")
                     }
                     
-
                 }
         });
         }
-
         function set_failed_node_default(Source){
             var value = failed_nodes[Source];
             var color = value["Color"];
             var subnode = value["SubNode"];
             var flag = 0;
             
-
             myFeatureGroup.eachLayer(function (layer) {
                 var x = layer["_tooltip"]["_content"];
                 var doc = new DOMParser().parseFromString(x, "text/xml");
                 var z = doc.documentElement.textContent;
                 NodeName = z.replace(/\s/g, '');
-
                 if (NodeName == Source){
                     if (flag == 0){
                     var latlng = layer.getLatLng()
                     
                     %s.removeLayer(layer);
                     layer.remove();
-
                     if (subnode == 0){
                         
                         change_icon(NodeName, latlng, color, 1, "normal")
@@ -4151,16 +4132,12 @@ class Ui_MainWindow(object):
                 flag = 1;
                 }
             });
-
         }
-
         function receive_lambdas(Source, Destination, value){
             a_value = JSON.parse(value)
             lambdas[[Source, Destination]] = a_value
         }
-
         var links_groupfeature = L.featureGroup().addTo(%s).on(\"click\", links_click_event);
-
         %s.eachLayer(function (layer) {
                if (layer instanceof L.Polyline){
                   layer.addTo(links_groupfeature);
@@ -4170,14 +4147,12 @@ class Ui_MainWindow(object):
         
         function google_map_view_set(green, yellow, orange){
             links_groupfeature.eachLayer(function (layer){
-
                 var x = layer["_tooltip"]["_content"];
                 var doc = new DOMParser().parseFromString(x, "text/xml");
                 var z = doc.documentElement.textContent;
                 link_key = z.replace(/\s/g, '');
                 link_key = link_key.split("-");
                 lambda_list = lambdas[link_key];
-
                 Len = lambda_list.length;
                 if ( Len <= green ){
                     layer.setStyle({
@@ -4198,7 +4173,6 @@ class Ui_MainWindow(object):
                 }
             });
         }
-
         function google_map_view_reset(){
             links_groupfeature.eachLayer(function(layer){
                 layer.setStyle({
@@ -4210,7 +4184,6 @@ class Ui_MainWindow(object):
         
         
         function links_click_event(event){
-
             var x = event.layer["_tooltip"]["_content"];
             var doc = new DOMParser().parseFromString(x, "text/xml");
             var z = doc.documentElement.textContent;
@@ -4218,124 +4191,111 @@ class Ui_MainWindow(object):
             link_key = link_key.split("-")
             lambda_list = lambdas[link_key]
             
-
             drawLines(event.layer, lambda_list, handleMouseOverLines);
             
         }
-
         function drawLines(layer, lambdaList, callback) {
-
             popupOptions = {
                 maxWidth: "auto"
             };
-
             layer.bindPopup(drawDetailBox(lambdaList), popupOptions)
             
             callback(lambdaList)
-
         }
-
         function drawDetailBox(lambdaList) {
-
+            canvas.height = 90;
+            canvas.width = 806;
             var h = canvas.height;
-            console.log(h);
-
+            const lineYStart = 15;
+            const lineYEnd = h - 20;
             var ctx = canvas.getContext("2d");
-
             for (var i = 1; i <= 100; i++) {
-
+                const lineX = (i * 8) - 4
                 ctx.beginPath();
-                ctx.moveTo(i * 4, 0);
-                ctx.lineTo(i * 4, h);
+                ctx.moveTo(lineX, lineYStart);
+                ctx.lineTo(lineX, lineYEnd);
                 ctx.lineWidth = 2;
-                if (lambdaList.includes(i))
-                    ctx.strokeStyle = "black"
-                else
+                if (lambdaList.includes(i)) {
+                    ctx.strokeStyle = "black";
+                } else {
                     ctx.strokeStyle = "gray";
+                }
                 ctx.stroke();
-
+                ctx.save();
+                var textX = lineX - 4;
+                var textY = h - lineYStart;
+                if (i %% 5 == 0) {
+                    textY = 12;
+                    ctx.translate(textX, textY);
+                    ctx.rotate(-Math.PI / 5);
+                    ctx.translate(-textX, -textY);
+                    ctx.fillText(i, textX, lineYStart);
+                }
+                ctx.restore();
             }
-
             return wrapper;
         }
-
-
         function handleMouseOverLines(lambdaList) {
-
             canvas.addEventListener("mousemove", e => showLineNumberInBox(e, lambdaList));
             canvas.addEventListener("mouseleave", unshowLineNumberInBox);
         }
-
         function showLineNumberInBox(e, lambdaList) {
+            console.log(e.offsetX);
             x = e.clientX;
             y = e.clientY;
             var lineNum = 0;
             const xOff = e.offsetX;
-            if (xOff %% 4 <= 2) {
+            if (xOff %% 8 >= 2 && xOff %% 8 <= 4) {
                 cursor = " ";
-                lineNum = parseInt(xOff / 4);
-                if(lambdaList.includes(lineNum)){
+                lineNum = 1 + parseInt(xOff / 8);
+                if (lambdaList.includes(lineNum)) {
                     cursor = lineNum;
                 }
             } else {
                 cursor = " ";
             }
             document.getElementById("displayArea").style.display = 'block';
-            document.getElementById("displayArea").innerHTML = 'Wavelength Number: '+ cursor;
+            document.getElementById("displayArea").innerHTML = 'Wavelength Number: ' + cursor;
             document.getElementById("displayArea").style.right = x + 'px';
             document.getElementById("displayArea").style.top = y + 'px';
         }
-
         
         function unshowLineNumberInBox() {
                 document.getElementById("displayArea").innerHTML = "Wavelength Number: ";
             }
-
         function createLegend(num_WL, num_RG, algorithm , worst_SNR, RWA_Runtime) {
             Num_WL = num_WL;
             Num_RG = num_RG;
             Algorithm = algorithm;
             Worst_SNR = worst_SNR;
             var legend = L.control({ position: 'bottomleft' });
-
             legend.onAdd = function (map) {
-
                 var div = L.DomUtil.create("div", "legend");
                 div.style.backgroundColor = 'WHITE';
-
                 div.innerHTML += '<h5>Total number of used wavelengths<b>: ' + Num_WL + '</b></h5>';
                 div.innerHTML += '<h5>Total number of regenerators<b>: ' + Num_RG + '</b></h5>';
                 div.innerHTML += '<h5>Used algorithm and its runtime<b>: ' + Algorithm + '  ,  ' + RWA_Runtime + ' s' + '</b></h5>';
                 div.innerHTML += '<h5>Worst SNR on all links<b>: ' + Worst_SNR + '</b></h5>';
-
                 return div;
             };
-
             legend.addTo(%s);
         }
-
-
         function change_icon(NodeName, latlng, Color, Opacity, mode){
-
                 if ( mode == "normal" ){
                     var url = "Icons/" + Color + "/server_" + Color + ".png"
                 } else {
                     var url = "Icons/" + Color + "/server_n" + Color + ".png"
                 }
                 //alert(url)
-
                 var myIcon = L.icon({
                                         iconUrl: url,
                                         iconSize: [30, 30],
                                         iconAnchor: [20, 30],
                                     });
-
                 var mark = L.marker(latlng,{opacity:Opacity}).setIcon(myIcon).addTo(%s);
-
                 //var pop = L.popup({"maxWidth": "100%%"});
                 //var htm = $(`<div id="htm" style="width: 100.0%%; height: 100.0%%;"><h2>${NodeName}</h2></div>`)[0];
                 //pop.setContent(htm);
-
                 mark.bindTooltip(
                 `<div>
                      <h2>${NodeName}</h2>
@@ -4344,7 +4304,6 @@ class Ui_MainWindow(object):
             );
                 mark.addTo(myFeatureGroup);
         }
-
         var backend_map = null;
         new QWebChannel(qt.webChannelTransport, function (channel) {
         window.backend_map = channel.objects.backend_map;
