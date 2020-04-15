@@ -8,37 +8,107 @@ from PySide2 import QtWidgets,QtCore, QtGui
 
 from data import Data
 
+from Ui_files.new_ui import iconresources
+bus = {}
 
-class Grooming_Window(object):
+
+class Ui_grooming_window(object):
     def setupUi(self, grooming_window):
+
+        # NOTE: added
+        bus["grooming_window"] = grooming_window
         grooming_window.setObjectName("grooming_window")
         grooming_window.resize(603, 235)
-        self.widget = QtWidgets.QWidget(grooming_window)
-        self.widget.setGeometry(QtCore.QRect(20, 20, 185, 32))
-        self.widget.setObjectName("widget")
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget)
+        self.layoutWidget = QtWidgets.QWidget(grooming_window)
+        self.layoutWidget.setGeometry(QtCore.QRect(20, 30, 251, 31))
+        self.layoutWidget.setObjectName("layoutWidget")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.layoutWidget)
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.MP1HThreshold_label = QtWidgets.QLabel(self.widget)
+        self.MP1HThreshold_label = QtWidgets.QLabel(self.layoutWidget)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.MP1HThreshold_label.setFont(font)
-        self.MP1HThreshold_label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+        self.MP1HThreshold_label.setStyleSheet("   QLabel {\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.MP1HThreshold_label.setObjectName("MP1HThreshold_label")
         self.horizontalLayout_2.addWidget(self.MP1HThreshold_label)
-        self.MP1H_Threshold_combobox = QtWidgets.QComboBox(self.widget)
+        self.MP1H_Threshold_combobox = QtWidgets.QComboBox(self.layoutWidget)
+        self.MP1H_Threshold_combobox.setMinimumSize(QtCore.QSize(121, 0))
         font = QtGui.QFont()
         font.setFamily("IRANSans")
         font.setBold(True)
         font.setWeight(75)
         self.MP1H_Threshold_combobox.setFont(font)
+        self.MP1H_Threshold_combobox.setStyleSheet("QComboBox {\n"
+"    \n"
+"    border-radius: 0px;\n"
+"    padding: 1px 18px 1px 5px;\n"
+"    min-width: 6em; \n"
+"    \n"
+"    border:1px solid rgb(0, 139, 208);\n"
+"    \n"
+"   \n"
+"    \n"
+"}\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"/* QComboBox gets the \"on\" state when the popup is open */\n"
+"\n"
+"\n"
+"QComboBox:on { /* shift the text when the popup opens */\n"
+"    padding-top: 3px;\n"
+"    padding-left: 4px;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    subcontrol-origin: padding;\n"
+"    subcontrol-position: top right;\n"
+"    width: 20px;\n"
+"    \n"
+"    \n"
+"    border-left-width: 2px;\n"
+"    border-left-color: darkblue;\n"
+"    border-left-style: solid; /* just a single line */\n"
+"    border-top-right-radius: 0px; /* same radius as the QComboBox */\n"
+"    border-bottom-right-radius: 0px;\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow {\n"
+"   \n"
+"    image: url(:/newPrefix/dropdown.png); \n"
+"    \n"
+"    \n"
+"}\n"
+"\n"
+"QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
+"    \n"
+"    \n"
+"    image: url(:/newPrefix/dropup.png);\n"
+"}\n"
+"\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    \n"
+"    border-color:2px solid blue;\n"
+"   \n"
+"}")
         self.MP1H_Threshold_combobox.setEditable(True)
         self.MP1H_Threshold_combobox.setObjectName("MP1H_Threshold_combobox")
         self.MP1H_Threshold_combobox.addItem("")
@@ -52,105 +122,73 @@ class Grooming_Window(object):
         self.MP1H_Threshold_combobox.addItem("")
         self.MP1H_Threshold_combobox.addItem("")
         self.horizontalLayout_2.addWidget(self.MP1H_Threshold_combobox)
-        self.widget1 = QtWidgets.QWidget(grooming_window)
-        self.widget1.setGeometry(QtCore.QRect(196, 191, 390, 35))
-        self.widget1.setObjectName("widget1")
-        self.gridLayout = QtWidgets.QGridLayout(self.widget1)
+        self.layoutWidget1 = QtWidgets.QWidget(grooming_window)
+        self.layoutWidget1.setGeometry(QtCore.QRect(195, 185, 391, 41))
+        self.layoutWidget1.setObjectName("layoutWidget1")
+        self.gridLayout = QtWidgets.QGridLayout(self.layoutWidget1)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
-        self.Start_Grooming_button = QtWidgets.QPushButton(self.widget1)
+        self.Start_Grooming_button = QtWidgets.QPushButton(self.layoutWidget1)
         self.Start_Grooming_button.setMaximumSize(QtCore.QSize(200, 16777215))
         self.Start_Grooming_button.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: lightgreen;\n"
-"    min-width: 80px;\n"
-"border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: dark-orange;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"    padding: 6px;\n"
+"    \n"
+"    \n"
+"     \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    \n"
+"    border:2px solid black; min-width: 80px;\n"
+"    border-color: dark gray; \n"
+"    border-radius: 25px;\n"
 "}\n"
 "\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"QPushButton:pressed,hover {\n"
+"    background-color: #EB8686; \n"
 "}\n"
-"\n"
+"QPushButton:hover {\n"
+"    background-color: #EB8686; \n"
+"}\n"
 "QPushButton:flat {\n"
 "    border: none; /* no border for a flat push button */\n"
 "}\n"
 "\n"
 "QPushButton:default {\n"
 "    border-color: navy; /* make the default button prominent */\n"
-"}\n"
-"QPushButton:open { /* when the button has its menu open */\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton::menu-indicator {\n"
-"    image: url(menu_indicator.png);\n"
-"    subcontrol-origin: padding;\n"
-"    subcontrol-position: bottom right;\n"
-"}\n"
-"\n"
-"QPushButton::menu-indicator:pressed, QPushButton::menu-indicator:open {\n"
-"    position: relative;\n"
-"    top: 2px; left: 2px; /* shift the arrow by 2 px */\n"
 "}")
         self.Start_Grooming_button.setObjectName("Start_Grooming_button")
         self.gridLayout.addWidget(self.Start_Grooming_button, 0, 0, 1, 1)
-        self.Cancel_button = QtWidgets.QPushButton(self.widget1)
+        self.Cancel_button = QtWidgets.QPushButton(self.layoutWidget1)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.Cancel_button.sizePolicy().hasHeightForWidth())
         self.Cancel_button.setSizePolicy(sizePolicy)
-        self.Cancel_button.setMinimumSize(QtCore.QSize(186, 0))
+        self.Cancel_button.setMinimumSize(QtCore.QSize(84, 0))
         self.Cancel_button.setMaximumSize(QtCore.QSize(100, 16777215))
         self.Cancel_button.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: lightgreen;\n"
-"    min-width: 80px;\n"
-"border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: dark-orange;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"    padding: 6px;\n"
+"    \n"
+"    \n"
+"     \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    \n"
+"    border:2px solid black; min-width: 80px;\n"
+"    border-color: dark gray; \n"
+"    border-radius: 25px;\n"
 "}\n"
 "\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"QPushButton:pressed,hover {\n"
+"    background-color: #EB8686; \n"
 "}\n"
-"\n"
+"QPushButton:hover {\n"
+"    background-color: #c0c0c0; \n"
+"}\n"
 "QPushButton:flat {\n"
 "    border: none; /* no border for a flat push button */\n"
 "}\n"
 "\n"
 "QPushButton:default {\n"
 "    border-color: navy; /* make the default button prominent */\n"
-"}\n"
-"QPushButton:open { /* when the button has its menu open */\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton::menu-indicator {\n"
-"    image: url(menu_indicator.png);\n"
-"    subcontrol-origin: padding;\n"
-"    subcontrol-position: bottom right;\n"
-"}\n"
-"\n"
-"QPushButton::menu-indicator:pressed, QPushButton::menu-indicator:open {\n"
-"    position: relative;\n"
-"    top: 2px; left: 2px; /* shift the arrow by 2 px */\n"
 "}")
         self.Cancel_button.setObjectName("Cancel_button")
         self.gridLayout.addWidget(self.Cancel_button, 0, 1, 1, 1)
@@ -185,13 +223,15 @@ class Grooming_Window(object):
         MP1H_Threshold = str(self.MP1H_Threshold_combobox.currentText())
         
         Data["ui"].grooming_procedure(MP1H_Threshold)
+        bus["grooming_window"].close()
+
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     grooming_window = QtWidgets.QWidget()
-    ui = Grooming_Window()
+    ui = Ui_grooming_window()
     ui.setupUi(grooming_window)
     grooming_window.show()
     sys.exit(app.exec_())

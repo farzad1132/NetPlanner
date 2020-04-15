@@ -9,27 +9,33 @@ from Common_Object_def import Network
 import pandas as pd
 bus = {}
 
+
 class Ui_ImportMenuUI(object):
     def setupUi(self, ImportMenuUI):
+
+        # NOTE: added
         bus["ImportMenuUI"] = ImportMenuUI
+
         ImportMenuUI.setObjectName("ImportMenuUI")
         ImportMenuUI.resize(459, 319)
         self.gridLayout = QtWidgets.QGridLayout(ImportMenuUI)
         self.gridLayout.setObjectName("gridLayout")
         self.PlanningLabel = QtWidgets.QLabel(ImportMenuUI)
         font = QtGui.QFont()
+        font.setFamily("Bahnschrift SemiBold Condensed")
         font.setPointSize(12)
-        font.setBold(True)
+        font.setBold(False)
         font.setItalic(False)
         font.setUnderline(False)
-        font.setWeight(75)
+        font.setWeight(7)
         font.setStrikeOut(False)
         font.setKerning(True)
         self.PlanningLabel.setFont(font)
-        self.PlanningLabel.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+        self.PlanningLabel.setStyleSheet("QLabel {\n"
+"  \n"
+"    \n"
+"    font: 63 12pt \"Bahnschrift SemiBold Condensed\";\n"
+"    background-color:  #6088C6;\n"
 "}")
         self.PlanningLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.PlanningLabel.setObjectName("PlanningLabel")
@@ -42,22 +48,28 @@ class Ui_ImportMenuUI(object):
         self.NodeButton = QtWidgets.QPushButton(ImportMenuUI)
         self.NodeButton.setMaximumSize(QtCore.QSize(999, 999))
         font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.NodeButton.setFont(font)
         self.NodeButton.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    color: rgb(117, 117, 117);\n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
+"    border-radius: 15px;\n"
 "}\n"
 "\n"
 "QPushButton:pressed {\n"
 "    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
+"} \n"
+"\n"
 "\n"
 "QPushButton:flat {\n"
 "    border: none; /* no border for a flat push button */\n"
@@ -77,22 +89,28 @@ class Ui_ImportMenuUI(object):
         self.LinkButton = QtWidgets.QPushButton(ImportMenuUI)
         self.LinkButton.setMaximumSize(QtCore.QSize(999, 999))
         font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.LinkButton.setFont(font)
         self.LinkButton.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    color: rgb(117, 117, 117);\n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
+"    border-radius: 15px;\n"
 "}\n"
 "\n"
 "QPushButton:pressed {\n"
 "    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
+"} \n"
+"\n"
 "\n"
 "QPushButton:flat {\n"
 "    border: none; /* no border for a flat push button */\n"
@@ -109,20 +127,6 @@ class Ui_ImportMenuUI(object):
         self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_2.setObjectName("line_2")
         self.gridLayout.addWidget(self.line_2, 3, 0, 1, 2)
-        self.label = QtWidgets.QLabel(ImportMenuUI)
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label.setFont(font)
-        self.label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
-"}")
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
-        self.label.setObjectName("label")
-        self.gridLayout.addWidget(self.label, 4, 0, 2, 2)
         self.line = QtWidgets.QFrame(ImportMenuUI)
         self.line.setFrameShape(QtWidgets.QFrame.HLine)
         self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -136,22 +140,28 @@ class Ui_ImportMenuUI(object):
         self.TrafficButton = QtWidgets.QPushButton(ImportMenuUI)
         self.TrafficButton.setMaximumSize(QtCore.QSize(999, 999))
         font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.TrafficButton.setFont(font)
         self.TrafficButton.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    color: rgb(117, 117, 117);\n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
+"    border-radius: 15px;\n"
 "}\n"
 "\n"
 "QPushButton:pressed {\n"
 "    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
+"} \n"
+"\n"
 "\n"
 "QPushButton:flat {\n"
 "    border: none; /* no border for a flat push button */\n"
@@ -168,129 +178,102 @@ class Ui_ImportMenuUI(object):
         self.SaveChangesBitton = QtWidgets.QPushButton(ImportMenuUI)
         self.SaveChangesBitton.setMaximumSize(QtCore.QSize(165, 100))
         font = QtGui.QFont()
-        #font.setPointSize(-1)
-        font.setBold(True)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
         font.setItalic(False)
-        font.setWeight(75)
+        font.setWeight(9)
         self.SaveChangesBitton.setFont(font)
         self.SaveChangesBitton.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: #8ADBB5;\n"
-"    min-width: 80px;\n"
-"    border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: dark-orange;\n"
-"    font: bold 14px;\n"
-"    padding: 6px;\n"
+"    \n"
+"    \n"
+"     \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    \n"
+"    border:2px solid black; min-width: 80px;\n"
+"    border-color: dark gray; \n"
+"    border-radius: 25px;\n"
 "}\n"
 "\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"QPushButton:pressed,hover {\n"
+"    background-color: #EB8686; \n"
 "}\n"
-"QPushButton::hover{\n"
-"    background-color: #2EDB8A;\n"
+"QPushButton:hover {\n"
+"    background-color: #Eb8686; \n"
 "}\n"
-"\n"
 "QPushButton:flat {\n"
 "    border: none; /* no border for a flat push button */\n"
 "}\n"
 "\n"
 "QPushButton:default {\n"
 "    border-color: navy; /* make the default button prominent */\n"
-"}\n"
-"QPushButton:open { /* when the button has its menu open */\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton::menu-indicator {\n"
-"    image: url(menu_indicator.png);\n"
-"    subcontrol-origin: padding;\n"
-"    subcontrol-position: bottom right;\n"
-"}\n"
-"\n"
-"QPushButton::menu-indicator:pressed, QPushButton::menu-indicator:open {\n"
-"    position: relative;\n"
-"    top: 2px; left: 2px; /* shift the arrow by 2 px */\n"
 "}")
         self.SaveChangesBitton.setObjectName("SaveChangesBitton")
         self.gridLayout_2.addWidget(self.SaveChangesBitton, 0, 1, 1, 1)
         self.DrawButton = QtWidgets.QPushButton(ImportMenuUI)
         self.DrawButton.setMaximumSize(QtCore.QSize(165, 100))
         font = QtGui.QFont()
-        #font.setPointSize(-1)
-        font.setBold(True)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
         font.setItalic(False)
-        font.setWeight(75)
+        font.setWeight(9)
         self.DrawButton.setFont(font)
         self.DrawButton.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: #8ADBB5;\n"
-"    min-width: 80px;\n"
-"    border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: dark-orange;\n"
-"    font: bold 14px;\n"
-"    padding: 6px;\n"
+"    \n"
+"    \n"
+"     \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    \n"
+"    border:2px solid black; min-width: 80px;\n"
+"    border-color: dark gray; \n"
+"    border-radius: 25px;\n"
 "}\n"
 "\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"QPushButton:pressed,hover {\n"
+"    background-color: #EB8686; \n"
 "}\n"
-"QPushButton::hover{\n"
-"    background-color: #2EDB8A;\n"
+"QPushButton:hover {\n"
+"    background-color: #AEC4E5; \n"
 "}\n"
-"\n"
 "QPushButton:flat {\n"
 "    border: none; /* no border for a flat push button */\n"
 "}\n"
 "\n"
 "QPushButton:default {\n"
 "    border-color: navy; /* make the default button prominent */\n"
-"}\n"
-"QPushButton:open { /* when the button has its menu open */\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton::menu-indicator {\n"
-"    image: url(menu_indicator.png);\n"
-"    subcontrol-origin: padding;\n"
-"    subcontrol-position: bottom right;\n"
-"}\n"
-"\n"
-"QPushButton::menu-indicator:pressed, QPushButton::menu-indicator:open {\n"
-"    position: relative;\n"
-"    top: 2px; left: 2px; /* shift the arrow by 2 px */\n"
 "}")
         self.DrawButton.setObjectName("DrawButton")
         self.gridLayout_2.addWidget(self.DrawButton, 0, 2, 1, 1)
         self.CloseButton = QtWidgets.QPushButton(ImportMenuUI)
         self.CloseButton.setMaximumSize(QtCore.QSize(165, 100))
         font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.CloseButton.setFont(font)
         self.CloseButton.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #f6f7fa, stop: 1 #dadbde);\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
+"    \n"
+"    \n"
+"     \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    \n"
+"    border:2px solid black; min-width: 80px;\n"
+"    border-color: dark gray; \n"
+"    border-radius: 25px;\n"
 "}\n"
 "\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"QPushButton:pressed,hover {\n"
+"    background-color: #EB8686; \n"
 "}\n"
-"\n"
+"QPushButton:hover {\n"
+"    background-color: #c0c0c0; \n"
+"}\n"
 "QPushButton:flat {\n"
 "    border: none; /* no border for a flat push button */\n"
 "}\n"
@@ -301,9 +284,28 @@ class Ui_ImportMenuUI(object):
         self.CloseButton.setObjectName("CloseButton")
         self.gridLayout_2.addWidget(self.CloseButton, 0, 0, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_2, 7, 0, 1, 2)
+        self.label = QtWidgets.QLabel(ImportMenuUI)
+        font = QtGui.QFont()
+        font.setFamily("Bahnschrift SemiBold Condensed")
+        font.setPointSize(12)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(7)
+        self.label.setFont(font)
+        self.label.setStyleSheet("  QLabel {\n"
+"    \n"
+"    font: 63 12pt \"Bahnschrift SemiBold Condensed\";\n"
+"   \n"
+"  \n"
+"    background-color: rgb(235, 134, 134);\n"
+"}")
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setObjectName("label")
+        self.gridLayout.addWidget(self.label, 4, 0, 1, 2)
 
         self.retranslateUi(ImportMenuUI)
         QtCore.QMetaObject.connectSlotsByName(ImportMenuUI)
+
 
         # NOTE: added
         self.CloseButton.clicked.connect(ImportMenuUI.close)
@@ -319,11 +321,11 @@ class Ui_ImportMenuUI(object):
         self.PlanningLabel.setText(_translate("ImportMenuUI", "Import Physical Topology"))
         self.NodeButton.setText(_translate("ImportMenuUI", "Nodes"))
         self.LinkButton.setText(_translate("ImportMenuUI", "Links"))
-        self.label.setText(_translate("ImportMenuUI", "Import Traffic Matrix "))
         self.TrafficButton.setText(_translate("ImportMenuUI", "Traffic Matrix"))
         self.SaveChangesBitton.setText(_translate("ImportMenuUI", "Save Changes"))
         self.DrawButton.setText(_translate("ImportMenuUI", "Draw"))
         self.CloseButton.setText(_translate("ImportMenuUI", "Close"))
+        self.label.setText(_translate("ImportMenuUI", "Import Traffic Matrix "))
 
     
     def call_savechange(self):
@@ -339,17 +341,22 @@ class Ui_ImportMenuUI(object):
         self.NodeLineEdit.setText(nodepath[0])
         if Node_Success is True:
             self.NodeButton.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    color: rgb(117, 117, 117);\n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
+"    border-radius: 15px;\n"
 "    background-color: green;\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
 "}\n"
 "\n"
 "QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
+"    background-color: green;\n"
+
+"} \n"
+"\n"
 "\n"
 "QPushButton:flat {\n"
 "    border: none; /* no border for a flat push button */\n"
@@ -364,17 +371,22 @@ class Ui_ImportMenuUI(object):
         self.LinkLineEdit.setText(linkpath[0])
         if Link_Success is True:
             self.LinkButton.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    color: rgb(117, 117, 117);\n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
+"    border-radius: 15px;\n"
 "    background-color: green;\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
 "}\n"
 "\n"
 "QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
+"    background-color: green;\n"
+
+"} \n"
+"\n"
 "\n"
 "QPushButton:flat {\n"
 "    border: none; /* no border for a flat push button */\n"
@@ -389,17 +401,21 @@ class Ui_ImportMenuUI(object):
         self.TrafficLineEdit.setText(TMpath[0])
         if TM_Success is True:
             self.TrafficButton.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    color: rgb(117, 117, 117);\n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
+"    border-radius: 15px;\n"
 "    background-color: green;\n"
-"    min-width: 80px;\n"
-"    border-color: dark-orange;\n"
 "}\n"
 "\n"
 "QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
+"    background-color: green;\n"
+"} \n"
+"\n"
 "\n"
 "QPushButton:flat {\n"
 "    border: none; /* no border for a flat push button */\n"

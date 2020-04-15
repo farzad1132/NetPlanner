@@ -7,78 +7,67 @@ import os
 from data import *
 from Common_Object_def import Network
 bus = {}
+from Ui_files.new_ui import iconresources
 
 
 class Ui_RWA_Window(object):
     def setupUi(self, RWA_Window):
-        RWA_Window.setObjectName("RWA_Window")
 
         # NOTE: added
         bus["RWA_Window"] = RWA_Window
+
+        RWA_Window.setObjectName("RWA_Window")
         RWA_Window.resize(493, 462)
         self.gridLayout = QtWidgets.QGridLayout(RWA_Window)
         self.gridLayout.setObjectName("gridLayout")
         self.RW_toolBox = QtWidgets.QToolBox(RWA_Window)
         self.RW_toolBox.setStyleSheet("QToolBox::tab {\n"
-"    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,\n"
-"                                stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);\n"
-"    border-radius: 5px;\n"
-"    color: gray;\n"
+"    background-color: rgb(192, 192, 192);\n"
+"     border: 2px solid gray; \n"
+"     \n"
+"     border-bottom-color: Ea8686; /* same as the pane color */\n"
+"     border-top-left-radius: 7px;\n"
+"     border-top-right-radius: 7px;\n"
+"     min-width: 28ex;\n"
+"     padding: 2px; \n"
+"     \n"
+"    \n"
+"    font: 25 9pt \"Bahnschrift condensed\";\n"
 "}\n"
 "\n"
 "QToolBox::tab:selected {\n"
-"    font: 75 8pt \"MS Shell Dlg 2\";\n"
-"    color: red;\n"
-"    background-color: rgb(170, 255, 127);\n"
+"    background-color:#Eb8686; /* same as pane color */ \n"
+"     margin-left: -4px;\n"
+"     margin-right: -4px;\n"
+"    font: 63 9pt \"Bahnschrift SemiBold\";\n"
 "}\n"
 "\n"
-"QToolBox::tab:only-one{\n"
-"}")
+"")
         self.RW_toolBox.setObjectName("RW_toolBox")
         self.Greedy = QtWidgets.QWidget()
-        self.Greedy.setGeometry(QtCore.QRect(0, 0, 471, 305))
+        self.Greedy.setGeometry(QtCore.QRect(0, 0, 475, 321))
         self.Greedy.setObjectName("Greedy")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.Greedy)
         self.gridLayout_4.setObjectName("gridLayout_4")
-        self.mergindemands_gridlayout_3 = QtWidgets.QGridLayout()
-        self.mergindemands_gridlayout_3.setObjectName("mergindemands_gridlayout_3")
-        self.Mergin_DemandRe_Label = QtWidgets.QLabel(self.Greedy)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
-        self.Mergin_DemandRe_Label.setFont(font)
-        self.Mergin_DemandRe_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
-"}")
-        self.Mergin_DemandRe_Label.setAlignment(QtCore.Qt.AlignCenter)
-        self.Mergin_DemandRe_Label.setObjectName("Mergin_DemandRe_Label")
-        self.mergindemands_gridlayout_3.addWidget(self.Mergin_DemandRe_Label, 0, 0, 1, 1)
-        self.Mergin_DemandRe_LineEdit = QtWidgets.QComboBox(self.Greedy)
-        self.Mergin_DemandRe_LineEdit.setStyleSheet("")
-        self.Mergin_DemandRe_LineEdit.setEditable(False)
-        self.Mergin_DemandRe_LineEdit.setObjectName("Mergin_DemandRe_LineEdit")
-        self.Mergin_DemandRe_LineEdit.addItem("")
-        self.Mergin_DemandRe_LineEdit.addItem("")
-        self.mergindemands_gridlayout_3.addWidget(self.Mergin_DemandRe_LineEdit, 0, 1, 1, 1)
-        self.gridLayout_4.addLayout(self.mergindemands_gridlayout_3, 0, 0, 1, 1)
         self.formLayout_13 = QtWidgets.QFormLayout()
         self.formLayout_13.setObjectName("formLayout_13")
         self.Greedy_Alpha_Label = QtWidgets.QLabel(self.Greedy)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.Greedy_Alpha_Label.setFont(font)
         self.Greedy_Alpha_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.Greedy_Alpha_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.Greedy_Alpha_Label.setObjectName("Greedy_Alpha_Label")
@@ -96,50 +85,104 @@ class Ui_RWA_Window(object):
         self.Greedy_Alpha_LineEdit.setObjectName("Greedy_Alpha_LineEdit")
         self.formLayout_13.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.Greedy_Alpha_LineEdit)
         self.gridLayout_4.addLayout(self.formLayout_13, 1, 0, 1, 1)
-        self.formLayout_14 = QtWidgets.QFormLayout()
-        self.formLayout_14.setObjectName("formLayout_14")
-        self.Greedy_Iteration_Label = QtWidgets.QLabel(self.Greedy)
+        self.mergindemands_gridlayout_3 = QtWidgets.QGridLayout()
+        self.mergindemands_gridlayout_3.setObjectName("mergindemands_gridlayout_3")
+        self.Mergin_DemandRe_Label = QtWidgets.QLabel(self.Greedy)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
-        self.Greedy_Iteration_Label.setFont(font)
-        self.Greedy_Iteration_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
-"}")
-        self.Greedy_Iteration_Label.setAlignment(QtCore.Qt.AlignCenter)
-        self.Greedy_Iteration_Label.setObjectName("Greedy_Iteration_Label")
-        self.formLayout_14.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.Greedy_Iteration_Label)
-        self.Greedy_Iteration_LineEdit = QtWidgets.QLineEdit(self.Greedy)
-        self.Greedy_Iteration_LineEdit.setStyleSheet("\n"
-" QLineEdit {\n"
-"    border: 2px solid gray;\n"
-"    border-radius: 10px;\n"
-"    padding: 0 8px;\n"
-"    selection-background-color: darkgray;\n"
-"}")
-        self.Greedy_Iteration_LineEdit.setText("")
-        self.Greedy_Iteration_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
-        self.Greedy_Iteration_LineEdit.setClearButtonEnabled(True)
-        self.Greedy_Iteration_LineEdit.setObjectName("Greedy_Iteration_LineEdit")
-        self.formLayout_14.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.Greedy_Iteration_LineEdit)
-        self.gridLayout_4.addLayout(self.formLayout_14, 1, 1, 1, 1)
+        font.setFamily("Bahnschrift")
+        font.setPointSize(9)
+        font.setBold(False)
+        font.setWeight(50)
+        self.Mergin_DemandRe_Label.setFont(font)
+        self.Mergin_DemandRe_Label.setStyleSheet(" ")
+        self.Mergin_DemandRe_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.Mergin_DemandRe_Label.setObjectName("Mergin_DemandRe_Label")
+        self.mergindemands_gridlayout_3.addWidget(self.Mergin_DemandRe_Label, 0, 0, 1, 1)
+        self.Mergin_DemandRe_LineEdit = QtWidgets.QComboBox(self.Greedy)
+        font = QtGui.QFont()
+        font.setFamily("Bahnschrift")
+        font.setPointSize(9)
+        self.Mergin_DemandRe_LineEdit.setFont(font)
+        self.Mergin_DemandRe_LineEdit.setStyleSheet("QComboBox {\n"
+"    \n"
+"    border-radius: 0px;\n"
+"    padding: 1px 18px 1px 5px;\n"
+"    min-width: 6em; \n"
+"    \n"
+"    border:1px solid rgb(0, 139, 208);\n"
+"    \n"
+"   \n"
+"    \n"
+"}\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"/* QComboBox gets the \"on\" state when the popup is open */\n"
+"\n"
+"\n"
+"QComboBox:on { /* shift the text when the popup opens */\n"
+"    padding-top: 3px;\n"
+"    padding-left: 4px;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    subcontrol-origin: padding;\n"
+"    subcontrol-position: top right;\n"
+"    width: 20px;\n"
+"    \n"
+"    \n"
+"    border-left-width: 2px;\n"
+"    border-left-color: darkblue;\n"
+"    border-left-style: solid; /* just a single line */\n"
+"    border-top-right-radius: 0px; /* same radius as the QComboBox */\n"
+"    border-bottom-right-radius: 0px;\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow {\n"
+"   \n"
+"    image: url(:/newPrefix/dropdown.png); \n"
+"    \n"
+"    \n"
+"}\n"
+"\n"
+"QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
+"    \n"
+"    \n"
+"    image: url(:/newPrefix/dropup.png);\n"
+"}\n"
+"\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    \n"
+"    border-color:2px solid blue;\n"
+"   }")
+        self.Mergin_DemandRe_LineEdit.setEditable(False)
+        self.Mergin_DemandRe_LineEdit.setObjectName("Mergin_DemandRe_LineEdit")
+        self.Mergin_DemandRe_LineEdit.addItem("")
+        self.Mergin_DemandRe_LineEdit.addItem("")
+        self.mergindemands_gridlayout_3.addWidget(self.Mergin_DemandRe_LineEdit, 0, 1, 1, 1)
+        self.gridLayout_4.addLayout(self.mergindemands_gridlayout_3, 0, 0, 1, 1)
         self.formLayout_15 = QtWidgets.QFormLayout()
         self.formLayout_15.setObjectName("formLayout_15")
         self.Greedy_Margin_Label = QtWidgets.QLabel(self.Greedy)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.Greedy_Margin_Label.setFont(font)
         self.Greedy_Margin_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.Greedy_Margin_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.Greedy_Margin_Label.setObjectName("Greedy_Margin_Label")
@@ -158,19 +201,99 @@ class Ui_RWA_Window(object):
         self.Greedy_Margin_LineEdit.setObjectName("Greedy_Margin_LineEdit")
         self.formLayout_15.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.Greedy_Margin_LineEdit)
         self.gridLayout_4.addLayout(self.formLayout_15, 2, 0, 1, 1)
+        self.formLayout_14 = QtWidgets.QFormLayout()
+        self.formLayout_14.setObjectName("formLayout_14")
+        self.Greedy_Iteration_Label = QtWidgets.QLabel(self.Greedy)
+        font = QtGui.QFont()
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
+        self.Greedy_Iteration_Label.setFont(font)
+        self.Greedy_Iteration_Label.setStyleSheet(" QLabel {\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
+"}")
+        self.Greedy_Iteration_Label.setMidLineWidth(7)
+        self.Greedy_Iteration_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_Iteration_Label.setObjectName("Greedy_Iteration_Label")
+        self.formLayout_14.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.Greedy_Iteration_Label)
+        self.Greedy_Iteration_LineEdit = QtWidgets.QLineEdit(self.Greedy)
+        self.Greedy_Iteration_LineEdit.setStyleSheet("\n"
+" QLineEdit {\n"
+"    border: 2px solid gray;\n"
+"    border-radius: 10px;\n"
+"    padding: 0 8px;\n"
+"    selection-background-color: darkgray;\n"
+"}")
+        self.Greedy_Iteration_LineEdit.setText("")
+        self.Greedy_Iteration_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_Iteration_LineEdit.setClearButtonEnabled(True)
+        self.Greedy_Iteration_LineEdit.setObjectName("Greedy_Iteration_LineEdit")
+        self.formLayout_14.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.Greedy_Iteration_LineEdit)
+        self.gridLayout_4.addLayout(self.formLayout_14, 1, 1, 1, 1)
+        self.formLayout_18 = QtWidgets.QFormLayout()
+        self.formLayout_18.setObjectName("formLayout_18")
+        self.Greedy_MaxNW_Label = QtWidgets.QLabel(self.Greedy)
+        font = QtGui.QFont()
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(9)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
+        self.Greedy_MaxNW_Label.setFont(font)
+        self.Greedy_MaxNW_Label.setStyleSheet("  QLabel {\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 9pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
+"}")
+        self.Greedy_MaxNW_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_MaxNW_Label.setObjectName("Greedy_MaxNW_Label")
+        self.formLayout_18.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.Greedy_MaxNW_Label)
+        self.Greedy_MaxNW_LineEdit = QtWidgets.QLineEdit(self.Greedy)
+        self.Greedy_MaxNW_LineEdit.setStyleSheet(" QLineEdit {\n"
+"    border: 2px solid gray;\n"
+"    border-radius: 10px;\n"
+"    padding: 0 8px;\n"
+"    selection-background-color: darkgray;\n"
+"}")
+        self.Greedy_MaxNW_LineEdit.setText("")
+        self.Greedy_MaxNW_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_MaxNW_LineEdit.setClearButtonEnabled(True)
+        self.Greedy_MaxNW_LineEdit.setObjectName("Greedy_MaxNW_LineEdit")
+        self.formLayout_18.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.Greedy_MaxNW_LineEdit)
+        self.gridLayout_4.addLayout(self.formLayout_18, 3, 1, 1, 1)
         self.formLayout_16 = QtWidgets.QFormLayout()
         self.formLayout_16.setObjectName("formLayout_16")
         self.Greedy_Processors_Label = QtWidgets.QLabel(self.Greedy)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.Greedy_Processors_Label.setFont(font)
-        self.Greedy_Processors_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+        self.Greedy_Processors_Label.setStyleSheet("  QLabel {\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.Greedy_Processors_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.Greedy_Processors_Label.setObjectName("Greedy_Processors_Label")
@@ -193,15 +316,21 @@ class Ui_RWA_Window(object):
         self.formLayout_17.setObjectName("formLayout_17")
         self.Greedy_K_Label = QtWidgets.QLabel(self.Greedy)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.Greedy_K_Label.setFont(font)
-        self.Greedy_K_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+        self.Greedy_K_Label.setStyleSheet("  QLabel {\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.Greedy_K_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.Greedy_K_Label.setObjectName("Greedy_K_Label")
@@ -220,39 +349,9 @@ class Ui_RWA_Window(object):
         self.Greedy_K_LineEdit.setObjectName("Greedy_K_LineEdit")
         self.formLayout_17.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.Greedy_K_LineEdit)
         self.gridLayout_4.addLayout(self.formLayout_17, 3, 0, 1, 1)
-        self.formLayout_18 = QtWidgets.QFormLayout()
-        self.formLayout_18.setObjectName("formLayout_18")
-        self.Greedy_MaxNW_LineEdit = QtWidgets.QLineEdit(self.Greedy)
-        self.Greedy_MaxNW_LineEdit.setStyleSheet(" QLineEdit {\n"
-"    border: 2px solid gray;\n"
-"    border-radius: 10px;\n"
-"    padding: 0 8px;\n"
-"    selection-background-color: darkgray;\n"
-"}")
-        self.Greedy_MaxNW_LineEdit.setText("")
-        self.Greedy_MaxNW_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
-        self.Greedy_MaxNW_LineEdit.setClearButtonEnabled(True)
-        self.Greedy_MaxNW_LineEdit.setObjectName("Greedy_MaxNW_LineEdit")
-        self.formLayout_18.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.Greedy_MaxNW_LineEdit)
-        self.Greedy_MaxNW_Label = QtWidgets.QLabel(self.Greedy)
-        font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
-        self.Greedy_MaxNW_Label.setFont(font)
-        self.Greedy_MaxNW_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
-"}")
-        self.Greedy_MaxNW_Label.setAlignment(QtCore.Qt.AlignCenter)
-        self.Greedy_MaxNW_Label.setObjectName("Greedy_MaxNW_Label")
-        self.formLayout_18.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.Greedy_MaxNW_Label)
-        self.gridLayout_4.addLayout(self.formLayout_18, 3, 1, 1, 1)
         self.RW_toolBox.addItem(self.Greedy, "")
         self.Group_ILP = QtWidgets.QWidget()
-        self.Group_ILP.setGeometry(QtCore.QRect(0, 0, 471, 305))
+        self.Group_ILP.setGeometry(QtCore.QRect(0, 0, 475, 321))
         self.Group_ILP.setObjectName("Group_ILP")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.Group_ILP)
         self.gridLayout_2.setObjectName("gridLayout_2")
@@ -260,15 +359,21 @@ class Ui_RWA_Window(object):
         self.formLayout_19.setObjectName("formLayout_19")
         self.GroupILP_Alpha_Label = QtWidgets.QLabel(self.Group_ILP)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.GroupILP_Alpha_Label.setFont(font)
         self.GroupILP_Alpha_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.GroupILP_Alpha_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.GroupILP_Alpha_Label.setObjectName("GroupILP_Alpha_Label")
@@ -290,15 +395,21 @@ class Ui_RWA_Window(object):
         self.formLayout_20.setObjectName("formLayout_20")
         self.GroupILP_Iteration_Label = QtWidgets.QLabel(self.Group_ILP)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.GroupILP_Iteration_Label.setFont(font)
         self.GroupILP_Iteration_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.GroupILP_Iteration_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.GroupILP_Iteration_Label.setObjectName("GroupILP_Iteration_Label")
@@ -320,15 +431,21 @@ class Ui_RWA_Window(object):
         self.formLayout_21.setObjectName("formLayout_21")
         self.GroupILP_Margin_Label = QtWidgets.QLabel(self.Group_ILP)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.GroupILP_Margin_Label.setFont(font)
-        self.GroupILP_Margin_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+        self.GroupILP_Margin_Label.setStyleSheet("  QLabel {\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.GroupILP_Margin_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.GroupILP_Margin_Label.setObjectName("GroupILP_Margin_Label")
@@ -350,15 +467,21 @@ class Ui_RWA_Window(object):
         self.formLayout_22.setObjectName("formLayout_22")
         self.GroupILP_Processors_Label = QtWidgets.QLabel(self.Group_ILP)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.GroupILP_Processors_Label.setFont(font)
         self.GroupILP_Processors_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.GroupILP_Processors_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.GroupILP_Processors_Label.setObjectName("GroupILP_Processors_Label")
@@ -380,15 +503,21 @@ class Ui_RWA_Window(object):
         self.formLayout_23.setObjectName("formLayout_23")
         self.GroupILP_K_Label = QtWidgets.QLabel(self.Group_ILP)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.GroupILP_K_Label.setFont(font)
-        self.GroupILP_K_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+        self.GroupILP_K_Label.setStyleSheet("  QLabel {\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.GroupILP_K_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.GroupILP_K_Label.setObjectName("GroupILP_K_Label")
@@ -410,15 +539,21 @@ class Ui_RWA_Window(object):
         self.formLayout_24.setObjectName("formLayout_24")
         self.GroupILP_MaxNW_Label = QtWidgets.QLabel(self.Group_ILP)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.GroupILP_MaxNW_Label.setFont(font)
         self.GroupILP_MaxNW_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.GroupILP_MaxNW_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.GroupILP_MaxNW_Label.setObjectName("GroupILP_MaxNW_Label")
@@ -440,15 +575,21 @@ class Ui_RWA_Window(object):
         self.formLayout_25.setObjectName("formLayout_25")
         self.GroupILP_Groupsize_Label = QtWidgets.QLabel(self.Group_ILP)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.GroupILP_Groupsize_Label.setFont(font)
-        self.GroupILP_Groupsize_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+        self.GroupILP_Groupsize_Label.setStyleSheet("  QLabel {\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.GroupILP_Groupsize_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.GroupILP_Groupsize_Label.setObjectName("GroupILP_Groupsize_Label")
@@ -482,15 +623,21 @@ class Ui_RWA_Window(object):
         self.formLayout_26.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.GroupILP_History_LineEdit)
         self.GroupILP_History_Label = QtWidgets.QLabel(self.Group_ILP)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.GroupILP_History_Label.setFont(font)
-        self.GroupILP_History_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+        self.GroupILP_History_Label.setStyleSheet("  QLabel {\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.GroupILP_History_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.GroupILP_History_Label.setObjectName("GroupILP_History_Label")
@@ -498,7 +645,7 @@ class Ui_RWA_Window(object):
         self.gridLayout_2.addLayout(self.formLayout_26, 3, 1, 1, 1)
         self.RW_toolBox.addItem(self.Group_ILP, "")
         self.ILP = QtWidgets.QWidget()
-        self.ILP.setGeometry(QtCore.QRect(0, 0, 471, 305))
+        self.ILP.setGeometry(QtCore.QRect(0, 0, 475, 321))
         self.ILP.setObjectName("ILP")
         self.formLayout = QtWidgets.QFormLayout(self.ILP)
         self.formLayout.setObjectName("formLayout")
@@ -506,15 +653,21 @@ class Ui_RWA_Window(object):
         self.formLayout_28.setObjectName("formLayout_28")
         self.ILP_Margin_Label = QtWidgets.QLabel(self.ILP)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.ILP_Margin_Label.setFont(font)
         self.ILP_Margin_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.ILP_Margin_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.ILP_Margin_Label.setObjectName("ILP_Margin_Label")
@@ -536,15 +689,21 @@ class Ui_RWA_Window(object):
         self.formLayout_29.setObjectName("formLayout_29")
         self.ILP_Processors_Label = QtWidgets.QLabel(self.ILP)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.ILP_Processors_Label.setFont(font)
         self.ILP_Processors_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.ILP_Processors_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.ILP_Processors_Label.setObjectName("ILP_Processors_Label")
@@ -566,15 +725,21 @@ class Ui_RWA_Window(object):
         self.formLayout_30.setObjectName("formLayout_30")
         self.ILP_K_Label = QtWidgets.QLabel(self.ILP)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.ILP_K_Label.setFont(font)
-        self.ILP_K_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+        self.ILP_K_Label.setStyleSheet("  QLabel {\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.ILP_K_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.ILP_K_Label.setObjectName("ILP_K_Label")
@@ -596,15 +761,21 @@ class Ui_RWA_Window(object):
         self.formLayout_31.setObjectName("formLayout_31")
         self.ILP_MaxNW_Label = QtWidgets.QLabel(self.ILP)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(9)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.ILP_MaxNW_Label.setFont(font)
-        self.ILP_MaxNW_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+        self.ILP_MaxNW_Label.setStyleSheet("  QLabel {\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 9pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.ILP_MaxNW_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.ILP_MaxNW_Label.setObjectName("ILP_MaxNW_Label")
@@ -626,15 +797,21 @@ class Ui_RWA_Window(object):
         self.formLayout_27.setObjectName("formLayout_27")
         self.ILP_Alpha_Label = QtWidgets.QLabel(self.ILP)
         font = QtGui.QFont()
-        font.setFamily("IRANSans")
-        font.setPointSize(8)
-        font.setBold(True)
-        font.setWeight(75)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
         self.ILP_Alpha_Label.setFont(font)
-        self.ILP_Alpha_Label.setStyleSheet(" QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
+        self.ILP_Alpha_Label.setStyleSheet("  QLabel {\n"
+"    \n"
+"    border-radius: 10px;\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #4072B3; \n"
 "}")
         self.ILP_Alpha_Label.setAlignment(QtCore.Qt.AlignCenter)
         self.ILP_Alpha_Label.setObjectName("ILP_Alpha_Label")
@@ -652,102 +829,71 @@ class Ui_RWA_Window(object):
         self.ILP_Alpha_LineEdit.setObjectName("ILP_Alpha_LineEdit")
         self.formLayout_27.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.ILP_Alpha_LineEdit)
         self.formLayout.setLayout(2, QtWidgets.QFormLayout.LabelRole, self.formLayout_27)
+        self.gridLayout_5 = QtWidgets.QGridLayout()
+        self.gridLayout_5.setObjectName("gridLayout_5")
+        self.label = QtWidgets.QLabel(self.ILP)
+        self.label.setText("")
+        self.label.setObjectName("label")
+        self.gridLayout_5.addWidget(self.label, 0, 0, 1, 1)
+        self.formLayout.setLayout(2, QtWidgets.QFormLayout.FieldRole, self.gridLayout_5)
         self.RW_toolBox.addItem(self.ILP, "")
         self.gridLayout.addWidget(self.RW_toolBox, 0, 0, 1, 1)
         self.gridLayout_3 = QtWidgets.QGridLayout()
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.ok_pushbutton = QtWidgets.QPushButton(RWA_Window)
         self.ok_pushbutton.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: #8ADBB5;\n"
-"    min-width: 80px;\n"
-"    border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: dark-orange;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"    padding: 6px;\n"
+"    \n"
+"    \n"
+"     \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    \n"
+"    border:2px solid black; min-width: 80px;\n"
+"    border-color: dark gray; \n"
+"    border-radius: 25px;\n"
 "}\n"
 "\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"QPushButton:pressed,hover {\n"
+"    background-color: #EB8686; \n"
 "}\n"
-"QPushButton::hover{\n"
-"    background-color: #2EDB8A;\n"
+"QPushButton:hover {\n"
+"    background-color: #EB8686; \n"
 "}\n"
-"\n"
 "QPushButton:flat {\n"
 "    border: none; /* no border for a flat push button */\n"
 "}\n"
 "\n"
 "QPushButton:default {\n"
 "    border-color: navy; /* make the default button prominent */\n"
-"}\n"
-"QPushButton:open { /* when the button has its menu open */\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton::menu-indicator {\n"
-"    image: url(menu_indicator.png);\n"
-"    subcontrol-origin: padding;\n"
-"    subcontrol-position: bottom right;\n"
-"}\n"
-"\n"
-"QPushButton::menu-indicator:pressed, QPushButton::menu-indicator:open {\n"
-"    position: relative;\n"
-"    top: 2px; left: 2px; /* shift the arrow by 2 px */\n"
 "}")
         self.ok_pushbutton.setAutoDefault(False)
         self.ok_pushbutton.setObjectName("ok_pushbutton")
         self.gridLayout_3.addWidget(self.ok_pushbutton, 0, 2, 1, 1)
         self.cancel_pushbutton = QtWidgets.QPushButton(RWA_Window)
         self.cancel_pushbutton.setStyleSheet("QPushButton {\n"
-"    border: 2px solid #8f8f91;\n"
-"    border-radius: 6px;\n"
-"    background-color: #8ADBB5;\n"
-"    min-width: 80px;\n"
-"    border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-radius: 10px;\n"
-"    border-color: dark-orange;\n"
-"    font: bold 14px;\n"
-"    min-width: 10em;\n"
-"    padding: 6px;\n"
+"    \n"
+"    \n"
+"     \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    \n"
+"    border:2px solid black; min-width: 80px;\n"
+"    border-color: dark gray; \n"
+"    border-radius: 25px;\n"
 "}\n"
 "\n"
-"QPushButton:pressed {\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
+"QPushButton:pressed,hover {\n"
+"    background-color: #EB8686; \n"
 "}\n"
-"QPushButton::hover{\n"
-"    background-color: #2EDB8A;\n"
+"QPushButton:hover {\n"
+"    background-color: #c0c0c0; \n"
 "}\n"
-"\n"
 "QPushButton:flat {\n"
 "    border: none; /* no border for a flat push button */\n"
 "}\n"
 "\n"
 "QPushButton:default {\n"
 "    border-color: navy; /* make the default button prominent */\n"
-"}\n"
-"QPushButton:open { /* when the button has its menu open */\n"
-"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                      stop: 0 #dadbde, stop: 1 #f6f7fa);\n"
-"}\n"
-"\n"
-"QPushButton::menu-indicator {\n"
-"    image: url(menu_indicator.png);\n"
-"    subcontrol-origin: padding;\n"
-"    subcontrol-position: bottom right;\n"
-"}\n"
-"\n"
-"QPushButton::menu-indicator:pressed, QPushButton::menu-indicator:open {\n"
-"    position: relative;\n"
-"    top: 2px; left: 2px; /* shift the arrow by 2 px */\n"
 "}")
         self.cancel_pushbutton.setObjectName("cancel_pushbutton")
         self.gridLayout_3.addWidget(self.cancel_pushbutton, 0, 1, 1, 1)
@@ -766,22 +912,22 @@ class Ui_RWA_Window(object):
     def retranslateUi(self, RWA_Window):
         _translate = QtCore.QCoreApplication.translate
         RWA_Window.setWindowTitle(_translate("RWA_Window", "RWA_Window"))
+        self.Greedy_Alpha_Label.setText(_translate("RWA_Window", "      Alpha  "))
+        self.Greedy_Alpha_LineEdit.setPlaceholderText(_translate("RWA_Window", "0.2"))
         self.Mergin_DemandRe_Label.setText(_translate("RWA_Window", "Merging demands"))
         self.Mergin_DemandRe_LineEdit.setCurrentText(_translate("RWA_Window", "True"))
         self.Mergin_DemandRe_LineEdit.setItemText(0, _translate("RWA_Window", "True"))
         self.Mergin_DemandRe_LineEdit.setItemText(1, _translate("RWA_Window", "False"))
-        self.Greedy_Alpha_Label.setText(_translate("RWA_Window", "      Alpha  "))
-        self.Greedy_Alpha_LineEdit.setPlaceholderText(_translate("RWA_Window", "0.2"))
-        self.Greedy_Iteration_Label.setText(_translate("RWA_Window", "  Iteration   "))
-        self.Greedy_Iteration_LineEdit.setPlaceholderText(_translate("RWA_Window", "4"))
         self.Greedy_Margin_Label.setText(_translate("RWA_Window", "    Margin "))
         self.Greedy_Margin_LineEdit.setPlaceholderText(_translate("RWA_Window", "3-7"))
+        self.Greedy_Iteration_Label.setText(_translate("RWA_Window", "  Iteration   "))
+        self.Greedy_Iteration_LineEdit.setPlaceholderText(_translate("RWA_Window", "4"))
+        self.Greedy_MaxNW_Label.setText(_translate("RWA_Window", "Maximum Number of Wavelengths"))
+        self.Greedy_MaxNW_LineEdit.setPlaceholderText(_translate("RWA_Window", "80"))
         self.Greedy_Processors_Label.setText(_translate("RWA_Window", " Processors"))
         self.Greedy_Processors_LineEdit.setPlaceholderText(_translate("RWA_Window", "4"))
-        self.Greedy_K_Label.setText(_translate("RWA_Window", "        k     "))
+        self.Greedy_K_Label.setText(_translate("RWA_Window", "     k     "))
         self.Greedy_K_LineEdit.setPlaceholderText(_translate("RWA_Window", "3"))
-        self.Greedy_MaxNW_LineEdit.setPlaceholderText(_translate("RWA_Window", "80"))
-        self.Greedy_MaxNW_Label.setText(_translate("RWA_Window", "Maximum Number of Wavelengths"))
         self.RW_toolBox.setItemText(self.RW_toolBox.indexOf(self.Greedy), _translate("RWA_Window", "Greedy"))
         self.GroupILP_Alpha_Label.setText(_translate("RWA_Window", "      Alpha  "))
         self.GroupILP_Alpha_LineEdit.setPlaceholderText(_translate("RWA_Window", "0.2"))
@@ -885,6 +1031,8 @@ class Ui_RWA_Window(object):
 
             Data["ui"].RWA_procedure(None, alpha, None, margin, processors, k, maxNW, None, None, Algorithm)
             bus["RWA_Window"].close()
+
+
 
 if __name__ == "__main__":
     import sys
