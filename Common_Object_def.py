@@ -40,11 +40,11 @@ class Network:
                     self.LightPathDict[key - 1] = self.LightPathDict.pop(key)
         
         def correct_LightPathIds(id):
-            for key, value in self.TrafficMatrix.GroomOut10Dict.items():
-                if value.LightPathId > id :
-                    value.LightPathId -= 1
+            for key, value in list(self.TrafficMatrix.GroomOut10Dict.items()):
+                if value.LightPathId is not None and value.LightPathId > id :
+                    self.TrafficMatrix.GroomOut10Dict[key].LightPathId -= 1
                 elif value.LightPathId == id:
-                    value.LightPathId = None
+                    self.TrafficMatrix.GroomOut10Dict[key].LightPathId = None
 
         del self.LightPathDict[LightPathId]
         correct_UpperIds(LightPathId + 1)

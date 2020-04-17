@@ -3355,12 +3355,14 @@ class Ui_MainWindow(object):
 
             writer.save()
 
-        name = QFileDialog.getSaveFileName(MainWindow, "Save Topology", filter = "(*.xlsx)")
-        if name[0] != 0:
-            try:
-                export_excel(name[0], self.decoded_network)
-            except:
-                pass        
+        if hasattr(self, "RWA_Success"):
+            if self.RWA_Success is True:
+                name = QFileDialog.getSaveFileName(MainWindow, "Save Topology", filter = "(*.xlsx)")
+                if name[0] != 0:
+                    try:
+                        export_excel(name[0], self.decoded_network)
+                    except:
+                        pass        
 
 
 
@@ -4638,8 +4640,8 @@ class Ui_MainWindow(object):
                                                                     ServiceIdList= ServiceIdList,
                                                                     DemandIdList= [DemandId for _ in range(16)],
                                                                     LineIdList= list(Servicetuple),
-                                                                    Line_1_ServiceIdList= netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].ServiceIdList,
-                                                                    Line_2_ServiceIdList= netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].ServiceIdList,
+                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].ServiceIdList),
+                                                                    Line_2_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].ServiceIdList),
                                                                     Destination= Destination)
             
             # Creating Right Panel of MP2X
@@ -4715,12 +4717,12 @@ class Ui_MainWindow(object):
                     ClientsCapacity.append(0)
             
             # creating left panel of MP2X
-            DemandTabDataBase["Panels"][Source][PanelId] = MP2X_L(  ClientsCapacity= ClientsCapacity,
+            DemandTabDataBase["Panels"][Source][PanelId] = MP2X_L(  ClientsCapacity= list(ClientsCapacity),
                                                                     LinesCapacity= [LineCapacity, 0],
-                                                                    ServiceIdList= netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList,
+                                                                    ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList),
                                                                     DemandIdList= [DemandId for _ in range(16)],
                                                                     LineIdList= [GroomOutId, None],
-                                                                    Line_1_ServiceIdList= netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList,
+                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList),
                                                                     Destination= Destination)
             
             # Creating Right Panel of MP2X
@@ -4882,8 +4884,8 @@ class Ui_MainWindow(object):
         self.webengine.page().runJavaScript("change_failed_nodes_icon()")
 
     def set_failed_nodes_default(self, source):
-
-        self.webengine.page().runJavaScript("set_failed_node_default(\"%s\")" %source)
+        if source in self.failed_nodes:
+            self.webengine.page().runJavaScript("set_failed_node_default(\"%s\")" %source)
 
         
     def open_ImportUI_fun(self):

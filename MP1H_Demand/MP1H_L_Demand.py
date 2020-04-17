@@ -227,7 +227,7 @@ class MP1H_L_Demand(QtWidgets.QWidget):
                     Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
-            if self.servicetype != "GroomOut10":
+            if type != "GroomOut10":
                 DemandTabDataBase["Services"][(source, destination)][key] = None
 
             else:

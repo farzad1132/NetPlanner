@@ -553,7 +553,7 @@ class customlabel(QLabel):
                     # deleting groomout10 from common object
                     Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOutId_1)
 
-                elif DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] == 0:
+                elif DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] == 0 and GroomOutId_2 is not None:
 
                     # updating LineIdList part of panel object
                     DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1] = None
