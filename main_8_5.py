@@ -2644,6 +2644,8 @@ class Ui_MainWindow(object):
 
         self.groomout10_list.setDragEnabled(True)
 
+        #self.setStyleSheet("QToolTip { background-color: black; color: white; border: black solid 1px; }")
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -3453,14 +3455,14 @@ class Ui_MainWindow(object):
             LeftPanelId = UserData["PanelId"]
             left_widget = Data["DemandPanel_" + str(LeftPanelId)].itemAt(0).widget()
             linevar = left_widget.Line
-            linevar.setStyleSheet("image: url(:/line/line.png); border: 5px solid blue;")
+            linevar.setStyleSheet(" QLabel{ image: url(:/line/line.png); border: 5px solid blue; }")
             
             if PreItem is not None:
                 pre_UserData = PreItem.data(Qt.UserRole)
                 pre_LeftPanelId = pre_UserData["PanelId"]
                 pre_left_widget = Data["DemandPanel_" + str(pre_LeftPanelId)].itemAt(0).widget()
                 pre_linevar = pre_left_widget.Line
-                pre_linevar.setStyleSheet("image: url(:/line/line.png);")
+                pre_linevar.setStyleSheet(" QLabel{ image: url(:/line/line.png); }")
 
             if self.RWA_Success is True:
 
@@ -3486,14 +3488,17 @@ class Ui_MainWindow(object):
             GroomOut10Id = UserData["GroomOut10Id"]
 
             PanelId = UserData["PanelId"]
+            DemandId = UserData["DemandId"]
             widget = Data["DemandPanel_" + str(PanelId)].itemAt(0).widget()
 
             index = DemandTabDataBase["Panels"][Source][PanelId].LineIdList.index(GroomOut10Id)
 
             if index == 0:
-                widget.LINE1.setStyleSheet("image: url(:/Line_L_SOURCE/LINE_L.png); border: 5px solid red;")
+                widget.LINE1.setStyleSheet(" QLabel{ image: url(:/Line_L_SOURCE/LINE_L.png); border: 5px solid red; }")
+                
             else:
-                widget.LINE2.setStyleSheet("image: url(:/Line_R_SOURCE/LINE_R.png); border: 5px solid red;")
+                widget.LINE2.setStyleSheet(" QLabel { image: url(:/Line_R_SOURCE/LINE_R.png); border: 5px solid red; }")
+                
             
             if "MP1H_Client_Id" in UserData:
                 MP1H_Id , Client_Id = UserData["MP1H_Client_Id"]
@@ -3502,9 +3507,11 @@ class Ui_MainWindow(object):
                 clientvar = getattr(MP1H_widget, "Client" + Client_Id )
 
                 if ( int(Client_Id) - 1 ) % 2 == 1:
-                    clientvar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png); border: 5px solid red;")
+                    clientvar.setStyleSheet(" QLabel{ image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png); border: 5px solid red; }")
+                    
                 else:
-                    clientvar.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png); border: 5px solid red;")
+                    clientvar.setStyleSheet(" QLabel{ image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png); border: 5px solid red; }")
+                    
 
 
             if PreItem is not None:
@@ -3518,9 +3525,11 @@ class Ui_MainWindow(object):
                 index = DemandTabDataBase["Panels"][Source][PanelId].LineIdList.index(GroomOut10Id)
 
                 if index == 0:
-                    widget.LINE1.setStyleSheet("image: url(:/Line_L_SOURCE/LINE_L.png);")
+                    widget.LINE1.setStyleSheet(" QLabel{ image: url(:/Line_L_SOURCE/LINE_L.png); }")
+                    
                 else:
-                    widget.LINE2.setStyleSheet("image: url(:/Line_R_SOURCE/LINE_R.png);")
+                    widget.LINE2.setStyleSheet(" QLabel{ image: url(:/Line_R_SOURCE/LINE_R.png); }")
+                    
                 
                 if "MP1H_Client_Id" in UserData:
                     MP1H_Id , Client_Id = UserData["MP1H_Client_Id"]
@@ -3529,9 +3538,11 @@ class Ui_MainWindow(object):
                     clientvar = getattr(MP1H_widget, "Client" + Client_Id )
 
                     if ( int(Client_Id) - 1 ) % 2 == 1:
-                        clientvar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                        clientvar.setStyleSheet(" QLabel{ image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png); }")
+                        
                     else:
-                        clientvar.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
+                        clientvar.setStyleSheet(" QLabel{ image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png); }")
+                        
 
 
     # MHA EDITION:

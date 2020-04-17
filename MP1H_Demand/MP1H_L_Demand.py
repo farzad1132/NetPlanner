@@ -397,15 +397,17 @@ class customlabel(QLabel):
                 self.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
             else:
                 self.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
-
-    def contextMenuEvent(self, event):
-
-        def check_clients(ClientsList):
+    
+    def check_clients(self, ClientsList):
                 x = 0
                 for i in range(10):
                     if ClientsList[i] != 0:
                         x = 1
                 return x
+
+    def contextMenuEvent(self, event):
+
+        
 
         ContextMenu = QMenu(self)
         ClearAction = ContextMenu.addAction("..Clear Socket..")
@@ -456,7 +458,7 @@ class customlabel(QLabel):
                 # setting line port tooltip                                        
                 self.LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][LightPathId].toolTip())
 
-                x = check_clients(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity)
+                x = self.check_clients(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity)
 
                 if x == 0:
                     
@@ -472,6 +474,67 @@ class customlabel(QLabel):
                     DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None
                     
                     DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 0
+    
+    def Clear_From_MP2X(self):
+        if DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] != 0:
+            self.setToolTip("")
+            
+            if self.servicetype == "10GE":
+                DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity -= self.GE_10_BW
+
+            elif self.servicetype == "STM_64":
+                DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity -= self.STM_64_BW
+            else:
+                DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity -= self.GroomOut_Capacity
+            
+            DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = 0
+
+            # removing service id from lightpath object in common object
+            LightPathId = DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId
+            Data["NetworkObj"].LightPathDict[LightPathId].ServiceIdList.remove(self.ids[1])
+            
+            if self.servicetype != "GroomOut10":
+                DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = None
+
+            if self.ClientNum % 2 == 0:
+                self.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+            else:
+                self.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
+
+            self.setAcceptDrops(True)
+
+
+            self.modify_ServiceList(ids= self.ids,
+                                    source= self.nodename,
+                                    destination= self.Destination,
+                                    mode= "add",
+                                    type= self.servicetype)
+
+            
+
+            # updating LightPath ListWidgetItem Capacity
+            self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][LightPathId],
+                                                    Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity)
+
+            # setting line port tooltip                                        
+            self.LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][LightPathId].toolTip())
+
+            x = self.check_clients(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity)
+
+            if x == 0:
+                
+                self.modify_LightPathList(  id= LightPathId,
+                                            Source= self.nodename,
+                                            Destination= self.Destination,
+                                            mode= "delete",
+                                            type= "100GE")
+
+                # deleting lightpath object from network obj
+                Data["NetworkObj"].del_lightpath(LightPathId)
+
+                DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None
+                
+                DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 0
 
                     
     def Update_LineListWidgetItem_Tooltip(self, Item, Capacity):       

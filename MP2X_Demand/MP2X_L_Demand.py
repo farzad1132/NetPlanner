@@ -186,16 +186,31 @@ class MP2X_L_Demand(QtWidgets.QWidget):
                 GroomOut_1_Id = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0]
                 GroomOut_2_Id = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1]
 
+                self.Update_MP1H_Port(Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOut_1_Id],
+                                        Source= self.nodename,
+                                        Destination= self.Destination,
+                                        Capacity= 0)
+
                 # deleteing GroomOut10 1 from database
                 self.modify_GroomOut10List(id= GroomOut_1_Id,
                                             Source= self.nodename,
                                             Destination= self.Destination,
                                             mode= "delete")
 
+    
+
                 # deleting groomout10 from common object ( line 1 )
                 Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOut_1_Id)
 
+                
+
                 if GroomOut_2_Id is not None:
+
+                    self.Update_MP1H_Port(Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOut_2_Id],
+                                        Source= self.nodename,
+                                        Destination= self.Destination,
+                                        Capacity= 0)
+
                     # deleteing GroomOut10 2 from database
                     self.modify_GroomOut10List(id= GroomOut_2_Id,
                                                 Source= self.nodename,
@@ -205,8 +220,27 @@ class MP2X_L_Demand(QtWidgets.QWidget):
                     # deleting groomout10 from common object ( line 2 )
                     Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOut_2_Id)
 
+                    
+
             DemandTabDataBase["Panels"][self.nodename].pop(self.id)
             DemandTabDataBase["Panels"][self.nodename].pop(self.uppernum)
+
+    
+    def Update_MP1H_Port(self, Item, Source, Destination, Capacity):
+        UserData = Item.data(Qt.UserRole)
+
+        if "MP1H_Client_Id" in UserData:
+
+            MP1H_Id , Client_Id = UserData["MP1H_Client_Id"]
+
+            MP1H_widget = Data["DemandPanel_" + str(MP1H_Id)].itemAt(0).widget()
+            clientvar = getattr(MP1H_widget, "Client" + Client_Id )
+
+            if Capacity > 0.001:
+                clientvar.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][UserData["GroomOut10Id"]].toolTip())
+            
+            else:
+                clientvar.Clear_From_MP2X()
         
     
     def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
@@ -360,7 +394,7 @@ class customlabel(QLabel):
                                     mode= "delete")
 
             # check if line 1 in on or not
-            if Line_1_old_capacity == 0:
+            if Line_1_old_capacity < 0.001:
 
                 # updating line 1 capacity
                 DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] += DropCapacity
@@ -408,11 +442,16 @@ class customlabel(QLabel):
                 # updating LightPath ListWidgetItem Capacity
                 self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
                                                         Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
+                
+                self.Update_MP1H_Port(Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
+                                            Source= self.nodename,
+                                            Destination= self.Destination,
+                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
 
                 # setting line port tooltip                                        
                 self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
             
-            elif Line_2_old_capacity == 0:
+            elif Line_2_old_capacity < 0.001:
 
                 # updating line 2 capacity
                 DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] += DropCapacity
@@ -463,6 +502,12 @@ class customlabel(QLabel):
                 self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
                                                         Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
 
+                
+                self.Update_MP1H_Port(Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
+                                            Source= self.nodename,
+                                            Destination= self.Destination,
+                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
+
                 # setting line port tooltip                                        
                 self.LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
 
@@ -499,6 +544,11 @@ class customlabel(QLabel):
                     # updating LightPath ListWidgetItem Capacity
                     self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_1],
                                                             Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
+                    
+                    self.Update_MP1H_Port(Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_1],
+                                            Source= self.nodename,
+                                            Destination= self.Destination,
+                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
 
                     # setting line port tooltip                                        
                     self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_1].toolTip())
@@ -513,6 +563,11 @@ class customlabel(QLabel):
                     # updating LightPath ListWidgetItem Capacity
                     self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_2],
                                                             Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
+
+                    self.Update_MP1H_Port(Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_2],
+                                            Source= self.nodename,
+                                            Destination= self.Destination,
+                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
 
                     # setting line port tooltip                                        
                     self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_2].toolTip())
@@ -539,7 +594,7 @@ class customlabel(QLabel):
                                         mode= "add",
                                         type= self.servicetype)
 
-                if DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] == 0:
+                if DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] < 0.001:
 
                     # updating LineIdList part of panel object
                     DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0] = None
@@ -553,7 +608,7 @@ class customlabel(QLabel):
                     # deleting groomout10 from common object
                     Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOutId_1)
 
-                elif DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] == 0 and GroomOutId_2 is not None:
+                elif DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] < 0.001 and GroomOutId_2 is not None:
 
                     # updating LineIdList part of panel object
                     DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1] = None
@@ -567,7 +622,22 @@ class customlabel(QLabel):
                     # deleting groomout10 from common object
                     Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOutId_2)
 
-    
+    def Update_MP1H_Port(self, Item, Source, Destination, Capacity):
+        UserData = Item.data(Qt.UserRole)
+
+        if "MP1H_Client_Id" in UserData:
+
+            MP1H_Id , Client_Id = UserData["MP1H_Client_Id"]
+
+            MP1H_widget = Data["DemandPanel_" + str(MP1H_Id)].itemAt(0).widget()
+            clientvar = getattr(MP1H_widget, "Client" + Client_Id )
+
+            if Capacity > 0.001:
+                clientvar.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][UserData["GroomOut10Id"]].toolTip())
+            
+            else:
+                clientvar.Clear_From_MP2X()
+
 
     def Update_LineListWidgetItem_Tooltip(self, Item, Capacity):       
         
