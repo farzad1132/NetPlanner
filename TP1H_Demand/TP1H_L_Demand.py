@@ -119,12 +119,12 @@ class TP1H_L_Demand(QtWidgets.QWidget):
             DemandTabDataBase["Panels"][self.nodename].pop(self.uppernum)
         
     
-    def modify_LightPathList(self, id, Source, Destination, Capacity = None, mode = "add", type = None):
+    def modify_LightPathList(self, id, Source, Destination, Capacity = None, mode = "add", type = None, PanelId = None):
 
         if mode == "add":
             #DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = "%s # %s" %(id, type)
             item = QListWidgetItem(type, Data["Demand_LightPath_list"])
-            UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type}
+            UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": PanelId}
             item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)
@@ -148,10 +148,22 @@ class TP1H_L_Demand(QtWidgets.QWidget):
         Data["ui"].update_Demand_lightpath_list()
     
     def modify_ServiceList(self, ids, source, destination, mode = "delete", type = None):
+        
 
-        key = (ids[0] , ids[1])
+        key = (int(ids[0]) , int(ids[1]))
         if mode == "delete":
             DemandTabDataBase["Services"][(source, destination)].pop(key)
+
+            # statement bellow checks for removing notification
+            if hasattr( Data["ui"], "failed_nodes"):
+                if source in Data["ui"].failed_nodes:
+                    x = 0
+                    for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
+                        if DemandTabDataBase["Services"][(source, dest)]:
+                            x = 1
+                            break
+                    if x == 0:        
+                        Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
             DemandTabDataBase["Services"][(source, destination)][key] = None
@@ -227,19 +239,20 @@ class customlabel(QLabel):
         if servicetype in self.allowedservices:
             
             self.servicetype = servicetype
-            self.setToolTip(DemandTabDataBase["Services_static"][self.nodename][self.ids].toolTip())
             self.ids = (UserData["DemandId"], UserData["ServiceId"])
+            self.setToolTip(DemandTabDataBase["Services_static"][self.nodename][self.ids].toolTip())
+            
 
             DemandTabDataBase["Panels"][self.nodename][self.id].Line = "100GE"
-            DemandTabDataBase["Panels"][self.nodename][self.id].ServiceId = ids[1]
-            DemandTabDataBase["Panels"][self.nodename][self.id].DemandId = ids[0]
+            DemandTabDataBase["Panels"][self.nodename][self.id].ServiceId = self.ids[1]
+            DemandTabDataBase["Panels"][self.nodename][self.id].DemandId = self.ids[0]
             self.modify_ServiceList(self.ids, self.nodename, self.Destination)
 
             self.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
             # self.LightPathId = Network.Lightpath.get_id()
 
             # adding lightpath to network obj
-            Data["NetworkObj"].add_lightpath(Data["NodeIdMap"][self.nodename], Data["NodeIdMap"][self.Destination], 100, [ids[1]], "100GE", ids[0])
+            Data["NetworkObj"].add_lightpath(Data["NodeIdMap"][self.nodename], Data["NodeIdMap"][self.Destination], 100, [self.ids[1]], "100GE", self.ids[0])
             self.LightPathId = max(Data["NetworkObj"].LightPathDict.keys())
 
             # adding lightpath to internal database
@@ -255,7 +268,7 @@ class customlabel(QLabel):
                                             PanelId= self.id)
 
             # setting line port tooltip                                        
-            self.LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][LightPathId].toolTip())
+            self.LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][self.LightPathId].toolTip())
 
 
             # TODO: be Careful !!!!!
@@ -276,19 +289,15 @@ class customlabel(QLabel):
                 # deleting lightpath from network object
                 
                 
-                DemandTabDataBase["Panels"][self.nodename][self.id].Line = 0
-                DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None
-                DemandTabDataBase["Panels"][self.nodename][self.id].ServiceId = None
+                
                 self.setStyleSheet("image:  url(:/Client/TP1H_CLIENT.png);")
                 self.setAcceptDrops(True)
                 #self.modify_ServiceList(self.ids, self.nodename, self.Destination, mode = "add", type = "100GE")
-                self.modify_LightPathList(id= DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId,
-                                            Source= self.nodename,
-                                            Destination= self.Destination,
-                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].Line,
+                self.modify_ServiceList(ids= self.ids,
+                                            source= self.nodename,
+                                            destination= self.Destination,
                                             mode= "add",
-                                            type= "100GE",
-                                            PanelId= self.id)
+                                            type= "100GE")
 
                 #self.modify_LightPathList(self.LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
                 self.modify_LightPathList(  id= DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId,
@@ -296,9 +305,15 @@ class customlabel(QLabel):
                                                 Destination= self.Destination,
                                                 mode= "delete",
                                                 type= "100GE")
+
+                
                 
                 #Network.Lightpath.update_id(-1)
                 Data["NetworkObj"].del_lightpath(DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId)
+
+                DemandTabDataBase["Panels"][self.nodename][self.id].Line = 0
+                DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None
+                DemandTabDataBase["Panels"][self.nodename][self.id].ServiceId = None
 
                 
     
@@ -311,13 +326,15 @@ class customlabel(QLabel):
             DemandTabDataBase["Services"][(source, destination)].pop(key)
 
             # statement bellow checks for removing notification
-            x = 0
-            for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
-                if DemandTabDataBase["Services"][(source, dest)]:
-                    x = 1
-                    break
-            if x == 0:        
-                Data["ui"].set_failed_nodes_default(source)
+            if hasattr( Data["ui"], "failed_nodes"):
+                if source in Data["ui"].failed_nodes:
+                    x = 0
+                    for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
+                        if DemandTabDataBase["Services"][(source, dest)]:
+                            x = 1
+                            break
+                    if x == 0:        
+                        Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
             DemandTabDataBase["Services"][(source, destination)][key] = None

@@ -83,6 +83,11 @@ class BLANK_Demand(QtWidgets.QWidget):
             Data["DemandPanel_" + str(self.id)].addWidget(MP2X_L_Demand(self.id , self.nodename, self.Destination))
             DemandTabDataBase["Panels"][self.nodename][self.id] = MP2X_L(Destination= self.Destination)
 
+            # removing old right panel
+            panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
+            Data["ui"].horizontalLayout.removeWidget(panel_widget)
+            panel_widget.deleteLater()
+
             Data["DemandPanel_" + self.uppernum].addWidget(MP2X_R_Demand(self.id, self.nodename, self.Destination))
             DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP2X_R(self.uppernum, self.Destination)
 

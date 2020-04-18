@@ -165,12 +165,12 @@ class MP1H_L_Demand(QtWidgets.QWidget):
             DemandTabDataBase["Panels"][self.nodename].pop(self.uppernum)
         
     
-    def modify_LightPathList(self, id, Source, Destination, Capacity = None, mode = "add", type = None):
+    def modify_LightPathList(self, id, Source, Destination, Capacity = None, mode = "add", type = None, PanelId = None):
 
         if mode == "add":
             
             item = QListWidgetItem(type, Data["Demand_LightPath_list"])
-            UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type}
+            UserData = {"LightPathId":id, "Source":Source, "Destination":Destination, "Capacity":Capacity, "Type": type, "PanelId": PanelId}
             item.setToolTip(f"Source: {Source}\nDestination: {Destination}\nCapacity: {Capacity}\nType: {type}")
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)
@@ -184,7 +184,7 @@ class MP1H_L_Demand(QtWidgets.QWidget):
             # correcting upper lightpath id's 
             for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
                 for UpperId in sorted(list(DemandTabDataBase["Lightpathes"][(Source, Des)].keys())):
-                    if UpperId > id:
+                    if UpperId is not None and UpperId > id:
                         DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1] = DemandTabDataBase["Lightpathes"][(Source, Des)].pop(UpperId)
                         UserData = DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].data(Qt.UserRole)
                         UserData["LightPathId"] -= 1
@@ -217,14 +217,15 @@ class MP1H_L_Demand(QtWidgets.QWidget):
             
             
             # statement bellow checks for removing notification ( if there is such a node)
-            if source in Data["ui"].failed_nodes:
-                x = 0
-                for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
-                    if DemandTabDataBase["Services"][(source, dest)]:
-                        x = 1
-                        break
-                if x == 0:        
-                    Data["ui"].set_failed_nodes_default(source)
+            if hasattr( Data["ui"], "failed_nodes"):
+                if source in Data["ui"].failed_nodes:
+                    x = 0
+                    for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
+                        if DemandTabDataBase["Services"][(source, dest)]:
+                            x = 1
+                            break
+                    if x == 0:        
+                        Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
             if type != "GroomOut10":
@@ -568,14 +569,15 @@ class customlabel(QLabel):
             
             
             # statement bellow checks for removing notification ( if there is such a node)
-            if source in Data["ui"].failed_nodes:
-                x = 0
-                for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
-                    if DemandTabDataBase["Services"][(source, dest)]:
-                        x = 1
-                        break
-                if x == 0:        
-                    Data["ui"].set_failed_nodes_default(source)
+            if hasattr(Data["ui"], "failed_nodes"):
+                if source in Data["ui"].failed_nodes:
+                    x = 0
+                    for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
+                        if DemandTabDataBase["Services"][(source, dest)]:
+                            x = 1
+                            break
+                    if x == 0:        
+                        Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
             if self.servicetype != "GroomOut10":
@@ -617,7 +619,7 @@ class customlabel(QLabel):
             # correcting upper lightpath id's 
             for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
                 for UpperId in sorted(list(DemandTabDataBase["Lightpathes"][(Source, Des)].keys())):
-                    if UpperId > id:
+                    if UpperId is not None and UpperId > id:
                         DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1] = DemandTabDataBase["Lightpathes"][(Source, Des)].pop(UpperId)
                         UserData = DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].data(Qt.UserRole)
                         UserData["LightPathId"] -= 1

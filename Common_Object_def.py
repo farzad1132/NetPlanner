@@ -404,7 +404,7 @@ class Network:
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
                     self.Sla = Sla
-                    self.Type = "G_100"
+                    self.Type = "100GE"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
@@ -429,7 +429,7 @@ class Network:
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
                     self.Sla = Sla
-                    self.Type = "G_10"
+                    self.Type = "10GE"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
