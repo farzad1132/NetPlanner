@@ -52,7 +52,7 @@ QTabWidget::tab-bar {
      border-bottom-color: none; /* same as the pane color */
      border-top-left-radius: 0px;
      border-top-right-radius: 0px;
-     min-width: 28ex;
+     min-width: 20ex;
      padding: 2px; 
      
 	
