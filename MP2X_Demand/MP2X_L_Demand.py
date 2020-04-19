@@ -306,7 +306,7 @@ class customlabel(QLabel):
         self.ClientNum = ClientNum - 1  # because list indices starts with 0
         self.setAcceptDrops(True)
 
-        self.BWDict = {"E1": 58.84 / 1024, "STM_1_Electrical": 155.52 / 1024, "STM_1_Optical": 155.52 / 1024, "STM_4": 622.08 / 1024, "STM_16": 2.49}
+        self.BWDict = {"E1": 58.84 / 1024, "STM_1_Electrical": 155.52 / 1024, "STM_1_Optical": 155.52 / 1024, "STM_4": 622.08 / 1024, "STM_16": 2.49, "1GE": 1.244, "FE": 0.1}
     
     def dragEnterEvent(self, event):
         e = event.mimeData()

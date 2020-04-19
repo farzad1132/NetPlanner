@@ -3709,7 +3709,8 @@ class Ui_MainWindow(object):
                 IgnoringNodes = None
 
                 for i in range(ServiceDict[service]["Quantity"]):
-                    self.network.TrafficMatrix.DemandDict[id].add_service(service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
+                    ServiceId = self.network.TrafficMatrix.DemandDict[0].GenerateId()
+                    self.network.TrafficMatrix.DemandDict[id].add_service(ServiceId, service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
             
             # initializing DataBases 
             self.initialize_DemandTabDataBase(Source, Destination)

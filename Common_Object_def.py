@@ -303,7 +303,7 @@ class Network:
                 instance.__dict__['Id'] = data['Id']
                 return cls
 
-            ReferenceId = 0
+            ReferenceId = 1
             def __init__(self, GatewayId, SubNodesId, Color):
                 self.Id = Network.Topology.Cluster.ReferenceId
                 Network.Topology.Cluster.ReferenceId += 1
@@ -399,7 +399,7 @@ class Network:
             
             class G_100:
                 BW = 100
-                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
+                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None):
                     self.Id = Id
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
@@ -408,10 +408,13 @@ class Network:
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
+
+                    self.OriginalSource = OriginalSource
+                    self.OriginalDestination = OriginalDestination
             
             class G_40:
                 BW = 40
-                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
+                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None):
                     self.Id = Id
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
@@ -421,10 +424,13 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
+                    self.OriginalSource = OriginalSource
+                    self.OriginalDestination = OriginalDestination
+
             
             class G_10:
                 BW = 10
-                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
+                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None):
                     self.Id = Id
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
@@ -433,26 +439,32 @@ class Network:
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
+
+                    self.OriginalSource = OriginalSource
+                    self.OriginalDestination = OriginalDestination
                 
             
             class G_1:
                 BW = 1.244
 
-                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
+                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None):
                     self.Id = Id
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
                     self.Sla = Sla
-                    self.Type = "G_1"
+                    self.Type = "1GE"
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
+
+                    self.OriginalSource = OriginalSource
+                    self.OriginalDestination = OriginalDestination
 
             
             class FE:
                 BW = 0.1
 
-                def __init__(self, Id, Granularity_vc12 ,Granularity_vc4, Sla,DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
+                def __init__(self, Id, Granularity_vc12 ,Granularity_vc4, Sla,DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None):
                     self.Id = Id
                     self.Granularity_vc12 = Granularity_vc12
                     self.Granularity_vc4 = Granularity_vc4
@@ -463,12 +475,15 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
+                    self.OriginalSource = OriginalSource
+                    self.OriginalDestination = OriginalDestination
+
                 
             
             class STM_64:
                 BW = 10
 
-                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None):
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
@@ -477,11 +492,14 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
+                    self.OriginalSource = OriginalSource
+                    self.OriginalDestination = OriginalDestination
+
             
             class STM_16:
                 BW = 2.49
 
-                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None):
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
@@ -490,6 +508,9 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
+                    self.OriginalSource = OriginalSource
+                    self.OriginalDestination = OriginalDestination
+
                     
 
 
@@ -497,7 +518,7 @@ class Network:
                 # BW : Band Width
                 BW = 622.08 / 1024
 
-                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None):
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
@@ -506,12 +527,15 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
+                    self.OriginalSource = OriginalSource
+                    self.OriginalDestination = OriginalDestination
+
 
             class STM_1_Optical:
                 # BW : Band Width in Gb/s
                 BW = 155.52 / 1024
 
-                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None):
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None):
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
@@ -520,19 +544,25 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
 
+                    self.OriginalSource = OriginalSource
+                    self.OriginalDestination = OriginalDestination
+
                 
             
             class STM_1_Electrical:
                 # BW = Band Width in Gb/s
                 BW = 155.52 / 1024
 
-                def __init__(self, Id, Sla, DemandId, IgnoringNodes, LightPathId = None):
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, LightPathId = None, OriginalSource = None, OriginalDestination = None):
                     self.Id = Id
                     self.Sla = Sla
                     self.Type = "STM_1_Electrical"
                     self.DemandId =DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
+
+                    self.OriginalSource = OriginalSource
+                    self.OriginalDestination = OriginalDestination
 
                     
                 
@@ -541,13 +571,16 @@ class Network:
                 # BW : Band Width in Gb/s
                 BW = 58.84 / 1024
 
-                def __init__(self, Id, Sla, DemandId, IgnoringNodes, LightPathId = None):
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, LightPathId = None, OriginalSource = None, OriginalDestination = None):
                     self.Id = Id
                     self.Sla = Sla
                     self.Type = "E1"
                     self.DemandId =DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
+
+                    self.OriginalSource = OriginalSource
+                    self.OriginalDestination = OriginalDestination
 
             
 
@@ -557,10 +590,8 @@ class Network:
                 Network.Traffic.Demand.ServiceReferencedId += 1
                 return ( Network.Traffic.Demand.ServiceReferencedId - 1 )
             
-            def add_service(self, ServiceType, Sla, IgnoringNodes = None, WaveLength = None, Granularity = None, Granularity_vc12 = None,
+            def add_service(self, ServiceId, ServiceType, Sla, IgnoringNodes = None, WaveLength = None, Granularity = None, Granularity_vc12 = None,
             Granularity_vc4 = None, LightPathId = None, ServiceIdList = None, Capacity = None, MandatoryNodesIdList = None):
-
-                ServiceId = self.GenerateId()
 
                 if ServiceType == "E1":
                     self.ServiceDict[ServiceId] = self.E1(ServiceId, Sla, self.Id, IgnoringNodes, LightPathId)
@@ -634,7 +665,7 @@ class Network:
         def __init__(self, Source, Destination, Capacity, ServiceIdList, Type,  DemandId, WorkingPath = None, ProtectionPath = None,
                         WaveLength = None, RegeneratorNode_w = None, RegeneratorNode_p = None, IgnoringNodesIdList = None,
                         SNR_th = None, LaunchPower = None, ModulationType = None, SNR_w = None, SNR_p = None, MandatoryNodesIdList = None,
-                        ProtectionType = None):
+                        ProtectionType = None, ClusterNum = None):
 
             self.id = Network.Lightpath.ReferenceId
             
@@ -657,6 +688,7 @@ class Network:
             self.MandatoryNodesIdList = MandatoryNodesIdList
             self.IgnoringNodesIdList = IgnoringNodesIdList
             self.ProtectionType = ProtectionType
+            self.ClusterNum = ClusterNum
         
         def set_results(self, WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p,
          SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p, ProtectionType):
@@ -671,6 +703,52 @@ class Network:
             self.ModulationType = ModulationType
             self.SNR_w = SNR_w
             self.SNR_p = SNR_p
+            self.ProtectionType = ProtectionType
+    
+    class GroomOut100:
+        
+
+        ReferenceId = 0
+
+        
+        @classmethod
+        def get_id(cls):
+            cls.ReferenceId += 1
+            return ( cls.ReferenceId - 1 )
+        
+
+        @classmethod
+        def update_id(cls, Num):
+            # this method usage is when a bunch of instances from this class has been imported and we want to update
+            # our ReferencedId ( class variable )
+            cls.ReferenceId += Num
+
+
+        def __init__(self, Source, Destination, Capacity, ServiceIdList, Type,  DemandId, WorkingPath = None, ProtectionPath = None,
+                        WaveLength = None, RegeneratorNode_w = None, RegeneratorNode_p = None, IgnoringNodesIdList = None,
+                        SNR_th = None, LaunchPower = None, ModulationType = None, SNR_w = None, SNR_p = None, MandatoryNodesIdList = None,
+                        ProtectionType = None):
+
+            self.id = Network.Lightpath.ReferenceId
+            
+            self.Source = Source
+            self.Destination = Destination
+            self.WorkingPath = WorkingPath
+            self.ProtectionPath = ProtectionPath
+            self.RegeneratorNode_w = RegeneratorNode_w
+            self.RegeneratorNode_p = RegeneratorNode_p
+            self.SNR_th = SNR_th
+            self.WaveLength = WaveLength
+            self.DemandId = DemandId
+            self.Capacity = Capacity
+            self.LaunchPower = LaunchPower
+            self.ServiceIdList = ServiceIdList
+            self.ModulationType = ModulationType
+            self.Type = Type
+            self.SNR_w = SNR_w
+            self.SNR_p = SNR_p
+            self.MandatoryNodesIdList = MandatoryNodesIdList
+            self.IgnoringNodesIdList = IgnoringNodesIdList
             self.ProtectionType = ProtectionType
     
     class Params:
@@ -744,22 +822,39 @@ if __name__ == "__main__":
 
     n.TrafficMatrix.add_demand("Tehran","Mashhad","X")
     LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
-    n.TrafficMatrix.DemandDict[LastId].add_service("100GE",2)
+
+    # NOTE: in new procedure for adding service handeling is not automatic and user can add multiple services with same
+    #       id in multiple demands
+
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
 
     n.TrafficMatrix.add_demand("Tehran", "Shiraz", "")
     LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
-    n.TrafficMatrix.DemandDict[LastId].add_service("100GE",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("10GE",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("STM_64",2)
+
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
+
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "10GE", 2)
+
+    ServiceId = n.TrafficMatrix.DemandDict[0].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "STM_64", 2)
 
     n.TrafficMatrix.add_demand("Tabriz", "Karaj", "")
-    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
-    n.TrafficMatrix.DemandDict[LastId].add_service("FE",2)
-    n.TrafficMatrix.DemandDict[LastId].add_service("1GE",2)
+
+    
+
+    # adding 2 services with same id in two different demand
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "10GE", 2)
+
+    n.TrafficMatrix.DemandDict[LastId + 1 ].add_service(ServiceId, "10GE", 2)
+
     
     print("DemandDict: ",n.TrafficMatrix.DemandDict)
     print("Demand 1: ",n.TrafficMatrix.DemandDict[1].ServiceDict)
-    print("Demand 2: ",n.TrafficMatrix.DemandDict[2].ServiceDict)
     print("Demand 0: ",n.TrafficMatrix.DemandDict[0].ServiceDict)
 
     n.add_lightpath(Source= "Tehran",
