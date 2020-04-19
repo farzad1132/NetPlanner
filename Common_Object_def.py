@@ -843,7 +843,7 @@ if __name__ == "__main__":
     n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "STM_64", 2)
 
     # deleting service from demand
-    n.TrafficMatrix.DemandDict[LastId].pop(ServiceId)
+    n.TrafficMatrix.DemandDict[LastId].ServiceDict.pop(ServiceId)
 
     n.TrafficMatrix.add_demand("Tabriz", "Karaj", "")
 
