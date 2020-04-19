@@ -665,7 +665,7 @@ class Network:
         def __init__(self, Source, Destination, Capacity, ServiceIdList, Type,  DemandId, WorkingPath = None, ProtectionPath = None,
                         WaveLength = None, RegeneratorNode_w = None, RegeneratorNode_p = None, IgnoringNodesIdList = None,
                         SNR_th = None, LaunchPower = None, ModulationType = None, SNR_w = None, SNR_p = None, MandatoryNodesIdList = None,
-                        ProtectionType = None, ClusterNum = None):
+                        ProtectionType = None, ClusterNum = 0):
 
             self.id = Network.Lightpath.ReferenceId
             
@@ -727,7 +727,7 @@ class Network:
         def __init__(self, Source, Destination, Capacity, ServiceIdList, Type,  DemandId, WorkingPath = None, ProtectionPath = None,
                         WaveLength = None, RegeneratorNode_w = None, RegeneratorNode_p = None, IgnoringNodesIdList = None,
                         SNR_th = None, LaunchPower = None, ModulationType = None, SNR_w = None, SNR_p = None, MandatoryNodesIdList = None,
-                        ProtectionType = None):
+                        ProtectionType = None, ClusterNum = None):
 
             self.id = Network.Lightpath.ReferenceId
             
@@ -750,6 +750,7 @@ class Network:
             self.MandatoryNodesIdList = MandatoryNodesIdList
             self.IgnoringNodesIdList = IgnoringNodesIdList
             self.ProtectionType = ProtectionType
+            self.ClusterNum = ClusterNum
     
     class Params:
         @classmethod
@@ -840,6 +841,9 @@ if __name__ == "__main__":
 
     ServiceId = n.TrafficMatrix.DemandDict[0].GenerateId()
     n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "STM_64", 2)
+
+    # deleting service from demand
+    n.TrafficMatrix.DemandDict[LastId].pop(ServiceId)
 
     n.TrafficMatrix.add_demand("Tabriz", "Karaj", "")
 
