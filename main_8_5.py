@@ -73,9 +73,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 #from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import networkx as nx
-from numpy import cos, sin
-import numpy
-
+import utm
 
 class Backend_map(QObject):
 
@@ -2832,7 +2830,6 @@ class Ui_MainWindow(object):
         #mpl.rcParams["figure.figsize"] = [18.4, 7.8]
         self.MapWidget.canvas.figure.subplots_adjust(left = -0.001, right = 1, top = 1, bottom = -0.005)
         self.MapWidget.canvas.axes.cla()
-        R = 6371 
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
 
@@ -3898,10 +3895,11 @@ class Ui_MainWindow(object):
 
     def PhysicalTopologyToObject(self):
 
-        R = 6371
         def scale_calculation(lat, lon):
-            x = R * cos(lat) * cos(lon)
-            y = -R * cos(lat) * sin(lon)
+            u = utm.from_latlon(lat, lon)
+            x = u[0]
+            y = u[1]
+
             return [x,y]
 
 
