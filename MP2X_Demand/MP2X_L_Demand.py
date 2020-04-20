@@ -572,7 +572,7 @@ class customlabel(QLabel):
                                             Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
 
                     # setting line port tooltip                                        
-                    self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_2].toolTip())
+                    self.LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_2].toolTip())
 
                 # updating client capacity part of panel object
                 DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = 0
