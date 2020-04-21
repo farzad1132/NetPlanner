@@ -136,13 +136,13 @@ class TP1H_L_Demand(QtWidgets.QWidget):
             DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
 
             # correcting upper lightpath id's 
-            for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
+            """ for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
                 for UpperId in sorted(list(DemandTabDataBase["Lightpathes"][(Source, Des)].keys())):
                     if UpperId > id:
                         DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1] = DemandTabDataBase["Lightpathes"][(Source, Des)].pop(UpperId)
                         UserData = DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].data(Qt.UserRole)
                         UserData["LightPathId"] -= 1
-                        DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) 
+                        DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) """ 
  
         
         Data["ui"].update_Demand_lightpath_list()
@@ -152,7 +152,8 @@ class TP1H_L_Demand(QtWidgets.QWidget):
 
         key = (int(ids[0]) , int(ids[1]))
         if mode == "delete":
-            DemandTabDataBase["Services"][(source, destination)].pop(key)
+            DemandTabDataBase["Services"][(source, destination)][key] = 1
+            DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
             # statement bellow checks for removing notification
             if hasattr( Data["ui"], "failed_nodes"):
@@ -166,7 +167,8 @@ class TP1H_L_Demand(QtWidgets.QWidget):
                         Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
-            DemandTabDataBase["Services"][(source, destination)][key] = None
+            DemandTabDataBase["Services"][(source, destination)][key] = 0
+            DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.green, Qt.SolidPattern))
             
         Data["ui"].UpdateDemand_ServiceList()
         
@@ -192,26 +194,15 @@ class customlabel(QLabel):
         UserData = model.item(0).data(Qt.UserRole)
 
         self.allowedservices = ["100GE"]
-        #text = dragtext
+        
 
-        """ text = text.split("#")
-        n_key = "".join(text[0].split())
-        ids = n_key[1:-1].split(',')
-        ids = list(map(lambda x : int(x), ids))          # [ Demand Number, Service Number ]
-        servicetype = text[1].strip()   # service type = 100Ge , 10GE , .... """
         servicetype = dragtext.strip()
-        ids = [UserData["DemandId"], UserData["ServiceId"]]         # [ Demand Number, Service Number ]
 
         if servicetype in self.allowedservices:
+            if DemandTabDataBase["Services"][(self.nodename, self.Destination)][(UserData["DemandId"], UserData["ServiceId"])] == 0:
             
-            self.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
-
-            
-        else:
-            #TODO: change client color to red
-            #self.setPixmap(QPixmap(os.path.join("TP1H_Demand", "client_red.png")))
-            pass
-        event.accept()
+                self.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
+                event.accept()
 
         super(customlabel,self).dragEnterEvent(event)
     
@@ -323,7 +314,8 @@ class customlabel(QLabel):
 
         key = (int(ids[0]) , int(ids[1]))
         if mode == "delete":
-            DemandTabDataBase["Services"][(source, destination)].pop(key)
+            DemandTabDataBase["Services"][(source, destination)][key] = 1
+            DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
             # statement bellow checks for removing notification
             if hasattr( Data["ui"], "failed_nodes"):
@@ -337,7 +329,8 @@ class customlabel(QLabel):
                         Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
-            DemandTabDataBase["Services"][(source, destination)][key] = None
+            DemandTabDataBase["Services"][(source, destination)][key] = 0
+            DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.green, Qt.SolidPattern))
             
         Data["ui"].UpdateDemand_ServiceList()
     
@@ -358,13 +351,13 @@ class customlabel(QLabel):
             DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
 
             # correcting upper lightpath id's 
-            for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
+            """ for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
                 for UpperId in sorted(list(DemandTabDataBase["Lightpathes"][(Source, Des)].keys())):
                     if UpperId > id:
                         DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1] = DemandTabDataBase["Lightpathes"][(Source, Des)].pop(UpperId)
                         UserData = DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].data(Qt.UserRole)
                         UserData["LightPathId"] -= 1
-                        DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) 
+                        DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) """ 
  
         
         Data["ui"].update_Demand_lightpath_list()

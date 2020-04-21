@@ -248,7 +248,8 @@ class MP2X_L_Demand(QtWidgets.QWidget):
 
         key = (int(ids[0]) , int(ids[1]))
         if mode == "delete":
-            DemandTabDataBase["Services"][(source, destination)].pop(key)
+            DemandTabDataBase["Services"][(source, destination)][key] = 1
+            DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
             # statement bellow checks for removing notification
             if hasattr( Data["ui"], "failed_nodes"):
@@ -262,7 +263,8 @@ class MP2X_L_Demand(QtWidgets.QWidget):
                         Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
-            DemandTabDataBase["Services"][(source, destination)][key] = None
+            DemandTabDataBase["Services"][(source, destination)][key] = 0
+            DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.green, Qt.SolidPattern))
             
         Data["ui"].UpdateDemand_ServiceList()
     
@@ -283,13 +285,13 @@ class MP2X_L_Demand(QtWidgets.QWidget):
             DemandTabDataBase["GroomOut10"][(Source, Destination)].pop(id)
 
             # correcting upper lightpath id's 
-            for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
+            """ for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
                 for UpperId in sorted(list(DemandTabDataBase["GroomOut10"][(Source, Des)].keys())):
                     if UpperId > id:
                         DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1] = DemandTabDataBase["GroomOut10"][(Source, Des)].pop(UpperId)
                         UserData = DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1].data(Qt.UserRole)
                         UserData["GroomOut10Id"] -= 1
-                        DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) 
+                        DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData)  """
  
         Data["ui"].update_Demand_groomout10_list()
 
@@ -318,27 +320,35 @@ class customlabel(QLabel):
         self.allowedservices = ["E1", "STM_1_Electrical", "STM_1_Optical", "STM_4", "STM_16"]
         
         servicetype = dragtext.strip()
-        ids = [UserData["DemandId"], UserData["ServiceId"]]
+        
         if servicetype in self.allowedservices:
-            #self.setPixmap(QPixmap(os.path.join("MP2D_panel", "client_green.png")))
-            Line_1_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0]
-            Line_2_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1]
-            DropCapacity = self.BWDict[servicetype]
+            if DemandTabDataBase["Services"][(self.nodename, self.Destination)][(UserData["DemandId"], UserData["ServiceId"])] == 0:
 
-            # checking weather lines have enough capacity or not
-            if Line_1_old_capacity + DropCapacity < 10 or Line_2_old_capacity + DropCapacity < 10:
+                ids = [UserData["DemandId"], UserData["ServiceId"]]
+                Line_1_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0]
+                Line_2_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1]
+                DropCapacity = self.BWDict[servicetype]
+
+                # checking weather lines have enough capacity or not
+                if Line_1_old_capacity + DropCapacity < 10 or Line_2_old_capacity + DropCapacity < 10:
+                    
+                    if self.ClientNum % 2 == 0:
+                        self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                    else:
+                        self.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
+                    event.accept()
                 
-                if self.ClientNum % 2 == 0:
-                    self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
                 else:
-                    self.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
-                event.accept()
+                    if self.ClientNum % 2 == 0:
+                        self.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
+                    else:
+                        self.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
 
-        else:
-            if self.ClientNum % 2 == 0:
-                self.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
             else:
-                self.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
+                if self.ClientNum % 2 == 0:
+                    self.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
+                else:
+                    self.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
         
 
         super(customlabel,self).dragEnterEvent(event)
@@ -654,7 +664,8 @@ class customlabel(QLabel):
 
         key = (int(ids[0]) , int(ids[1]))
         if mode == "delete":
-            DemandTabDataBase["Services"][(source, destination)].pop(key)
+            DemandTabDataBase["Services"][(source, destination)][key] = 1
+            DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
             # statement bellow checks for removing notification
             if hasattr( Data["ui"], "failed_nodes"):
@@ -668,7 +679,8 @@ class customlabel(QLabel):
                         Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
-            DemandTabDataBase["Services"][(source, destination)][key] = None
+            DemandTabDataBase["Services"][(source, destination)][key] = 0
+            DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.green, Qt.SolidPattern))
             
         Data["ui"].UpdateDemand_ServiceList()
     
@@ -688,14 +700,14 @@ class customlabel(QLabel):
             # deleting desired lightpath from database
             DemandTabDataBase["GroomOut10"][(Source, Destination)].pop(id)
 
-            # correcting upper lightpath id's 
+            """ # correcting upper lightpath id's 
             for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
                 for UpperId in sorted(list(DemandTabDataBase["GroomOut10"][(Source, Des)].keys())):
                     if UpperId > id:
                         DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1] = DemandTabDataBase["GroomOut10"][(Source, Des)].pop(UpperId)
                         UserData = DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1].data(Qt.UserRole)
                         UserData["GroomOut10Id"] -= 1
-                        DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) 
+                        DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) """ 
  
         Data["ui"].update_Demand_groomout10_list()
 

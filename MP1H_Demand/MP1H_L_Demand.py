@@ -153,13 +153,14 @@ class MP1H_L_Demand(QtWidgets.QWidget):
 
                 LightPathId = DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId
 
-                
-                self.modify_LightPathList(  id= LightPathId,
-                                            Source= self.nodename,
-                                            Destination= self.Destination,
-                                            mode= "delete",
-                                            type= "100GE")
-                Data["NetworkObj"].del_lightpath(LightPathId)
+                if LightPathId is not None:
+                    self.modify_LightPathList(  id= LightPathId,
+                                                Source= self.nodename,
+                                                Destination= self.Destination,
+                                                mode= "delete",
+                                                type= "100GE")
+
+                    Data["NetworkObj"].del_lightpath(LightPathId)
 
             DemandTabDataBase["Panels"][self.nodename].pop(self.id)
             DemandTabDataBase["Panels"][self.nodename].pop(self.uppernum)
@@ -182,13 +183,13 @@ class MP1H_L_Demand(QtWidgets.QWidget):
             DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
 
             # correcting upper lightpath id's 
-            for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
+            """ for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
                 for UpperId in sorted(list(DemandTabDataBase["Lightpathes"][(Source, Des)].keys())):
                     if UpperId is not None and UpperId > id:
                         DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1] = DemandTabDataBase["Lightpathes"][(Source, Des)].pop(UpperId)
                         UserData = DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].data(Qt.UserRole)
                         UserData["LightPathId"] -= 1
-                        DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) 
+                        DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData)  """
  
         
         Data["ui"].update_Demand_lightpath_list()
@@ -201,7 +202,9 @@ class MP1H_L_Demand(QtWidgets.QWidget):
 
             # check if its a normal service or not
             if key in DemandTabDataBase["Services"][(source, destination)]:
-                DemandTabDataBase["Services"][(source, destination)].pop(key)
+                DemandTabDataBase["Services"][(source, destination)][key] = 1
+                DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.white, Qt.SolidPattern))
+
             
             else:
                 # adding MP1h_Client_Id to GroomOut10 Item
@@ -217,7 +220,7 @@ class MP1H_L_Demand(QtWidgets.QWidget):
             
             
             # statement bellow checks for removing notification ( if there is such a node)
-            if hasattr( Data["ui"], "failed_nodes"):
+            if hasattr(Data["ui"], "failed_nodes"):
                 if source in Data["ui"].failed_nodes:
                     x = 0
                     for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
@@ -229,7 +232,8 @@ class MP1H_L_Demand(QtWidgets.QWidget):
             
         elif mode == "add":
             if type != "GroomOut10":
-                DemandTabDataBase["Services"][(source, destination)][key] = None
+                DemandTabDataBase["Services"][(source, destination)][key] = 0
+                DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.green, Qt.SolidPattern))
 
             else:
                 font = DemandTabDataBase["GroomOut10"][(source, destination)][key[1]].font()
@@ -271,6 +275,7 @@ class customlabel(QLabel):
         model = QStandardItemModel()
         model.dropMimeData(event.mimeData(), Qt.CopyAction, 0,0, QModelIndex())
         dragtext = model.item(0,0).text()
+        UserData = model.item(0).data(Qt.UserRole)
         
         self.allowedservices = ["10GE", "STM_64", "GroomOut10"]
         
@@ -284,13 +289,16 @@ class customlabel(QLabel):
                             self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
                         else:
                             self.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
-                else:
+
+                        event.accept()
+                            
+                elif DemandTabDataBase["Services"][(self.nodename, self.Destination)][(UserData["DemandId"], UserData["ServiceId"])] == 0:
                     if self.ClientNum % 2 == 0:
                         self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
                     else:
                         self.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
-                
-            event.accept()
+                    
+                    event.accept()
 
             super(customlabel,self).dragEnterEvent(event)
     
@@ -366,7 +374,7 @@ class customlabel(QLabel):
                                             PanelId= self.id)
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 1
 
-                self.modify_ServiceList(self.ids, self.nodename, self.Destination, LightPathId= LightPathId)
+                self.modify_ServiceList(self.ids, self.nodename, self.Destination, LightPathId= LightPathId, type= self.servicetype)
 
                 
             else:
@@ -374,7 +382,7 @@ class customlabel(QLabel):
                 LightPathId = DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId
                 Data["NetworkObj"].LightPathDict[LightPathId].ServiceIdList.extend(ServiceIdList)
 
-                self.modify_ServiceList(self.ids, self.nodename, self.Destination, LightPathId= LightPathId)
+                self.modify_ServiceList(self.ids, self.nodename, self.Destination, LightPathId= LightPathId, type= self.servicetype)
 
             # adding LightPathId to groomOut object
             if self.servicetype == "GroomOut10":
@@ -553,7 +561,8 @@ class customlabel(QLabel):
 
             # check if its a normal service or not
             if key in DemandTabDataBase["Services"][(source, destination)]:
-                DemandTabDataBase["Services"][(source, destination)].pop(key)
+                DemandTabDataBase["Services"][(source, destination)][key] = 1
+                DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.white, Qt.SolidPattern))
             
             else:
                 # adding MP1h_Client_Id to GroomOut10 Item
@@ -580,8 +589,9 @@ class customlabel(QLabel):
                         Data["ui"].set_failed_nodes_default(source)
             
         elif mode == "add":
-            if self.servicetype != "GroomOut10":
-                DemandTabDataBase["Services"][(source, destination)][key] = None
+            if type != "GroomOut10":
+                DemandTabDataBase["Services"][(source, destination)][key] = 0
+                DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.green, Qt.SolidPattern))
 
             else:
                 font = DemandTabDataBase["GroomOut10"][(source, destination)][key[1]].font()
@@ -590,7 +600,6 @@ class customlabel(QLabel):
 
                 # deleting MP1h_Client_Id from GroomOut10 Item
                 UserData = DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].data(Qt.UserRole)
-
                 UserData.pop("MP1H_Client_Id")
 
                 DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].setData(Qt.UserRole, UserData)
@@ -615,15 +624,16 @@ class customlabel(QLabel):
         if mode == "delete":
             # deleting desired lightpath from database
             DemandTabDataBase["Lightpathes"][(Source, Destination)].pop(id)
+            
 
-            # correcting upper lightpath id's 
+            """ # correcting upper lightpath id's 
             for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
                 for UpperId in sorted(list(DemandTabDataBase["Lightpathes"][(Source, Des)].keys())):
                     if UpperId is not None and UpperId > id:
                         DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1] = DemandTabDataBase["Lightpathes"][(Source, Des)].pop(UpperId)
                         UserData = DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].data(Qt.UserRole)
                         UserData["LightPathId"] -= 1
-                        DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) 
+                        DemandTabDataBase["Lightpathes"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) """ 
  
         
         Data["ui"].update_Demand_lightpath_list()

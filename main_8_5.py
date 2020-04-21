@@ -1,7 +1,7 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 from PySide2.QtWidgets import QApplication,QTableWidget,QTableWidgetItem,QFileDialog,QMdiSubWindow,QWidget,QLabel,QAbstractItemView,QListWidgetItem,QMenu,QFontComboBox
 from PySide2.QtCore import SIGNAL,QObject,Slot
-from PySide2.QtGui import QPixmap
+from PySide2.QtGui import QPixmap, QBrush
 import pickle
 import sys, os
 import pandas as pd
@@ -74,6 +74,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 import matplotlib.pyplot as plt
 import networkx as nx
 import utm
+import numpy
 
 class Backend_map(QObject):
 
@@ -3751,9 +3752,10 @@ class Ui_MainWindow(object):
             item.setToolTip(f"Type: {service.Type}\nSource: {Source}\nDestination: {Destination}")
             data = {"DemandId": id, "ServiceId": serviceId}
             item.setData(Qt.UserRole, data)
+            item.setBackground(QBrush(Qt.green, Qt.SolidPattern))
 
             ServiceDict_static[(id, serviceId)] = item
-            ServiceDict_dynamic[(id, serviceId)] = None
+            ServiceDict_dynamic[(id, serviceId)] = 0
 
             
 
@@ -3799,15 +3801,18 @@ class Ui_MainWindow(object):
 
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
-        #ServiceList = list(DemandTabDataBase["Services"][(Source,Destination)].values())
-        #self.Demand_ServiceList.clear()
-        """ for i in range(self.Demand_ServiceList.count()):
-            self.Demand_ServiceList.takeItem(i) """
+    
         while self.Demand_ServiceList.count() > 0:
             self.Demand_ServiceList.takeItem(0)
-        for id in DemandTabDataBase["Services"][(Source,Destination)].keys():
+        for id, value in DemandTabDataBase["Services"][(Source,Destination)].items():
             item = DemandTabDataBase["Services_static"][Source][id]
-            self.Demand_ServiceList.addItem(item)
+
+            if value == 1:
+                self.Demand_ServiceList.addItem(item)
+            
+            else:
+                self.Demand_ServiceList.insertItem(0, item)
+                
         self.update_demand_service_flag = False
     
     def Demand_Source_combobox_Change(self):
@@ -4565,7 +4570,8 @@ class Ui_MainWindow(object):
                                                                                         Destination= Destination)
 
                 # omitting handeled services from DemandTabDataBase
-                DemandTabDataBase["Services"][(Source, Destination)].pop((DemandId, lightpath.ServiceIdList[0]))
+                DemandTabDataBase["Services"][(Source, Destination)][(DemandId, lightpath.ServiceIdList[0])] = 1
+                DemandTabDataBase["Services_static"][Source][(DemandId, lightpath.ServiceIdList[0])].setBackground(QBrush(Qt.white, Qt.SolidPattern))
             else:
                 panelid = self.get_panel_num(Source)
                 ClientCapacity, LineCapacity = self.create_ClientsCapacityList(DemandId, lightpath.ServiceIdList, netobj)
@@ -4580,7 +4586,7 @@ class Ui_MainWindow(object):
                 #DemandTabDataBase["Panels"][Source][panelid] = MP1H_L(ClientCapacity, LineCapacity, lightpath.ServiceIdList, [DemandId for i in range(10)], id, LightPath_flag= 1)
                 DemandTabDataBase["Panels"][Source][panelid] = MP1H_L(  ClientsCapacity= ClientCapacity,
                                                                         LineCapacity= LineCapacity,
-                                                                        ServiceIdList= lightpath.ServiceIdList,
+                                                                        ServiceIdList= list(lightpath.ServiceIdList),
                                                                         DemandIdList= [DemandId for i in range(10)],
                                                                         LightPathId= id,
                                                                         LightPath_flag= 1,
@@ -4597,7 +4603,8 @@ class Ui_MainWindow(object):
                 # omitting handeled services from DemandTabDataBase
                 for ServiceId in lightpath.ServiceIdList:
                     if (DemandId, ServiceId) in DemandTabDataBase["Services"][(Source, Destination)]:
-                        DemandTabDataBase["Services"][(Source, Destination)].pop((DemandId, ServiceId))
+                        DemandTabDataBase["Services"][(Source, Destination)][(DemandId, ServiceId)] = 1
+                        DemandTabDataBase["Services_static"][Source][(DemandId, ServiceId)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
                 print(f"panels part--> Source:{Source} panels:{DemandTabDataBase['Panels'][Source]}")
                 print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
@@ -4660,7 +4667,8 @@ class Ui_MainWindow(object):
 
             # omitting handled services from DemandTabDataBase
             for service in ServiceIdList:
-                DemandTabDataBase["Services"][(Source, Destination)].pop((DemandId, service))
+                DemandTabDataBase["Services"][(Source, Destination)][(DemandId, service)] = 1
+                DemandTabDataBase["Services_static"][Source][(DemandId, service)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
             # creating Qlistwidgetitem item part
             item_1 = QListWidgetItem("GroomOut10", self.groomout10_list)
@@ -4740,7 +4748,8 @@ class Ui_MainWindow(object):
             
             # omitting handled services from DemandTabDataBase
             for service in netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList:
-                DemandTabDataBase["Services"][(Source, Destination)].pop((DemandId, service))
+                DemandTabDataBase["Services"][(Source, Destination)][(DemandId, service)] = 1
+                DemandTabDataBase["Services_static"][Source][(DemandId, service)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
             # creating Qlistwidgetitem item part
             item = QListWidgetItem("GroomOut10", self.groomout10_list)
@@ -4967,11 +4976,13 @@ class Ui_MainWindow(object):
         NotifiedNodes = []
 
         for key, value in DemandTabDataBase["Services"].items():
-            if ( not value ) is False:
+            for state in value.values():
+                if state == 0:
 
-                Source = key[0]
-                if not (Source in NotifiedNodes):
-                    NotifiedNodes.append(Source)
+                    Source = key[0]
+                    if not (Source in NotifiedNodes):
+                        NotifiedNodes.append(Source)
+                        break
         
         return NotifiedNodes
 

@@ -46,14 +46,17 @@ class Network:
                 elif value.LightPathId == id:
                     self.TrafficMatrix.GroomOut10Dict[key].LightPathId = None
 
+        for value in self.TrafficMatrix.GroomOut10Dict.values():
+            if value.LightPathId == LightPathId:
+                value.LightPathId = None
         del self.LightPathDict[LightPathId]
-        correct_UpperIds(LightPathId + 1)
-        correct_LightPathIds(LightPathId)
+        #correct_UpperIds(LightPathId + 1)
+        #correct_LightPathIds(LightPathId)
         
 
 
         # correcting ReferenceId
-        Network.Lightpath.update_id(-1)
+        #Network.Lightpath.update_id(-1)
         
     
     def put_results(self, id, WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p,
@@ -351,9 +354,9 @@ class Network:
                         self.GroomOut10Dict[key - 1] = self.GroomOut10Dict.pop(key)
 
             del self.GroomOut10Dict[Id]
-            correct_UpperIds(Id + 1)
+            #correct_UpperIds(Id + 1)
 
-            Network.Traffic.Demand.ServiceReferencedId -= 1
+            #Network.Traffic.Demand.ServiceReferencedId -= 1
             
             
         

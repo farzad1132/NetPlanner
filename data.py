@@ -138,8 +138,11 @@ DemandTabDataBase["Source_Destination"] = {}
 #       { <ClickedNode> : {"Source": <SourceName>, "DestinationList : <DestinationList>"} }
 DemandTabDataBase["Services"] = {} # dynamic one : changes with user actions
 # format: 
-#       {(Tehran, karaj): { (1,3) : None }, ...}         (1 , 3) ---> 1 : Demand Id , 3 : Service Id
+#       {(Tehran, karaj): { (1,3) : <State> }, ...}         (1 , 3) ---> 1 : Demand Id , 3 : Service Id
 # this database just shows that witch services hasn't been assigned
+# State:
+#   0: means its has not been assigned
+#   1: mean it has been assigned
 
 DemandTabDataBase["Services_static"] = {}   # same as Services part but difference is that its not changing with user actions
 # format:
@@ -182,6 +185,9 @@ GroomingTabDataBase["LinkState"] = {}
 # <LambdaList> : list of lambda ids
 
 GroomingTabDataBase["NodeState"] = {}
+
+
+
 
 
 class MP2D_L:
@@ -252,6 +258,9 @@ class MP2X_R:
         self.Destination = Destination
 
 class MP1H_L:
+
+    
+
     def __init__(self, ClientsCapacity = None, LineCapacity = 0, ServiceIdList = None, 
     DemandIdList = None, LightPathId = None, LightPath_flag = 0, Destination = None):
 
@@ -275,14 +284,7 @@ class MP1H_L:
         self.LightPathId = LightPathId
         self.LineCapacity = LineCapacity
     
-    """ def add_client(self, ClientNum, Type, LineCapacity):
-        # type can be 10GE or stm64
-        self.ClientsCapacity[ClientNum] = Type
-        self.LineCapacity = LineCapacity
     
-    def del_client(self, ClientNum, LineCapacity):
-        self.ClientsCapacity[ClientNum] = 0
-        self.LineCapacity = LineCapacity """
 
 class MP1H_R:
     def __init__(self, LeftId, Destination):
