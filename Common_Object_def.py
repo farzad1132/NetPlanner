@@ -335,6 +335,8 @@ class Network:
  
 
             self.GroomOut10Dict[(DemandId, GroomOutId)] = self.Groom_out10( Id= GroomOutId,
+                                                        Source= Source,
+                                                        Destination= Destination,
                                                         DemandId = DemandId,
                                                         Capacity = Capacity,
                                                         ServiceIdList = ServiceIdList,
@@ -371,9 +373,11 @@ class Network:
         class Groom_out10:
                 BW=10
 
-                def __init__(self, Id, DemandId, Capacity, ServiceIdList, IgnoringNodesIdList = None, MandatoryNodesIdList = None,
+                def __init__(self, Id, Source, Destination, DemandId, Capacity, ServiceIdList, IgnoringNodesIdList = None, MandatoryNodesIdList = None,
                                     LightPathId = None, Sla = None):
 
+                    self.Source = Source
+                    self.Destination = Destination
                     self.Id = Id
                     self.DemandId = DemandId
                     self.Sla = Sla
