@@ -1,7 +1,7 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 from PySide2.QtWidgets import QApplication,QTableWidget,QTableWidgetItem,QFileDialog,QMdiSubWindow,QWidget,QLabel,QAbstractItemView,QListWidgetItem,QMenu,QFontComboBox
 from PySide2.QtCore import SIGNAL,QObject,Slot
-from PySide2.QtGui import QPixmap, QBrush
+from PySide2.QtGui import QPixmap, QBrush, QColor
 import pickle
 import sys, os
 import pandas as pd
@@ -3752,7 +3752,7 @@ class Ui_MainWindow(object):
             item.setToolTip(f"Type: {service.Type}\nSource: {Source}\nDestination: {Destination}")
             data = {"DemandId": id, "ServiceId": serviceId}
             item.setData(Qt.UserRole, data)
-            item.setBackground(QBrush(Qt.green, Qt.SolidPattern))
+            item.setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
 
             ServiceDict_static[(id, serviceId)] = item
             ServiceDict_dynamic[(id, serviceId)] = 0

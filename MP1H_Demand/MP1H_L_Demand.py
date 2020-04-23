@@ -233,7 +233,7 @@ class MP1H_L_Demand(QtWidgets.QWidget):
         elif mode == "add":
             if type != "GroomOut10":
                 DemandTabDataBase["Services"][(source, destination)][key] = 0
-                DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.green, Qt.SolidPattern))
+                DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
 
             else:
                 font = DemandTabDataBase["GroomOut10"][(source, destination)][key[1]].font()
@@ -591,7 +591,7 @@ class customlabel(QLabel):
         elif mode == "add":
             if type != "GroomOut10":
                 DemandTabDataBase["Services"][(source, destination)][key] = 0
-                DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.green, Qt.SolidPattern))
+                DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
 
             else:
                 font = DemandTabDataBase["GroomOut10"][(source, destination)][key[1]].font()

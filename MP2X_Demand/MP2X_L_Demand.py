@@ -264,7 +264,7 @@ class MP2X_L_Demand(QtWidgets.QWidget):
             
         elif mode == "add":
             DemandTabDataBase["Services"][(source, destination)][key] = 0
-            DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.green, Qt.SolidPattern))
+            DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
             
         Data["ui"].UpdateDemand_ServiceList()
     
@@ -680,7 +680,7 @@ class customlabel(QLabel):
             
         elif mode == "add":
             DemandTabDataBase["Services"][(source, destination)][key] = 0
-            DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.green, Qt.SolidPattern))
+            DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
             
         Data["ui"].UpdateDemand_ServiceList()
     
