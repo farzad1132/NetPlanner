@@ -324,15 +324,17 @@ class Network:
         def add_demand(self, Source, Destination, Type):
             Id = self.GenerateDemandId()
             self.DemandDict[Id] = self.Demand(Id, Source, Destination, Type)
+
+        def Generate_GroomOutId(self):
+            self.Demand.ServiceReferencedId += 1
+            return ( self.Demand.ServiceReferencedId - 1 )
         
-        def add_groom_out_10(self, Source, Destination, DemandId, Capacity, ServiceIdList,
+        def add_groom_out_10(self, GroomOutId, Source, Destination, DemandId, Capacity, ServiceIdList,
                                 IgnoringNodesIdList = None, MandatoryNodesIdList = None, LightPathId = None, Sla = None):
                                 
-            Network.Traffic.Demand.ServiceReferencedId += 1
+ 
 
-            Id = Network.Traffic.Demand.ServiceReferencedId - 1 
-
-            self.GroomOut10Dict[Id] = self.Groom_out10( Id= Id,
+            self.GroomOut10Dict[(DemandId, GroomOutId)] = self.Groom_out10( Id= GroomOutId,
                                                         DemandId = DemandId,
                                                         Capacity = Capacity,
                                                         ServiceIdList = ServiceIdList,
@@ -341,7 +343,7 @@ class Network:
                                                         LightPathId= LightPathId,
                                                         Sla= Sla)
         
-        def delete_groom_out_10(self, Id):
+        def delete_groom_out_10(self, Id, DemandId):
 
             def correct_UpperIds(id):
                 if id in self.GroomOut10Dict:
@@ -350,7 +352,7 @@ class Network:
                     for key in sorted_keys[index:]:
                         self.GroomOut10Dict[key - 1] = self.GroomOut10Dict.pop(key)
 
-            del self.GroomOut10Dict[Id]
+            del self.GroomOut10Dict[(Id, DemandId)]
             correct_UpperIds(Id + 1)
 
             Network.Traffic.Demand.ServiceReferencedId -= 1
@@ -591,40 +593,62 @@ class Network:
                 return ( Network.Traffic.Demand.ServiceReferencedId - 1 )
             
             def add_service(self, ServiceId, ServiceType, Sla, IgnoringNodes = None, WaveLength = None, Granularity = None, Granularity_vc12 = None,
-            Granularity_vc4 = None, LightPathId = None, ServiceIdList = None, Capacity = None, MandatoryNodesIdList = None):
+            Granularity_vc4 = None, LightPathId = None, ServiceIdList = None, Capacity = None, MandatoryNodesIdList = None, OriginalSource = None, OriginalDestination = None):
 
                 if ServiceType == "E1":
-                    self.ServiceDict[ServiceId] = self.E1(ServiceId, Sla, self.Id, IgnoringNodes, LightPathId)
+                    self.ServiceDict[ServiceId] = self.E1(ServiceId, Sla, self.Id, IgnoringNodes, LightPathId,
+                    OriginalSource= OriginalSource,
+                    OriginalDestination= OriginalDestination)
 
                 elif ServiceType == "STM_1_Electrical":
-                    self.ServiceDict[ServiceId] = self.STM_1_Electrical(ServiceId, Sla, self.Id, IgnoringNodes, LightPathId)
+                    self.ServiceDict[ServiceId] = self.STM_1_Electrical(ServiceId, Sla, self.Id, IgnoringNodes, LightPathId,
+                    OriginalSource= OriginalSource,
+                    OriginalDestination= OriginalDestination)
 
                 elif ServiceType == "STM_1_Optical":
-                    self.ServiceDict[ServiceId] = self.STM_1_Optical(ServiceId, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
+                    self.ServiceDict[ServiceId] = self.STM_1_Optical(ServiceId, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
+                    OriginalSource= OriginalSource,
+                    OriginalDestination= OriginalDestination)
 
                 elif ServiceType == "STM_4":
-                    self.ServiceDict[ServiceId] = self.STM_4(ServiceId, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
+                    self.ServiceDict[ServiceId] = self.STM_4(ServiceId, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
+                    OriginalSource= OriginalSource,
+                    OriginalDestination= OriginalDestination)
 
                 elif ServiceType == "STM_16":
-                    self.ServiceDict[ServiceId] = self.STM_16(ServiceId, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
+                    self.ServiceDict[ServiceId] = self.STM_16(ServiceId, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
+                    OriginalSource= OriginalSource,
+                    OriginalDestination= OriginalDestination)
 
                 elif ServiceType == "STM_64":
-                    self.ServiceDict[ServiceId] = self.STM_64(ServiceId, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
+                    self.ServiceDict[ServiceId] = self.STM_64(ServiceId, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
+                    OriginalSource= OriginalSource,
+                    OriginalDestination= OriginalDestination)
 
                 elif ServiceType == "FE":
-                    self.ServiceDict[ServiceId] = self.FE(ServiceId, Granularity_vc12, Granularity_vc4, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
+                    self.ServiceDict[ServiceId] = self.FE(ServiceId, Granularity_vc12, Granularity_vc4, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
+                    OriginalSource= OriginalSource,
+                    OriginalDestination= OriginalDestination)
 
                 elif ServiceType == "1GE":
-                    self.ServiceDict[ServiceId] = self.G_1(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
+                    self.ServiceDict[ServiceId] = self.G_1(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
+                    OriginalSource= OriginalSource,
+                    OriginalDestination= OriginalDestination)
 
                 elif ServiceType == "10GE":
-                    self.ServiceDict[ServiceId] = self.G_10(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
+                    self.ServiceDict[ServiceId] = self.G_10(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
+                    OriginalSource= OriginalSource,
+                    OriginalDestination= OriginalDestination)
 
                 elif ServiceType == "40GE":
-                    self.ServiceDict[ServiceId] = self.G_40(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
+                    self.ServiceDict[ServiceId] = self.G_40(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
+                    OriginalSource= OriginalSource,
+                    OriginalDestination= OriginalDestination)
 
                 elif ServiceType == "100GE":
-                    self.ServiceDict[ServiceId] = self.G_100(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId)
+                    self.ServiceDict[ServiceId] = self.G_100(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
+                    OriginalSource= OriginalSource,
+                    OriginalDestination= OriginalDestination)
                 
         
             
@@ -833,8 +857,12 @@ if __name__ == "__main__":
     n.TrafficMatrix.add_demand("Tehran", "Shiraz", "")
     LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
 
+
+    # sample with original source and destination
     ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2, 
+                                                    OriginalSource = "T",
+                                                    OriginalDestination = "H")
 
     ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
     n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "10GE", 2)
@@ -887,7 +915,9 @@ if __name__ == "__main__":
     # example of adding groom_out10
     # NOTE: assign *LightPathId* if this GroomOut10 is connected to MP1H, otherwise leave it
     # NOTE: GroomOut10 uses Services ReferenceId so they are unique among themselves and Services
-    n.TrafficMatrix.add_groom_out_10(Source= "Tehran",
+    GroomOutId = n.TrafficMatrix.Generate_GroomOutId()
+    n.TrafficMatrix.add_groom_out_10(GroomOutId= GroomOutId,
+                                    Source= "Tehran",
                                     Destination= "Mashhad",
                                     DemandId= 1,
                                     Capacity= 9.6,
@@ -898,3 +928,4 @@ if __name__ == "__main__":
     # { <DemandId> : ( <GroomOut10Id_1>, <GroomOut10Id_2> ) }
     
 
+print("hi")
