@@ -71,10 +71,14 @@ class BLANK_Demand(QtWidgets.QWidget):
 
         # TODO: Take Care of this very soon
 
-        # removing old panel
+        # removing old panel ( left only )
         panel_widget = Data["DemandPanel_" + str(self.id)].takeAt(0).widget()
         self.horizontalLayout.removeWidget(panel_widget)
         panel_widget.deleteLater()
+
+        # getting dual panels id
+        DualPanelsId = self.generate_dual_panel_num(self.Destination)
+
 
         if text == "SC":
             #Data["DemandPanel_" + str(self.id)].addWidget(SC_Demand(self.id, self.nodename))
@@ -105,18 +109,39 @@ class BLANK_Demand(QtWidgets.QWidget):
             DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP1H_R(self.uppernum, self.Destination)
         
         elif text == "TP1H":
-            Data["DemandPanel_" + str(self.id)].addWidget(TP1H_L_Demand(self.id , self.nodename, self.Destination))
-            DemandTabDataBase["Panels"][self.nodename][self.id] = TP1H_L(Destination= self.Destination)
+            Data["DemandPanel_" + str(self.id)].addWidget(TP1H_L_Demand(self.id , self.nodename, self.Destination, DualPanelsId))
+            DemandTabDataBase["Panels"][self.nodename][self.id] = TP1H_L(Destination= self.Destination, DualPanelsId= DualPanelsId)
+
+            # ** Dual **
+            #Data["DemandPanel_" + DualPanelsId[0]].addWidget(TP1H_L_Demand(DualPanelsId[0] , self.Destination, self.nodename, (self.id, self.uppernum)))
+            DemandTabDataBase["Panels"][self.Destination][DualPanelsId[0]] = TP1H_L(Destination= self.nodename, DualPanelsId= (self.id, self.uppernum))
 
             # removing old right panel
             panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
             Data["ui"].horizontalLayout.removeWidget(panel_widget)
             panel_widget.deleteLater()
 
-            Data["DemandPanel_" + self.uppernum].addWidget(TP1H_R_Demand(self.id, self.nodename, self.Destination))
-            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = TP1H_R(self.uppernum, self.Destination)
+
+            Data["DemandPanel_" + self.uppernum].addWidget(TP1H_R_Demand(self.id, self.nodename, self.Destination, DualPanelsId))
+            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = TP1H_R(self.uppernum, self.Destination, DualPanelsId)
+
+            # ** Dual **
+            #Data["DemandPanel_" + DualPanelsId[1]].addWidget(TP1H_R_Demand(DualPanelsId[1], self.Destination, self.nodename))
+            DemandTabDataBase["Panels"][self.Destination][DualPanelsId[1]] = TP1H_R(DualPanelsId[1], self.nodename, DualPanelsId)
         
         super(BLANK_Demand, self).dropEvent(event)
+
+    
+    def generate_dual_panel_num(self, Destination):
+
+        IdList = list(DemandTabDataBase["Panels"][Destination].keys())
+            
+        # if shelf is empty this method must return 1 in ## string ##
+        if not IdList:
+            return ("1", "2")
+        IdList = list(map(lambda x : int(x), IdList))
+        MaxId = max(IdList)
+        return (str(MaxId + 1), str(MaxId + 2))
 
 
 

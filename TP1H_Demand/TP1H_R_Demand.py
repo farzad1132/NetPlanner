@@ -15,7 +15,7 @@ from TP1H_Demand import title
 
 class TP1H_R_Demand(QtWidgets.QWidget):
 
-    def __init__(self, Panel_ID, nodename, Destination):
+    def __init__(self, Panel_ID, nodename, Destination, DualPanelsId):
         super(TP1H_R_Demand, self).__init__()
 
         self.resize(94, 511)
@@ -25,6 +25,8 @@ class TP1H_R_Demand(QtWidgets.QWidget):
         self.nodename = nodename
         self.Destination = Destination
         self.uppernum = str(int(self.id) + 1)
+
+        self.DualPanelsId = DualPanelsId
 
         self.gridLayout = QtWidgets.QGridLayout(self)
         self.gridLayout.setContentsMargins(5, 0, 0, 0)

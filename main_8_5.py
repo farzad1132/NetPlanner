@@ -3101,6 +3101,9 @@ class Ui_MainWindow(object):
                 panel = DemandTabDataBase["Panels"][Source][str(i)]
                 
                 Destination = panel.Destination
+
+                DualPanelsId = panel.DualPanelsId
+
                 if isinstance(panel , MP2X_L):
                     Data["DemandPanel_" + str(i)].addWidget(MP2X_L_Demand(str(i), Source, Destination))
 
@@ -3184,7 +3187,7 @@ class Ui_MainWindow(object):
                 
                 elif isinstance(panel, TP1H_L):
                     LightPathId = panel.LightPathId
-                    Data["DemandPanel_" + str(i)].addWidget(TP1H_L_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(TP1H_L_Demand(str(i), Source, Destination, DualPanelsId))
 
                     # finding panel widget
                     widget = Data["DemandPanel_" + str(i)].itemAt(0).widget()
@@ -3207,7 +3210,7 @@ class Ui_MainWindow(object):
                         LineVar = getattr(widget, "Line")
                         LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
                 elif isinstance(panel, TP1H_R):
-                    Data["DemandPanel_" + str(i)].addWidget(TP1H_R_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(TP1H_R_Demand(str(i), Source, Destination, DualPanelsId))
             
             else:
                 Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Local_Destination))
@@ -3718,12 +3721,20 @@ class Ui_MainWindow(object):
             
     def initialize_DemandTabDataBase(self, Source, Destination):
         DemandTabDataBase["Lightpathes"][(Source, Destination)] = {}
+        DemandTabDataBase["Lightpathes"][(Destination, Source)] = {}
+
         DemandTabDataBase["GroomOut10"][(Source, Destination)] = {}
+        DemandTabDataBase["GroomOut10"][(Destination, Source)] = {}
+
         DemandTabDataBase["Panels"][Source] = {}
+        DemandTabDataBase["Panels"][Destination] = {}
 
     def initialize_GroomingTabDataBase(self, Source, Destination):
         GroomingTabDataBase["LightPathes"][(Source, Destination)] = {}
+        GroomingTabDataBase["LightPathes"][(Destination, Source)] = {}
+
         GroomingTabDataBase["Panels"][Source] = {}
+        GroomingTabDataBase["Panels"][Destination] = {}
         #GroomingTabDataBase["LinkState"][(Source, Destination)] = []
         
     
@@ -3760,11 +3771,16 @@ class Ui_MainWindow(object):
             
 
         DemandTabDataBase["Services"][(Source,Destination)] = ServiceDict_dynamic
-        if Source in DemandTabDataBase["Services_static"]:
-            DemandTabDataBase["Services_static"][Source].update(ServiceDict_static)
-        else:
+        DemandTabDataBase["Services"][(Destination, Source)] = copy.copy(ServiceDict_dynamic)
+
+        if (Source in DemandTabDataBase["Services_static"]) is False:
             DemandTabDataBase["Services_static"][Source] = {}
-            DemandTabDataBase["Services_static"][Source].update(ServiceDict_static)
+
+        if (Destination in DemandTabDataBase["Services_static"]) is False:
+            DemandTabDataBase["Services_static"][Destination] = {}
+            
+        DemandTabDataBase["Services_static"][Source].update(ServiceDict_static)
+        DemandTabDataBase["Services_static"][Destination].update(copy.copy(ServiceDict_static))
     
         
 
@@ -3778,20 +3794,26 @@ class Ui_MainWindow(object):
             if (Source in DemandTabDataBase["Source_Destination"] ) == False:
                 DemandTabDataBase["Source_Destination"][Source] = {"Source": Source, "DestinationList": []}
                 Original_Source_list.append(Source)
+
+        for Destination in DestinationList:
+            if ( Destination in DemandTabDataBase["Source_Destination"] ) is False:
+                DemandTabDataBase["Source_Destination"][Destination] = {"Source": Destination, "DestinationList": []}
+                Original_Source_list.append(Destination)
         
         for i in range(len(SourceList)):
             Destination = DestinationList[i]
             Source = SourceList[i]
             DemandTabDataBase["Source_Destination"][Source]["DestinationList"].append(Destination)
+            DemandTabDataBase["Source_Destination"][Destination]["DestinationList"].append(Source)
         
-        for value in Data["Nodes"].values():
+        """ for value in Data["Nodes"].values():
             NodeName = value["Node"]
             if not (NodeName in DemandTabDataBase["Source_Destination"]):
                 for node, value in DemandTabDataBase["Source_Destination"].items():
                     des_list = value["DestinationList"]
                     if NodeName in des_list:
                         DemandTabDataBase["Source_Destination"][NodeName] = {"Source":node, "DestinationList": des_list}
-                        break
+                        break """
 
 
         self.Demand_Source_combobox.clear()

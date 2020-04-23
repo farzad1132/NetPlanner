@@ -292,17 +292,19 @@ class MP1H_R:
         self.LeftId = LeftId
 
 class TP1H_L:
-    def __init__(self, DemandId = None, ServiceId = None, Line = 0, LightPathId = None, Destination = None):
+    def __init__(self, DemandId = None, ServiceId = None, Line = 0, LightPathId = None, Destination = None, DualPanelsId = None):
         self.Destination = Destination
         self.LightPathId = LightPathId
         self.DemandId = DemandId
         self.ServiceId = ServiceId
         self.Line = Line
+        self.DualPanelsId = DualPanelsId
 
 class TP1H_R:
-    def __init__(self, LeftId, Destination):
+    def __init__(self, LeftId, Destination, DualPanelsId):
         self.Destination = Destination
         self.LeftId = LeftId
+        self.DualPanelsId = DualPanelsId
 
 class SC:
     def __init__(self):
