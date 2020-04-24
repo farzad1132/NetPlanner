@@ -10,7 +10,7 @@ from MP1H_Demand import MP1H_R_SOURCE
 
 class MP1H_R_Demand(QtWidgets.QWidget):
 
-    def __init__(self, Panel_ID, nodename, Destination):
+    def __init__(self, Panel_ID, nodename, Destination, DualPanelsId):
         super(MP1H_R_Demand, self).__init__()
 
         self.resize(94, 455)
@@ -20,6 +20,8 @@ class MP1H_R_Demand(QtWidgets.QWidget):
         self.nodename = nodename
         self.Destination = Destination
         self.uppernum = str(int(self.id) + 1)
+
+        self.DualPanelsId = DualPanelsId
 
         self.horizontalLayout = QtWidgets.QHBoxLayout(self)
         self.horizontalLayout.setContentsMargins(5, 5, 5, 5)

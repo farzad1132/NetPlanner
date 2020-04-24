@@ -3105,7 +3105,7 @@ class Ui_MainWindow(object):
                 DualPanelsId = panel.DualPanelsId
 
                 if isinstance(panel , MP2X_L):
-                    Data["DemandPanel_" + str(i)].addWidget(MP2X_L_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(MP2X_L_Demand(str(i), Source, Destination, DualPanelsId))
 
                     GroomOutId_1, GroomOutId_2 = panel.LineIdList
                     
@@ -3142,11 +3142,11 @@ class Ui_MainWindow(object):
                                 linevar_2.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][GroomOutId_2].toolTip())
                             
                 elif isinstance(panel, MP2X_R):
-                    Data["DemandPanel_" + str(i)].addWidget(MP2X_R_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(MP2X_R_Demand(str(i), Source, Destination, DualPanelsId))
                 
                 elif isinstance(panel, MP1H_L):
                     LightPathId = panel.LightPathId
-                    Data["DemandPanel_" + str(i)].addWidget(MP1H_L_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(MP1H_L_Demand(str(i), Source, Destination, DualPanelsId))
 
                     # finding panel widget
                     widget = Data["DemandPanel_" + str(i)].itemAt(0).widget()
@@ -3183,7 +3183,7 @@ class Ui_MainWindow(object):
                             linevar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
 
                 elif isinstance(panel, MP1H_R):
-                    Data["DemandPanel_" + str(i)].addWidget(MP1H_R_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(MP1H_R_Demand(str(i), Source, Destination, DualPanelsId))
                 
                 elif isinstance(panel, TP1H_L):
                     LightPathId = panel.LightPathId

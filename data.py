@@ -213,7 +213,7 @@ class MP2D_R:
 
 class MP2X_L:
     def __init__(self, ClientsCapacity = None, LinesCapacity = None, ServiceIdList = None, DemandIdList = None
-                    , LineIdList = None, Line_1_ServiceIdList = None, Line_2_ServiceIdList = None, Destination = None):
+                    , LineIdList = None, Line_1_ServiceIdList = None, Line_2_ServiceIdList = None, Destination = None, DualPanelsId = None):
 
         if ClientsCapacity is None:
             self.ClientsCapacity = [0 for i in range(16)]
@@ -251,18 +251,20 @@ class MP2X_L:
             self.Line_2_ServiceIdList = Line_2_ServiceIdList
         
         self.Destination = Destination
+        self.DualPanelsId = DualPanelsId
 
 class MP2X_R:
-    def __init__(self, LeftId, Destination):
+    def __init__(self, LeftId, Destination, DualPanelsId):
         self.LeftId = LeftId
         self.Destination = Destination
+        self.DualPanelsId = DualPanelsId
 
 class MP1H_L:
 
     
 
     def __init__(self, ClientsCapacity = None, LineCapacity = 0, ServiceIdList = None, 
-    DemandIdList = None, LightPathId = None, LightPath_flag = 0, Destination = None):
+    DemandIdList = None, LightPathId = None, LightPath_flag = 0, Destination = None, DualPanelsId = None):
 
         if ClientsCapacity is None:
             self.ClientsCapacity = [0 for i in range(10)]
@@ -283,13 +285,15 @@ class MP1H_L:
         self.LightPath_flag = LightPath_flag
         self.LightPathId = LightPathId
         self.LineCapacity = LineCapacity
+        self.DualPanelsId = DualPanelsId
     
     
 
 class MP1H_R:
-    def __init__(self, LeftId, Destination):
+    def __init__(self, LeftId, Destination, DualPanelsId):
         self.Destination = Destination
         self.LeftId = LeftId
+        self.DualPanelsId = DualPanelsId
 
 class TP1H_L:
     def __init__(self, DemandId = None, ServiceId = None, Line = 0, LightPathId = None, Destination = None, DualPanelsId = None):

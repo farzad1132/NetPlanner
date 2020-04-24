@@ -20,7 +20,7 @@ from TP1H_Demand import TP1H_CLIENT_Selected
 
 class TP1H_L_Demand(QtWidgets.QWidget):
 
-    def __init__(self, Panel_ID, nodename, Destination, DualPanelId):
+    def __init__(self, Panel_ID, nodename, Destination, DualPanelsId):
         super(TP1H_L_Demand, self).__init__()
 
         #self.resize(94, 511)
@@ -31,7 +31,7 @@ class TP1H_L_Demand(QtWidgets.QWidget):
         self.Destination = Destination
         self.uppernum = str(int(self.id) + 1)
 
-        self.DualPanelId = DualPanelId
+        self.DualPanelsId = DualPanelsId
 
         self.gridLayout = QtWidgets.QGridLayout(self)
         self.gridLayout.setContentsMargins(5, 5, 5, 5)
@@ -54,7 +54,7 @@ class TP1H_L_Demand(QtWidgets.QWidget):
         self.Socket_Bottom.setText("")
         self.Socket_Bottom.setObjectName("Socket_Bottom")
         self.gridLayout.addWidget(self.Socket_Bottom, 7, 0, 1, 1)
-        self.Client = customlabel(self, self.nodename, self.Destination, self.id, self.Line)
+        self.Client = customlabel(self, self.nodename, self.Destination, self.id, self.Line, DualPanelsId= DualPanelsId)
         self.Client.setMinimumSize(QtCore.QSize(0, 25))
         self.Client.setStyleSheet("image:  url(:/Client/TP1H_CLIENT.png);")
         self.Client.setText("")
@@ -104,6 +104,13 @@ class TP1H_L_Demand(QtWidgets.QWidget):
                                             mode= "add",
                                             type= "100GE")
 
+                # ** Dual **
+                self.modify_ServiceList(ids= ids,
+                                            source= self.Destination,
+                                            destination= self.nodename,
+                                            mode= "add",
+                                            type= "100GE")
+
                 LightPathId = DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId
                 
                 #self.modify_LightPathList(LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
@@ -113,12 +120,23 @@ class TP1H_L_Demand(QtWidgets.QWidget):
                                             mode= "delete",
                                             type= "100GE")
 
+                # ** Dual **
+                self.modify_LightPathList(  id= LightPathId,
+                                            Source= self.Destination,
+                                            Destination= self.nodename,
+                                            mode= "delete",
+                                            type= "100GE")
+
                 Data["NetworkObj"].del_lightpath(LightPathId)
 
                 self.Line.setStyleSheet("image:  url(:/Client/TP1H_CLIENT.png);")
 
             DemandTabDataBase["Panels"][self.nodename].pop(self.id)
             DemandTabDataBase["Panels"][self.nodename].pop(self.uppernum)
+
+            # ** Dual ** 
+            DemandTabDataBase["Panels"][self.Destination].pop(self.DualPanelsId[0])
+            DemandTabDataBase["Panels"][self.Destination].pop(self.DualPanelsId[1])
         
     
     def modify_LightPathList(self, id, Source, Destination, Capacity = None, mode = "add", type = None, PanelId = None):
@@ -176,7 +194,7 @@ class TP1H_L_Demand(QtWidgets.QWidget):
         
 
 class customlabel(QLabel):
-    def __init__(self, parent, nodename, Destination, ID, LineVar, tooltip = None):
+    def __init__(self, parent, nodename, Destination, ID, LineVar, tooltip = None, DualPanelsId = None):
         super().__init__(parent)
         self.nodename = nodename
         self.LineVar = LineVar
@@ -187,6 +205,8 @@ class customlabel(QLabel):
 
         if tooltip != None:
             self.setToolTip(tooltip)
+
+        self.DualPanelsId = DualPanelsId
     
     def dragEnterEvent(self, event):
         e = event.mimeData()
@@ -241,6 +261,12 @@ class customlabel(QLabel):
             DemandTabDataBase["Panels"][self.nodename][self.id].DemandId = self.ids[0]
             self.modify_ServiceList(self.ids, self.nodename, self.Destination)
 
+            # ** Dual **
+            DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line = "100GE"
+            DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].ServiceId = self.ids[1]
+            DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].DemandId = self.ids[0]
+            self.modify_ServiceList(self.ids, self.Destination, self.nodename)
+
             self.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
             # self.LightPathId = Network.Lightpath.get_id()
 
@@ -251,6 +277,9 @@ class customlabel(QLabel):
             # adding lightpath to internal database
             DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = self.LightPathId
 
+            # ** Dual **
+            DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LightPathId = self.LightPathId
+
             #self.modify_LightPathList(self.LightPathId, self.nodename, self.Destination, mode= "add", type="100GE")
             self.modify_LightPathList(      id= DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId,
                                             Source= self.nodename,
@@ -259,6 +288,15 @@ class customlabel(QLabel):
                                             mode= "add",
                                             type= "100GE",
                                             PanelId= self.id)
+
+            # ** Dual ** 
+            self.modify_LightPathList(      id= DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LightPathId,
+                                            Source= self.Destination,
+                                            Destination= self.nodename,
+                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].Line,
+                                            mode= "add",
+                                            type= "100GE",
+                                            PanelId= self.DualPanelsId[0])
 
             # setting line port tooltip                                        
             self.LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][self.LightPathId].toolTip())
@@ -292,10 +330,24 @@ class customlabel(QLabel):
                                             mode= "add",
                                             type= "100GE")
 
+                # ** Dual **
+                self.modify_ServiceList(ids= self.ids,
+                                            source= self.Destination,
+                                            destination= self.nodename,
+                                            mode= "add",
+                                            type= "100GE")
+
                 #self.modify_LightPathList(self.LightPathId, self.nodename, self.Destination, mode="delete", type="100GE")
                 self.modify_LightPathList(  id= DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId,
                                                 Source= self.nodename,
                                                 Destination= self.Destination,
+                                                mode= "delete",
+                                                type= "100GE")
+
+                # ** Dual **
+                self.modify_LightPathList(  id= DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LightPathId,
+                                                Source= self.Destination,
+                                                Destination= self.nodename,
                                                 mode= "delete",
                                                 type= "100GE")
 
@@ -307,6 +359,11 @@ class customlabel(QLabel):
                 DemandTabDataBase["Panels"][self.nodename][self.id].Line = 0
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = None
                 DemandTabDataBase["Panels"][self.nodename][self.id].ServiceId = None
+
+                # ** Dual **
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line = 0
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LightPathId = None
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].ServiceId = None
 
                 
     

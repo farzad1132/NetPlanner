@@ -84,29 +84,41 @@ class BLANK_Demand(QtWidgets.QWidget):
             #Data["DemandPanel_" + str(self.id)].addWidget(SC_Demand(self.id, self.nodename))
             DemandTabDataBase["Panels"][self.nodename][self.id] = SC()
         elif text == "MP2X":
-            Data["DemandPanel_" + str(self.id)].addWidget(MP2X_L_Demand(self.id , self.nodename, self.Destination))
-            DemandTabDataBase["Panels"][self.nodename][self.id] = MP2X_L(Destination= self.Destination)
+            Data["DemandPanel_" + str(self.id)].addWidget(MP2X_L_Demand(self.id , self.nodename, self.Destination, DualPanelsId))
+            DemandTabDataBase["Panels"][self.nodename][self.id] = MP2X_L(Destination= self.Destination, DualPanelsId= DualPanelsId)
+
+            # ** Dual **
+            DemandTabDataBase["Panels"][self.Destination][DualPanelsId[0]] = MP2X_L(Destination= self.nodename, DualPanelsId= (self.id, self.uppernum))
 
             # removing old right panel
             panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
             Data["ui"].horizontalLayout.removeWidget(panel_widget)
             panel_widget.deleteLater()
 
-            Data["DemandPanel_" + self.uppernum].addWidget(MP2X_R_Demand(self.id, self.nodename, self.Destination))
-            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP2X_R(self.uppernum, self.Destination)
+            Data["DemandPanel_" + self.uppernum].addWidget(MP2X_R_Demand(self.id, self.nodename, self.Destination, DualPanelsId))
+            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP2X_R(self.uppernum, self.Destination, DualPanelsId)
+
+            # ** Dual **
+            DemandTabDataBase["Panels"][self.Destination][DualPanelsId[1]] = MP2X_R(DualPanelsId[1], self.nodename, DualPanelsId= (self.id, self.uppernum))
 
 
         elif text == "MP1H":
-            Data["DemandPanel_" + str(self.id)].addWidget(MP1H_L_Demand(self.id , self.nodename, self.Destination))
-            DemandTabDataBase["Panels"][self.nodename][self.id] = MP1H_L(Destination= self.Destination)
+            Data["DemandPanel_" + str(self.id)].addWidget(MP1H_L_Demand(self.id , self.nodename, self.Destination, DualPanelsId))
+            DemandTabDataBase["Panels"][self.nodename][self.id] = MP1H_L(Destination= self.Destination, DualPanelsId= DualPanelsId)
+
+            # ** Dual **
+            DemandTabDataBase["Panels"][self.Destination][DualPanelsId[0]] = MP1H_L(Destination= self.nodename, DualPanelsId= (self.id, self.uppernum))
 
             # removing old right panel
             panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
             Data["ui"].horizontalLayout.removeWidget(panel_widget)
             panel_widget.deleteLater()
 
-            Data["DemandPanel_" + self.uppernum].addWidget(MP1H_R_Demand(self.id, self.nodename, self.Destination))
-            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP1H_R(self.uppernum, self.Destination)
+            Data["DemandPanel_" + self.uppernum].addWidget(MP1H_R_Demand(self.id, self.nodename, self.Destination, DualPanelsId))
+            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP1H_R(self.uppernum, self.Destination, DualPanelsId)
+
+            # ** Dual **
+            DemandTabDataBase["Panels"][self.Destination][DualPanelsId[1]] = MP1H_R(DualPanelsId[1], self.nodename, (self.id, self.uppernum))
         
         elif text == "TP1H":
             Data["DemandPanel_" + str(self.id)].addWidget(TP1H_L_Demand(self.id , self.nodename, self.Destination, DualPanelsId))
