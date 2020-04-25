@@ -3101,8 +3101,11 @@ class Ui_MainWindow(object):
                 panel = DemandTabDataBase["Panels"][Source][str(i)]
                 
                 Destination = panel.Destination
+
+                DualPanelsId = panel.DualPanelsId
+
                 if isinstance(panel , MP2X_L):
-                    Data["DemandPanel_" + str(i)].addWidget(MP2X_L_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(MP2X_L_Demand(str(i), Source, Destination, DualPanelsId))
 
                     GroomOutId_1, GroomOutId_2 = panel.LineIdList
                     
@@ -3139,11 +3142,11 @@ class Ui_MainWindow(object):
                                 linevar_2.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][GroomOutId_2].toolTip())
                             
                 elif isinstance(panel, MP2X_R):
-                    Data["DemandPanel_" + str(i)].addWidget(MP2X_R_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(MP2X_R_Demand(str(i), Source, Destination, DualPanelsId))
                 
                 elif isinstance(panel, MP1H_L):
                     LightPathId = panel.LightPathId
-                    Data["DemandPanel_" + str(i)].addWidget(MP1H_L_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(MP1H_L_Demand(str(i), Source, Destination, DualPanelsId))
 
                     # finding panel widget
                     widget = Data["DemandPanel_" + str(i)].itemAt(0).widget()
@@ -3180,11 +3183,11 @@ class Ui_MainWindow(object):
                             linevar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
 
                 elif isinstance(panel, MP1H_R):
-                    Data["DemandPanel_" + str(i)].addWidget(MP1H_R_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(MP1H_R_Demand(str(i), Source, Destination, DualPanelsId))
                 
                 elif isinstance(panel, TP1H_L):
                     LightPathId = panel.LightPathId
-                    Data["DemandPanel_" + str(i)].addWidget(TP1H_L_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(TP1H_L_Demand(str(i), Source, Destination, DualPanelsId))
 
                     # finding panel widget
                     widget = Data["DemandPanel_" + str(i)].itemAt(0).widget()
@@ -3207,7 +3210,7 @@ class Ui_MainWindow(object):
                         LineVar = getattr(widget, "Line")
                         LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
                 elif isinstance(panel, TP1H_R):
-                    Data["DemandPanel_" + str(i)].addWidget(TP1H_R_Demand(str(i), Source, Destination))
+                    Data["DemandPanel_" + str(i)].addWidget(TP1H_R_Demand(str(i), Source, Destination, DualPanelsId))
             
             else:
                 Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Local_Destination))
@@ -3443,40 +3446,41 @@ class Ui_MainWindow(object):
                 self.Traffic_matrix.setItem(int(row),i,QTableWidgetItem(cell_data))
     
     def Demand_LineList_fun(self, CurItem, PreItem):
-        if CurItem is not None:
-            UserData = CurItem.data(Qt.UserRole)
-            Source = UserData["Source"]
-            Destination = UserData["Destination"]
-            LightpathId = UserData["LightPathId"]
+        if self.update_Demand_lightpath_list_flag is True:
+            if CurItem is not None:
+                UserData = CurItem.data(Qt.UserRole)
+                Source = UserData["Source"]
+                Destination = UserData["Destination"]
+                LightpathId = UserData["LightPathId"]
 
-            # adding border to current panel
-            LeftPanelId = UserData["PanelId"]
-            left_widget = Data["DemandPanel_" + str(LeftPanelId)].itemAt(0).widget()
-            linevar = left_widget.Line
-            linevar.setStyleSheet(" QLabel{ image: url(:/line/line.png); border: 5px solid blue; }")
-            
-            if PreItem is not None:
-                pre_UserData = PreItem.data(Qt.UserRole)
-                pre_LeftPanelId = pre_UserData["PanelId"]
-                pre_left_widget = Data["DemandPanel_" + str(pre_LeftPanelId)].itemAt(0).widget()
-                pre_linevar = pre_left_widget.Line
-                pre_linevar.setStyleSheet(" QLabel{ image: url(:/line/line.png); }")
+                # adding border to current panel
+                LeftPanelId = UserData["PanelId"]
+                left_widget = Data["DemandPanel_" + str(LeftPanelId)].itemAt(0).widget()
+                linevar = left_widget.Line
+                linevar.setStyleSheet(" QLabel{ image: url(:/line/line.png); border: 5px solid blue; }")
+                
+                if PreItem is not None:
+                    pre_UserData = PreItem.data(Qt.UserRole)
+                    pre_LeftPanelId = pre_UserData["PanelId"]
+                    pre_left_widget = Data["DemandPanel_" + str(pre_LeftPanelId)].itemAt(0).widget()
+                    pre_linevar = pre_left_widget.Line
+                    pre_linevar.setStyleSheet(" QLabel{ image: url(:/line/line.png); }")
 
-            if self.RWA_Success is True:
+                if self.RWA_Success is True:
 
-                WorkingPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Working"]
-                ProtectionPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Protection"]
-                RG_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_w"]
-                RG_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_p"]
-                SNR_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_w"]
-                SNR_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_p"]
-                LambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["LambdaList"]
+                    WorkingPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Working"]
+                    ProtectionPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Protection"]
+                    RG_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_w"]
+                    RG_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_p"]
+                    SNR_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_w"]
+                    SNR_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_p"]
+                    LambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["LambdaList"]
 
-                #print(f"here for calling demand change function <before> ")
+                    #print(f"here for calling demand change function <before> ")
 
-                # calling Demand map change function
-                self.DemandMap_Change(WorkingPath, ProtectionPath, WorkingRegeneratorsList = RG_w, ProtectionRegenaratorsList = RG_p
-                                        ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p, LambdaList= LambdaList)
+                    # calling Demand map change function
+                    self.DemandMap_Change(WorkingPath, ProtectionPath, WorkingRegeneratorsList = RG_w, ProtectionRegenaratorsList = RG_p
+                                            ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p, LambdaList= LambdaList)
     
     def groomout10_list_fun(self, CurItem, PreItem):
         if CurItem is not None:
@@ -3718,12 +3722,20 @@ class Ui_MainWindow(object):
             
     def initialize_DemandTabDataBase(self, Source, Destination):
         DemandTabDataBase["Lightpathes"][(Source, Destination)] = {}
+        DemandTabDataBase["Lightpathes"][(Destination, Source)] = {}
+
         DemandTabDataBase["GroomOut10"][(Source, Destination)] = {}
+        DemandTabDataBase["GroomOut10"][(Destination, Source)] = {}
+
         DemandTabDataBase["Panels"][Source] = {}
+        DemandTabDataBase["Panels"][Destination] = {}
 
     def initialize_GroomingTabDataBase(self, Source, Destination):
         GroomingTabDataBase["LightPathes"][(Source, Destination)] = {}
+        GroomingTabDataBase["LightPathes"][(Destination, Source)] = {}
+
         GroomingTabDataBase["Panels"][Source] = {}
+        GroomingTabDataBase["Panels"][Destination] = {}
         #GroomingTabDataBase["LinkState"][(Source, Destination)] = []
         
     
@@ -3733,6 +3745,10 @@ class Ui_MainWindow(object):
         
         ServiceDict_static = {}
         ServiceDict_dynamic = {}
+
+        # ** Dual **
+        ServiceDict_static_d = {}
+        ServiceDict_dynamic_d = {}
         """ for Service in ServiceDict.keys():
             Quantity = ServiceDict[Service]["Quantity"]
             for i in range(Quantity):
@@ -3756,15 +3772,38 @@ class Ui_MainWindow(object):
 
             ServiceDict_static[(id, serviceId)] = item
             ServiceDict_dynamic[(id, serviceId)] = 0
-
             
 
-        DemandTabDataBase["Services"][(Source,Destination)] = ServiceDict_dynamic
-        if Source in DemandTabDataBase["Services_static"]:
-            DemandTabDataBase["Services_static"][Source].update(ServiceDict_static)
-        else:
+            # ** Dual **
+            setattr(self, "Service_item_" + str(Data["Service_item_num"]), QListWidgetItem(service.Type, self.Demand_ServiceList))
+            item = getattr(self, "Service_item_" + str(Data["Service_item_num"]))
+            Data["Service_item_num"] += 1
+            item.setTextAlignment(Qt.AlignCenter)
+            item.setToolTip(f"Type: {service.Type}\nSource: {Destination}\nDestination: {Source}")
+            data = {"DemandId": id, "ServiceId": serviceId}
+            item.setData(Qt.UserRole, data)
+            item.setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
+
+            ServiceDict_static_d[(id, serviceId)] = item
+            ServiceDict_dynamic_d[(id, serviceId)] = 0
+            
+
+        DemandTabDataBase["Services"][(Source, Destination)] = ServiceDict_dynamic
+
+        # ** Dual **
+        DemandTabDataBase["Services"][(Destination, Source)] = ServiceDict_dynamic_d
+
+        if (Source in DemandTabDataBase["Services_static"]) is False:
             DemandTabDataBase["Services_static"][Source] = {}
-            DemandTabDataBase["Services_static"][Source].update(ServiceDict_static)
+
+        # ** Dual **
+        if (Destination in DemandTabDataBase["Services_static"]) is False:
+            DemandTabDataBase["Services_static"][Destination] = {}
+            
+        DemandTabDataBase["Services_static"][Source].update(ServiceDict_static)
+
+        # ** Dual **
+        DemandTabDataBase["Services_static"][Destination].update(ServiceDict_static_d)
     
         
 
@@ -3778,20 +3817,26 @@ class Ui_MainWindow(object):
             if (Source in DemandTabDataBase["Source_Destination"] ) == False:
                 DemandTabDataBase["Source_Destination"][Source] = {"Source": Source, "DestinationList": []}
                 Original_Source_list.append(Source)
+
+        for Destination in DestinationList:
+            if ( Destination in DemandTabDataBase["Source_Destination"] ) is False:
+                DemandTabDataBase["Source_Destination"][Destination] = {"Source": Destination, "DestinationList": []}
+                Original_Source_list.append(Destination)
         
         for i in range(len(SourceList)):
             Destination = DestinationList[i]
             Source = SourceList[i]
             DemandTabDataBase["Source_Destination"][Source]["DestinationList"].append(Destination)
+            DemandTabDataBase["Source_Destination"][Destination]["DestinationList"].append(Source)
         
-        for value in Data["Nodes"].values():
+        """ for value in Data["Nodes"].values():
             NodeName = value["Node"]
             if not (NodeName in DemandTabDataBase["Source_Destination"]):
                 for node, value in DemandTabDataBase["Source_Destination"].items():
                     des_list = value["DestinationList"]
                     if NodeName in des_list:
                         DemandTabDataBase["Source_Destination"][NodeName] = {"Source":node, "DestinationList": des_list}
-                        break
+                        break """
 
 
         self.Demand_Source_combobox.clear()
@@ -3939,10 +3984,14 @@ class Ui_MainWindow(object):
         #lightpath_list = list(DemandTabDataBase["Lightpathes"][(Source, Destination)].values())
         """ for i in range(self.Demand_LineList.count()):
             self.Demand_LineList.takeItem(i) """
+        self.update_Demand_lightpath_list_flag = False
+
         while self.Demand_LineList.count() > 0:
             self.Demand_LineList.takeItem(0)
         for value in DemandTabDataBase["Lightpathes"][(Source, Destination)].values():
             self.Demand_LineList.addItem(value)
+
+        self.update_Demand_lightpath_list_flag = True
 
     
     def update_Demand_groomout10_list(self):
@@ -4427,6 +4476,8 @@ class Ui_MainWindow(object):
         Data["demand_first_run_flag"] = False
         Data["first_run_flag"] = False
         self.Data_file_Flag = False
+        self.update_Demand_lightpath_list_flag = True
+        
     
     def DemandTabDataBase_Setup(self):
         for node in Data["Nodes"].values():
@@ -4538,6 +4589,9 @@ class Ui_MainWindow(object):
             
             Source = self.IdNodeMap[lightpath.Source]
             Destination = self.IdNodeMap[lightpath.Destination]
+
+            DualPanelsId = self.generate_dual_panel_num(Destination)
+
             type = lightpath.Type
             DemandId = lightpath.DemandId
             Capacity = lightpath.Capacity
@@ -4560,18 +4614,37 @@ class Ui_MainWindow(object):
                                                                         ServiceId= lightpath.ServiceIdList[0],
                                                                         Line= "100GE",
                                                                         LightPathId= id,
-                                                                        Destination= Destination)
+                                                                        Destination= Destination,
+                                                                        DualPanelsId= DualPanelsId)
+
+                # ** Dual **
+                DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = TP1H_L(  DemandId= DemandId,
+                                                                        ServiceId= lightpath.ServiceIdList[0],
+                                                                        Line= "100GE",
+                                                                        LightPathId= id,
+                                                                        Destination= Source,
+                                                                        DualPanelsId= (panelid, (str(int(panelid) + 1))))
 
                 """ ## debug section
                 print(DemandTabDataBase["Panels"][Source][panelid].__dict__)
 
                 ## end of debug section """
                 DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = TP1H_R(    LeftId= panelid,
-                                                                                        Destination= Destination)
+                                                                                        Destination= Destination,
+                                                                                        DualPanelsId= DualPanelsId)
+
+                # ** Dual **
+                DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = TP1H_R(    LeftId= DualPanelsId[0],
+                                                                                        Destination= Source,
+                                                                                        DualPanelsId = (panelid, (str(int(panelid) + 1))))
 
                 # omitting handeled services from DemandTabDataBase
                 DemandTabDataBase["Services"][(Source, Destination)][(DemandId, lightpath.ServiceIdList[0])] = 1
                 DemandTabDataBase["Services_static"][Source][(DemandId, lightpath.ServiceIdList[0])].setBackground(QBrush(Qt.white, Qt.SolidPattern))
+
+                # ** Dual **
+                DemandTabDataBase["Services"][(Destination, Source)][(DemandId, lightpath.ServiceIdList[0])] = 1
+                DemandTabDataBase["Services_static"][Destination][(DemandId, lightpath.ServiceIdList[0])].setBackground(QBrush(Qt.white, Qt.SolidPattern))
             else:
                 panelid = self.get_panel_num(Source)
                 ClientCapacity, LineCapacity = self.create_ClientsCapacityList(DemandId, lightpath.ServiceIdList, netobj)
@@ -4590,7 +4663,18 @@ class Ui_MainWindow(object):
                                                                         DemandIdList= [DemandId for i in range(10)],
                                                                         LightPathId= id,
                                                                         LightPath_flag= 1,
-                                                                        Destination= Destination)
+                                                                        Destination= Destination,
+                                                                        DualPanelsId= DualPanelsId)
+
+                # ** Dual **
+                DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = MP1H_L(  ClientsCapacity= ClientCapacity,
+                                                                        LineCapacity= LineCapacity,
+                                                                        ServiceIdList= list(lightpath.ServiceIdList),
+                                                                        DemandIdList= [DemandId for i in range(10)],
+                                                                        LightPathId= id,
+                                                                        LightPath_flag= 1,
+                                                                        Destination= Source,
+                                                                        DualPanelsId= (panelid, (str(int(panelid) + 1))))
 
 
                 """ ## debug section
@@ -4598,13 +4682,23 @@ class Ui_MainWindow(object):
 
                 ## end of debug section """
                 DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = MP1H_R(    LeftId= panelid,
-                                                                                        Destination= Destination)
+                                                                                        Destination= Destination,
+                                                                                        DualPanelsId= DualPanelsId)
+
+                # ** Dual **
+                DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = MP1H_R(    LeftId= DualPanelsId[0],
+                                                                                        Destination= Source,
+                                                                                        DualPanelsId= (panelid, (str(int(panelid) + 1))))
 
                 # omitting handeled services from DemandTabDataBase
                 for ServiceId in lightpath.ServiceIdList:
                     if (DemandId, ServiceId) in DemandTabDataBase["Services"][(Source, Destination)]:
                         DemandTabDataBase["Services"][(Source, Destination)][(DemandId, ServiceId)] = 1
                         DemandTabDataBase["Services_static"][Source][(DemandId, ServiceId)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
+
+                        # ** Dual **
+                        DemandTabDataBase["Services"][(Destination, Source)][(DemandId, ServiceId)] = 1
+                        DemandTabDataBase["Services_static"][Destination][(DemandId, ServiceId)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
                 print(f"panels part--> Source:{Source} panels:{DemandTabDataBase['Panels'][Source]}")
                 print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
@@ -4620,6 +4714,20 @@ class Ui_MainWindow(object):
 
             DemandTabDataBase["Lightpathes"][(Source, Destination)][id] = item
 
+            # ** Dual **
+
+            setattr(self, "LightPath_item_" + str(Data["LightPath_item_num"]), QListWidgetItem("100GE", self.Demand_LineList))
+            item = getattr(self, "LightPath_item_" + str(Data["LightPath_item_num"]))
+            Data["LightPath_item_num"] += 1
+            UserData = {"LightPathId":id, "Source":Destination, "Destination":Source, "Capacity":Capacity, "Type": type, "PanelId": DualPanelsId[0]}
+            item.setToolTip(f"Source: {Destination}\nDestination: {Source}\nCapacity: {Capacity}\nType: {type}")
+            item.setData(Qt.UserRole, UserData)
+            item.setTextAlignment(Qt.AlignCenter)
+
+            DemandTabDataBase["Lightpathes"][(Destination, Source)][id] = item
+
+
+
 
     def fill_DemandTabDataBase_MP2X(self, full_MP2X_Dict, half_MP2X_Dict, netobj):
 
@@ -4627,6 +4735,8 @@ class Ui_MainWindow(object):
         for DemandId, Servicetuple in full_MP2X_Dict.items():
             Source = self.IdNodeMap[netobj.TrafficMatrix.DemandDict[DemandId].Source]
             Destination = self.IdNodeMap[netobj.TrafficMatrix.DemandDict[DemandId].Destination]
+
+            DualPanelsId = self.generate_dual_panel_num(Destination)
             
             # panel part ( creating panels object )
             PanelId = self.get_panel_num(Source)
@@ -4658,17 +4768,39 @@ class Ui_MainWindow(object):
                                                                     LineIdList= list(Servicetuple),
                                                                     Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].ServiceIdList),
                                                                     Line_2_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].ServiceIdList),
-                                                                    Destination= Destination)
+                                                                    Destination= Destination,
+                                                                    DualPanelsId= DualPanelsId)
+
+            # ** Dual **
+            DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = MP2X_L(  ClientsCapacity= ClientsCapacity,
+                                                                    LinesCapacity= [LineCapacity_1, LineCapacity_2],
+                                                                    ServiceIdList= ServiceIdList,
+                                                                    DemandIdList= [DemandId for _ in range(16)],
+                                                                    LineIdList= list(Servicetuple),
+                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].ServiceIdList),
+                                                                    Line_2_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].ServiceIdList),
+                                                                    Destination= Source,
+                                                                    DualPanelsId= (PanelId, (str(int(PanelId) + 1))))
             
             # Creating Right Panel of MP2X
             DemandTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = MP2X_R(LeftId= PanelId,
-                                                                                Destination= Destination)
+                                                                                Destination= Destination,
+                                                                                DualPanelsId= DualPanelsId)
+
+            # ** Dual **
+            DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = MP2X_R(LeftId= DualPanelsId[0],
+                                                                                Destination= Source,
+                                                                                DualPanelsId= (PanelId, (str(int(PanelId) + 1))))
 
 
             # omitting handled services from DemandTabDataBase
             for service in ServiceIdList:
                 DemandTabDataBase["Services"][(Source, Destination)][(DemandId, service)] = 1
                 DemandTabDataBase["Services_static"][Source][(DemandId, service)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
+
+                # ** Dual **
+                DemandTabDataBase["Services"][(Destination, Source)][(DemandId, service)] = 1
+                DemandTabDataBase["Services_static"][Destination][(DemandId, service)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
             # creating Qlistwidgetitem item part
             item_1 = QListWidgetItem("GroomOut10", self.groomout10_list)
@@ -4677,11 +4809,21 @@ class Ui_MainWindow(object):
             item_1.setData(Qt.UserRole, UserData_1)
             item_1.setTextAlignment(Qt.AlignCenter)
 
+            # ** Dual **
+            item_1_d = QListWidgetItem("GroomOut10", self.groomout10_list)
+            UserData_1_d = {"GroomOut10Id":Servicetuple[0], "Source":Destination, "Destination":Source, "Capacity":LineCapacity_1, "Type": "GroomOut10", "PanelId": DualPanelsId[0], "DemandId": DemandId}
+            item_1_d.setToolTip(f"Source: {Destination}\nDestination: {Source}\nCapacity: {LineCapacity_1}\nType: GroomOut10")
+            item_1_d.setData(Qt.UserRole, UserData_1_d)
+            item_1_d.setTextAlignment(Qt.AlignCenter)
+
             # stricking out item if its assigned to a lightpath
             if LightPathId_1 is not None:
                 font = item_1.font()
                 font.setStrikeOut(True)
                 item_1.setFont(font)
+
+                # ** Dual **
+                item_1_d.setFont(font)
 
                 MP1H_data = DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId_1].data(Qt.UserRole)
                 MP1H_Id = MP1H_data["PanelId"]
@@ -4689,9 +4831,22 @@ class Ui_MainWindow(object):
                 index = DemandTabDataBase["Panels"][Source][MP1H_Id].ServiceIdList.index(Servicetuple[0])
                 UserData_1["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
 
+                # ** Dual **
+                MP1H_data = DemandTabDataBase["Lightpathes"][(Destination, Source)][LightPathId_1].data(Qt.UserRole)
+                MP1H_Id = MP1H_data["PanelId"]
+
+                index = DemandTabDataBase["Panels"][Destination][MP1H_Id].ServiceIdList.index(Servicetuple[0])
+                UserData_1_d["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
+
                 item_1.setData(Qt.UserRole, UserData_1)
 
+                # ** Dual **
+                item_1_d.setData(Qt.UserRole, UserData_1_d)
+
             DemandTabDataBase["GroomOut10"][(Source, Destination)][Servicetuple[0]] = item_1
+
+            # ** Dual **
+            DemandTabDataBase["GroomOut10"][(Destination, Source)][Servicetuple[0]] = item_1_d
 
             item_2 = QListWidgetItem("GroomOut10", self.groomout10_list)
             UserData_2 = {"GroomOut10Id":Servicetuple[1], "Source":Source, "Destination":Destination, "Capacity":LineCapacity_2, "Type": "GroomOut10", "PanelId": PanelId, "DemandId": DemandId}
@@ -4699,11 +4854,21 @@ class Ui_MainWindow(object):
             item_2.setData(Qt.UserRole, UserData_2)
             item_2.setTextAlignment(Qt.AlignCenter)
 
+            # ** Dual **
+            item_2_d = QListWidgetItem("GroomOut10", self.groomout10_list)
+            UserData_2_d = {"GroomOut10Id":Servicetuple[1], "Source":Destination, "Destination":Source, "Capacity":LineCapacity_2, "Type": "GroomOut10", "PanelId": DualPanelsId[0], "DemandId": DemandId}
+            item_2_d.setToolTip(f"Source: {Destination}\nDestination: {Source}\nCapacity: {LineCapacity_2}\nType: GroomOut10")
+            item_2_d.setData(Qt.UserRole, UserData_2_d)
+            item_2_d.setTextAlignment(Qt.AlignCenter)
+
             # stricking out item if its assigned to a lightpath
             if LightPathId_2 is not None:
                 font = item_2.font()
                 font.setStrikeOut(True)
                 item_2.setFont(font)
+
+                # ** Dual **
+                item_2_d.setFont(font)
 
                 MP1H_data = DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId_2].data(Qt.UserRole)
                 MP1H_Id = MP1H_data["PanelId"]
@@ -4711,15 +4876,31 @@ class Ui_MainWindow(object):
                 index = DemandTabDataBase["Panels"][Source][MP1H_Id].ServiceIdList.index(Servicetuple[1])
                 UserData_2["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
 
+                # ** Dual **
+                MP1H_data = DemandTabDataBase["Lightpathes"][(Destination, Source)][LightPathId_2].data(Qt.UserRole)
+                MP1H_Id = MP1H_data["PanelId"]
+
+                index = DemandTabDataBase["Panels"][Destination][MP1H_Id].ServiceIdList.index(Servicetuple[1])
+                UserData_2_d["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
+
                 item_2.setData(Qt.UserRole, UserData_2)
 
+                # ** Dual **
+                item_2_d.setData(Qt.UserRole, UserData_2_d)
+
             DemandTabDataBase["GroomOut10"][(Source, Destination)][Servicetuple[1]] = item_2
+
+            # ** Dual **
+            DemandTabDataBase["GroomOut10"][(Destination, Source)][Servicetuple[1]] = item_2_d
         
         # Half MP2X Part
         for DemandId , GroomOutId in half_MP2X_Dict.items():
+            
 
             Source = self.IdNodeMap[netobj.TrafficMatrix.DemandDict[DemandId].Source]
             Destination = self.IdNodeMap[netobj.TrafficMatrix.DemandDict[DemandId].Destination]
+
+            DualPanelsId = self.generate_dual_panel_num(Destination)
 
             LightPathId = netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].LightPathId
             
@@ -4740,16 +4921,37 @@ class Ui_MainWindow(object):
                                                                     DemandIdList= [DemandId for _ in range(16)],
                                                                     LineIdList= [GroomOutId, None],
                                                                     Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList),
-                                                                    Destination= Destination)
+                                                                    Destination= Destination,
+                                                                    DualPanelsId= DualPanelsId)
+
+            # ** Dual **
+            DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = MP2X_L(  ClientsCapacity= list(ClientsCapacity),
+                                                                    LinesCapacity= [LineCapacity, 0],
+                                                                    ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList),
+                                                                    DemandIdList= [DemandId for _ in range(16)],
+                                                                    LineIdList= [GroomOutId, None],
+                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList),
+                                                                    Destination= Source,
+                                                                    DualPanelsId= (PanelId, (str(int(PanelId) + 1))))
             
             # Creating Right Panel of MP2X
             DemandTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = MP2X_R(LeftId= PanelId,
-                                                                                Destination= Destination)
+                                                                                Destination= Destination,
+                                                                                DualPanelsId= DualPanelsId)
+
+            # ** Dual **
+            DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = MP2X_R(LeftId= DualPanelsId[0],
+                                                                                Destination= Source,
+                                                                                DualPanelsId = (PanelId, (str(int(PanelId) + 1))) )
             
             # omitting handled services from DemandTabDataBase
             for service in netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList:
                 DemandTabDataBase["Services"][(Source, Destination)][(DemandId, service)] = 1
                 DemandTabDataBase["Services_static"][Source][(DemandId, service)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
+
+                # ** Dual **
+                DemandTabDataBase["Services"][(Destination, Source)][(DemandId, service)] = 1
+                DemandTabDataBase["Services_static"][Destination][(DemandId, service)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
             # creating Qlistwidgetitem item part
             item = QListWidgetItem("GroomOut10", self.groomout10_list)
@@ -4758,11 +4960,21 @@ class Ui_MainWindow(object):
             item.setData(Qt.UserRole, UserData)
             item.setTextAlignment(Qt.AlignCenter)
 
+            # ** Dual **
+            item_d = QListWidgetItem("GroomOut10", self.groomout10_list)
+            UserData_d = {"GroomOut10Id":GroomOutId, "Source":Destination, "Destination":Source, "Capacity":LineCapacity, "Type": "GroomOut10", "PanelId": DualPanelsId[0], "DemandId": DemandId}
+            item_d.setToolTip(f"Source: {Destination}\nDestination: {Source}\nCapacity: {LineCapacity}\nType: GroomOut10")
+            item_d.setData(Qt.UserRole, UserData)
+            item_d.setTextAlignment(Qt.AlignCenter)
+
             # stricking out item if its assigned to a lightpath
             if LightPathId is not None:
                 font = item.font()
                 font.setStrikeOut(True)
                 item.setFont(font)
+
+                # ** Dual **
+                item_d.setFont(font)
 
                 # finding MP1H_Client_id
                 MP1H_data = DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].data(Qt.UserRole)
@@ -4771,9 +4983,39 @@ class Ui_MainWindow(object):
                 index = DemandTabDataBase["Panels"][Source][MP1H_Id].ServiceIdList.index(GroomOutId)
                 UserData["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
 
+                # ** Dual **
+                MP1H_data = DemandTabDataBase["Lightpathes"][(Destination, Source)][LightPathId].data(Qt.UserRole)
+                MP1H_Id = MP1H_data["PanelId"]
+
+                index = DemandTabDataBase["Panels"][Destination][MP1H_Id].ServiceIdList.index(GroomOutId)
+                UserData["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
+
                 item.setData(Qt.UserRole, UserData)
 
+                # ** Dual **
+                item_d.setData(Qt.UserRole, UserData_d)
+
             DemandTabDataBase["GroomOut10"][(Source, Destination)][GroomOutId] = item
+
+            # ** Dual **
+            DemandTabDataBase["GroomOut10"][(Destination, Source)][GroomOutId] = item_d
+
+    
+    def generate_dual_panel_num(self, Destination):
+
+        IdList = list(DemandTabDataBase["Panels"][Destination].keys())
+            
+        # if shelf is empty this method must return 1 in ## string ##
+        if not IdList:
+            return ("1", "2")
+        IdList = list(map(lambda x : int(x), IdList))
+        if len(IdList) == max(IdList):
+            MaxId = max(IdList)
+            return (str(MaxId + 1), str(MaxId + 2))
+        else:
+            for i in range(1,max(IdList), 2):
+                if ( i in IdList ) is False:
+                    return (str(i), str(i+1))
 
     
     def fill_GroomingTabDataBase(self, netobj, RWA_Runtime):
@@ -4807,11 +5049,23 @@ class Ui_MainWindow(object):
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_p"] = SNR_p
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["LambdaList"] = LambdaList
 
+            # ** Dual **
+            GroomingTabDataBase["LightPathes"][(Destination, Source)][id] = {}
+            GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["Working"] = Working
+            GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["Protection"] = Protection
+            GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["RG_w"] = RG_w
+            GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["RG_p"] = RG_p
+            GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["SNR_w"] = SNR_w
+            GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["SNR_p"] = SNR_p
+            GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["LambdaList"] = LambdaList
+
             
         # filling LinkSate Part
         self.Max_LinkState = 0
         for key, value in netobj.PhysicalTopology.LinkDict.items():
             GroomingTabDataBase["LinkState"][(self.IdNodeMap[key[0]], self.IdNodeMap[key[1]])] = value.LinkState
+
+
             if len(value.LinkState) > self.Max_LinkState:
                 self.Max_LinkState = len(value.LinkState)
         

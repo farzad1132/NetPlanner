@@ -10,7 +10,7 @@ from MP2X_Demand import MP2X_R_SOURCE
 
 class MP2X_R_Demand(QtWidgets.QWidget):
 
-    def __init__(self, Panel_ID, nodename, Destination):
+    def __init__(self, Panel_ID, nodename, Destination, DualPanelsId):
         super(MP2X_R_Demand, self).__init__()
 
         self.resize(114, 703)
@@ -20,6 +20,8 @@ class MP2X_R_Demand(QtWidgets.QWidget):
         self.nodename = nodename
         self.Destination = Destination
         self.uppernum = str(int(self.id) + 1)
+
+        self.DualPanelsId = DualPanelsId
 
         self.horizontalLayout = QtWidgets.QHBoxLayout(self)
         self.horizontalLayout.setObjectName("horizontalLayout")

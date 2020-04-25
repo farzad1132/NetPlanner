@@ -27,7 +27,7 @@ from MP2X_Demand import CLIENT_R_Selected
 
 class MP2X_L_Demand(QtWidgets.QWidget):
 
-    def __init__(self, Panel_ID, nodename, Destination):
+    def __init__(self, Panel_ID, nodename, Destination, DualPanelsId):
         super(MP2X_L_Demand, self).__init__()
 
         self.resize(106, 694)
@@ -37,6 +37,8 @@ class MP2X_L_Demand(QtWidgets.QWidget):
         self.nodename = nodename
         self.Destination = Destination
         self.uppernum = str(int(self.id) + 1)
+
+        self.DualPanelsId = DualPanelsId
 
         self.gridLayout = QtWidgets.QGridLayout(self)
         self.gridLayout.setContentsMargins(5, 9, 5, 5)
@@ -57,7 +59,7 @@ class MP2X_L_Demand(QtWidgets.QWidget):
         self.MP2X_Title.setText("")
         self.MP2X_Title.setObjectName("MP2X_Title")
         self.gridLayout.addWidget(self.MP2X_Title, 1, 2, 2, 1)
-        self.CLIENT13 = customlabel(self, self.nodename, self.Destination, self.id, 13, self.LINE1, self.LINE2)
+        self.CLIENT13 = customlabel(self, self.nodename, self.Destination, self.id, 13, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT13.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
         self.CLIENT13.setText("")
         self.CLIENT13.setObjectName("CLIENT13")
@@ -67,62 +69,62 @@ class MP2X_L_Demand(QtWidgets.QWidget):
         self.Socket_bottom.setText("")
         self.Socket_bottom.setObjectName("Socket_bottom")
         self.gridLayout.addWidget(self.Socket_bottom, 13, 0, 1, 1)
-        self.CLIENT3 = customlabel(self, self.nodename, self.Destination, self.id, 3, self.LINE1, self.LINE2)
+        self.CLIENT3 = customlabel(self, self.nodename, self.Destination, self.id, 3, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT3.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
         self.CLIENT3.setText("")
         self.CLIENT3.setObjectName("CLIENT3")
         self.gridLayout.addWidget(self.CLIENT3, 5, 0, 1, 1)
-        self.CLIENT15 = customlabel(self, self.nodename, self.Destination, self.id, 15, self.LINE1, self.LINE2)
+        self.CLIENT15 = customlabel(self, self.nodename, self.Destination, self.id, 15, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT15.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
         self.CLIENT15.setText("")
         self.CLIENT15.setObjectName("CLIENT15")
         self.gridLayout.addWidget(self.CLIENT15, 11, 0, 1, 1)
-        self.CLIENT14 = customlabel(self, self.nodename, self.Destination, self.id, 14, self.LINE1, self.LINE2)
+        self.CLIENT14 = customlabel(self, self.nodename, self.Destination, self.id, 14, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT14.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
         self.CLIENT14.setText("")
         self.CLIENT14.setObjectName("CLIENT14")
         self.gridLayout.addWidget(self.CLIENT14, 10, 1, 1, 1)
-        self.CLIENT4 = customlabel(self, self.nodename, self.Destination, self.id, 4, self.LINE1, self.LINE2)
+        self.CLIENT4 = customlabel(self, self.nodename, self.Destination, self.id, 4, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT4.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
         self.CLIENT4.setText("")
         self.CLIENT4.setObjectName("CLIENT4")
         self.gridLayout.addWidget(self.CLIENT4, 5, 1, 1, 1)
-        self.CLIENT5 = customlabel(self, self.nodename, self.Destination, self.id, 5, self.LINE1, self.LINE2)
+        self.CLIENT5 = customlabel(self, self.nodename, self.Destination, self.id, 5, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT5.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
         self.CLIENT5.setText("")
         self.CLIENT5.setObjectName("CLIENT5")
         self.gridLayout.addWidget(self.CLIENT5, 6, 0, 1, 1)
-        self.CLIENT10 = customlabel(self, self.nodename, self.Destination, self.id, 10, self.LINE1, self.LINE2)
+        self.CLIENT10 = customlabel(self, self.nodename, self.Destination, self.id, 10, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT10.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
         self.CLIENT10.setText("")
         self.CLIENT10.setObjectName("CLIENT10")
         self.gridLayout.addWidget(self.CLIENT10, 8, 1, 1, 1)
-        self.CLIENT16 = customlabel(self, self.nodename, self.Destination, self.id, 16, self.LINE1, self.LINE2)
+        self.CLIENT16 = customlabel(self, self.nodename, self.Destination, self.id, 16, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT16.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
         self.CLIENT16.setText("")
         self.CLIENT16.setObjectName("CLIENT16")
         self.gridLayout.addWidget(self.CLIENT16, 11, 1, 1, 1)
-        self.CLIENT8 = customlabel(self, self.nodename, self.Destination, self.id, 8, self.LINE1, self.LINE2)
+        self.CLIENT8 = customlabel(self, self.nodename, self.Destination, self.id, 8, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT8.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
         self.CLIENT8.setText("")
         self.CLIENT8.setObjectName("CLIENT8")
         self.gridLayout.addWidget(self.CLIENT8, 7, 1, 1, 1)
-        self.CLIENT7 = customlabel(self, self.nodename, self.Destination, self.id, 7, self.LINE1, self.LINE2)
+        self.CLIENT7 = customlabel(self, self.nodename, self.Destination, self.id, 7, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT7.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
         self.CLIENT7.setText("")
         self.CLIENT7.setObjectName("CLIENT7")
         self.gridLayout.addWidget(self.CLIENT7, 7, 0, 1, 1)
-        self.CLIENT9 = customlabel(self, self.nodename, self.Destination, self.id, 9, self.LINE1, self.LINE2)
+        self.CLIENT9 = customlabel(self, self.nodename, self.Destination, self.id, 9, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT9.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
         self.CLIENT9.setText("")
         self.CLIENT9.setObjectName("CLIENT9")
         self.gridLayout.addWidget(self.CLIENT9, 8, 0, 1, 1)
-        self.CLIENT6 = customlabel(self, self.nodename, self.Destination, self.id, 6, self.LINE1, self.LINE2)
+        self.CLIENT6 = customlabel(self, self.nodename, self.Destination, self.id, 6, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT6.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
         self.CLIENT6.setText("")
         self.CLIENT6.setObjectName("CLIENT6")
         self.gridLayout.addWidget(self.CLIENT6, 6, 1, 1, 1)
-        self.CLIENT11 = customlabel(self, self.nodename, self.Destination, self.id, 11, self.LINE1, self.LINE2)
+        self.CLIENT11 = customlabel(self, self.nodename, self.Destination, self.id, 11, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT11.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
         self.CLIENT11.setText("")
         self.CLIENT11.setObjectName("CLIENT11")
@@ -132,17 +134,17 @@ class MP2X_L_Demand(QtWidgets.QWidget):
         self.Socket_Top.setText("")
         self.Socket_Top.setObjectName("Socket_Top")
         self.gridLayout.addWidget(self.Socket_Top, 1, 0, 1, 1)
-        self.CLIENT12 = customlabel(self, self.nodename, self.Destination, self.id, 12, self.LINE1, self.LINE2)
+        self.CLIENT12 = customlabel(self, self.nodename, self.Destination, self.id, 12, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT12.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
         self.CLIENT12.setText("")
         self.CLIENT12.setObjectName("CLIENT12")
         self.gridLayout.addWidget(self.CLIENT12, 9, 1, 1, 1)
-        self.CLIENT1 = customlabel(self, self.nodename, self.Destination, self.id, 1, self.LINE1, self.LINE2)
+        self.CLIENT1 = customlabel(self, self.nodename, self.Destination, self.id, 1, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT1.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
         self.CLIENT1.setText("")
         self.CLIENT1.setObjectName("CLIENT1")
         self.gridLayout.addWidget(self.CLIENT1, 3, 0, 1, 1)
-        self.CLIENT2 = customlabel(self, self.nodename, self.Destination, self.id, 2, self.LINE1, self.LINE2)
+        self.CLIENT2 = customlabel(self, self.nodename, self.Destination, self.id, 2, self.LINE1, self.LINE2, self.DualPanelsId)
         self.CLIENT2.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
         self.CLIENT2.setText("")
         self.CLIENT2.setObjectName("CLIENT2")
@@ -183,6 +185,13 @@ class MP2X_L_Demand(QtWidgets.QWidget):
                                                 mode= "add",
                                                 type= type)
 
+                        # ** Dual **
+                        self.modify_ServiceList(ids= ids,
+                                                source= self.Destination,
+                                                destination= self.nodename,
+                                                mode= "add",
+                                                type= type)
+
                 GroomOut_1_Id = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0]
                 GroomOut_2_Id = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1]
 
@@ -195,6 +204,12 @@ class MP2X_L_Demand(QtWidgets.QWidget):
                 self.modify_GroomOut10List(id= GroomOut_1_Id,
                                             Source= self.nodename,
                                             Destination= self.Destination,
+                                            mode= "delete")
+
+                # ** Dual **
+                self.modify_GroomOut10List(id= GroomOut_1_Id,
+                                            Source= self.Destination,
+                                            Destination= self.nodename,
                                             mode= "delete")
 
     
@@ -217,6 +232,12 @@ class MP2X_L_Demand(QtWidgets.QWidget):
                                                 Destination= self.Destination,
                                                 mode= "delete")
 
+                    # ** Dual **
+                    self.modify_GroomOut10List(id= GroomOut_2_Id,
+                                                Source= self.Destination,
+                                                Destination= self.nodename,
+                                                mode= "delete")
+
                     # deleting groomout10 from common object ( line 2 )
                     Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOut_2_Id)
 
@@ -224,6 +245,10 @@ class MP2X_L_Demand(QtWidgets.QWidget):
 
             DemandTabDataBase["Panels"][self.nodename].pop(self.id)
             DemandTabDataBase["Panels"][self.nodename].pop(self.uppernum)
+
+            # ** Dual **
+            DemandTabDataBase["Panels"][self.Destination].pop(self.DualPanelsId[0])
+            DemandTabDataBase["Panels"][self.Destination].pop(self.DualPanelsId[1])
 
     
     def Update_MP1H_Port(self, Item, Source, Destination, Capacity):
@@ -298,7 +323,7 @@ class MP2X_L_Demand(QtWidgets.QWidget):
 
 class customlabel(QLabel):
     Stateflag = 0           # this flag shows that this panel is on or off
-    def __init__(self, parent, nodename, Destination, ID, ClientNum , LineVar_1, LineVar_2):
+    def __init__(self, parent, nodename, Destination, ID, ClientNum , LineVar_1, LineVar_2, DualPanelsId = None):
         super().__init__(parent)
         self.nodename = nodename
         self.id = ID
@@ -310,6 +335,8 @@ class customlabel(QLabel):
 
         self.BWDict = {"E1": 58.84 / 1024, "STM_1_Electrical": 155.52 / 1024, "STM_1_Optical": 155.52 / 1024, "STM_4": 622.08 / 1024, "STM_16": 2.49}
     
+        self.DualPanelsId = DualPanelsId
+
     def dragEnterEvent(self, event):
         e = event.mimeData()
         model = QStandardItemModel()
@@ -386,14 +413,24 @@ class customlabel(QLabel):
             # updating ClientsCapacity in panel object
             DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = servicetype
 
+            # ** Dual **
+            DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].ClientsCapacity[self.ClientNum] = servicetype
+
             ServiceListLen = len(DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList)
             if self.ClientNum >= ServiceListLen:
                 for i in range(ServiceListLen - self.ClientNum + 1):
                     DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList.append(None)
 
+                    # ** Dual **
+                    DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].ServiceIdList.append(None)
+
             # updating service id and demand id in panel object 
             DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = self.ids[1]
             DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = self.ids[0]
+
+            # ** Dual **
+            DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].ServiceIdList[self.ClientNum] = self.ids[1]
+            DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].DemandIdList[self.ClientNum] = self.ids[0]
 
 
             
@@ -405,14 +442,26 @@ class customlabel(QLabel):
                                     destination= self.Destination,
                                     mode= "delete")
 
+            # ** Dual **
+            self.modify_ServiceList(ids= self.ids,
+                                    source= self.Destination,
+                                    destination= self.nodename,
+                                    mode= "delete")
+
             # check if line 1 in on or not
             if Line_1_old_capacity < 0.001:
 
                 # updating line 1 capacity
                 DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] += DropCapacity
 
+                # ** Dual **
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LinesCapacity[0] += DropCapacity
+
                 # updating Line_1_ServiceIdList
                 DemandTabDataBase["Panels"][self.nodename][self.id].Line_1_ServiceIdList.append(self.ids[1])
+
+                # ** Dual ** 
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line_1_ServiceIdList.append(self.ids[1])
                 
                 # creating new groom out 10
                 Data["NetworkObj"].TrafficMatrix.add_groom_out_10(Source= self.nodename,
@@ -426,6 +475,9 @@ class customlabel(QLabel):
                 # updating LineIdList in panel object
                 DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0] = GroomOutId
 
+                # ** Dual ** 
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LineIdList[0] = GroomOutId
+
                 self.modify_GroomOut10List(id= GroomOutId,
                                             Source= self.nodename,
                                             Destination= self.Destination,
@@ -433,6 +485,16 @@ class customlabel(QLabel):
                                             mode= "add",
                                             type= "GroomOut10",
                                             PanelId= self.id,
+                                            DemandId= self.ids[0])
+
+                # ** Dual ** 
+                self.modify_GroomOut10List(id= GroomOutId,
+                                            Source= self.Destination,
+                                            Destination= self.nodename,
+                                            Capacity= DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LinesCapacity[0],
+                                            mode= "add",
+                                            type= "GroomOut10",
+                                            PanelId= self.DualPanelsId[0],
                                             DemandId= self.ids[0])
                 
                 # setting line port tooltip                                        
@@ -443,8 +505,14 @@ class customlabel(QLabel):
                 # updating line 1 capacity
                 DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] += DropCapacity
 
+                # ** Dual **
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LinesCapacity[0] += DropCapacity
+
                 # updating Line_1_ServiceIdList
                 DemandTabDataBase["Panels"][self.nodename][self.id].Line_1_ServiceIdList.append(self.ids[1])
+
+                # ** Dual ** 
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line_1_ServiceIdList.append(self.ids[1])
 
                 GroomOutId = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0]
 
@@ -453,6 +521,10 @@ class customlabel(QLabel):
 
                 # updating LightPath ListWidgetItem Capacity
                 self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
+                                                        Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
+
+                # ** Dual **
+                self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][GroomOutId],
                                                         Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
                 
                 self.Update_MP1H_Port(Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
@@ -468,8 +540,14 @@ class customlabel(QLabel):
                 # updating line 2 capacity
                 DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] += DropCapacity
 
+                # ** Dual **
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LinesCapacity[1] += DropCapacity
+
                 # updating Line_2_ServiceIdList
                 DemandTabDataBase["Panels"][self.nodename][self.id].Line_2_ServiceIdList.append(self.ids[1])
+
+                # ** Dual **
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line_2_ServiceIdList.append(self.ids[1])
 
                 # creating new groom out 10
                 Data["NetworkObj"].TrafficMatrix.add_groom_out_10(Source= self.nodename,
@@ -484,6 +562,9 @@ class customlabel(QLabel):
                 # updating LineIdList in panel object
                 DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1] = GroomOutId
 
+                # ** Dual **
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LineIdList[1] = GroomOutId
+
                 self.modify_GroomOut10List(id= GroomOutId,
                                             Source= self.nodename,
                                             Destination= self.Destination,
@@ -491,6 +572,16 @@ class customlabel(QLabel):
                                             mode= "add",
                                             type= "GroomOut10",
                                             PanelId= self.id,
+                                            DemandId = self.ids[0])
+
+                # ** Dual **
+                self.modify_GroomOut10List(id= GroomOutId,
+                                            Source= self.Destination,
+                                            Destination= self.nodename,
+                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1],
+                                            mode= "add",
+                                            type= "GroomOut10",
+                                            PanelId= self.DualPanelsId,
                                             DemandId = self.ids[0])
                 
                 # setting line port tooltip                                        
@@ -501,8 +592,14 @@ class customlabel(QLabel):
                 # updating line 2 capacity
                 DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] += DropCapacity
 
+                # ** Dual **
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LinesCapacity[1] += DropCapacity
+
                 # updating Line_2_ServiceIdList
                 DemandTabDataBase["Panels"][self.nodename][self.id].Line_2_ServiceIdList.append(self.ids[1])
+
+                # ** Dual **
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line_2_ServiceIdList.append(self.ids[1])
 
                 GroomOutId = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1]
 
@@ -512,6 +609,10 @@ class customlabel(QLabel):
 
                 # updating LightPath ListWidgetItem Capacity
                 self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
+                                                        Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
+
+                # ** Dual **
+                self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][GroomOutId],
                                                         Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
 
                 
@@ -548,13 +649,23 @@ class customlabel(QLabel):
                     # updating line 1 capacity
                     DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] -= self.BWDict[DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum]]
 
+                    # ** Dual **
+                    DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LinesCapacity[0] -= self.BWDict[DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum]]
+
                     # updating line 1 id service id list
                     DemandTabDataBase["Panels"][self.nodename][self.id].Line_1_ServiceIdList.remove(ServiceId)
+
+                    # ** Dual **
+                    DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line_1_ServiceIdList.remove(ServiceId)
 
                     
 
                     # updating LightPath ListWidgetItem Capacity
                     self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_1],
+                                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
+
+                    # ** Dual **
+                    self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][GroomOutId_1],
                                                             Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
                     
                     self.Update_MP1H_Port(Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_1],
@@ -569,11 +680,21 @@ class customlabel(QLabel):
                     # updating line 2 capacity
                     DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] -= self.BWDict[DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum]]
 
+                    # ** Dual **
+                    DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LinesCapacity[1] -= self.BWDict[DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum]]
+
                     # updating line 2 id service id list
                     DemandTabDataBase["Panels"][self.nodename][self.id].Line_2_ServiceIdList.remove(ServiceId)
 
+                    # ** Dual **
+                    DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line_2_ServiceIdList.remove(ServiceId)
+
                     # updating LightPath ListWidgetItem Capacity
                     self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_2],
+                                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
+
+                    # ** Dual **
+                    self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][GroomOutId_2],
                                                             Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
 
                     self.Update_MP1H_Port(Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_2],
@@ -586,12 +707,21 @@ class customlabel(QLabel):
 
                 # updating client capacity part of panel object
                 DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = 0
+
+                # ** Dual **
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].ClientsCapacity[self.ClientNum] = 0
                 
                 # update ServiceIdList part of panel object
                 DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = None
 
+                # ** Dual **
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].ServiceIdList[self.ClientNum] = None
+
                 # updating DemandIdList part in panel object
                 DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = None
+
+                # ** Dual **
+                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].DemandIdList[self.ClientNum] = None
 
                 self.setAcceptDrops(True)
 
@@ -606,14 +736,31 @@ class customlabel(QLabel):
                                         mode= "add",
                                         type= self.servicetype)
 
+                # ** Dual **
+                self.modify_ServiceList(ids= self.ids,
+                                        source = self.Destination,
+                                        destination= self.nodename,
+                                        mode= "add",
+                                        type= self.servicetype)
+
                 if DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] < 0.001:
 
                     # updating LineIdList part of panel object
                     DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0] = None
 
+                    # ** Dual **
+                    DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LineIdList[0] = None
+
                     self.modify_GroomOut10List(id= GroomOutId_1,
                                                 Source= self.nodename,
                                                 Destination= self.Destination,
+                                                mode= "delete",
+                                                type= "GroomOut10")
+
+                    # ** Dual **
+                    self.modify_GroomOut10List(id= GroomOutId_1,
+                                                Source= self.Destination,
+                                                Destination= self.nodename,
                                                 mode= "delete",
                                                 type= "GroomOut10")
                     
@@ -625,9 +772,19 @@ class customlabel(QLabel):
                     # updating LineIdList part of panel object
                     DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1] = None
 
+                    # ** Dual **
+                    DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LineIdList[1] = None
+
                     self.modify_GroomOut10List(id= GroomOutId_2,
                                                 Source= self.nodename,
                                                 Destination= self.Destination,
+                                                mode= "delete",
+                                                type= "GroomOut10")
+
+                    # ** Dual **
+                    self.modify_GroomOut10List(id= GroomOutId_2,
+                                                Source= self.Destination,
+                                                Destination= self.nodename,
                                                 mode= "delete",
                                                 type= "GroomOut10")
 
