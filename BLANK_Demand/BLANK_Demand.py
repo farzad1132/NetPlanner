@@ -32,7 +32,7 @@ class BLANK_Demand(QtWidgets.QWidget):
         self.horizontalLayout.setContentsMargins(4, 4, 4, 4)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.BLANK_Demand_1 = QtWidgets.QLabel(self)
-        self.BLANK_Demand_1.setStyleSheet("border-image: url(:/BLANK_DEMAND_SOURCE/BLANK.png);")
+        self.BLANK_Demand_1.setStyleSheet(" QLabel{border-image: url(:/BLANK_DEMAND_SOURCE/BLANK.png);} ")
         self.horizontalLayout.addWidget(self.BLANK_Demand_1)
         self.BLANK_Demand_1.setText("")
         self.BLANK_Demand_1.setObjectName("BLANK_Demand_1")
