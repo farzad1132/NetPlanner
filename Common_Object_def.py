@@ -23,10 +23,10 @@ class Network:
         self.ParamsObj.set_params(merge, alpha, iterations, margin, processors, k , MaxNW, GroupSize, History, Algorithm)
 
     def add_lightpath(self, Source, Destination, Capacity, ServiceIdList, Type, DemandId,
-     MandatoryNodesIdList = None, IgnoringNodesIdList = None):
+     MandatoryNodesIdList = None, IgnoringNodesIdList = None, ClusterNum = None):
 
         self.LightPathDict[Network.Lightpath.get_id()] = self.Lightpath(Source, Destination, Capacity, ServiceIdList, Type, DemandId, 
-        MandatoryNodesIdList= MandatoryNodesIdList, IgnoringNodesIdList= IgnoringNodesIdList)
+        MandatoryNodesIdList= MandatoryNodesIdList, IgnoringNodesIdList= IgnoringNodesIdList, ClusterNum= ClusterNum)
     
     def del_lightpath(self, LightPathId):
         
@@ -898,7 +898,8 @@ if __name__ == "__main__":
                     Capacity= 100,
                     ServiceIdList= [1, 2],
                     Type= "x",
-                    DemandId= 2)
+                    DemandId= 2,
+                    ClusterNum= 2)
     n.put_results(0, [1 , 3 , 7], [1 ,4 ,7], 27, [5], [9], 25, 14, "111", 14, 31, "1+1")
 
     print("LightpathDict: ", n.LightPathDict)
@@ -930,6 +931,3 @@ if __name__ == "__main__":
 
     # NOTE: Grooming Algorithm must return a Dictionary of paired GroomOut10's that belong to same MP2X in format bellow:
     # { <DemandId> : ( <GroomOut10Id_1>, <GroomOut10Id_2> ) }
-    
-
-print("hi")
