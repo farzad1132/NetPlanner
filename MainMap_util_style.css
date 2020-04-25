@@ -1,0 +1,61 @@
+/*
+map util styles - append this to the end of the main css file
+*/
+
+.mainmap-util-btn {
+    font: 75 12pt "Bahnschrift Condensed";
+	
+	border:1px solid black; 
+	/* min-width: 80px; */
+	/* border: none; */
+	border-color: dark gray; 
+    /* border-radius: 25px; */
+}
+
+.mainmap-util-btn:hover {
+    background-color: #6088C6; 
+}
+.mainmap-util-btn:flat {
+    border: none; /* no border for a flat push button */
+}
+
+.mainmap-util-btn:default {
+    border-color: navy; /* make the default button prominent */
+}
+
+.mainmap-util-input{
+    border: 1px solid gray;
+    /* border-radius: 10px; */
+    /* padding: 0 8px; */
+    background: white;
+    /* selection-background-color: darkgray;  */
+    
+	font: 10pt "Bahnschrift";
+}
+
+.vertical {
+	/* float: right; */
+	margin-top: 5px;
+    width: 100%;
+    /* border: 1px solid blue */
+}
+
+.vertical  > *{
+    display :block;
+    width: 100%;
+}
+
+.alert {
+	background-color: rgb(194, 94, 119);
+	color: white;
+}
+.horizontal{
+    float: left;
+    /* border: 1px solid green */
+}
+
+.horizontal  *{
+
+    display: inline-block;
+    margin-left: 10px;
+}
