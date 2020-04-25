@@ -152,8 +152,13 @@ class BLANK_Demand(QtWidgets.QWidget):
         if not IdList:
             return ("1", "2")
         IdList = list(map(lambda x : int(x), IdList))
-        MaxId = max(IdList)
-        return (str(MaxId + 1), str(MaxId + 2))
+        if len(IdList) == max(IdList):
+            MaxId = max(IdList)
+            return (str(MaxId + 1), str(MaxId + 2))
+        else:
+            for i in range(1,max(IdList), 2):
+                if ( i in IdList ) is False:
+                    return (str(i), str(i+1))
 
 
 
