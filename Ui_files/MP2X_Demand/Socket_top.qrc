@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="Socket_Top_Source">
+    <file>Socket_top.png</file>
+  </qresource>
+</RCC>

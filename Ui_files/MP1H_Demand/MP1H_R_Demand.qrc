@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="MP1H_R_SOURCE">
+    <file>MP1H_R_Demand.png</file>
+  </qresource>
+</RCC>

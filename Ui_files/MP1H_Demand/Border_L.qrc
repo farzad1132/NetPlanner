@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="Border_L_Source">
+    <file>Border_L.png</file>
+  </qresource>
+</RCC>
