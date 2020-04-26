@@ -71,7 +71,7 @@ QTabWidget::tab-bar {
 
  QTabBar::tab:!selected {
      margin-top: -2px; /* make non-selected tabs look smaller */ 
-      border-color: #COCOCO
+      
  }
 
  /* make use of negative margins for overlapping tabs */
@@ -94,7 +94,7 @@ QTabWidget::tab-bar {
  }r</string>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="TopologyTab">
         <attribute name="title">
@@ -708,8 +708,7 @@ QPushButton:default {
            </property>
            <property name="styleSheet">
             <string notr="true">QGroupBox {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #E0E0E0, stop: 1 #FFFFFF);
+    
     border: 2px solid gray;
     border-radius: 5px;
     margin-top: 1ex; /* leave space at the top for the title */
@@ -732,7 +731,7 @@ QGroupBox::title {
               <property name="styleSheet">
                <string notr="true">QGroupBox {
     
-    border: 2px solid #COCOCO;
+    border: 2px solid gray;
     border-radius: 5px;
     margin-top: 1ex; /* leave space at the top for the title */
 }
@@ -1106,7 +1105,7 @@ QPushButton:default {
 
 QPushButton:pressed {
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #ffff, stop: 1 #EB8686);
+                                      stop: 0 #ffffff, stop: 1 #EB8686);
 }
 
 QPushButton:flat {
@@ -2219,7 +2218,7 @@ QPushButton:default {
               <string notr="true">QListWidget {
     alternate-background-color: yellow;
 	border:2px double;
-	border-color: #c0c0c0;
+	border-color: #C0C0C0;
 	border-radius: 5px; 
     
 }
@@ -2228,7 +2227,7 @@ QListWidget {
 }
 
 QListWidget::item:alternate {
-    background: #aaaaa;
+    background:rgb(170, 170, 170);
 }
 
 QListWidget::item:selected {
@@ -2369,7 +2368,7 @@ QListWidget {
 }
 
 QListWidget::item:alternate {
-    background: #aaaaa;
+    background:rgb(170, 170, 170);
 }
 
 QListWidget::item:selected {
@@ -2518,7 +2517,7 @@ QListWidget::item:hover {
                 <enum>QTabWidget::Rounded</enum>
                </property>
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <property name="iconSize">
                 <size>
@@ -2680,7 +2679,7 @@ QListWidget {
 }
 
 QListWidget::item:alternate {
-    background: #aaaaa;
+    background: rgb(170, 170, 170);
 }
 
 QListWidget::item:selected {
@@ -2804,7 +2803,7 @@ QListWidget {
 }
 
 QListWidget::item:alternate {
-    background: #aaaaa;
+    background: rgb(170, 170, 170);
 }
 
 QListWidget::item:selected {
@@ -2935,7 +2934,7 @@ QListWidget::item:hover {
               <string notr="true">QListWidget {
     alternate-background-color: yellow;
 	border:2px double;
-	border-color: #c0c0c0;
+	border-color: #C0C0C0;
 	border-radius: 5px; 
     
 }
@@ -2944,7 +2943,8 @@ QListWidget {
 }
 
 QListWidget::item:alternate {
-    background: #aaaaa;
+    
+	background-color: rgb(170, 170, 170);
 }
 
 QListWidget::item:selected {
@@ -3032,7 +3032,7 @@ QListWidget::item:hover {
              </property>
              <property name="styleSheet">
               <string notr="true">QLabel {
-    border: 2px solid green;
+    border: 2px solid blue;
 	border-color: rgb(64, 114, 179);
     border-radius: 4px;
     padding: 2px;
@@ -3158,7 +3158,7 @@ QComboBox QAbstractItemView {
              </property>
              <property name="styleSheet">
               <string notr="true"> QLabel {
-    border: 2px solid green;
+    border: 2px solid blue;
 	border-color: rgb(64, 114, 179);
     border-radius: 4px;
     padding: 2px;

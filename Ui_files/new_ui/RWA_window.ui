@@ -41,7 +41,7 @@ QToolBox::tab:selected {
 </string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="Greedy">
       <property name="geometry">
@@ -128,7 +128,7 @@ QToolBox::tab:selected {
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true"> </string>
+            <string notr="true"/>
            </property>
            <property name="text">
             <string>Merging demands</string>
@@ -532,8 +532,8 @@ QComboBox QAbstractItemView {
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>475</width>
-        <height>321</height>
+        <width>208</width>
+        <height>256</height>
        </rect>
       </property>
       <attribute name="label">
@@ -1395,7 +1395,7 @@ QPushButton:pressed,hover {
     background-color: #EB8686; 
 }
 QPushButton:hover {
-    background-color: #c0c0c0; 
+    background-color: #C0C0C0; 
 }
 QPushButton:flat {
     border: none; /* no border for a flat push button */
