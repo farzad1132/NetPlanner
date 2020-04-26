@@ -15,7 +15,8 @@ from MP1H_Demand import client
 from MP1H_Demand import line
 from MP1H_Demand import CLIENT_L_Selected
 from MP1H_Demand import CLIENT_R_Selected
-
+from MP1H_Demand import Line_Selected
+from MP1H_Demand import Border_L
 
 # USE THIS CODE TO CHANGE THE CLIENT TO SELECTED CLIENT:
 #1)
@@ -24,6 +25,9 @@ from MP1H_Demand import CLIENT_R_Selected
 #2)
 # For left clients:
 # self.Client(number of client).setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
+
+# USE THIS CODE TO CHANGE THE LINE TO SELECTED LINE:
+# self.Line.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
 
 class MP1H_L_Demand(QtWidgets.QWidget):
 
@@ -40,10 +44,14 @@ class MP1H_L_Demand(QtWidgets.QWidget):
 
         self.DualPanelsId = DualPanelsId
 
-
+        grid=QtWidgets.QGridLayout(self)
+        widget=QtWidgets.QWidget(self)
+        widget.setStyleSheet("border-image:url(:/Border_L_Source/Border_L.png); ")
+        grid.setMargin(0)
+        grid.addWidget(widget)
         self.Line = QtWidgets.QLabel(self)
         self.Line.setMinimumSize(QtCore.QSize(0, 125))
-        self.Line.setStyleSheet("image: url(:/line/line.png);")
+        self.Line.setStyleSheet("QLabel{ image: url(:/line/line.png); }")
         self.Line.setText("")
         self.Line.setObjectName("Line")
 
@@ -51,17 +59,17 @@ class MP1H_L_Demand(QtWidgets.QWidget):
         self.gridLayout.setContentsMargins(5, 5, 5, 5)
         self.gridLayout.setObjectName("gridLayout")
         self.Client8 = customlabel(self, self.nodename, self.Destination, self.id, 8, self.Line, DualPanelsId= DualPanelsId)
-        self.Client8.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
+        self.Client8.setStyleSheet(" QLabel { image: url(:/client_r/CLIENT_R.png); } ")
         self.Client8.setText("")
         self.Client8.setObjectName("Client8")
         self.gridLayout.addWidget(self.Client8, 5, 1, 1, 1)
         self.Client5 = customlabel(self, self.nodename, self.Destination, self.id, 5, self.Line, DualPanelsId= DualPanelsId)
-        self.Client5.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+        self.Client5.setStyleSheet("QLabel{ image: url(:/CLIENT_L1/CLIENT_L.png); }")
         self.Client5.setText("")
         self.Client5.setObjectName("Client5")
         self.gridLayout.addWidget(self.Client5, 4, 0, 1, 1)
         self.Client7 = customlabel(self, self.nodename, self.Destination, self.id, 7, self.Line, DualPanelsId= DualPanelsId)
-        self.Client7.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+        self.Client7.setStyleSheet("QLabel{ image: url(:/CLIENT_L1/CLIENT_L.png); }")
         self.Client7.setText("")
         self.Client7.setObjectName("Client7")
         self.gridLayout.addWidget(self.Client7, 5, 0, 1, 1)
@@ -69,56 +77,57 @@ class MP1H_L_Demand(QtWidgets.QWidget):
         self.gridLayout.addWidget(self.Line, 7, 0, 1, 1)
         self.Socket_Top = QtWidgets.QLabel(self)
         self.Socket_Top.setMaximumSize(QtCore.QSize(16777215, 50))
-        self.Socket_Top.setStyleSheet("image: url(:/Socket_top/Socket_top.png);")
+        self.Socket_Top.setStyleSheet("QLabel{ image: url(:/Socket_top/Socket_top.png); }")
         self.Socket_Top.setText("")
         self.Socket_Top.setObjectName("Socket_Top")
         self.gridLayout.addWidget(self.Socket_Top, 1, 0, 1, 1)
         self.Client1 = customlabel(self, self.nodename, self.Destination, self.id, 1, self.Line, DualPanelsId= DualPanelsId)
-        self.Client1.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+        self.Client1.setStyleSheet("QLabel{ image: url(:/CLIENT_L1/CLIENT_L.png); }")
         self.Client1.setText("")
         self.Client1.setObjectName("Client1")
         self.gridLayout.addWidget(self.Client1, 2, 0, 1, 1)
         self.Client6 = customlabel(self, self.nodename, self.Destination, self.id, 6, self.Line, DualPanelsId= DualPanelsId)
-        self.Client6.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
+        self.Client6.setStyleSheet("QLabel{ image: url(:/client_r/CLIENT_R.png); }")
         self.Client6.setText("")
         self.Client6.setObjectName("Client6")
         self.gridLayout.addWidget(self.Client6, 4, 1, 1, 1)
         self.Client4 = customlabel(self, self.nodename, self.Destination, self.id, 4, self.Line, DualPanelsId= DualPanelsId)
-        self.Client4.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
+        self.Client4.setStyleSheet("QLabel{ image: url(:/client_r/CLIENT_R.png); }")
         self.Client4.setText("")
         self.Client4.setObjectName("Client4")
         self.gridLayout.addWidget(self.Client4, 3, 1, 1, 1)
         self.Socket_Bottom = QtWidgets.QLabel(self)
         self.Socket_Bottom.setMaximumSize(QtCore.QSize(16777215, 50))
-        self.Socket_Bottom.setStyleSheet("image: url(:/Socket_Bottom/Socket_bottom.png);")
+        self.Socket_Bottom.setStyleSheet("QLabel{ image: url(:/Socket_Bottom/Socket_bottom.png); }")
         self.Socket_Bottom.setText("")
         self.Socket_Bottom.setObjectName("Socket_Bottom")
         self.gridLayout.addWidget(self.Socket_Bottom, 8, 0, 1, 1)
         self.Client10 = customlabel(self, self.nodename, self.Destination, self.id, 10, self.Line, DualPanelsId= DualPanelsId)
-        self.Client10.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
+        self.Client10.setStyleSheet("QLabel{ image: url(:/client_r/CLIENT_R.png); }")
         self.Client10.setText("")
         self.Client10.setObjectName("Client10")
         self.gridLayout.addWidget(self.Client10, 6, 1, 1, 1)
         self.Client2 = customlabel(self, self.nodename, self.Destination, self.id, 2, self.Line, DualPanelsId= DualPanelsId)
-        self.Client2.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
+        self.Client2.setStyleSheet("QLabel{ image: url(:/client_r/CLIENT_R.png); }")
         self.Client2.setText("")
         self.Client2.setObjectName("Client2")
         self.gridLayout.addWidget(self.Client2, 2, 1, 1, 1)
         self.Client9 = customlabel(self, self.nodename, self.Destination, self.id, 9, self.Line, DualPanelsId= DualPanelsId)
-        self.Client9.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+        self.Client9.setStyleSheet("QLabel{ image: url(:/CLIENT_L1/CLIENT_L.png); }")
         self.Client9.setText("")
         self.Client9.setObjectName("Client9")
         self.gridLayout.addWidget(self.Client9, 6, 0, 1, 1)
         self.Client3 = customlabel(self, self.nodename, self.Destination, self.id, 3, self.Line, DualPanelsId= DualPanelsId)
-        self.Client3.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+        self.Client3.setStyleSheet("QLabel{ image: url(:/CLIENT_L1/CLIENT_L.png); }")
         self.Client3.setText("")
         self.Client3.setObjectName("Client3")
         self.gridLayout.addWidget(self.Client3, 3, 0, 1, 1)
         self.MP1H_Title = QtWidgets.QLabel(self)
-        self.MP1H_Title.setStyleSheet("image: url(:/title/MP1H_title.png);")
+        self.MP1H_Title.setStyleSheet("QLabel{ image: url(:/title/MP1H_title.png); }")
         self.MP1H_Title.setText("")
         self.MP1H_Title.setObjectName("MP1H_Title")
         self.gridLayout.addWidget(self.MP1H_Title, 1, 2, 2, 1)
+        grid.addLayout(self.gridLayout,0,0)
 
     def contextMenuEvent(self, event):
         from BLANK_Demand.BLANK_Demand import BLANK_Demand

@@ -14,9 +14,14 @@ from TP1H_Demand import Socket
 from TP1H_Demand import TP1H_R
 from TP1H_Demand import title
 from TP1H_Demand import TP1H_CLIENT_Selected
+from TP1H_Demand import Line_Selected
+from TP1H_Demand import Border_L
 
 # USE THIS CODE TO CHANGE THE CLIENT TO SELECTED CLIENT:
 #self.Client.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
+
+# USE THIS CODE TO CHANGE THE LINE TO SELECTED LINE:
+# self.Line.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
 
 class TP1H_L_Demand(QtWidgets.QWidget):
 
@@ -33,30 +38,35 @@ class TP1H_L_Demand(QtWidgets.QWidget):
 
         self.DualPanelsId = DualPanelsId
 
+        grid=QtWidgets.QGridLayout(self)
+        widget=QtWidgets.QWidget(self)
+        widget.setStyleSheet("border-image:url(:/Border_L_Source/Border_L.png); ")
+        grid.setMargin(0)
+        grid.addWidget(widget)
         self.gridLayout = QtWidgets.QGridLayout(self)
         self.gridLayout.setContentsMargins(5, 5, 5, 5)
         self.gridLayout.setObjectName("gridLayout")
         self.Line = QtWidgets.QLabel(self)
         self.Line.setMinimumSize(QtCore.QSize(0, 25))
         self.Line.setMaximumSize(QtCore.QSize(100, 200))
-        self.Line.setStyleSheet("image: url(:/Line/tp1h_line.png);")
+        self.Line.setStyleSheet("QLabel{ image: url(:/Line/tp1h_line.png); }")
         self.Line.setText("")
         self.Line.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.Line.setObjectName("Line")
         self.gridLayout.addWidget(self.Line, 1, 0, 3, 1)
         self.Socket_Top = QtWidgets.QLabel(self)
-        self.Socket_Top.setStyleSheet("image: url(:/Socket/socket1.png);")
+        self.Socket_Top.setStyleSheet("QLabel{ image: url(:/Socket/socket1.png); }")
         self.Socket_Top.setText("")
         self.Socket_Top.setObjectName("Socket_Top")
         self.gridLayout.addWidget(self.Socket_Top, 0, 0, 1, 1)
         self.Socket_Bottom = QtWidgets.QLabel(self)
-        self.Socket_Bottom.setStyleSheet("image: url(:/Socket_bottom/socket2.png);")
+        self.Socket_Bottom.setStyleSheet("QLabel{ image: url(:/Socket_bottom/socket2.png); }")
         self.Socket_Bottom.setText("")
         self.Socket_Bottom.setObjectName("Socket_Bottom")
         self.gridLayout.addWidget(self.Socket_Bottom, 7, 0, 1, 1)
         self.Client = customlabel(self, self.nodename, self.Destination, self.id, self.Line, DualPanelsId= DualPanelsId)
         self.Client.setMinimumSize(QtCore.QSize(0, 25))
-        self.Client.setStyleSheet("image:  url(:/Client/TP1H_CLIENT.png);")
+        self.Client.setStyleSheet("QLabel{ image:  url(:/Client/TP1H_CLIENT.png); }")
         self.Client.setText("")
         self.Client.setObjectName("Client")
         self.gridLayout.addWidget(self.Client, 5, 0, 2, 1)
@@ -68,10 +78,11 @@ class TP1H_L_Demand(QtWidgets.QWidget):
         self.gridLayout.addWidget(self.Client_Title, 5, 2, 2, 1)
         self.TP1H_Title = QtWidgets.QLabel(self)
         self.TP1H_Title.setMaximumSize(QtCore.QSize(35, 16777215))
-        self.TP1H_Title.setStyleSheet("image: url(:/title/title.png);")
+        self.TP1H_Title.setStyleSheet("QLabel{ image: url(:/title/title.png); }")
         self.TP1H_Title.setText("")
         self.TP1H_Title.setObjectName("TP1H_Title")
         self.gridLayout.addWidget(self.TP1H_Title, 0, 2, 2, 1)
+        grid.addLayout(self.gridLayout,0,0)
 
     def contextMenuEvent(self, event):
         from BLANK_Demand.BLANK_Demand import BLANK_Demand

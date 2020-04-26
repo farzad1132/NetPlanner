@@ -7,11 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>94</width>
-    <height>536</height>
+    <height>440</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">border-image: url(:/Border_L_Source/Border_L.png);</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
@@ -26,52 +29,39 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="1" column="0" rowspan="3">
-    <widget class="QLabel" name="Line">
+   <item row="4" column="2" rowspan="2">
+    <widget class="QLabel" name="Client_Title">
+     <property name="styleSheet">
+      <string notr="true">border-image : none;
+</string>
+     </property>
+     <property name="text">
+      <string>Client</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" rowspan="2">
+    <widget class="QLabel" name="Client">
      <property name="minimumSize">
       <size>
        <width>0</width>
        <height>25</height>
       </size>
      </property>
-     <property name="maximumSize">
-      <size>
-       <width>100</width>
-       <height>200</height>
-      </size>
-     </property>
      <property name="styleSheet">
-      <string notr="true">image: url(:/Line/tp1h_line.png);</string>
+      <string notr="true">image: url(:/Client/TP1H_CLIENT.png);
+border-image : none;</string>
      </property>
      <property name="text">
       <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
    <item row="6" column="0">
     <widget class="QLabel" name="Socket_Bottom">
      <property name="styleSheet">
-      <string notr="true">image: url(:/Socket_bottom/socket2.png);</string>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2" rowspan="2">
-    <widget class="QLabel" name="Client_Title">
-     <property name="text">
-      <string>Client</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="Socket_Top">
-     <property name="styleSheet">
-      <string notr="true">image: url(:/Socket/socket1.png);</string>
+      <string notr="true">image: url(:/Socket_bottom/socket2.png);
+border-image : none;</string>
      </property>
      <property name="text">
       <string/>
@@ -87,23 +77,55 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">image: url(:/title/title.png);</string>
+      <string notr="true">image: url(:/title/title.png);
+border-image : none;</string>
      </property>
      <property name="text">
       <string/>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" rowspan="2">
-    <widget class="QLabel" name="Client">
+   <item row="1" column="0" rowspan="3">
+    <widget class="QLabel" name="Line">
      <property name="minimumSize">
       <size>
        <width>0</width>
        <height>25</height>
       </size>
      </property>
+     <property name="maximumSize">
+      <size>
+       <width>100</width>
+       <height>200</height>
+      </size>
+     </property>
      <property name="styleSheet">
-      <string notr="true">image: url(:/Client/TP1H_CLIENT.png);</string>
+      <string notr="true">image: url(:/Line/tp1h_line.png);
+border-image : none;
+</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="Socket_Top">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">image: url(:/Socket/socket1.png);
+border-image : none;</string>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
      </property>
      <property name="text">
       <string/>
@@ -112,6 +134,10 @@
    </item>
    <item row="2" column="2">
     <widget class="QLabel" name="Line_Title">
+     <property name="styleSheet">
+      <string notr="true">border-image : none;
+</string>
+     </property>
      <property name="text">
       <string>Line</string>
      </property>
@@ -121,6 +147,8 @@
  </widget>
  <resources>
   <include location="Client.qrc"/>
+  <include location="Border_L.qrc"/>
+  <include location="Line_Selected.qrc"/>
   <include location="TP1H_CLIENT_Selected.qrc"/>
   <include location="Socket_bottom.qrc"/>
   <include location="title.qrc"/>

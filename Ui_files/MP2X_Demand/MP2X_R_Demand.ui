@@ -13,11 +13,15 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">border-image: url(:/Border_R_SOURCE/Border_R.png);</string>
+  </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QLabel" name="MP2X_R_D">
      <property name="styleSheet">
-      <string notr="true">image: url(:/MP2X_R_SOURCE/MP2X_R_Demand.png);</string>
+      <string notr="true">image: url(:/MP2X_R_SOURCE/MP2X_R_Demand.png);
+border-image: none;</string>
      </property>
      <property name="text">
       <string/>
@@ -28,6 +32,7 @@
  </widget>
  <resources>
   <include location="MP2X_R_SOURCE.qrc"/>
+  <include location="Border_R.qrc"/>
  </resources>
  <connections/>
 </ui>
