@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1187</width>
+    <width>1145</width>
     <height>841</height>
    </rect>
   </property>
@@ -94,7 +94,7 @@ QTabWidget::tab-bar {
  }r</string>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>3</number>
        </property>
        <widget class="QWidget" name="TopologyTab">
         <attribute name="title">
@@ -1728,6 +1728,19 @@ QTableWidget QTableCornerButton::section {
             <bool>true</bool>
            </property>
            <layout class="QGridLayout" name="gridLayout_5">
+            <item row="4" column="0">
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
             <item row="0" column="0">
              <widget class="QLabel" name="label_7">
               <property name="font">
@@ -1756,6 +1769,53 @@ QTableWidget QTableCornerButton::section {
               </property>
               <property name="text">
                <string>       services</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0" rowspan="2" colspan="2">
+             <widget class="QPushButton" name="SaveChanges_button">
+              <property name="minimumSize">
+               <size>
+                <width>84</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Bahnschrift Condensed</family>
+                <pointsize>11</pointsize>
+                <weight>9</weight>
+                <italic>false</italic>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+	
+	
+	font: 75 11pt &quot;Bahnschrift Condensed&quot;;
+	
+    border: 2px solid #8f8f91; min-width: 80px;
+	border-color: #EB8686; 
+    border-radius: 15px;
+}
+
+QPushButton:pressed,hover {
+    background-color: #EB8686; 
+}
+QPushButton:hover {
+    background-color: #EB8686; 
+}
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+              </property>
+              <property name="text">
+               <string>Export New Traffic Matrix</string>
               </property>
              </widget>
             </item>
@@ -1858,66 +1918,6 @@ QListWidget::item:hover {
                </property>
               </item>
              </widget>
-            </item>
-            <item row="2" column="0" rowspan="2" colspan="2">
-             <widget class="QPushButton" name="SaveChanges_button">
-              <property name="minimumSize">
-               <size>
-                <width>84</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Bahnschrift Condensed</family>
-                <pointsize>11</pointsize>
-                <weight>9</weight>
-                <italic>false</italic>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
-	
-	
-	font: 75 11pt &quot;Bahnschrift Condensed&quot;;
-	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #EB8686; 
-    border-radius: 15px;
-}
-
-QPushButton:pressed,hover {
-    background-color: #EB8686; 
-}
-QPushButton:hover {
-    background-color: #EB8686; 
-}
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-              </property>
-              <property name="text">
-               <string>Export New Traffic Matrix</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <spacer name="verticalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
             </item>
            </layout>
           </widget>
@@ -2651,131 +2651,6 @@ QListWidget::item:hover {
         <layout class="QGridLayout" name="gridLayout_4">
          <item row="1" column="0">
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="1" column="0">
-            <widget class="QListWidget" name="Demand_PanelList">
-             <property name="minimumSize">
-              <size>
-               <width>256</width>
-               <height>130</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>256</width>
-               <height>130</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QListWidget {
-    alternate-background-color: yellow;
-	border:2px double;
-	border-color: #c0c0c0;
-	border-radius: 5px; 
-    
-}
-QListWidget {
-    show-decoration-selected: 1; /* make the selection span the entire width of the view */
-}
-
-QListWidget::item:alternate {
-    background: #aaaaa;
-}
-
-QListWidget::item:selected {
-    border: 1px solid #6a6ea9;
-}
-
-
-
-QListWidget::item:selected:active {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #DCDCDC, stop: 1 #A9A9A9);
-}
-
-QListWidget::item:hover {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #F8F8F8, stop: 1 #F5F5F5);
-}</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="ClientLabel_22">
-             <property name="minimumSize">
-              <size>
-               <width>256</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>256</width>
-               <height>16</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Bahnschrift SemiBold Condensed</family>
-               <pointsize>12</pointsize>
-               <weight>7</weight>
-               <italic>false</italic>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QLabel {
-	
-	font: 63 12pt &quot;Bahnschrift SemiBold Condensed&quot;;
-   
-  
-	background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #6a6ea9, stop: 1 #Eb8686);
-}
-</string>
-             </property>
-             <property name="text">
-              <string> LightPathes </string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="ClientLabel_21">
-             <property name="minimumSize">
-              <size>
-               <width>256</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>256</width>
-               <height>16</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Bahnschrift SemiBold Condensed</family>
-               <pointsize>12</pointsize>
-               <weight>7</weight>
-               <italic>false</italic>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true"> QLabel {
-	
-	font: 63 12pt &quot;Bahnschrift SemiBold Condensed&quot;;
-   
-  
-	
-	background-color:#D0D0D0;
-}</string>
-             </property>
-             <property name="text">
-              <string> Network Panels</string>
-             </property>
-            </widget>
-           </item>
            <item row="3" column="0">
             <widget class="QListWidget" name="Demand_LineList">
              <property name="minimumSize">
@@ -2902,6 +2777,57 @@ QListWidget::item:hover {
              </property>
             </widget>
            </item>
+           <item row="7" column="0">
+            <widget class="QListWidget" name="groomout10_list">
+             <property name="minimumSize">
+              <size>
+               <width>256</width>
+               <height>135</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>256</width>
+               <height>135</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QListWidget {
+    alternate-background-color: yellow;
+	border:2px double;
+	border-color:#EB8686;
+	border-radius: 5px; 
+    
+}
+QListWidget {
+    show-decoration-selected: 1; /* make the selection span the entire width of the view */
+}
+
+QListWidget::item:alternate {
+    background: #aaaaa;
+}
+
+QListWidget::item:selected {
+    border: 1px solid #6a6ea9;
+}
+
+QListWidget::item:selected:!active {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #ABAFE5, stop: 1 #EE817B);
+}
+
+QListWidget::item:selected:active {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #FFB2AE, stop: 1 #B22222);
+}
+
+QListWidget::item:hover {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #FAFBFE, stop: 1 #FFB2AE);
+}</string>
+             </property>
+            </widget>
+           </item>
            <item row="5" column="0">
             <widget class="QListWidget" name="Demand_ServiceList">
              <property name="minimumSize">
@@ -2952,25 +2878,63 @@ QListWidget::item:hover {
              </property>
             </widget>
            </item>
-           <item row="7" column="0">
-            <widget class="QListWidget" name="groomout10_list">
+           <item row="0" column="0">
+            <widget class="QLabel" name="ClientLabel_21">
              <property name="minimumSize">
               <size>
                <width>256</width>
-               <height>135</height>
+               <height>30</height>
               </size>
              </property>
              <property name="maximumSize">
               <size>
                <width>256</width>
-               <height>135</height>
+               <height>16</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Bahnschrift SemiBold Condensed</family>
+               <pointsize>12</pointsize>
+               <weight>7</weight>
+               <italic>false</italic>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true"> QLabel {
+	
+	font: 63 12pt &quot;Bahnschrift SemiBold Condensed&quot;;
+   
+  
+	
+	background-color:#D0D0D0;
+}</string>
+             </property>
+             <property name="text">
+              <string> Network Panels</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QListWidget" name="Demand_PanelList">
+             <property name="minimumSize">
+              <size>
+               <width>256</width>
+               <height>130</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>256</width>
+               <height>130</height>
               </size>
              </property>
              <property name="styleSheet">
               <string notr="true">QListWidget {
     alternate-background-color: yellow;
 	border:2px double;
-	border-color:#EB8686;
+	border-color: #c0c0c0;
 	border-radius: 5px; 
     
 }
@@ -2986,20 +2950,56 @@ QListWidget::item:selected {
     border: 1px solid #6a6ea9;
 }
 
-QListWidget::item:selected:!active {
-    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #ABAFE5, stop: 1 #EE817B);
-}
+
 
 QListWidget::item:selected:active {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #FFB2AE, stop: 1 #B22222);
+                                stop: 0 #DCDCDC, stop: 1 #A9A9A9);
 }
 
 QListWidget::item:hover {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                stop: 0 #FAFBFE, stop: 1 #FFB2AE);
+                                stop: 0 #F8F8F8, stop: 1 #F5F5F5);
 }</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="ClientLabel_22">
+             <property name="minimumSize">
+              <size>
+               <width>256</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>256</width>
+               <height>16</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Bahnschrift SemiBold Condensed</family>
+               <pointsize>12</pointsize>
+               <weight>7</weight>
+               <italic>false</italic>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QLabel {
+	
+	font: 63 12pt &quot;Bahnschrift SemiBold Condensed&quot;;
+   
+  
+	background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #6a6ea9, stop: 1 #Eb8686);
+}
+</string>
+             </property>
+             <property name="text">
+              <string> LightPathes </string>
              </property>
             </widget>
            </item>
