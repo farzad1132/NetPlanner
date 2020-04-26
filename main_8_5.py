@@ -139,6 +139,7 @@ class Backend_map(QObject):
             else:
                 Data["Demand_Source_combo"].setCurrentText(rep_source)
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -1917,7 +1918,8 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QListWidget::item:hover {\n"
-"    border: 2px solid #6a6ea9;\n"
+"    border: 2px solid #6a6ea9; \n"
+"    background : #C0C0C0\n"
 "}")
         self.Demand_ServiceList.setObjectName("Demand_ServiceList")
         self.gridLayout_2.addWidget(self.Demand_ServiceList, 5, 0, 1, 1)
@@ -2506,7 +2508,6 @@ class Ui_MainWindow(object):
         self.Demand_tab.setTabText(self.Demand_tab.indexOf(self.tab_8), _translate("MainWindow", "Shelf"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
 
-    
         # NOTE:ADDED
         
         if self.splitter.moveSplitter(0, 0):
@@ -5160,7 +5161,6 @@ class Ui_MainWindow(object):
         except:
             pass
         self.decoded_network = decoded_network
-
 
 
 if __name__ == "__main__":

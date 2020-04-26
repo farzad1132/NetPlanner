@@ -2873,7 +2873,8 @@ QListWidget::item:selected:active {
 }
 
 QListWidget::item:hover {
-    border: 2px solid #6a6ea9;
+    border: 2px solid #6a6ea9; 
+    background : #C0C0C0
 }</string>
              </property>
             </widget>
