@@ -3137,9 +3137,13 @@ class Ui_MainWindow(object):
                             linevar_1 = getattr(widget, "LINE1")
                             linevar_1.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][GroomOutId_1].toolTip())
 
+                            linevar_1.setStyleSheet("QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); }")
+
                             if GroomOutId_2 is not None:
                                 linevar_2 = getattr(widget, "LINE2")
                                 linevar_2.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][GroomOutId_2].toolTip())
+
+                                linevar_2.setStyleSheet("QLabel{ image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); }")
                             
                 elif isinstance(panel, MP2X_R):
                     Data["DemandPanel_" + str(i)].addWidget(MP2X_R_Demand(str(i), Source, Destination, DualPanelsId))
@@ -3182,6 +3186,8 @@ class Ui_MainWindow(object):
                             linevar = getattr(widget, "Line")
                             linevar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
 
+                            linevar.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
+
                 elif isinstance(panel, MP1H_R):
                     Data["DemandPanel_" + str(i)].addWidget(MP1H_R_Demand(str(i), Source, Destination, DualPanelsId))
                 
@@ -3200,15 +3206,17 @@ class Ui_MainWindow(object):
                         # filling customlabel attributes 
                         clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandId, panel.ServiceId)].toolTip())
                         clientvar.servicetype = "100GE"
-                        self.nodename = Source
-                        self.Destination = Destination
-                        self.ids = [panel.DemandId, panel.ServiceId]
+                        clientvar.nodename = Source
+                        clientvar.Destination = Destination
+                        clientvar.ids = [panel.DemandId, panel.ServiceId]
                         clientvar.setAcceptDrops(False)
 
                         clientvar.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
 
                         LineVar = getattr(widget, "Line")
                         LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
+
+                        LineVar.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
                 elif isinstance(panel, TP1H_R):
                     Data["DemandPanel_" + str(i)].addWidget(TP1H_R_Demand(str(i), Source, Destination, DualPanelsId))
             

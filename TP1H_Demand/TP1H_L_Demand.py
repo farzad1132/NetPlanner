@@ -312,6 +312,8 @@ class customlabel(QLabel):
             # setting line port tooltip                                        
             self.LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][self.LightPathId].toolTip())
 
+            self.LineVar.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
+
 
             # TODO: be Careful !!!!!
             self.setAcceptDrops(False)  
@@ -361,6 +363,8 @@ class customlabel(QLabel):
                                                 Destination= self.nodename,
                                                 mode= "delete",
                                                 type= "100GE")
+
+                self.LineVar.setStyleSheet("QLabel{ image: url(:/Line/tp1h_line.png); }")
 
                 
                 

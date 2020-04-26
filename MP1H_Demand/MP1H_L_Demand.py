@@ -233,7 +233,6 @@ class MP1H_L_Demand(QtWidgets.QWidget):
             if key in DemandTabDataBase["Services"][(source, destination)]:
                 DemandTabDataBase["Services"][(source, destination)][key] = 1
                 DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.white, Qt.SolidPattern))
-
             
             else:
                 # adding MP1h_Client_Id to GroomOut10 Item
@@ -271,10 +270,10 @@ class MP1H_L_Demand(QtWidgets.QWidget):
 
                 # deleting MP1h_Client_Id from GroomOut10 Item
                 UserData = DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].data(Qt.UserRole)
+                if "MP1H_Client_Id" in UserData:
+                    UserData.pop("MP1H_Client_Id")
 
-                UserData.pop("MP1H_Client_Id")
-
-                DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].setData(Qt.UserRole, UserData)
+                    DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].setData(Qt.UserRole, UserData)
 
 
             
@@ -481,6 +480,8 @@ class customlabel(QLabel):
 
             # setting line port tooltip                                        
             self.LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][LightPathId].toolTip())
+
+            self.LineVar.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
         else:
             if self.ClientNum % 2 == 0:
                 self.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
@@ -600,6 +601,8 @@ class customlabel(QLabel):
 
                     # ** Dual **
                     DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LightPath_flag = 0
+
+                    self.LineVar.setStyleSheet("QLabel{ image: url(:/line/line.png); }")
     
     def Clear_From_MP2X(self):
         if DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] != 0:
@@ -699,6 +702,8 @@ class customlabel(QLabel):
                 # ** Dual **
                 DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LightPath_flag = 0
 
+                self.LineVar.setStyleSheet("QLabel{ image: url(:/line/line.png); }")
+
                     
     def Update_LineListWidgetItem_Tooltip(self, Item, Capacity):       
         
@@ -754,9 +759,10 @@ class customlabel(QLabel):
 
                 # deleting MP1h_Client_Id from GroomOut10 Item
                 UserData = DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].data(Qt.UserRole)
-                UserData.pop("MP1H_Client_Id")
+                if "MP1H_Client_Id" in UserData:
+                    UserData.pop("MP1H_Client_Id")
 
-                DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].setData(Qt.UserRole, UserData)
+                    DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].setData(Qt.UserRole, UserData)
 
 
             

@@ -16,9 +16,9 @@ from MP2X_Demand import Socket_bottom
 from MP2X_Demand import Socket_top
 from MP2X_Demand import CLIENT_L_Selected
 from MP2X_Demand import CLIENT_R_Selected
-from MP1H_Demand import Line_L_Selected
-from MP1H_Demand import Line_R_Selected
-from MP1H_Demand import Border_L
+from MP2X_Demand import Line_L_Selected
+from MP2X_Demand import Line_R_Selected
+from MP2X_Demand import Border_L
 
 # USE THIS CODE TO CHANGE THE CLIENT TO SELECTED CLIENT:
 #1)
@@ -517,6 +517,9 @@ class customlabel(QLabel):
                 # setting line port tooltip                                        
                 self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
 
+                # setting line port stylesheet
+                self.LineVar_1.setStyleSheet("QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); }")
+
             elif Line_1_old_capacity + DropCapacity < 10 :
                 
                 # updating line 1 capacity
@@ -551,6 +554,9 @@ class customlabel(QLabel):
 
                 # setting line port tooltip                                        
                 self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
+
+                # setting line port stylesheet
+                self.LineVar_1.setStyleSheet("QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); }")
             
             elif Line_2_old_capacity < 0.001:
 
@@ -603,6 +609,9 @@ class customlabel(QLabel):
                 
                 # setting line port tooltip                                        
                 self.LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
+
+                # setting line port stylesheet
+                self.LineVar_2.setStyleSheet("QLabel{ image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); }")
             
             else:
 
@@ -640,6 +649,9 @@ class customlabel(QLabel):
 
                 # setting line port tooltip                                        
                 self.LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
+
+                # setting line port stylesheet
+                self.LineVar_2.setStyleSheet("QLabel{ image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); }")
 
 
             # NOTE: be Careful !!!!!
@@ -784,6 +796,8 @@ class customlabel(QLabel):
                     # deleting groomout10 from common object
                     Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOutId_1)
 
+                    self.LineVar_1.setStyleSheet("QLabel{ image: url(:/Line_L_SOURCE/LINE_L.png); }")
+
                 elif DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] < 0.001 and GroomOutId_2 is not None:
 
                     # updating LineIdList part of panel object
@@ -807,6 +821,8 @@ class customlabel(QLabel):
 
                     # deleting groomout10 from common object
                     Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOutId_2)
+
+                    self.LineVar_2.setStyleSheet("QLabel{ image: url(:/Line_R_SOURCE/LINE_R.png); }")
 
     def Update_MP1H_Port(self, Item, Source, Destination, Capacity):
         UserData = Item.data(Qt.UserRole)
