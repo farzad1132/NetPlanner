@@ -312,7 +312,7 @@ class customlabel(QLabel):
 
             if servicetype in self.allowedservices:
                 if servicetype == "GroomOut10":
-                    if not model.item(0).font().strikeOut():
+                    if (not model.item(0).font().strikeOut()) and UserData["GroomOut10Id"] in DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)]:
                         if self.ClientNum % 2 == 0:
                             self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
                         else:
@@ -320,7 +320,7 @@ class customlabel(QLabel):
 
                         event.accept()
                             
-                elif DemandTabDataBase["Services"][(self.nodename, self.Destination)][(UserData["DemandId"], UserData["ServiceId"])] == 0:
+                elif DemandTabDataBase["Services"][(self.nodename, self.Destination)].get((UserData["DemandId"], UserData["ServiceId"])) == 0:
                     if self.ClientNum % 2 == 0:
                         self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
                     else:

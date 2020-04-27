@@ -232,7 +232,7 @@ class customlabel(QLabel):
         servicetype = dragtext.strip()
 
         if servicetype in self.allowedservices:
-            if DemandTabDataBase["Services"][(self.nodename, self.Destination)][(UserData["DemandId"], UserData["ServiceId"])] == 0:
+            if DemandTabDataBase["Services"][(self.nodename, self.Destination)].get((UserData["DemandId"], UserData["ServiceId"])) == 0:
             
                 self.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
                 event.accept()

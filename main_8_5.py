@@ -130,7 +130,9 @@ class Backend_map(QObject):
 
         if Data["Stage_flag"] == "Demand":
             Data["ui"].clicked_Node_flag = True
+            Data["ui"].update_Demand_lightpath_list_flag = False
             Data["TabWidget"].setCurrentIndex(3)
+            Data["ui"].update_Demand_lightpath_list_flag = True
             Data["Clicked_Node"] = degreename
             rep_source = DemandTabDataBase["Source_Destination"][degreename]["Source"]
             if rep_source == Data["Demand_Source_combo"].currentText():
@@ -4199,7 +4201,7 @@ class Ui_MainWindow(object):
         self.TrafficMatrixToObject()
         self.DemandTabDataBase_Setup()
         self.GroomingTabDataBase_Setup()
-        #self.Demand_Shelf_set()
+        self.Demand_Shelf_set()
         self.Fill_Demand_SourceandDestination_combobox()
     
 
@@ -4214,6 +4216,7 @@ class Ui_MainWindow(object):
         Data["first_run_flag"] = False
         self.Data_file_Flag = False
         self.update_Demand_lightpath_list_flag = True
+        self.Demand_shelf_init_flag = False
         
     
     def DemandTabDataBase_Setup(self):
@@ -4246,19 +4249,21 @@ class Ui_MainWindow(object):
             Data["1"+str(shelfnum)+str(i)].show()
     
     def Demand_Shelf_set(self):
-        # TODO: add this method to Demand tab initializer 
-        Source = self.Demand_Source_combobox.currentText()
-        Destination = self.Demand_Destination_combobox.currentText()
-        for i in range(1,15):
-            Data["DemandPanel_" + str(i)] = QtWidgets.QGridLayout(getattr(self, "DemandPanel_" + str(i)))
-            #setattr(self, "DemandPanel_" + str(i),QMdiSubWindow())
-            #Data["DemandPanel_" + str(i)] = getattr(ui, "DemandPanel_" + str(i))
-            #Data["DemandPanel_" + str(i)].setWindowFlag(Qt.FramelessWindowHint)
-            Data["DemandPanel_" + str(i)].setMargin(0)
-            Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Destination))
+        # TODO: add this method to Demand tab initializer
+        if self.Demand_shelf_init_flag is False: 
+            Source = self.Demand_Source_combobox.currentText()
+            Destination = self.Demand_Destination_combobox.currentText()
+            for i in range(1,15):
+                Data["DemandPanel_" + str(i)] = QtWidgets.QGridLayout(getattr(self, "DemandPanel_" + str(i)))
+                #setattr(self, "DemandPanel_" + str(i),QMdiSubWindow())
+                #Data["DemandPanel_" + str(i)] = getattr(ui, "DemandPanel_" + str(i))
+                #Data["DemandPanel_" + str(i)].setWindowFlag(Qt.FramelessWindowHint)
+                Data["DemandPanel_" + str(i)].setMargin(0)
+                Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Destination))
 
-            #self.Demand_mdi.addSubWindow(Data["DemandPanel_" + str(i)])
-            #Data["DemandPanel_" + str(i)].show()
+                #self.Demand_mdi.addSubWindow(Data["DemandPanel_" + str(i)])
+                #Data["DemandPanel_" + str(i)].show()
+                self.Demand_shelf_init_flag = True
 
 
     # obsoleted 

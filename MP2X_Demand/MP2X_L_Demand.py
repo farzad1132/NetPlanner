@@ -366,7 +366,7 @@ class customlabel(QLabel):
         servicetype = dragtext.strip()
         
         if servicetype in self.allowedservices:
-            if DemandTabDataBase["Services"][(self.nodename, self.Destination)][(UserData["DemandId"], UserData["ServiceId"])] == 0:
+            if DemandTabDataBase["Services"][(self.nodename, self.Destination)].get((UserData["DemandId"], UserData["ServiceId"])) == 0:
 
                 ids = [UserData["DemandId"], UserData["ServiceId"]]
                 Line_1_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0]
