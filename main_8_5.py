@@ -147,7 +147,7 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
 
         # NOTE: commented
-        #MainWindow.resize(1145, 841)
+        #MainWindow.resize(1198, 841)
 
         self.gridLayout = QtWidgets.QGridLayout(MainWindow)
         self.gridLayout.setObjectName("gridLayout")
@@ -496,8 +496,6 @@ class Ui_MainWindow(object):
         font.setBold(False)
         font.setItalic(False)
         font.setWeight(9)
-        font.setKerning(True)
-        font.setStyleStrategy(QtGui.QFont.PreferDefault)
         self.FinalPlan_pushbutton.setFont(font)
         self.FinalPlan_pushbutton.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.FinalPlan_pushbutton.setMouseTracking(False)
@@ -921,9 +919,6 @@ class Ui_MainWindow(object):
         brush = QtGui.QBrush(QtGui.QColor(117, 117, 117))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.ButtonText, brush)
-        brush = QtGui.QBrush(QtGui.QColor(117, 117, 117, 128))
-        brush.setStyle(QtCore.Qt.NoBrush)
-        palette.setBrush(QtGui.QPalette.Active, QtGui.QPalette.PlaceholderText, brush)
         brush = QtGui.QBrush(QtGui.QColor(117, 117, 117))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Inactive, QtGui.QPalette.WindowText, brush)
@@ -933,9 +928,6 @@ class Ui_MainWindow(object):
         brush = QtGui.QBrush(QtGui.QColor(117, 117, 117))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Inactive, QtGui.QPalette.ButtonText, brush)
-        brush = QtGui.QBrush(QtGui.QColor(117, 117, 117, 128))
-        brush.setStyle(QtCore.Qt.NoBrush)
-        palette.setBrush(QtGui.QPalette.Inactive, QtGui.QPalette.PlaceholderText, brush)
         brush = QtGui.QBrush(QtGui.QColor(117, 117, 117))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.WindowText, brush)
@@ -945,9 +937,6 @@ class Ui_MainWindow(object):
         brush = QtGui.QBrush(QtGui.QColor(117, 117, 117))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.ButtonText, brush)
-        brush = QtGui.QBrush(QtGui.QColor(117, 117, 117, 128))
-        brush.setStyle(QtCore.Qt.NoBrush)
-        palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.PlaceholderText, brush)
         self.SelectSubNode.setPalette(palette)
         font = QtGui.QFont()
         font.setFamily("Bahnschrift Condensed")
@@ -1058,9 +1047,12 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.TopologyTab, "")
         self.TrafficMatrixTab = QtWidgets.QWidget()
         self.TrafficMatrixTab.setObjectName("TrafficMatrixTab")
-        self.gridLayout_6 = QtWidgets.QGridLayout(self.TrafficMatrixTab)
-        self.gridLayout_6.setObjectName("gridLayout_6")
-        self.General_TM = QtWidgets.QTableWidget(self.TrafficMatrixTab)
+        self.gridLayout_12 = QtWidgets.QGridLayout(self.TrafficMatrixTab)
+        self.gridLayout_12.setObjectName("gridLayout_12")
+        self.splitter_2 = QtWidgets.QSplitter(self.TrafficMatrixTab)
+        self.splitter_2.setOrientation(QtCore.Qt.Horizontal)
+        self.splitter_2.setObjectName("splitter_2")
+        self.General_TM = QtWidgets.QTableWidget(self.splitter_2)
         self.General_TM.setStyleSheet("QTableWidget {\n"
 "    \n"
 "    \n"
@@ -1094,8 +1086,7 @@ class Ui_MainWindow(object):
         self.General_TM.setHorizontalHeaderItem(7, item)
         item = QtWidgets.QTableWidgetItem()
         self.General_TM.setHorizontalHeaderItem(8, item)
-        self.gridLayout_6.addWidget(self.General_TM, 0, 0, 1, 1)
-        self.Traffic_matrix = QtWidgets.QTableWidget(self.TrafficMatrixTab)
+        self.Traffic_matrix = QtWidgets.QTableWidget(self.splitter_2)
         self.Traffic_matrix.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.Traffic_matrix.setStyleSheet("QTableWidget {\n"
 "    \n"
@@ -1119,7 +1110,7 @@ class Ui_MainWindow(object):
         self.Traffic_matrix.horizontalHeader().setSortIndicatorShown(False)
         self.Traffic_matrix.verticalHeader().setSortIndicatorShown(True)
         self.Traffic_matrix.verticalHeader().setStretchLastSection(False)
-        self.gridLayout_6.addWidget(self.Traffic_matrix, 0, 1, 1, 1)
+        self.gridLayout_12.addWidget(self.splitter_2, 0, 0, 1, 1)
         self.TM_groupbox = QtWidgets.QGroupBox(self.TrafficMatrixTab)
         font = QtGui.QFont()
         font.setFamily("Bahnschrift")
@@ -1134,15 +1125,12 @@ class Ui_MainWindow(object):
         self.TM_groupbox.setObjectName("TM_groupbox")
         self.gridLayout_5 = QtWidgets.QGridLayout(self.TM_groupbox)
         self.gridLayout_5.setObjectName("gridLayout_5")
-        spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout_5.addItem(spacerItem5, 4, 0, 1, 1)
         self.label_7 = QtWidgets.QLabel(self.TM_groupbox)
         font = QtGui.QFont()
         font.setFamily("Bahnschrift SemiBold Condensed")
         font.setPointSize(12)
         font.setBold(False)
         font.setItalic(False)
-        font.setUnderline(False)
         font.setWeight(7)
         self.label_7.setFont(font)
         self.label_7.setStyleSheet("QLabel {\n"
@@ -1155,40 +1143,6 @@ class Ui_MainWindow(object):
         self.label_7.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.label_7.setObjectName("label_7")
         self.gridLayout_5.addWidget(self.label_7, 0, 0, 1, 1)
-        self.SaveChanges_button = QtWidgets.QPushButton(self.TM_groupbox)
-        self.SaveChanges_button.setMinimumSize(QtCore.QSize(84, 30))
-        font = QtGui.QFont()
-        font.setFamily("Bahnschrift Condensed")
-        font.setPointSize(11)
-        font.setBold(False)
-        font.setItalic(False)
-        font.setWeight(9)
-        self.SaveChanges_button.setFont(font)
-        self.SaveChanges_button.setStyleSheet("QPushButton {\n"
-"    \n"
-"    \n"
-"    font: 75 11pt \"Bahnschrift Condensed\";\n"
-"    \n"
-"    border: 2px solid #8f8f91; min-width: 80px;\n"
-"    border-color: #EB8686; \n"
-"    border-radius: 15px;\n"
-"}\n"
-"\n"
-"QPushButton:pressed,hover {\n"
-"    background-color: #EB8686; \n"
-"}\n"
-"QPushButton:hover {\n"
-"    background-color: #EB8686; \n"
-"}\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
-        self.SaveChanges_button.setObjectName("SaveChanges_button")
-        self.gridLayout_5.addWidget(self.SaveChanges_button, 2, 0, 2, 2)
         self.listWidget = QtWidgets.QListWidget(self.TM_groupbox)
         font = QtGui.QFont()
         font.setFamily("Bahnschrift")
@@ -1251,7 +1205,43 @@ class Ui_MainWindow(object):
         item = QtWidgets.QListWidgetItem()
         self.listWidget.addItem(item)
         self.gridLayout_5.addWidget(self.listWidget, 1, 0, 1, 2)
-        self.gridLayout_6.addWidget(self.TM_groupbox, 0, 2, 1, 1)
+        spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_5.addItem(spacerItem5, 4, 0, 1, 1)
+        self.SaveChanges_button = QtWidgets.QPushButton(self.TM_groupbox)
+        self.SaveChanges_button.setMinimumSize(QtCore.QSize(84, 30))
+        font = QtGui.QFont()
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(11)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(9)
+        self.SaveChanges_button.setFont(font)
+        self.SaveChanges_button.setStyleSheet("QPushButton {\n"
+"    \n"
+"    \n"
+"    font: 75 11pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #EB8686; \n"
+"    border-radius: 15px;\n"
+"}\n"
+"\n"
+"QPushButton:pressed,hover {\n"
+"    background-color: #EB8686; \n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: #EB8686; \n"
+"}\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        self.SaveChanges_button.setObjectName("SaveChanges_button")
+        self.gridLayout_5.addWidget(self.SaveChanges_button, 2, 0, 2, 2)
+        self.gridLayout_12.addWidget(self.TM_groupbox, 0, 1, 1, 1)
         self.tabWidget.addTab(self.TrafficMatrixTab, "")
         self.NodeViewTab = QtWidgets.QWidget()
         self.NodeViewTab.setObjectName("NodeViewTab")
@@ -1770,6 +1760,153 @@ class Ui_MainWindow(object):
         self.tab.setObjectName("tab")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.tab)
         self.gridLayout_4.setObjectName("gridLayout_4")
+        self.splitter = QtWidgets.QSplitter(self.tab)
+        self.splitter.setOrientation(QtCore.Qt.Vertical)
+        self.splitter.setHandleWidth(6)
+        self.splitter.setObjectName("splitter")
+        self.Demand_tab = QtWidgets.QTabWidget(self.splitter)
+        self.Demand_tab.setEnabled(True)
+        self.Demand_tab.setMinimumSize(QtCore.QSize(0, 100))
+        self.Demand_tab.setObjectName("Demand_tab")
+        self.tab_8 = QtWidgets.QWidget()
+        self.tab_8.setObjectName("tab_8")
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.tab_8)
+        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_4.setSpacing(0)
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.DemandPanel_1 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_1.setObjectName("DemandPanel_1")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_1)
+        self.DemandPanel_2 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_2.setObjectName("DemandPanel_2")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_2)
+        self.DemandPanel_3 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_3.setObjectName("DemandPanel_3")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_3)
+        self.DemandPanel_4 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_4.setObjectName("DemandPanel_4")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_4)
+        self.DemandPanel_5 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_5.setObjectName("DemandPanel_5")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_5)
+        self.DemandPanel_6 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_6.setObjectName("DemandPanel_6")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_6)
+        self.DemandPanel_7 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_7.setObjectName("DemandPanel_7")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_7)
+        self.DemandPanel_8 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_8.setObjectName("DemandPanel_8")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_8)
+        self.DemandPanel_9 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_9.setObjectName("DemandPanel_9")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_9)
+        self.DemandPanel_10 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_10.setObjectName("DemandPanel_10")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_10)
+        self.DemandPanel_11 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_11.setObjectName("DemandPanel_11")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_11)
+        self.DemandPanel_12 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_12.setObjectName("DemandPanel_12")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_12)
+        self.DemandPanel_13 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_13.setObjectName("DemandPanel_13")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_13)
+        self.DemandPanel_14 = QtWidgets.QWidget(self.tab_8)
+        self.DemandPanel_14.setObjectName("DemandPanel_14")
+        self.horizontalLayout_4.addWidget(self.DemandPanel_14)
+        self.Demand_tab.addTab(self.tab_8, "")
+        self.MapWidget = MapWidget(self.splitter)
+        self.MapWidget.setMinimumSize(QtCore.QSize(821, 259))
+        self.MapWidget.setObjectName("MapWidget")
+        self.line = QtWidgets.QFrame(self.MapWidget)
+        self.line.setGeometry(QtCore.QRect(-340, -10, 2341, 20))
+        self.line.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.line.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line.setObjectName("line")
+        self.gridLayout_4.addWidget(self.splitter, 1, 1, 1, 3)
+        self.formLayout = QtWidgets.QFormLayout()
+        self.formLayout.setObjectName("formLayout")
+        self.label_8 = QtWidgets.QLabel(self.tab)
+        self.label_8.setMinimumSize(QtCore.QSize(120, 0))
+        self.label_8.setMaximumSize(QtCore.QSize(62, 30))
+        font = QtGui.QFont()
+        font.setFamily("Bahnschrift")
+        font.setPointSize(11)
+        font.setBold(False)
+        font.setWeight(50)
+        self.label_8.setFont(font)
+        self.label_8.setStyleSheet("QLabel {\n"
+"    border: 2px solid green;\n"
+"    border-color: rgb(64, 114, 179);\n"
+"    border-radius: 4px;\n"
+"    padding: 2px;\n"
+"}")
+        self.label_8.setObjectName("label_8")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label_8)
+        self.Demand_Destination_combobox = QtWidgets.QFontComboBox(self.tab)
+        self.Demand_Destination_combobox.setMinimumSize(QtCore.QSize(121, 30))
+        self.Demand_Destination_combobox.setMaximumSize(QtCore.QSize(743, 30))
+        self.Demand_Destination_combobox.setStyleSheet("QComboBox {\n"
+"    \n"
+"    border-radius: 0px;\n"
+"    padding: 1px 18px 1px 5px;\n"
+"    min-width: 6em; \n"
+"    \n"
+"    border:1px solid rgb(0, 139, 208);\n"
+"    \n"
+"   \n"
+"    \n"
+"}\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"/* QComboBox gets the \"on\" state when the popup is open */\n"
+"\n"
+"\n"
+"QComboBox:on { /* shift the text when the popup opens */\n"
+"    padding-top: 3px;\n"
+"    padding-left: 4px;\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    subcontrol-origin: padding;\n"
+"    subcontrol-position: top right;\n"
+"    width: 20px;\n"
+"    \n"
+"    \n"
+"    border-left-width: 2px;\n"
+"    border-left-color: darkblue;\n"
+"    border-left-style: solid; /* just a single line */\n"
+"    border-top-right-radius: 0px; /* same radius as the QComboBox */\n"
+"    border-bottom-right-radius: 0px;\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow {\n"
+"   \n"
+"    image: url(:/newPrefix/dropdown.png); \n"
+"    \n"
+"    \n"
+"}\n"
+"\n"
+"QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
+"    \n"
+"    \n"
+"    image: url(:/newPrefix/dropup.png);\n"
+"}\n"
+"\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"    \n"
+"    border-color:2px solid blue;\n"
+"   \n"
+"}")
+        self.Demand_Destination_combobox.setObjectName("Demand_Destination_combobox")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.Demand_Destination_combobox)
+        self.gridLayout_4.addLayout(self.formLayout, 0, 3, 1, 1)
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.Demand_LineList = QtWidgets.QListWidget(self.tab)
@@ -2002,89 +2139,6 @@ class Ui_MainWindow(object):
         self.ClientLabel_22.setObjectName("ClientLabel_22")
         self.gridLayout_2.addWidget(self.ClientLabel_22, 2, 0, 1, 1)
         self.gridLayout_4.addLayout(self.gridLayout_2, 1, 0, 1, 1)
-        self.formLayout = QtWidgets.QFormLayout()
-        self.formLayout.setObjectName("formLayout")
-        self.label_8 = QtWidgets.QLabel(self.tab)
-        self.label_8.setMinimumSize(QtCore.QSize(120, 0))
-        self.label_8.setMaximumSize(QtCore.QSize(62, 30))
-        font = QtGui.QFont()
-        font.setFamily("Bahnschrift")
-        font.setPointSize(11)
-        font.setBold(False)
-        font.setWeight(50)
-        self.label_8.setFont(font)
-        self.label_8.setStyleSheet("QLabel {\n"
-"    border: 2px solid green;\n"
-"    border-color: rgb(64, 114, 179);\n"
-"    border-radius: 4px;\n"
-"    padding: 2px;\n"
-"}")
-        self.label_8.setObjectName("label_8")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label_8)
-        self.Demand_Destination_combobox = QtWidgets.QFontComboBox(self.tab)
-        self.Demand_Destination_combobox.setMinimumSize(QtCore.QSize(121, 30))
-        self.Demand_Destination_combobox.setMaximumSize(QtCore.QSize(743, 30))
-        self.Demand_Destination_combobox.setStyleSheet("QComboBox {\n"
-"    \n"
-"    border-radius: 0px;\n"
-"    padding: 1px 18px 1px 5px;\n"
-"    min-width: 6em; \n"
-"    \n"
-"    border:1px solid rgb(0, 139, 208);\n"
-"    \n"
-"   \n"
-"    \n"
-"}\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"/* QComboBox gets the \"on\" state when the popup is open */\n"
-"\n"
-"\n"
-"QComboBox:on { /* shift the text when the popup opens */\n"
-"    padding-top: 3px;\n"
-"    padding-left: 4px;\n"
-"}\n"
-"\n"
-"QComboBox::drop-down {\n"
-"    subcontrol-origin: padding;\n"
-"    subcontrol-position: top right;\n"
-"    width: 20px;\n"
-"    \n"
-"    \n"
-"    border-left-width: 2px;\n"
-"    border-left-color: darkblue;\n"
-"    border-left-style: solid; /* just a single line */\n"
-"    border-top-right-radius: 0px; /* same radius as the QComboBox */\n"
-"    border-bottom-right-radius: 0px;\n"
-"}\n"
-"\n"
-"QComboBox::down-arrow {\n"
-"   \n"
-"    image: url(:/newPrefix/dropdown.png); \n"
-"    \n"
-"    \n"
-"}\n"
-"\n"
-"QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
-"    \n"
-"    \n"
-"    image: url(:/newPrefix/dropup.png);\n"
-"}\n"
-"\n"
-"\n"
-"QComboBox QAbstractItemView {\n"
-"    \n"
-"    border-color:2px solid blue;\n"
-"   \n"
-"}")
-        self.Demand_Destination_combobox.setObjectName("Demand_Destination_combobox")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.Demand_Destination_combobox)
-        self.gridLayout_4.addLayout(self.formLayout, 0, 3, 1, 1)
-        spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_4.addItem(spacerItem7, 0, 1, 1, 1)
         self.formLayout_4 = QtWidgets.QFormLayout()
         self.formLayout_4.setObjectName("formLayout_4")
         self.SelectNode_Label_13 = QtWidgets.QLabel(self.tab)
@@ -2166,66 +2220,12 @@ class Ui_MainWindow(object):
         self.Demand_Source_combobox.setObjectName("Demand_Source_combobox")
         self.formLayout_4.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.Demand_Source_combobox)
         self.gridLayout_4.addLayout(self.formLayout_4, 0, 0, 1, 1)
-        self.splitter = QtWidgets.QSplitter(self.tab)
-        self.splitter.setOrientation(QtCore.Qt.Vertical)
-        self.splitter.setObjectName("splitter")
-        self.Demand_tab = QtWidgets.QTabWidget(self.splitter)
-        self.Demand_tab.setEnabled(True)
-        self.Demand_tab.setMinimumSize(QtCore.QSize(0, 100))
-        self.Demand_tab.setObjectName("Demand_tab")
-        self.tab_8 = QtWidgets.QWidget()
-        self.tab_8.setObjectName("tab_8")
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.tab_8)
-        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_4.setSpacing(0)
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.DemandPanel_1 = QtWidgets.QWidget(self.tab_8)
-        self.DemandPanel_1.setObjectName("DemandPanel_1")
-        self.horizontalLayout_4.addWidget(self.DemandPanel_1)
-        self.DemandPanel_2 = QtWidgets.QWidget(self.tab_8)
-        self.DemandPanel_2.setObjectName("DemandPanel_2")
-        self.horizontalLayout_4.addWidget(self.DemandPanel_2)
-        self.DemandPanel_3 = QtWidgets.QWidget(self.tab_8)
-        self.DemandPanel_3.setObjectName("DemandPanel_3")
-        self.horizontalLayout_4.addWidget(self.DemandPanel_3)
-        self.DemandPanel_4 = QtWidgets.QWidget(self.tab_8)
-        self.DemandPanel_4.setObjectName("DemandPanel_4")
-        self.horizontalLayout_4.addWidget(self.DemandPanel_4)
-        self.DemandPanel_5 = QtWidgets.QWidget(self.tab_8)
-        self.DemandPanel_5.setObjectName("DemandPanel_5")
-        self.horizontalLayout_4.addWidget(self.DemandPanel_5)
-        self.DemandPanel_6 = QtWidgets.QWidget(self.tab_8)
-        self.DemandPanel_6.setObjectName("DemandPanel_6")
-        self.horizontalLayout_4.addWidget(self.DemandPanel_6)
-        self.DemandPanel_7 = QtWidgets.QWidget(self.tab_8)
-        self.DemandPanel_7.setObjectName("DemandPanel_7")
-        self.horizontalLayout_4.addWidget(self.DemandPanel_7)
-        self.DemandPanel_8 = QtWidgets.QWidget(self.tab_8)
-        self.DemandPanel_8.setObjectName("DemandPanel_8")
-        self.horizontalLayout_4.addWidget(self.DemandPanel_8)
-        self.DemandPanel_9 = QtWidgets.QWidget(self.tab_8)
-        self.DemandPanel_9.setObjectName("DemandPanel_9")
-        self.horizontalLayout_4.addWidget(self.DemandPanel_9)
-        self.DemandPanel_10 = QtWidgets.QWidget(self.tab_8)
-        self.DemandPanel_10.setObjectName("DemandPanel_10")
-        self.horizontalLayout_4.addWidget(self.DemandPanel_10)
-        self.DemandPanel_11 = QtWidgets.QWidget(self.tab_8)
-        self.DemandPanel_11.setObjectName("DemandPanel_11")
-        self.horizontalLayout_4.addWidget(self.DemandPanel_11)
-        self.DemandPanel_12 = QtWidgets.QWidget(self.tab_8)
-        self.DemandPanel_12.setObjectName("DemandPanel_12")
-        self.horizontalLayout_4.addWidget(self.DemandPanel_12)
-        self.DemandPanel_13 = QtWidgets.QWidget(self.tab_8)
-        self.DemandPanel_13.setObjectName("DemandPanel_13")
-        self.horizontalLayout_4.addWidget(self.DemandPanel_13)
-        self.DemandPanel_14 = QtWidgets.QWidget(self.tab_8)
-        self.DemandPanel_14.setObjectName("DemandPanel_14")
-        self.horizontalLayout_4.addWidget(self.DemandPanel_14)
-        self.Demand_tab.addTab(self.tab_8, "")
-        self.MapWidget = MapWidget(self.splitter)
-        self.MapWidget.setMinimumSize(QtCore.QSize(821, 259))
-        self.MapWidget.setObjectName("MapWidget")
-        self.gridLayout_4.addWidget(self.splitter, 1, 1, 1, 3)
+        self.SplitterEventLabel = QtWidgets.QLabel(self.tab)
+        self.SplitterEventLabel.setText("")
+        self.SplitterEventLabel.setObjectName("SplitterEventLabel")
+        self.gridLayout_4.addWidget(self.SplitterEventLabel, 0, 1, 1, 1)
+        spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_4.addItem(spacerItem7, 0, 2, 1, 1)
         self.tabWidget.addTab(self.tab, "")
         self.gridLayout_10.addWidget(self.tabWidget, 0, 0, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_10, 0, 0, 1, 1)
@@ -2455,7 +2455,6 @@ class Ui_MainWindow(object):
         self.Traffic_matrix.setSortingEnabled(False)
         self.TM_groupbox.setTitle(_translate("MainWindow", "Tools"))
         self.label_7.setText(_translate("MainWindow", "       services"))
-        self.SaveChanges_button.setText(_translate("MainWindow", "Export New Traffic Matrix"))
         __sortingEnabled = self.listWidget.isSortingEnabled()
         self.listWidget.setSortingEnabled(False)
         item = self.listWidget.item(0)
@@ -2481,6 +2480,7 @@ class Ui_MainWindow(object):
         item = self.listWidget.item(10)
         item.setText(_translate("MainWindow", "100GE"))
         self.listWidget.setSortingEnabled(__sortingEnabled)
+        self.SaveChanges_button.setText(_translate("MainWindow", "Export New Traffic Matrix"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.TrafficMatrixTab), _translate("MainWindow", "Traffic Matrix Tab"))
         self.SelectNode_Label.setText(_translate("MainWindow", "Select A Node:"))
         self.ClientLabel.setText(_translate("MainWindow", " Client Side Services"))
@@ -2501,13 +2501,13 @@ class Ui_MainWindow(object):
         self.ShelfTab.setTabText(self.ShelfTab.indexOf(self.Shelf4), _translate("MainWindow", "_4_"))
         self.RackTab.setTabText(self.RackTab.indexOf(self.Rack1), _translate("MainWindow", "Rack 1"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.NodeViewTab), _translate("MainWindow", "Grooming Tab"))
+        self.Demand_tab.setTabText(self.Demand_tab.indexOf(self.tab_8), _translate("MainWindow", "Shelf"))
+        self.label_8.setText(_translate("MainWindow", "     Destination"))
         self.ClientLabel_20.setText(_translate("MainWindow", " Groom Out 10"))
         self.ClientLabel_23.setText(_translate("MainWindow", " Client Side Services:"))
         self.ClientLabel_21.setText(_translate("MainWindow", " Network Panels"))
         self.ClientLabel_22.setText(_translate("MainWindow", " LightPathes "))
-        self.label_8.setText(_translate("MainWindow", "     Destination"))
         self.SelectNode_Label_13.setText(_translate("MainWindow", "   Source"))
-        self.Demand_tab.setTabText(self.Demand_tab.indexOf(self.tab_8), _translate("MainWindow", "Shelf"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
 
         # NOTE:ADDED
@@ -5160,9 +5160,10 @@ class Ui_MainWindow(object):
         # sio.wait()
         print('RWA finished and data received in client') 
         try:
-            print('Sample WaveLength output', decoded_network.LightPathDict[0].WaveLength)
-            print('Sample Path output', decoded_network.LightPathDict[0].WorkingPath)
+            #print('Sample WaveLength output', decoded_network.LightPathDict[0].WaveLength)
+            #print('Sample Path output', decoded_network.LightPathDict[0].WorkingPath)
             # export_excel('Test.xlsx',decoded_network)
+            pass
         except:
             pass
         self.decoded_network = decoded_network
