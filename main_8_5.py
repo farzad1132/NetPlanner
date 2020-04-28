@@ -2520,9 +2520,9 @@ class Ui_MainWindow(object):
 
 
     def create_obj(self):
-        """with open("NetworkObj_greedy.obj", 'wb') as handle:
+        with open("NetworkObj.obj", 'wb') as handle:
             pickle.dump(self.network, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        handle.close() """
+        handle.close()
         pass
 
     def change_radiobuttons_state(self):
@@ -3450,7 +3450,10 @@ class Ui_MainWindow(object):
                 IgnoringNodes = None
 
                 for i in range(ServiceDict[service]["Quantity"]):
-                    self.network.TrafficMatrix.DemandDict[id].add_service(service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
+
+                    ServiceId = self.network.TrafficMatrix.DemandDict[0].GenerateId()
+
+                    self.network.TrafficMatrix.DemandDict[id].add_service(ServiceId, service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
             
             # initializing DataBases 
             self.initialize_DemandTabDataBase(Source, Destination)
@@ -4314,7 +4317,7 @@ class Ui_MainWindow(object):
                     LineCapacity += ServiceObj.BW
                 else:
                     # if its GroomOut10
-                    ServiceObj = netobj.TrafficMatrix.GroomOut10Dict[ServiceId]
+                    ServiceObj = netobj.TrafficMatrix.GroomOut10Dict[(DemandId, ServiceId)]
                     LineCapacity += ServiceObj.Capacity
 
                 OutputList.append(ServiceObj.Type)
@@ -4483,19 +4486,19 @@ class Ui_MainWindow(object):
             # panel part ( creating panels object )
             PanelId = self.get_panel_num(Source)
 
-            ClientsCapacity_1 , LineCapacity_1 = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].ServiceIdList, netobj)
-            ClientsCapacity_2 , LineCapacity_2 = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].ServiceIdList, netobj)
+            ClientsCapacity_1 , LineCapacity_1 = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].ServiceIdList, netobj)
+            ClientsCapacity_2 , LineCapacity_2 = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].ServiceIdList, netobj)
 
             ClientsCapacity = []
             ClientsCapacity.extend(ClientsCapacity_1)
             ClientsCapacity.extend(ClientsCapacity_2)
 
             ServiceIdList = []
-            ServiceIdList.extend(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].ServiceIdList)
-            ServiceIdList.extend(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].ServiceIdList)
+            ServiceIdList.extend(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].ServiceIdList)
+            ServiceIdList.extend(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].ServiceIdList)
 
-            LightPathId_1 = netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].LightPathId
-            LightPathId_2 = netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].LightPathId
+            LightPathId_1 = netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].LightPathId
+            LightPathId_2 = netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].LightPathId
 
             ClientLen = len(ClientsCapacity) 
             if ClientLen != 16:
@@ -4508,8 +4511,8 @@ class Ui_MainWindow(object):
                                                                     ServiceIdList= ServiceIdList,
                                                                     DemandIdList= [DemandId for _ in range(16)],
                                                                     LineIdList= list(Servicetuple),
-                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].ServiceIdList),
-                                                                    Line_2_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].ServiceIdList),
+                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].ServiceIdList),
+                                                                    Line_2_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].ServiceIdList),
                                                                     Destination= Destination,
                                                                     DualPanelsId= DualPanelsId)
 
@@ -4519,8 +4522,8 @@ class Ui_MainWindow(object):
                                                                     ServiceIdList= ServiceIdList,
                                                                     DemandIdList= [DemandId for _ in range(16)],
                                                                     LineIdList= list(Servicetuple),
-                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].ServiceIdList),
-                                                                    Line_2_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].ServiceIdList),
+                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].ServiceIdList),
+                                                                    Line_2_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].ServiceIdList),
                                                                     Destination= Source,
                                                                     DualPanelsId= (PanelId, (str(int(PanelId) + 1))))
             
@@ -4644,12 +4647,12 @@ class Ui_MainWindow(object):
 
             DualPanelsId = self.generate_dual_panel_num(Destination)
 
-            LightPathId = netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].LightPathId
+            LightPathId = netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].LightPathId
             
             # panel part ( creating panels object )
             PanelId = self.get_panel_num(Source)
 
-            ClientsCapacity , LineCapacity = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList, netobj)
+            ClientsCapacity , LineCapacity = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList, netobj)
 
             ClientLen = len(ClientsCapacity) 
             if ClientLen != 16:
@@ -4659,20 +4662,20 @@ class Ui_MainWindow(object):
             # creating left panel of MP2X
             DemandTabDataBase["Panels"][Source][PanelId] = MP2X_L(  ClientsCapacity= list(ClientsCapacity),
                                                                     LinesCapacity= [LineCapacity, 0],
-                                                                    ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList),
+                                                                    ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
                                                                     DemandIdList= [DemandId for _ in range(16)],
                                                                     LineIdList= [GroomOutId, None],
-                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList),
+                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
                                                                     Destination= Destination,
                                                                     DualPanelsId= DualPanelsId)
 
             # ** Dual **
             DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = MP2X_L(  ClientsCapacity= list(ClientsCapacity),
                                                                     LinesCapacity= [LineCapacity, 0],
-                                                                    ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList),
+                                                                    ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
                                                                     DemandIdList= [DemandId for _ in range(16)],
                                                                     LineIdList= [GroomOutId, None],
-                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList),
+                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
                                                                     Destination= Source,
                                                                     DualPanelsId= (PanelId, (str(int(PanelId) + 1))))
             
@@ -4687,7 +4690,7 @@ class Ui_MainWindow(object):
                                                                                 DualPanelsId = (PanelId, (str(int(PanelId) + 1))) )
             
             # omitting handled services from DemandTabDataBase
-            for service in netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList:
+            for service in netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList:
                 DemandTabDataBase["Services"][(Source, Destination)][(DemandId, service)] = 1
                 DemandTabDataBase["Services_static"][Source][(DemandId, service)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
@@ -4836,8 +4839,6 @@ class Ui_MainWindow(object):
     def create_legend(self, Num_WL, Num_RG, Algorithm, Worst_SNR, RWA_Runtime):
         self.webengine.page().runJavaScript("createLegend(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\")" %(Num_WL, Num_RG, Algorithm, Worst_SNR, RWA_Runtime))
                 
-            
-
          
     def failed_grooming_nodes(self):
 
@@ -4923,7 +4924,10 @@ class Ui_MainWindow(object):
         #self.Demand_Shelf_set()
 
         Remain_lower100,full_mp2x_lines, half_mp2x_lines  = grooming_fun(self.network, int(MP1H_Threshold))
-        print(f"remained lower 100 services : {Remain_lower100}")
+
+        # creating new 
+        self.create_new_demand_services(self.network)
+        
         
         # filling Demand DataBase 
         self.fill_DemandTabDataBase(self.network)
@@ -4966,6 +4970,118 @@ class Ui_MainWindow(object):
 "}")
 
 
+    def create_new_demand_services(self, netobj):
+        for key, value in netobj.TrafficMatrix.DemandDict.items():
+            Source = value.Source
+            Destination = value.Destination
+
+            ServiceIdList = list(value.ServiceDict.keys())
+            
+            # Source_Destination part
+            if not ( Source in DemandTabDataBase["Source_Destination"] ):
+                DemandTabDataBase["Source_Destination"][Source] = {"Source": Source, "DestinationList": []}
+            
+            elif not ( Destination in DemandTabDataBase["Source_Destination"][Source]["DestinationList"] ):
+                DemandTabDataBase["Source_Destination"][Source]["DestinationList"].append(Destination)
+
+            # ** Dual **
+            if not ( Destination in DemandTabDataBase["Source_Destination"] ):
+                DemandTabDataBase["Source_Destination"][Destination] = {"Source": Destination, "DestinationList": []}
+            
+            elif not ( Source in DemandTabDataBase["Source_Destination"][Destination]["DestinationList"] ):
+                DemandTabDataBase["Source_Destination"][Destination]["DestinationList"].append(Source)
+            
+            # services part
+            if not ( (Source, Destination) in DemandTabDataBase["Services"]):
+                DemandTabDataBase["Services"][(Source, Destination)] = {}
+
+            # ** Dual **
+            if not ( (Destination, Source) in DemandTabDataBase["Services"]):
+                DemandTabDataBase["Services"][(Destination, Source)] = {}
+
+            # static_service part
+            if not ( Source in DemandTabDataBase["Services_static"] ):
+                DemandTabDataBase["Services_static"][Source] = {}
+            
+            # ** Dual **
+            if not ( Destination in DemandTabDataBase["Services_static"] ):
+                DemandTabDataBase["Services_static"][Destination] = {}
+
+            for service in ServiceIdList:
+                new_flag = 0
+
+
+                if not ( (key, service) in DemandTabDataBase["Services"][(Source, Destination)] ):
+                    DemandTabDataBase["Services"][(Source, Destination)][(key, service)] = 0
+                
+                # ** Dual **
+                if not ( (key, service) in DemandTabDataBase["Services"][(Destination, Source)] ):
+                    DemandTabDataBase["Services"][(Destination, Source)][(key, service)] = 0
+
+                if not ((key, service) in DemandTabDataBase["Services_static"][Source] ) :
+                    new_flag = 1
+
+                    setattr(self, "Service_item_" + str(Data["Service_item_num"]), QListWidgetItem(value.ServiceDict[service].Type, self.Demand_ServiceList))
+                    item = getattr(self, "Service_item_" + str(Data["Service_item_num"]))
+                    Data["Service_item_num"] += 1
+                    item.setTextAlignment(Qt.AlignCenter)
+                    item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Source}\nDestination: {Destination}")
+                    data = {"DemandId": id, "ServiceId": service}
+
+                    if value.ServiceDict[service].OriginalSource is not None:
+                        data["OriginalSource"] = value.ServiceDict[service].OriginalSource
+                        data["OriginalDestination"] = value.ServiceDict[service].OriginalDestination
+
+                        item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Source}\nDestination: {Destination}\nOriginal Source: {data['OriginalSource']}\nOriginal Destination: {data['OriginalDestination']}")
+
+                    item.setData(Qt.UserRole, data)
+                    item.setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
+
+                    DemandTabDataBase["Services_static"][Source][(key, service)] = item
+
+
+                # ** Dual **
+                if not ((key, service) in DemandTabDataBase["Services_static"][Destination] ) :
+                    new_flag = 1
+                    
+                    setattr(self, "Service_item_" + str(Data["Service_item_num"]), QListWidgetItem(value.ServiceDict[service].Type, self.Demand_ServiceList))
+                    item = getattr(self, "Service_item_" + str(Data["Service_item_num"]))
+                    Data["Service_item_num"] += 1
+                    item.setTextAlignment(Qt.AlignCenter)
+                    item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Destination}\nDestination: {Source}")
+                    data = {"DemandId": id, "ServiceId": service}
+
+                    if value.ServiceDict[service].OriginalSource is not None:
+                        data["OriginalSource"] = value.ServiceDict[service].OriginalSource
+                        data["OriginalDestination"] = value.ServiceDict[service].OriginalDestination
+
+                        item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Destination}\nDestination: {Source}\nOriginal Source: {data['OriginalSource']}\nOriginal Destination: {data['OriginalDestination']}")
+
+                    item.setData(Qt.UserRole, data)
+                    item.setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
+
+                    DemandTabDataBase["Services_static"][Destination][(key, service)] = item
+                
+                if value.ServiceDict[service].OriginalSource is not None and new_flag == 0:
+
+                    UserData = DemandTabDataBase["Services_static"][Source][(key, service)].data(Qt.UserRole)
+                    item = DemandTabDataBase["Services_static"][Source][(key, service)]
+
+                    UserData["OriginalSource"] = value.ServiceDict[service].OriginalSource
+                    UserData["OriginalDestination"] = value.ServiceDict[service].OriginalDestination
+
+                    item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Source}\nDestination: {Destination}\nOriginal Source: {UserData['OriginalSource']}\nOriginal Destination: {UserData['OriginalDestination']}")
+                    item.setData(Qt.UserRole, UserData)
+
+                    # ** Dual **
+                    UserData = DemandTabDataBase["Services_static"][Destination][(key, service)].data(Qt.UserRole)
+                    item = DemandTabDataBase["Services_static"][Destination][(key, service)]
+
+                    UserData["OriginalSource"] = value.ServiceDict[service].OriginalSource
+                    UserData["OriginalDestination"] = value.ServiceDict[service].OriginalDestination
+
+                    item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Destination}\nDestination: {Source}\nOriginal Source: {UserData['OriginalSource']}\nOriginal Destination: {UserData['OriginalDestination']}")
+                    item.setData(Qt.UserRole, UserData)
 
 
     def find_grooming_failed_sources(self):

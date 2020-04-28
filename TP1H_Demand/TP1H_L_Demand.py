@@ -186,14 +186,15 @@ class TP1H_L_Demand(QtWidgets.QWidget):
             DemandTabDataBase["Services"][(source, destination)][key] = 1
             DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
-            # statement bellow checks for removing notification
-            if hasattr( Data["ui"], "failed_nodes"):
+            # statement bellow checks for removing notification ( if there is such a node)
+            if hasattr(Data["ui"], "failed_nodes"):
                 if source in Data["ui"].failed_nodes:
                     x = 0
                     for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
-                        if DemandTabDataBase["Services"][(source, dest)]:
-                            x = 1
-                            break
+                        for value in DemandTabDataBase["Services"][(source, dest)]:
+                            if value == 0:
+                                x = 1
+                                break
                     if x == 0:        
                         Data["ui"].set_failed_nodes_default(source)
             
@@ -282,6 +283,22 @@ class customlabel(QLabel):
             # self.LightPathId = Network.Lightpath.get_id()
 
             # adding lightpath to network obj
+
+            ClusterNum = 0
+            for cluster_id , value in Data["NetworkObj"].PhysicalTopology.ClusterDict.items():
+
+                if Data["ui"].NodeIdMap[self.nodename] == value.GatewayId and Data["ui"].NodeIdMap[self.Destination] in value.SubNodesId:
+                    ClusterNum = cluster_id
+                    break
+                
+                elif Data["ui"].NodeIdMap[self.Destination] == value.GatewayId and Data["ui"].NodeIdMap[self.nodename] in value.SubNodesId:
+                    ClusterNum = cluster_id
+                    break
+                
+                elif Data["ui"].NodeIdMap[self.Destination] in value.SubNodesId and Data["ui"].NodeIdMap[self.nodename] in value.SubNodesId:
+                    ClusterNum = cluster_id
+                    break
+
             Data["NetworkObj"].add_lightpath(Data["NodeIdMap"][self.nodename], Data["NodeIdMap"][self.Destination], 100, [self.ids[1]], "100GE", self.ids[0])
             self.LightPathId = max(Data["NetworkObj"].LightPathDict.keys())
 
@@ -391,14 +408,15 @@ class customlabel(QLabel):
             DemandTabDataBase["Services"][(source, destination)][key] = 1
             DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
-            # statement bellow checks for removing notification
-            if hasattr( Data["ui"], "failed_nodes"):
+            # statement bellow checks for removing notification ( if there is such a node)
+            if hasattr(Data["ui"], "failed_nodes"):
                 if source in Data["ui"].failed_nodes:
                     x = 0
                     for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
-                        if DemandTabDataBase["Services"][(source, dest)]:
-                            x = 1
-                            break
+                        for value in DemandTabDataBase["Services"][(source, dest)]:
+                            if value == 0:
+                                x = 1
+                                break
                     if x == 0:        
                         Data["ui"].set_failed_nodes_default(source)
             

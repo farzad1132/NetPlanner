@@ -252,9 +252,10 @@ class MP1H_L_Demand(QtWidgets.QWidget):
                 if source in Data["ui"].failed_nodes:
                     x = 0
                     for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
-                        if DemandTabDataBase["Services"][(source, dest)]:
-                            x = 1
-                            break
+                        for value in DemandTabDataBase["Services"][(source, dest)]:
+                            if value == 0:
+                                x = 1
+                                break
                     if x == 0:        
                         Data["ui"].set_failed_nodes_default(source)
             
@@ -411,7 +412,23 @@ class customlabel(QLabel):
 
                 # updating networkobj
                 ServiceIdList = [self.ids[1]]
-                Data["NetworkObj"].add_lightpath(Data["NodeIdMap"][self.nodename], Data["NodeIdMap"][self.Destination], 10, ServiceIdList, "100GE", self.ids[0])
+
+                ClusterNum = 0
+                for cluster_id , value in Data["NetworkObj"].PhysicalTopology.ClusterDict.items():
+
+                    if Data["ui"].NodeIdMap[self.nodename] == value.GatewayId and Data["ui"].NodeIdMap[self.Destination] in value.SubNodesId:
+                        ClusterNum = cluster_id
+                        break
+                    
+                    elif Data["ui"].NodeIdMap[self.Destination] == value.GatewayId and Data["ui"].NodeIdMap[self.nodename] in value.SubNodesId:
+                        ClusterNum = cluster_id
+                        break
+                    
+                    elif Data["ui"].NodeIdMap[self.Destination] in value.SubNodesId and Data["ui"].NodeIdMap[self.nodename] in value.SubNodesId:
+                        ClusterNum = cluster_id
+                        break
+
+                Data["NetworkObj"].add_lightpath(Data["NodeIdMap"][self.nodename], Data["NodeIdMap"][self.Destination], 10, ServiceIdList, "100GE", self.ids[0], ClusterNum= ClusterNum)
                 LightPathId = max(Data["NetworkObj"].LightPathDict.keys())
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPathId = LightPathId
 
@@ -741,9 +758,10 @@ class customlabel(QLabel):
                 if source in Data["ui"].failed_nodes:
                     x = 0
                     for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
-                        if DemandTabDataBase["Services"][(source, dest)]:
-                            x = 1
-                            break
+                        for value in DemandTabDataBase["Services"][(source, dest)]:
+                            if value == 0:
+                                x = 1
+                                break
                     if x == 0:        
                         Data["ui"].set_failed_nodes_default(source)
             
