@@ -13,7 +13,98 @@
   <property name="windowTitle">
    <string>RWA_Window</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(226, 226, 226);r</string>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="2">
+      <widget class="QPushButton" name="ok_pushbutton">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+	
+	
+	 
+    font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+	
+    border:2px solid black; min-width: 80px;
+	border-color: dark gray; 
+    border-radius: 25px;
+}
+
+QPushButton:pressed,hover {
+    background-color: #EB8686; 
+}
+QPushButton:hover {
+    background-color: #EB8686; 
+}
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+       </property>
+       <property name="text">
+        <string>OK</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="cancel_pushbutton">
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+	
+	
+	 
+    font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+	
+    border:2px solid black; min-width: 80px;
+	border-color: dark gray; 
+    border-radius: 25px;
+}
+
+QPushButton:pressed,hover {
+    background-color: #EB8686; 
+}
+QPushButton:hover {
+    background-color: #C0C0C0; 
+}
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+       </property>
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
    <item row="0" column="0">
     <widget class="QToolBox" name="RW_toolBox">
      <property name="styleSheet">
@@ -41,15 +132,15 @@ QToolBox::tab:selected {
 </string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="Greedy">
       <property name="geometry">
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>475</width>
-        <height>321</height>
+        <width>452</width>
+        <height>300</height>
        </rect>
       </property>
       <attribute name="label">
@@ -77,8 +168,7 @@ QToolBox::tab:selected {
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -92,11 +182,15 @@ QToolBox::tab:selected {
          <item row="1" column="0">
           <widget class="QLineEdit" name="Greedy_Alpha_LineEdit">
            <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -244,8 +338,7 @@ QComboBox QAbstractItemView {
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -259,12 +352,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="Greedy_Margin_LineEdit">
            <property name="styleSheet">
-            <string notr="true">
- QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -304,8 +400,7 @@ QComboBox QAbstractItemView {
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="midLineWidth">
@@ -322,12 +417,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="Greedy_Iteration_LineEdit">
            <property name="styleSheet">
-            <string notr="true">
- QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -353,22 +451,21 @@ QComboBox QAbstractItemView {
            <property name="font">
             <font>
              <family>Bahnschrift Condensed</family>
-             <pointsize>9</pointsize>
+             <pointsize>10</pointsize>
              <weight>9</weight>
              <italic>false</italic>
              <bold>false</bold>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">  QLabel {
+            <string notr="true"> QLabel {
     
     border-radius: 10px;
     
 	
-	font: 75 9pt &quot;Bahnschrift Condensed&quot;;
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -382,11 +479,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="Greedy_MaxNW_LineEdit">
            <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -419,15 +520,14 @@ QComboBox QAbstractItemView {
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">  QLabel {
+            <string notr="true"> QLabel {
     
     border-radius: 10px;
     
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -441,12 +541,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="Greedy_Processors_LineEdit">
            <property name="styleSheet">
-            <string notr="true">
- QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -479,15 +582,14 @@ QComboBox QAbstractItemView {
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">  QLabel {
+            <string notr="true"> QLabel {
     
     border-radius: 10px;
     
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -501,12 +603,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="Greedy_K_LineEdit">
            <property name="styleSheet">
-            <string notr="true">
- QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -525,6 +630,19 @@ QComboBox QAbstractItemView {
          </item>
         </layout>
        </item>
+       <item row="0" column="1">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="Group_ILP">
@@ -532,8 +650,8 @@ QComboBox QAbstractItemView {
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>208</width>
-        <height>256</height>
+        <width>449</width>
+        <height>321</height>
        </rect>
       </property>
       <attribute name="label">
@@ -561,8 +679,7 @@ QComboBox QAbstractItemView {
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -576,11 +693,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="GroupILP_Alpha_LineEdit">
            <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -613,15 +734,14 @@ QComboBox QAbstractItemView {
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true"> QLabel {
+            <string notr="true">QLabel {
     
     border-radius: 10px;
     
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -635,11 +755,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="GroupILP_Iteration_LineEdit">
            <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -672,15 +796,14 @@ QComboBox QAbstractItemView {
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">  QLabel {
+            <string notr="true">QLabel {
     
     border-radius: 10px;
     
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -694,11 +817,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="GroupILP_Margin_LineEdit">
            <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -731,15 +858,14 @@ QComboBox QAbstractItemView {
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true"> QLabel {
+            <string notr="true">QLabel {
     
     border-radius: 10px;
     
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -753,11 +879,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="GroupILP_Processors_LineEdit">
            <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -790,15 +920,14 @@ QComboBox QAbstractItemView {
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">  QLabel {
+            <string notr="true">QLabel {
     
     border-radius: 10px;
     
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -812,11 +941,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="GroupILP_K_LineEdit">
            <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -849,15 +982,14 @@ QComboBox QAbstractItemView {
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true"> QLabel {
+            <string notr="true">QLabel {
     
     border-radius: 10px;
     
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -871,11 +1003,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="GroupILP_MaxNW_LineEdit">
            <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -908,15 +1044,14 @@ QComboBox QAbstractItemView {
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">  QLabel {
+            <string notr="true">QLabel {
     
     border-radius: 10px;
     
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -930,11 +1065,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="GroupILP_Groupsize_LineEdit">
            <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -958,11 +1097,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="GroupILP_History_LineEdit">
            <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -991,15 +1134,14 @@ QComboBox QAbstractItemView {
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">  QLabel {
+            <string notr="true">QLabel {
     
     border-radius: 10px;
     
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -1019,7 +1161,7 @@ QComboBox QAbstractItemView {
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>475</width>
+        <width>449</width>
         <height>321</height>
        </rect>
       </property>
@@ -1048,8 +1190,7 @@ QComboBox QAbstractItemView {
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -1063,11 +1204,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="ILP_Margin_LineEdit">
            <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -1078,65 +1223,6 @@ QComboBox QAbstractItemView {
            </property>
            <property name="placeholderText">
             <string>3-7</string>
-           </property>
-           <property name="clearButtonEnabled">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="0" column="1">
-        <layout class="QFormLayout" name="formLayout_29">
-         <item row="0" column="0">
-          <widget class="QLabel" name="ILP_Processors_Label">
-           <property name="font">
-            <font>
-             <family>Bahnschrift Condensed</family>
-             <pointsize>10</pointsize>
-             <weight>9</weight>
-             <italic>false</italic>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"> QLabel {
-    
-    border-radius: 10px;
-    
-	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
-}</string>
-           </property>
-           <property name="text">
-            <string> Processors</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLineEdit" name="ILP_Processors_LineEdit">
-           <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
-    padding: 0 8px;
-    selection-background-color: darkgray;
-}</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="placeholderText">
-            <string>4</string>
            </property>
            <property name="clearButtonEnabled">
             <bool>true</bool>
@@ -1159,15 +1245,14 @@ QComboBox QAbstractItemView {
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">  QLabel {
+            <string notr="true"> QLabel {
     
     border-radius: 10px;
     
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -1181,11 +1266,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="ILP_K_LineEdit">
            <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -1211,22 +1300,21 @@ QComboBox QAbstractItemView {
            <property name="font">
             <font>
              <family>Bahnschrift Condensed</family>
-             <pointsize>9</pointsize>
+             <pointsize>10</pointsize>
              <weight>9</weight>
              <italic>false</italic>
              <bold>false</bold>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">  QLabel {
+            <string notr="true"> QLabel {
     
     border-radius: 10px;
     
 	
-	font: 75 9pt &quot;Bahnschrift Condensed&quot;;
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -1240,11 +1328,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="ILP_MaxNW_LineEdit">
            <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -1277,15 +1369,14 @@ QComboBox QAbstractItemView {
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">  QLabel {
+            <string notr="true"> QLabel {
     
     border-radius: 10px;
     
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+   
 }</string>
            </property>
            <property name="text">
@@ -1299,11 +1390,15 @@ QComboBox QAbstractItemView {
          <item row="1" column="0">
           <widget class="QLineEdit" name="ILP_Alpha_LineEdit">
            <property name="styleSheet">
-            <string notr="true"> QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    selection-background-color: darkgray;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
            </property>
            <property name="text">
@@ -1333,97 +1428,84 @@ QComboBox QAbstractItemView {
          </item>
         </layout>
        </item>
+       <item row="0" column="1">
+        <layout class="QFormLayout" name="formLayout_29">
+         <item row="0" column="0">
+          <widget class="QLabel" name="ILP_Processors_Label">
+           <property name="font">
+            <font>
+             <family>Bahnschrift Condensed</family>
+             <pointsize>10</pointsize>
+             <weight>9</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"> QLabel {
+    
+    border-radius: 10px;
+    
+	
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+   
+}</string>
+           </property>
+           <property name="text">
+            <string> Processors</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLineEdit" name="ILP_Processors_LineEdit">
+           <property name="styleSheet">
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
+    padding: 0 8px;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="placeholderText">
+            <string>4</string>
+           </property>
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
       </layout>
      </widget>
     </widget>
    </item>
-   <item row="1" column="0">
-    <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="2">
-      <widget class="QPushButton" name="ok_pushbutton">
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
-	
-	
-	 
-    font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-	
-    border:2px solid black; min-width: 80px;
-	border-color: dark gray; 
-    border-radius: 25px;
-}
-
-QPushButton:pressed,hover {
-    background-color: #EB8686; 
-}
-QPushButton:hover {
-    background-color: #EB8686; 
-}
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-       </property>
-       <property name="text">
-        <string>OK</string>
-       </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QPushButton" name="cancel_pushbutton">
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
-	
-	
-	 
-    font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-	
-    border:2px solid black; min-width: 80px;
-	border-color: dark gray; 
-    border-radius: 25px;
-}
-
-QPushButton:pressed,hover {
-    background-color: #EB8686; 
-}
-QPushButton:hover {
-    background-color: #C0C0C0; 
-}
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-       </property>
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
+   <item row="0" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

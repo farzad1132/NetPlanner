@@ -525,13 +525,14 @@
      <widget class="QLineEdit" name="long_edit">
       <property name="styleSheet">
        <string notr="true">QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+ 
+    border: 2px solid rgb(231, 231, 231);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    background: white;
-    selection-background-color: darkgray; 
     
+    selection-background-color: darkgray; 
 	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
       </property>
      </widget>
@@ -557,13 +558,14 @@
      <widget class="QLineEdit" name="lat_edit">
       <property name="styleSheet">
        <string notr="true">QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+ 
+    border: 2px solid rgb(231, 231, 231);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    background: white;
-    selection-background-color: darkgray; 
     
+    selection-background-color: darkgray; 
 	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
       </property>
      </widget>
@@ -599,13 +601,14 @@
      <widget class="QLineEdit" name="place_name_edit">
       <property name="styleSheet">
        <string notr="true">QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+ 
+    border: 2px solid rgb(231, 231, 231);
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    background: white;
-    selection-background-color: darkgray; 
     
+    selection-background-color: darkgray; 
 	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
       </property>
      </widget>
@@ -618,9 +621,9 @@
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-	color: rgb(117, 117, 117);
+	
     border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
+	background-color: #4072B3; 
     border-radius: 12px;
 }
 

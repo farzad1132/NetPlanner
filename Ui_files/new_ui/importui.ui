@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>ImportMenuUI</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color:rgb(226, 226, 226);</string>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0" colspan="2">
     <widget class="QLabel" name="PlanningLabel">
@@ -47,7 +50,20 @@
    <item row="1" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLineEdit" name="NodeLineEdit"/>
+      <widget class="QLineEdit" name="NodeLineEdit">
+       <property name="styleSheet">
+        <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
+    padding: 0 8px;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
+}</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="NodeButton">
@@ -102,7 +118,20 @@ QPushButton:default {
    <item row="2" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QLineEdit" name="LinkLineEdit"/>
+      <widget class="QLineEdit" name="LinkLineEdit">
+       <property name="styleSheet">
+        <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
+    padding: 0 8px;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
+}</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="LinkButton">
@@ -171,7 +200,20 @@ QPushButton:default {
    <item row="6" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QLineEdit" name="TrafficLineEdit"/>
+      <widget class="QLineEdit" name="TrafficLineEdit">
+       <property name="styleSheet">
+        <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
+    padding: 0 8px;
+    
+    selection-background-color: darkgray; 
+	font: 8pt &quot;Bahnschrift&quot;;
+
+}</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="TrafficButton">

@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(255, 255, 255);</string>
+  </property>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
@@ -82,13 +85,14 @@ QPushButton:hover{
      <widget class="QLineEdit" name="GroupName_edit">
       <property name="styleSheet">
        <string notr="true">QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+ 
+    border: 2px solid white;
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    background: white;
-    selection-background-color: darkgray; 
     
+    selection-background-color: darkgray; 
 	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
       </property>
      </widget>
@@ -96,14 +100,16 @@ QPushButton:hover{
     <item row="2" column="2" colspan="2">
      <widget class="QLineEdit" name="GroupId_edit">
       <property name="styleSheet">
-       <string notr="true">QLineEdit {
-    border: 2px solid gray;
-    border-radius: 10px;
+       <string notr="true">
+ QLineEdit {
+ 
+    border: 2px solid white;
+	border-bottom-color: rgb(86, 86, 86);
     padding: 0 8px;
-    background: white;
-    selection-background-color: darkgray; 
     
+    selection-background-color: darkgray; 
 	font: 8pt &quot;Bahnschrift&quot;;
+
 }</string>
       </property>
      </widget>
