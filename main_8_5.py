@@ -2397,6 +2397,8 @@ class Ui_MainWindow(object):
 
         self.groomout10_list.setDragEnabled(True)
 
+        self.ShowSubNodes.stateChanged["int"].connect(self.show_subnodes_fun)
+
         #self.setStyleSheet("QToolTip { background-color: black; color: white; border: black solid 1px; }")
 
     def retranslateUi(self, MainWindow):
@@ -2524,6 +2526,16 @@ class Ui_MainWindow(object):
             pickle.dump(self.network, handle, protocol=pickle.HIGHEST_PROTOCOL)
         handle.close()
         pass
+
+    def show_subnodes_fun(self, state):
+        print(f"state: {state}")
+
+        if state == 2:
+            self.webengine.page().runJavaScript('hide_subnodes()')
+            
+        elif state == 0:
+            self.webengine.page().runJavaScript('show_subnodes()')
+
 
     def change_radiobuttons_state(self):
         if self.Max_available_radiobutton.isChecked():
@@ -2662,8 +2674,11 @@ class Ui_MainWindow(object):
         SubNodes = []
         for node in Data["Clustering"][self.backend_map.LastGateWay]["SubNodes"]:
             SubNodes.append(self.NodeIdMap[node])
+            self.webengine.page().runJavaScript('update_cluster_info(\'%s\', \'%s\', \'%s\')' %(node, Data["Clustering"][self.backend_map.LastGateWay]["Color"], 1))
         
         self.network.PhysicalTopology.add_cluster(self.NodeIdMap[self.backend_map.LastGateWay], SubNodes, Data["Clustering"][self.backend_map.LastGateWay]["Color"])
+        self.webengine.page().runJavaScript('update_cluster_info(\'%s\', \'%s\', \'%s\')' %(self.backend_map.LastGateWay, Data["Clustering"][self.backend_map.LastGateWay]["Color"], 0))
+        
         self.SelectSubNode_button_fun()
 
     #TODO: complete this method
@@ -3853,6 +3868,8 @@ class Ui_MainWindow(object):
         var marker_num = 0;
         var failed_nodes = new Object();
         var failed_nodes_list = [];
+        var clusters_info = new Object();
+        var clusters_info_list = [];
         var lambdas = new Object();
         var wrapper = document.createElement("div");
         var canvas = document.createElement("canvas");
@@ -3937,6 +3954,45 @@ class Ui_MainWindow(object):
                     }
                 }
                 flag = 1;
+                }
+            });
+        }
+
+        function update_cluster_info(nodename, color, subnode_state){
+            clusters_info[nodename] = {"Color":color, "SubNode":parseInt(subnode_state)};
+            clusters_info_list.push(nodename);
+        }
+
+        function hide_subnodes(){
+            myFeatureGroup.eachLayer(function (layer) {
+                var x = layer["_tooltip"]["_content"];
+                var doc = new DOMParser().parseFromString(x, "text/xml");
+                var z = doc.documentElement.textContent;
+                NodeName = z.replace(/\s/g, '');
+
+                if (clusters_info_list.includes(NodeName)){
+                    SubNode_state = clusters_info[NodeName]["SubNode"];
+
+                    if (SubNode_state == 1) {
+                        layer.setOpacity(0);
+                    }
+                }
+            });
+        }
+
+        function show_subnodes(){
+            myFeatureGroup.eachLayer(function (layer) {
+                var x = layer["_tooltip"]["_content"];
+                var doc = new DOMParser().parseFromString(x, "text/xml");
+                var z = doc.documentElement.textContent;
+                NodeName = z.replace(/\s/g, '');
+
+                if ( clusters_info_list.includes(NodeName) ){
+                    SubNode_state = clusters_info[NodeName]["SubNode"];
+
+                    if (SubNode_state == 1) {
+                        layer.setOpacity(0.6);
+                    }
                 }
             });
         }

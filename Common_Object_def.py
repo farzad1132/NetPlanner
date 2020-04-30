@@ -829,6 +829,7 @@ class Network:
             self.Num_WL = None          # Number of used Wavelengths
             self.Num_RG = None          # Number of used Regenerators
             self.Worst_SNR = None
+            self.FailedLightPathIdList = None
 
 
 
