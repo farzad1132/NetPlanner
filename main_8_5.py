@@ -2399,6 +2399,8 @@ class Ui_MainWindow(object):
 
         self.ShowSubNodes.stateChanged["int"].connect(self.show_subnodes_fun)
 
+        self.Cancel_button.clicked.connect(self.cancel_button_fun)
+
         #self.setStyleSheet("QToolTip { background-color: black; color: white; border: black solid 1px; }")
 
     def retranslateUi(self, MainWindow):
@@ -2669,6 +2671,15 @@ class Ui_MainWindow(object):
                 self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'green')
 
         self.MapWidget.canvas.draw()
+    
+    def cancel_button_fun(self):
+
+        self.webengine.page().runJavaScript('cancel_clustering(\'%s\')' %(self.backend_map.LastGateWay))
+
+        for node in Data["Clustering"][self.backend_map.LastGateWay]["SubNodes"]:
+            self.webengine.page().runJavaScript('cancel_clustering(\'%s\')' %(node))
+
+        Data["Clustering"].pop(self.backend_map.LastGateWay)
     
     def OK_button_fun(self):
         SubNodes = []
@@ -3958,6 +3969,26 @@ class Ui_MainWindow(object):
             });
         }
 
+        function cancel_clustering(nodename){
+            myFeatureGroup.eachLayer(function (layer) {
+
+                var x = layer["_tooltip"]["_content"];
+                var doc = new DOMParser().parseFromString(x, "text/xml");
+                var z = doc.documentElement.textContent;
+                NodeName = z.replace(/\s/g, '');
+
+                if ( NodeName == nodename ){
+                    var latlng = layer.getLatLng()
+
+                    %s.removeLayer(layer);
+                    layer.remove();
+
+                    change_icon(NodeName, latlng, "blue", 1, "normal")
+
+                }
+            });
+        }
+
         function update_cluster_info(nodename, color, subnode_state){
             clusters_info[nodename] = {"Color":color, "SubNode":parseInt(subnode_state)};
             clusters_info_list.push(nodename);
@@ -4170,7 +4201,7 @@ class Ui_MainWindow(object):
         var backend_map = null;
         new QWebChannel(qt.webChannelTransport, function (channel) {
         window.backend_map = channel.objects.backend_map;
-        });""" %(MapVar, MapVar, MapVar, MapVar, MapVar, MapVar)))
+        });""" %(MapVar, MapVar, MapVar, MapVar, MapVar, MapVar, MapVar)))
         Fig.script.add_child(Element("var myFeatureGroup = L.featureGroup().addTo(%s).on(\"click\", groupClick);" %MapVar))
 
         Fig.script.add_child(Element("""%s.eachLayer(function (layer) {
