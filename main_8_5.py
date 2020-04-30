@@ -3776,13 +3776,13 @@ class Ui_MainWindow(object):
                     Data[header]["DataSection"][column_name][str(row)] = value
                 else:
                     # error for wrong data type
-                    self.TMErrorWrongDataType(column)
+                    self.TMErrorWrongDataType(column_name)
             elif column_name=='SLA' :
                 if str(value).isalpha():
                     Data[header]["DataSection"][column_name][str(row)] = value
                 else:
                     # error for wrong data type
-                    self.TMErrorWrongDataType(column)
+                    self.TMErrorWrongDataType(column_name)
             else:
                 Data[header]["DataSection"][column_name][str(row)] = value
 
@@ -3862,14 +3862,14 @@ class Ui_MainWindow(object):
             self.Status_type_error_widget.show() '''
 
 
-    def TMErrorWrongDataType(self, column):
+    def TMErrorWrongDataType(self, column_name):
 
-        if column == 0 :
+        if column_name == 'Quantity' :
             self.Quantity_type_error_widget = QtWidgets.QWidget()
             self.Quantity_type_error = Ui_Quantity_type_error()
             self.Quantity_type_error.setupUi(self.Quantity_type_error_widget)
             self.Quantity_type_error_widget.show()
-        if column == -1 :
+        if column_name=='SLA' :
             self.SLA_type_error_widget = QtWidgets.QWidget()
             self.SLA_type_error = Ui_SLA_type_error()
             self.SLA_type_error.setupUi(self.SLA_type_error_widget)
