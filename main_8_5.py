@@ -63,6 +63,12 @@ from MP1H_Demand.MP1H_R_Demand import MP1H_R_Demand
 from TP1H_Demand.TP1H_L_Demand import TP1H_L_Demand
 from TP1H_Demand.TP1H_R_Demand import TP1H_R_Demand
 
+from TrafficMatrixError.Source_type_error import Ui_Source_type_error
+from TrafficMatrixError.ID_type_error import Ui_ID_type_error
+from TrafficMatrixError.Destination_type_error import Ui_Destination_type_error
+from TrafficMatrixError.Quantity_type_error import Ui_Quantity_type_error
+from TrafficMatrixError.SLA_type_error import Ui_SLA_type_error
+
 #from mapwidget import MapWidget
 from mapwidget import MapWidget
 import matplotlib as mpl
@@ -3746,6 +3752,7 @@ class Ui_MainWindow(object):
         
                 
 
+# NOTE: EDDITED
 
 
 
@@ -3760,13 +3767,26 @@ class Ui_MainWindow(object):
         value = value.text()
         header = str(self.listWidget.currentItem().text())
         column_name = Data[header]["Headers"][column].strip()
-
         if value == "":
             if (str(row) in Data[header]["DataSection"][column_name]):
                 Data[header]["DataSection"][column_name].pop(str(row))
         else:
-            Data[header]["DataSection"][column_name][str(row)] = value
-        
+            if column_name=='Quantity':
+                if str(value).isdigit():
+                    Data[header]["DataSection"][column_name][str(row)] = value
+                else:
+                    # error for wrong data type
+                    self.TMErrorWrongDataType(column)
+            elif column_name=='SLA' :
+                if str(value).isalpha():
+                    Data[header]["DataSection"][column_name][str(row)] = value
+                else:
+                    # error for wrong data type
+                    self.TMErrorWrongDataType(column)
+            else:
+                Data[header]["DataSection"][column_name][str(row)] = value
+
+
     def GTM_CellChange_fun(self):
         row = self.General_TM.currentRow()
         if row == (Data["RowCount"] - 1):
@@ -3775,13 +3795,87 @@ class Ui_MainWindow(object):
             self.Traffic_matrix.setRowCount(Data["RowCount"])
         column = self.General_TM.currentColumn()
         value = self.General_TM.item(row,column)
-        value = value.text()
+        value = value.text()      
         if value == "":
             if (str(row) in Data["General"]["DataSection"][str(column)]):
                 Data["General"]["DataSection"][str(column)].pop(str(row))
         else:
-            Data["General"]["DataSection"][str(column)][str(row)] = value
+            if column == 0 and str(value).isdigit():
+                Data["General"]["DataSection"][str(column)][str(row)] = value
         
+            elif column==1 or column==2 or column==3 or column==4 or column==7:
+                if str(value).isalpha():
+                    Data["General"]["DataSection"][str(column)][str(row)] = value
+                else:
+                    self.GTMErrorWrongDataType(column)        
+            
+            elif column== 5 and type(value)==float :
+                Data["General"]["DataSection"][str(column)][str(row)] = value
+            elif column== 6 and type(value)==float and value <= 0.3 :
+                Data["General"]["DataSection"][str(column)][str(row)] = value               
+            else:
+                # error for wrong data type
+                self.GTMErrorWrongDataType(column)
+
+
+    def GTMErrorWrongDataType(self, column):
+
+        if column == 0 :
+            self.ID_type_error_widget = QtWidgets.QWidget()
+            self.ID_type_error = Ui_ID_type_error()
+            self.ID_type_error.setupUi(self.ID_type_error_widget)
+            self.ID_type_error_widget.show()
+        if column == 1 :
+            self.Source_type_error_widget = QtWidgets.QWidget()
+            self.Source_type_error = Ui_Source_type_error()
+            self.Source_type_error.setupUi(self.Source_type_error_widget)
+            self.Source_type_error_widget.show()
+        if column == 2 :
+            self.Destination_type_error_widget = QtWidgets.QWidget()
+            self.Destination_type_error = Ui_Destination_type_error()
+            self.Destination_type_error.setupUi(self.Destination_type_error_widget)
+            self.Destination_type_error_widget.show() 
+        '''if column == 3 :
+            self.OldCableType_type_error_widget = QtWidgets.QWidget()
+            self.OldCableType_type_error = Ui_OldCableType_type_error()
+            self.OldCableType_type_error.setupUi(self.OldCableType_type_error_widget)
+            self.OldCableType_type_error_widget.show() 
+        if column == 4 :
+            self.CableType_type_error_widget = QtWidgets.QWidget()
+            self.CableType_type_error = Ui_CableType_type_error()
+            self.CableType_type_error.setupUi(self.CableType_type_error_widget)
+            self.CableType_type_error_widget.show() 
+        if column == 5 :
+            self.DistanceReal_type_error_widget = QtWidgets.QWidget()
+            self.DistanceReal_type_error = Ui_DistanceReal_type_error()
+            self.DistanceReal_type_error.setupUi(self.DistanceReal_type_error_widget)
+            self.DistanceReal_type_error_widget.show() 
+        if column == 6 :
+            self.Att_type_error_widget = QtWidgets.QWidget()
+            self.Att_type_error = Ui_Att_type_error()
+            self.Att_type_error.setupUi(self.Att_type_error_widget)
+            self.Att_type_error_widget.show() 
+        if column == 7 :
+            self.Status_type_error_widget = QtWidgets.QWidget()
+            self.Status_type_error = Ui_Status_type_error()
+            self.Status_type_error.setupUi(self.Status_type_error_widget)
+            self.Status_type_error_widget.show() '''
+
+
+    def TMErrorWrongDataType(self, column):
+
+        if column == 0 :
+            self.Quantity_type_error_widget = QtWidgets.QWidget()
+            self.Quantity_type_error = Ui_Quantity_type_error()
+            self.Quantity_type_error.setupUi(self.Quantity_type_error_widget)
+            self.Quantity_type_error_widget.show()
+        if column == -1 :
+            self.SLA_type_error_widget = QtWidgets.QWidget()
+            self.SLA_type_error = Ui_SLA_type_error()
+            self.SLA_type_error.setupUi(self.SLA_type_error_widget)
+            self.SLA_type_error_widget.show()
+
+
     def update_cells(self):
     
         '''item = self.listWidget.currentItem()
