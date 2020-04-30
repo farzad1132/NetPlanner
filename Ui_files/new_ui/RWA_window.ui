@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>493</width>
-    <height>462</height>
+    <width>534</width>
+    <height>469</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -139,8 +139,8 @@ QToolBox::tab:selected {
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>452</width>
-        <height>300</height>
+        <width>490</width>
+        <height>328</height>
        </rect>
       </property>
       <attribute name="label">
@@ -181,6 +181,15 @@ QToolBox::tab:selected {
          </item>
          <item row="1" column="0">
           <widget class="QLineEdit" name="Greedy_Alpha_LineEdit">
+           <property name="font">
+            <font>
+             <family>Bahnschrift</family>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
            <property name="styleSheet">
             <string notr="true">QLineEdit {
  
@@ -189,7 +198,7 @@ QToolBox::tab:selected {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -359,7 +368,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -424,7 +433,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -486,7 +495,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -548,7 +557,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -610,7 +619,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -650,8 +659,8 @@ QComboBox QAbstractItemView {
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>449</width>
-        <height>321</height>
+        <width>490</width>
+        <height>328</height>
        </rect>
       </property>
       <attribute name="label">
@@ -700,7 +709,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -762,7 +771,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -824,7 +833,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -886,7 +895,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -948,7 +957,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -1010,7 +1019,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -1072,7 +1081,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -1104,7 +1113,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -1161,8 +1170,8 @@ QComboBox QAbstractItemView {
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>449</width>
-        <height>321</height>
+        <width>490</width>
+        <height>328</height>
        </rect>
       </property>
       <attribute name="label">
@@ -1211,7 +1220,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -1273,7 +1282,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -1335,7 +1344,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -1397,7 +1406,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
@@ -1470,7 +1479,7 @@ QComboBox QAbstractItemView {
     padding: 0 8px;
     
     selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
 
 }</string>
            </property>
