@@ -1,33 +1,16 @@
-from Common_Object_def import Network
+
 import pickle
 import copy
 from pulp import LpProblem, LpMinimize, LpVariable, lpSum, LpStatus
+
 import networkx as nx
 import math
-
-
-""" # loading saved object from directory
-with open('NetWorkObj.obj', 'rb') as handle:
-    n = pickle.load(handle)                   
-    handle.close()
-
-Ref = 0
-for demand, value in n.TrafficMatrix.DemandDict.items():
-    for id in value.ServiceDict.keys():
-        if id > Ref:
-            Ref = id
-
-Network.Traffic.ServiceReferencedId = Ref + 1
-Network.Traffic.Demand.ServiceReferencedId = Ref + 1
-# from here you can access network object by 'network_obj' variable """
-
 
 def MP2X(Services_lower10):
     prob = LpProblem("grooming", LpMinimize )
     B=10                    #u
     max_port=16
     y=[]
-    
     min_number_of_service=3
         
         
@@ -142,12 +125,12 @@ def MP2X(Services_lower10):
 
 
 
-
 def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 
         service_lower10_SDH=[]
         service_lower10_E=[]
         service_lower100=[]
+        remain_lower100_2=[]
         remaining_service_lower10=[]
         MP2x_list=[]   
         MP2x_Dict={}                                 #(DemandId,Service)
@@ -162,14 +145,16 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
             x=[]
             output_10=[] 
             for j in n.TrafficMatrix.DemandDict[i].ServiceDict:
-                if ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_1_Optical") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_4") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_16")):
+#                if ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_1_Optical") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_4") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_16")):
+                if (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW < 10):
                     y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                 elif ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "FE") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "G_1")):
+#                    y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                     x.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                 elif (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW == 10):
                     z.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                 else:
-                    n.add_lightpath(n.TrafficMatrix.DemandDict[i].Source, n.TrafficMatrix.DemandDict[i].Destination, 100, [n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id], 100, i)
+                    n.add_lightpath(n.TrafficMatrix.DemandDict[i].Source, n.TrafficMatrix.DemandDict[i].Destination, 100, [n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id], 100, i,ClusterNum=0)
                     LastId = n.Lightpath.ReferenceId -1
 #                    print(len(n.LightPathDict),"**")
                     n.TrafficMatrix.DemandDict[i].ServiceDict[j].LightPathId=LastId
@@ -187,8 +172,9 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                         listofs.append(output_10[0][1][num][nu][0])
                         cap = cap + output_10[0][1][num][nu][1]
 #                    n.TrafficMatrix.DemandDict[i].add_service(ServiceType= "Groom_out10" ,Sla= 2, Capacity=cap, ServiceIdList=listofs)    
-                    n.TrafficMatrix.add_groom_out_10(Source=n.TrafficMatrix.DemandDict[i].Source, Destination=n.TrafficMatrix.DemandDict[i].Destination, DemandId=i, Capacity=cap, ServiceIdList=listofs)
-                    LastId = n.TrafficMatrix.Demand.ServiceReferencedId - 1
+                    GroomOutId = n.TrafficMatrix.Generate_GroomOutId()
+                    n.TrafficMatrix.add_groom_out_10(GroomOutId= GroomOutId, Source=n.TrafficMatrix.DemandDict[i].Source, Destination=n.TrafficMatrix.DemandDict[i].Destination, DemandId=i, Capacity=cap, ServiceIdList=listofs)
+                    LastId = GroomOutId
                     ffff=[(LastId,10)]
                     hhhh.append((LastId,cap,len(listofs)))
                     z.append((LastId,cap))
@@ -222,30 +208,880 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
             NO_LP= math.ceil(len(service_lower100[i][1])/10)
             for j in range(0,NO_LP):
                 list_of_service=[]
+                list_of_service2=[]
                 cap=0
                 for k in range(j*10,(j+1)*10):
                     if (k < len(service_lower100[i][1])):
                         list_of_service.append(service_lower100[i][1][k][0])
+                        list_of_service2.append((service_lower100[i][1][k][0],service_lower100[i][1][k][1]))
                         cap=cap+service_lower100[i][1][k][1]
                 if cap ==10:
                     typee="10GE"
                 else:
-                    typee="100GE"
+                    typee="100G"
                 if cap < MP1H_Threshold:
                     remain_lower100.append((service_lower100[i][0],list_of_service))
+                    remain_lower100_2.append((service_lower100[i][0],list_of_service2))
                     remain_lower100_dict.update({service_lower100[i][0]:list_of_service})
                 else:
-                    n.add_lightpath(n.TrafficMatrix.DemandDict[service_lower100[i][0]].Source, n.TrafficMatrix.DemandDict[service_lower100[i][0]].Destination, Capacity=cap, ServiceIdList=list_of_service, Type=typee, DemandId=service_lower100[i][0])    
+                    n.add_lightpath(n.TrafficMatrix.DemandDict[service_lower100[i][0]].Source, n.TrafficMatrix.DemandDict[service_lower100[i][0]].Destination, Capacity=cap, ServiceIdList=list_of_service, Type=typee, DemandId=service_lower100[i][0],ClusterNum=0)    
                     LastId = n.Lightpath.ReferenceId -1
 #                    print(LastId)
                     for idd in list_of_service:
                         if idd in n.TrafficMatrix.DemandDict[service_lower100[i][0]].ServiceDict:
                            n.TrafficMatrix.DemandDict[service_lower100[i][0]].ServiceDict[idd].LightPathId= LastId
-                        if idd in n.TrafficMatrix.GroomOut10Dict:
-                            n.TrafficMatrix.GroomOut10Dict[idd].LightPathId= LastId
-                            
+                        if (service_lower100[i][0],idd) in n.TrafficMatrix.GroomOut10Dict:
+                            n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].LightPathId= LastId
+#        print(remain_lower100_2)  
+#        print("***",n.TrafficMatrix.DemandDict[0].ServiceDict)
+#        print("***",n.TrafficMatrix.DemandDict[0].Source)
+#        print("***",n.TrafficMatrix.DemandDict[0].Destination)
+                    
         
-     
+        remain_lower100_2_newV=[] 
+        def changing_both_inC(Demandid,servId,BW):
+            
+            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+                if n.TrafficMatrix.DemandDict[Demandid].Source == n.PhysicalTopology.ClusterDict[k].GatewayId :
+                    for z in range(1,len(n.PhysicalTopology.ClusterDict)+1): 
+                       if z!=k and n.TrafficMatrix.DemandDict[Demandid].Destination == n.PhysicalTopology.ClusterDict[z].GatewayId :
+                           ff=0
+#                           if(len(remain_lower100_2_newV)!=0):
+                           for h in range(0,len(remain_lower100_2_newV)):
+                               if (Demandid == remain_lower100_2_newV[h][0] ):
+                                   remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                   ff=1
+                           if ff==0:
+                              remain_lower100_2_newV.append((Demandid,[(servId,BW)]))
+#                           else:
+#                               remain_lower100_2_newV.append((Demandid,[(servId,BW)]))
+                       elif z!=k and n.TrafficMatrix.DemandDict[Demandid].Destination in n.PhysicalTopology.ClusterDict[z].SubNodesId :
+                           newdes=n.PhysicalTopology.ClusterDict[z].GatewayId
+                           orgdes=n.TrafficMatrix.DemandDict[Demandid].Destination
+                           orgsrc=n.TrafficMatrix.DemandDict[Demandid].Source
+                           typee=n.TrafficMatrix.DemandDict[Demandid].ServiceDict[servId].Type
+                           i1=0
+                           i2=0
+                           for ii in n.TrafficMatrix.DemandDict:
+                               if n.TrafficMatrix.DemandDict[ii].Source == n.TrafficMatrix.DemandDict[Demandid].Source and n.TrafficMatrix.DemandDict[ii].Destination == newdes:
+                                   n.TrafficMatrix.DemandDict[ii].add_service(ServiceId=servId,ServiceType=typee,Sla=2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                                   ff=0
+                                   i1=1
+                                   for h in range(0,len(remain_lower100_2_newV)):
+                                       if (ii == remain_lower100_2_newV[h][0] ):
+                                           remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                           ff=1
+                                   if ff==0:
+                                        remain_lower100_2_newV.append((ii,[(servId,BW)]))
+                               elif n.TrafficMatrix.DemandDict[ii].Source == newdes and n.TrafficMatrix.DemandDict[ii].Destination == n.TrafficMatrix.DemandDict[Demandid].Destination:
+                                   n.TrafficMatrix.DemandDict[ii].add_service(ServiceId=servId,ServiceType=typee,Sla=2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                                   ff=0
+                                   i2=1
+                                   for h in range(0,len(remain_lower100_2_newV)):
+                                       if (ii == remain_lower100_2_newV[h][0] ):
+                                           remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                           ff=1
+                                   if ff==0:
+                                        remain_lower100_2_newV.append((ii,[(servId,BW)]))
+                           if i1==0:
+                               n.TrafficMatrix.add_demand(n.TrafficMatrix.DemandDict[Demandid].Source,newdes,"X")
+                               LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                               n.TrafficMatrix.DemandDict[LastId].add_service(servId,typee,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                               remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                           if i2==0:
+                               n.TrafficMatrix.add_demand(newdes,n.TrafficMatrix.DemandDict[Demandid].Destination,"X")
+                               LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                               n.TrafficMatrix.DemandDict[LastId].add_service(servId,typee,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                               remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                           n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(servId)
+                       elif z==k and n.TrafficMatrix.DemandDict[Demandid].Destination in n.PhysicalTopology.ClusterDict[z].SubNodesId :
+                           ff=0
+                           for h in range(0,len(remain_lower100_2_newV)):
+                               if (Demandid == remain_lower100_2_newV[h][0] ):
+                                   remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                   ff=1
+                           if ff==0:
+                                remain_lower100_2_newV.append((Demandid,[(servId,BW)]))
+                elif n.TrafficMatrix.DemandDict[Demandid].Source in  n.PhysicalTopology.ClusterDict[k].SubNodesId :
+                    for z in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+                        if z==k and (n.TrafficMatrix.DemandDict[Demandid].Destination in n.PhysicalTopology.ClusterDict[z].SubNodesId or n.TrafficMatrix.DemandDict[Demandid].Destination == n.PhysicalTopology.ClusterDict[z].GatewayId):
+                            ff=0
+                            for h in range(0,len(remain_lower100_2_newV)):
+                                if (Demandid == remain_lower100_2_newV[h][0] ):
+                                    remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                    ff=1
+                            if ff==0:
+                               remain_lower100_2_newV.append((Demandid,[(servId,BW)])) 
+                        elif z!=k and n.TrafficMatrix.DemandDict[Demandid].Destination in n.PhysicalTopology.ClusterDict[z].SubNodesId:
+                            i1=0
+                            i2=0
+                            i3=0
+                            for i in n.TrafficMatrix.DemandDict:
+                                if n.TrafficMatrix.DemandDict[i].Source==n.TrafficMatrix.DemandDict[Demandid].Source and n.TrafficMatrix.DemandDict[i].Destination==n.PhysicalTopology.ClusterDict[k].GatewayId:
+                                    newdes=n.PhysicalTopology.ClusterDict[k].GatewayId
+                                    orgdes=n.TrafficMatrix.DemandDict[Demandid].Destination
+                                    orgsrc=n.TrafficMatrix.DemandDict[Demandid].Source
+                                    typee=n.TrafficMatrix.DemandDict[Demandid].ServiceDict[servId].Type
+                                    n.TrafficMatrix.DemandDict[i].add_service(ServiceId=servId,ServiceType=typee,Sla=2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                                    ff=0
+                                    i1=1
+                                    for h in range(0,len(remain_lower100_2_newV)):
+                                       if (i == remain_lower100_2_newV[h][0] ):
+                                           remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                           ff=1
+                                    if ff==0:
+                                        remain_lower100_2_newV.append((i,[(servId,BW)]))
+                                elif n.TrafficMatrix.DemandDict[i].Source==n.PhysicalTopology.ClusterDict[k].GatewayId and n.TrafficMatrix.DemandDict[i].Destination==n.PhysicalTopology.ClusterDict[z].GatewayId:
+                                    orgdes=n.TrafficMatrix.DemandDict[Demandid].Destination
+                                    orgsrc=n.TrafficMatrix.DemandDict[Demandid].Source
+                                    typee=n.TrafficMatrix.DemandDict[Demandid].ServiceDict[servId].Type
+                                    n.TrafficMatrix.DemandDict[i].add_service(ServiceId=servId,ServiceType=typee,Sla=2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                                    ff=0
+                                    i2=1
+                                    for h in range(0,len(remain_lower100_2_newV)):
+                                       if (i == remain_lower100_2_newV[h][0] ):
+                                           remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                           ff=1
+                                    if ff==0:
+                                        remain_lower100_2_newV.append((i,[(servId,BW)]))
+                                elif n.TrafficMatrix.DemandDict[i].Source==n.PhysicalTopology.ClusterDict[z].GatewayId and n.TrafficMatrix.DemandDict[i].Destination==n.TrafficMatrix.DemandDict[Demandid].Destination:
+                                    orgdes=n.TrafficMatrix.DemandDict[Demandid].Destination
+                                    orgsrc=n.TrafficMatrix.DemandDict[Demandid].Source
+                                    typee=n.TrafficMatrix.DemandDict[Demandid].ServiceDict[servId].Type
+                                    n.TrafficMatrix.DemandDict[i].add_service(ServiceId=servId,ServiceType=typee,Sla=2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                                    ff=0
+                                    i3=1
+                                    for h in range(0,len(remain_lower100_2_newV)):
+                                       if (i == remain_lower100_2_newV[h][0] ):
+                                           remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                           ff=1
+                                    if ff==0:
+                                        remain_lower100_2_newV.append((i,[(servId,BW)]))
+                            if i1==0:
+                                n.TrafficMatrix.add_demand(n.TrafficMatrix.DemandDict[Demandid].Source,n.PhysicalTopology.ClusterDict[k].GatewayId,"X")
+                                LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                                n.TrafficMatrix.DemandDict[LastId].add_service(servId,typee,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                                remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                            if i2==0:
+                                n.TrafficMatrix.add_demand(n.PhysicalTopology.ClusterDict[k].GatewayId,n.PhysicalTopology.ClusterDict[z].GatewayId,"X")
+                                LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                                n.TrafficMatrix.DemandDict[LastId].add_service(servId,typee,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                                remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                            if i3==0:
+                                n.TrafficMatrix.add_demand(n.PhysicalTopology.ClusterDict[z].GatewayId,n.TrafficMatrix.DemandDict[Demandid].Destination,"X")
+                                LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                                n.TrafficMatrix.DemandDict[LastId].add_service(servId,typee,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                                remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                            n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(servId)
+                        elif z!=k and n.TrafficMatrix.DemandDict[Demandid].Destination == n.PhysicalTopology.ClusterDict[z].GatewayId:
+                            i1=0
+                            i2=0
+                            for i in n.TrafficMatrix.DemandDict:
+                                if n.TrafficMatrix.DemandDict[i].Source==n.TrafficMatrix.DemandDict[Demandid].Source and n.TrafficMatrix.DemandDict[i].Destination==n.PhysicalTopology.ClusterDict[k].GatewayId:
+                                    newdes=n.PhysicalTopology.ClusterDict[k].GatewayId
+                                    orgdes=n.TrafficMatrix.DemandDict[Demandid].Destination
+                                    orgsrc=n.TrafficMatrix.DemandDict[Demandid].Source
+                                    typee=n.TrafficMatrix.DemandDict[Demandid].ServiceDict[servId].Type
+                                    n.TrafficMatrix.DemandDict[i].add_service(ServiceId=servId,ServiceType=typee,Sla=2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                                    ff=0
+                                    i1=1
+                                    for h in range(0,len(remain_lower100_2_newV)):
+                                       if (i == remain_lower100_2_newV[h][0] ):
+                                           remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                           ff=1
+                                    if ff==0:
+                                        remain_lower100_2_newV.append((i,[(servId,BW)]))
+                                elif n.TrafficMatrix.DemandDict[i].Source==n.PhysicalTopology.ClusterDict[k].GatewayId and n.TrafficMatrix.DemandDict[i].Destination==n.PhysicalTopology.ClusterDict[z].GatewayId:
+                                    orgdes=n.TrafficMatrix.DemandDict[Demandid].Destination
+                                    orgsrc=n.TrafficMatrix.DemandDict[Demandid].Source
+                                    typee=n.TrafficMatrix.DemandDict[Demandid].ServiceDict[servId].Type
+                                    n.TrafficMatrix.DemandDict[i].add_service(ServiceId=servId,ServiceType=typee,Sla=2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                                    ff=0
+                                    i2=1
+                                    for h in range(0,len(remain_lower100_2_newV)):
+                                       if (i == remain_lower100_2_newV[h][0] ):
+                                           remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                           ff=1
+                                    if ff==0:
+                                        remain_lower100_2_newV.append((i,[(servId,BW)]))
+                            if i1==0:
+                                n.TrafficMatrix.add_demand(n.TrafficMatrix.DemandDict[Demandid].Source,n.PhysicalTopology.ClusterDict[k].GatewayId,"X")
+                                LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                                n.TrafficMatrix.DemandDict[LastId].add_service(servId,typee,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                                remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                            if i2==0:
+                                n.TrafficMatrix.add_demand(n.PhysicalTopology.ClusterDict[k].GatewayId,n.PhysicalTopology.ClusterDict[z].GatewayId,"X")
+                                LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                                n.TrafficMatrix.DemandDict[LastId].add_service(servId,typee,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                                remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                            n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(servId)
+                                #                elif remain_lower100_2[i][1][j][0] in n.TrafficMatrix.GroomOut10Dict:
+                 
+            
+        def changing_onlysrc_inC(Demandid,servId,BW):
+
+            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+                if n.TrafficMatrix.DemandDict[Demandid].Source == n.PhysicalTopology.ClusterDict[k].GatewayId :
+                    ff=0
+                    for h in range(0,len(remain_lower100_2_newV)):
+                        if (Demandid == remain_lower100_2_newV[h][0] ):
+                            remain_lower100_2_newV[h][1].append((servId,BW)) 
+                            ff=1
+                    if ff==0:
+                       remain_lower100_2_newV.append((Demandid,[(servId,BW)]))
+                elif n.TrafficMatrix.DemandDict[Demandid].Source in n.PhysicalTopology.ClusterDict[k].SubNodesId :
+                    newdes=n.PhysicalTopology.ClusterDict[k].GatewayId
+                    orgdes=n.TrafficMatrix.DemandDict[Demandid].Destination
+                    orgsrc=n.TrafficMatrix.DemandDict[Demandid].Source
+                    typee=n.TrafficMatrix.DemandDict[Demandid].ServiceDict[servId].Type
+                    i1=0
+                    i2=0
+                    for ii in n.TrafficMatrix.DemandDict:
+                       if n.TrafficMatrix.DemandDict[ii].Source == n.TrafficMatrix.DemandDict[Demandid].Source and n.TrafficMatrix.DemandDict[ii].Destination == newdes:
+                           n.TrafficMatrix.DemandDict[ii].add_service(ServiceId=servId,ServiceType=typee,Sla=2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                           ff=0
+                           i1=1
+                           print(n.TrafficMatrix.DemandDict[ii].ServiceDict[servId].OriginalSource,n.TrafficMatrix.DemandDict[ii].ServiceDict[servId].OriginalDestination,ii,"---------")
+                           for h in range(0,len(remain_lower100_2_newV)):
+                               if (i == remain_lower100_2_newV[h][0] ):
+                                   remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                   ff=1
+                           if ff==0:
+                                remain_lower100_2_newV.append((ii,[(servId,BW)]))
+                       elif n.TrafficMatrix.DemandDict[ii].Source == newdes and n.TrafficMatrix.DemandDict[ii].Destination == n.TrafficMatrix.DemandDict[Demandid].Destination:
+                           n.TrafficMatrix.DemandDict[ii].add_service(ServiceId=servId,ServiceType=typee,Sla=2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                           ff=0
+                           i2=1
+                           for h in range(0,len(remain_lower100_2_newV)):
+                               if (i == remain_lower100_2_newV[h][0] ):
+                                   remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                   ff=1
+                           if ff==0:
+                                remain_lower100_2_newV.append((ii,[(servId,BW)]))
+                    if i1==0:
+                       n.TrafficMatrix.add_demand(n.TrafficMatrix.DemandDict[Demandid].Source,newdes,"X")
+                       LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                       n.TrafficMatrix.DemandDict[LastId].add_service(servId,typee,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                       remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                    if i2==0:
+                        n.TrafficMatrix.add_demand(newdes,n.TrafficMatrix.DemandDict[Demandid].Destination,"X")
+                        LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                        n.TrafficMatrix.DemandDict[LastId].add_service(servId,typee,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                        remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                    n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(servId)
+                    
+                    
+                    
+         
+            
+        def changing_onlydes_inC(Demandid,servId,BW):
+            
+            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+                if n.TrafficMatrix.DemandDict[Demandid].Destination == n.PhysicalTopology.ClusterDict[k].GatewayId :
+                    ff=0
+                    for h in range(0,len(remain_lower100_2_newV)):
+                        if (Demandid == remain_lower100_2_newV[h][0] ):
+                            remain_lower100_2_newV[h][1].append((servId,BW)) 
+                            ff=1
+                    if ff==0:
+                       remain_lower100_2_newV.append((Demandid,[(servId,BW)]))
+                elif n.TrafficMatrix.DemandDict[Demandid].Destination in n.PhysicalTopology.ClusterDict[k].SubNodesId :
+                    newdes=n.PhysicalTopology.ClusterDict[k].GatewayId
+                    orgdes=n.TrafficMatrix.DemandDict[Demandid].Destination
+                    orgsrc=n.TrafficMatrix.DemandDict[Demandid].Source
+                    typee=n.TrafficMatrix.DemandDict[Demandid].ServiceDict[servId].Type
+                    i1=0
+                    i2=0
+                    for ii in n.TrafficMatrix.DemandDict:
+                       if n.TrafficMatrix.DemandDict[ii].Source == n.TrafficMatrix.DemandDict[Demandid].Source and n.TrafficMatrix.DemandDict[ii].Destination == newdes:
+                           n.TrafficMatrix.DemandDict[ii].add_service(ServiceId=servId,ServiceType=typee,Sla=2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                           ff=0
+                           i1=1
+                           for h in range(0,len(remain_lower100_2_newV)):
+                               if (i == remain_lower100_2_newV[h][0] ):
+                                   remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                   ff=1
+                           if ff==0:
+                                remain_lower100_2_newV.append((ii,[(servId,BW)]))
+                       elif n.TrafficMatrix.DemandDict[ii].Source == newdes and n.TrafficMatrix.DemandDict[ii].Destination == n.TrafficMatrix.DemandDict[Demandid].Destination:
+                           n.TrafficMatrix.DemandDict[ii].add_service(ServiceId=servId,ServiceType=typee,Sla=2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                           ff=0
+                           i2=1
+                           for h in range(0,len(remain_lower100_2_newV)):
+                               if (i == remain_lower100_2_newV[h][0] ):
+                                   remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                   ff=1
+                           if ff==0:
+                                remain_lower100_2_newV.append((ii,[(servId,BW)]))
+                    if i1==0:
+                       n.TrafficMatrix.add_demand(n.TrafficMatrix.DemandDict[Demandid].Source,newdes,"X")
+                       LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                       n.TrafficMatrix.DemandDict[LastId].add_service(servId,typee,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                       remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                    if i2==0:
+                        n.TrafficMatrix.add_demand(newdes,n.TrafficMatrix.DemandDict[Demandid].Destination,"X")
+                        LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                        n.TrafficMatrix.DemandDict[LastId].add_service(servId,typee,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                        remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                    n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(servId)
+            
+            
+            
+
+
+
+        def changing_both_inC_groom10(Demandid,servId,BW): 
+           
+           for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+               if n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source == n.PhysicalTopology.ClusterDict[k].GatewayId:
+                   for z in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+                       if z!=k and n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination == n.PhysicalTopology.ClusterDict[z].GatewayId :
+                           ff=0
+                           for h in range(0,len(remain_lower100_2_newV)):
+                               if (Demandid == remain_lower100_2_newV[h][0] ):
+                                   remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                   ff=1
+                           if ff==0:
+                              remain_lower100_2_newV.append((Demandid,[(servId,BW)]))
+                       elif z==k and n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination in n.PhysicalTopology.ClusterDict[z].SubNodesId :
+                           ff=0
+                           for h in range(0,len(remain_lower100_2_newV)):
+                               if (Demandid == remain_lower100_2_newV[h][0] ):
+                                   remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                   ff=1
+                           if ff==0:
+                              remain_lower100_2_newV.append((Demandid,[(servId,BW)]))
+                       elif z!=k and n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination in n.PhysicalTopology.ClusterDict[z].SubNodesId :
+                           newdes=n.PhysicalTopology.ClusterDict[z].GatewayId
+                           orgdes=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination
+                           orgsrc=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source
+#                           typee=n.TrafficMatrix.DemandDict[Demandid].ServiceDict[servId].Type
+                           i1=0
+                           i2=0
+                           for did in n.TrafficMatrix.DemandDict:
+                               if n.TrafficMatrix.DemandDict[did].Source == n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source  and n.TrafficMatrix.DemandDict[did].Destination == newdes:
+                                   n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source, Destination=newdes,DemandId=did,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                                   ff=0
+                                   i1=1
+                                   for h in range(0,len(remain_lower100_2_newV)):
+                                       if (did == remain_lower100_2_newV[h][0] ):
+                                           remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                           ff=1
+                                   if ff==0:
+                                      remain_lower100_2_newV.append((did,[(servId,BW)]))
+                                   for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                       n.TrafficMatrix.DemandDict[did].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                               elif n.TrafficMatrix.DemandDict[did].Source == newdes  and n.TrafficMatrix.DemandDict[did].Destination == n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination:
+                                   n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=newdes, Destination=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,DemandId=did,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                                   ff=0
+                                   i2=1
+                                   for h in range(0,len(remain_lower100_2_newV)):
+                                       if (did == remain_lower100_2_newV[h][0] ):
+                                           remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                           ff=1
+                                   if ff==0:
+                                      remain_lower100_2_newV.append((did,[(servId,BW)]))
+                                   for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                       n.TrafficMatrix.DemandDict[did].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                           if i1==0:
+                               n.TrafficMatrix.add_demand(n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source,newdes,"X")
+                               LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                               n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source, Destination=newdes,DemandId=LastId,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                               remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                               for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                   n.TrafficMatrix.DemandDict[LastId].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                           if i2==0:
+                               n.TrafficMatrix.add_demand(newdes,n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,"X")
+                               LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                               n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=newdes, Destination=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,DemandId=LastId,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                               remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                               for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                   n.TrafficMatrix.DemandDict[LastId].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes) 
+#                           for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+#                              n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(sid)
+#                           n.TrafficMatrix.delete_groom_out_10(Demandid,servId)
+               elif n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source in n.PhysicalTopology.ClusterDict[k].SubNodesId:
+                   for z in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+                       if z==k and n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination == n.PhysicalTopology.ClusterDict[z].GatewayId :
+                           ff=0
+                           for h in range(0,len(remain_lower100_2_newV)):
+                               if (Demandid == remain_lower100_2_newV[h][0] ):
+                                   remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                   ff=1
+                           if ff==0:
+                              remain_lower100_2_newV.append((Demandid,[(servId,BW)]))
+                       elif z!=k and n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination == n.PhysicalTopology.ClusterDict[z].GatewayId :
+                           newdes=n.PhysicalTopology.ClusterDict[k].GatewayId
+                           orgdes=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination
+                           orgsrc=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source
+                           i1=0
+                           i2=0
+                           for did in n.TrafficMatrix.DemandDict:
+                               if n.TrafficMatrix.DemandDict[did].Source == n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source  and n.TrafficMatrix.DemandDict[did].Destination == newdes:
+                                   n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source, Destination=newdes,DemandId=did,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                                   ff=0
+                                   i1=1
+                                   for h in range(0,len(remain_lower100_2_newV)):
+                                       if (did == remain_lower100_2_newV[h][0] ):
+                                           remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                           ff=1
+                                   if ff==0:
+                                      remain_lower100_2_newV.append((did,[(servId,BW)]))
+                                   for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                       n.TrafficMatrix.DemandDict[did].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                               elif n.TrafficMatrix.DemandDict[did].Source == newdes  and n.TrafficMatrix.DemandDict[did].Destination == n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination:
+                                   n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=newdes, Destination=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,DemandId=did,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                                   ff=0
+                                   i2=1
+                                   for h in range(0,len(remain_lower100_2_newV)):
+                                       if (did == remain_lower100_2_newV[h][0] ):
+                                           remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                           ff=1
+                                   if ff==0:
+                                      remain_lower100_2_newV.append((did,[(servId,BW)]))
+                                   for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                       n.TrafficMatrix.DemandDict[did].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                           if i1==0:
+                               n.TrafficMatrix.add_demand(n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source,newdes,"X")
+                               LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                               n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source, Destination=newdes,DemandId=LastId,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                               remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                               for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                   n.TrafficMatrix.DemandDict[LastId].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                           if i2==0:
+                               n.TrafficMatrix.add_demand(newdes,n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,"X")
+                               LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                               n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=newdes, Destination=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,DemandId=LastId,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                               remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                               for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                   n.TrafficMatrix.DemandDict[LastId].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes) 
+#                           for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+#                              n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(sid)
+#                           n.TrafficMatrix.delete_groom_out_10(Demandid,servId)
+                       elif z==k and n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination in n.PhysicalTopology.ClusterDict[z].SubNodesId :
+                           ff=0
+                           for h in range(0,len(remain_lower100_2_newV)):
+                               if (Demandid == remain_lower100_2_newV[h][0] ):
+                                   remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                   ff=1
+                           if ff==0:
+                              remain_lower100_2_newV.append((Demandid,[(servId,BW)]))
+                       elif z!=k and n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination in n.PhysicalTopology.ClusterDict[z].SubNodesId :
+                           orgdes=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination
+                           orgsrc=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source
+                           i1=0
+                           i2=0
+                           i3=0
+                           for did in n.TrafficMatrix.DemandDict:
+                               if n.TrafficMatrix.DemandDict[did].Source == n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source  and n.TrafficMatrix.DemandDict[did].Destination == n.PhysicalTopology.ClusterDict[k].GatewayId:
+                                   n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source, Destination=n.PhysicalTopology.ClusterDict[k].GatewayId,DemandId=did,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                                   ff=0
+                                   i1=1
+                                   for h in range(0,len(remain_lower100_2_newV)):
+                                       if (did == remain_lower100_2_newV[h][0] ):
+                                           remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                           ff=1
+                                   if ff==0:
+                                      remain_lower100_2_newV.append((did,[(servId,BW)]))
+                                   for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                       n.TrafficMatrix.DemandDict[did].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                               elif n.TrafficMatrix.DemandDict[did].Source == n.PhysicalTopology.ClusterDict[k].GatewayId  and n.TrafficMatrix.DemandDict[did].Destination == n.PhysicalTopology.ClusterDict[z].GatewayId:
+                                   n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.PhysicalTopology.ClusterDict[k].GatewayId, Destination=n.PhysicalTopology.ClusterDict[z].GatewayId,DemandId=did,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                                   ff=0
+                                   i2=1
+                                   for h in range(0,len(remain_lower100_2_newV)):
+                                       if (did == remain_lower100_2_newV[h][0] ):
+                                           remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                           ff=1
+                                   if ff==0:
+                                      remain_lower100_2_newV.append((did,[(servId,BW)]))
+                                   for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                       n.TrafficMatrix.DemandDict[did].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                               elif n.TrafficMatrix.DemandDict[did].Source == n.PhysicalTopology.ClusterDict[z].GatewayId  and n.TrafficMatrix.DemandDict[did].Destination == n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination:
+                                   n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.PhysicalTopology.ClusterDict[z].GatewayId, Destination=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,DemandId=did,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                                   ff=0
+                                   i3=1
+                                   for h in range(0,len(remain_lower100_2_newV)):
+                                       if (did == remain_lower100_2_newV[h][0] ):
+                                           remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                           ff=1
+                                   if ff==0:
+                                      remain_lower100_2_newV.append((did,[(servId,BW)]))
+                                   for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                       n.TrafficMatrix.DemandDict[did].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                           if i1==0:
+                               n.TrafficMatrix.add_demand(n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source,n.PhysicalTopology.ClusterDict[k].GatewayId,"X")
+                               LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                               n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source, Destination=n.PhysicalTopology.ClusterDict[k].GatewayId,DemandId=LastId,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                               remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                               for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                   n.TrafficMatrix.DemandDict[LastId].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                           if i2==0:
+                               n.TrafficMatrix.add_demand(n.PhysicalTopology.ClusterDict[k].GatewayId,n.PhysicalTopology.ClusterDict[z].GatewayId,"X")
+                               LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                               n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.PhysicalTopology.ClusterDict[k].GatewayId, Destination=n.PhysicalTopology.ClusterDict[z].GatewayId,DemandId=LastId,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                               remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                               for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                   n.TrafficMatrix.DemandDict[LastId].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes) 
+                           if i3==0:
+                               n.TrafficMatrix.add_demand(n.PhysicalTopology.ClusterDict[z].GatewayId,n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,"X")
+                               LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                               n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.PhysicalTopology.ClusterDict[z].GatewayId, Destination=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,DemandId=LastId,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                               remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                               for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                   n.TrafficMatrix.DemandDict[LastId].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes) 
+           for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+              n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(sid)
+           n.TrafficMatrix.delete_groom_out_10(Demandid,servId)
+                           
+                           
+                           
+                           
+                           
+
+
+        def changing_onlysrc_inC_groom10(Demandid,servId,BW): 
+           
+            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+                if n.TrafficMatrix.DemandDict[Demandid].Source == n.PhysicalTopology.ClusterDict[k].GatewayId :
+                    ff=0
+                    for h in range(0,len(remain_lower100_2_newV)):
+                        if (Demandid == remain_lower100_2_newV[h][0] ):
+                            remain_lower100_2_newV[h][1].append((servId,BW)) 
+                            ff=1
+                    if ff==0:
+                       remain_lower100_2_newV.append((Demandid,[(servId,BW)]))
+                elif n.TrafficMatrix.DemandDict[Demandid].Source in n.PhysicalTopology.ClusterDict[k].SubNodesId :
+                    newdes=n.PhysicalTopology.ClusterDict[k].GatewayId
+                    orgdes=n.TrafficMatrix.DemandDict[Demandid].Destination
+                    orgsrc=n.TrafficMatrix.DemandDict[Demandid].Source
+                    i1=0
+                    i2=0
+                    for did in n.TrafficMatrix.DemandDict:
+                        if n.TrafficMatrix.DemandDict[did].Source == n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source and n.TrafficMatrix.DemandDict[did].Destination == newdes:
+                            n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source, Destination=newdes,DemandId=did,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                            ff=0
+                            i1=1
+                            for h in range(0,len(remain_lower100_2_newV)):
+                                if (did == remain_lower100_2_newV[h][0] ):
+                                    remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                    ff=1
+                            if ff==0:
+                               remain_lower100_2_newV.append((did,[(servId,BW)]))
+                            for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                n.TrafficMatrix.DemandDict[did].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                        elif n.TrafficMatrix.DemandDict[did].Source == newdes and n.TrafficMatrix.DemandDict[did].Destination == n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination:
+                            n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=newdes, Destination=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,DemandId=did,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList) 
+                            ff=0
+                            i2=1
+                            for h in range(0,len(remain_lower100_2_newV)):
+                                if (did == remain_lower100_2_newV[h][0] ):
+                                    remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                    ff=1
+                            if ff==0:
+                               remain_lower100_2_newV.append((did,[(servId,BW)]))
+                            for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                n.TrafficMatrix.DemandDict[did].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                    if i1==0:
+                       n.TrafficMatrix.add_demand(n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source,n.PhysicalTopology.ClusterDict[k].GatewayId,"X")
+                       LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                       n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source, Destination=n.PhysicalTopology.ClusterDict[k].GatewayId,DemandId=LastId,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                       remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                       for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                           n.TrafficMatrix.DemandDict[LastId].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes) 
+                    if i2==0:
+                       n.TrafficMatrix.add_demand(n.PhysicalTopology.ClusterDict[k].GatewayId,n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,"X")
+                       LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                       n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.PhysicalTopology.ClusterDict[k].GatewayId, Destination=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,DemandId=LastId,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                       remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                       for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                           n.TrafficMatrix.DemandDict[LastId].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes) 
+                    for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                        n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(sid)
+                    n.TrafficMatrix.delete_groom_out_10(Demandid,servId)
+
+
+
+
+        def changing_onlydes_inC_groom10(Demandid,servId,BW): 
+           
+            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+                if n.TrafficMatrix.DemandDict[Demandid].Destination == n.PhysicalTopology.ClusterDict[k].GatewayId :
+                    ff=0
+                    for h in range(0,len(remain_lower100_2_newV)):
+                        if (Demandid == remain_lower100_2_newV[h][0] ):
+                            remain_lower100_2_newV[h][1].append((servId,BW)) 
+                            ff=1
+                    if ff==0:
+                       remain_lower100_2_newV.append((Demandid,[(servId,BW)]))
+                elif n.TrafficMatrix.DemandDict[Demandid].Destination in n.PhysicalTopology.ClusterDict[k].SubNodesId :
+                    newdes=n.PhysicalTopology.ClusterDict[k].GatewayId
+                    orgdes=n.TrafficMatrix.DemandDict[Demandid].Destination
+                    orgsrc=n.TrafficMatrix.DemandDict[Demandid].Source
+                    i1=0
+                    i2=0
+                    for did in n.TrafficMatrix.DemandDict:
+                        if n.TrafficMatrix.DemandDict[did].Source == n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source and n.TrafficMatrix.DemandDict[did].Destination == newdes:
+                            n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source, Destination=newdes,DemandId=did,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                            ff=0
+                            i1=1
+                            for h in range(0,len(remain_lower100_2_newV)):
+                                if (did == remain_lower100_2_newV[h][0] ):
+                                    remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                    ff=1
+                            if ff==0:
+                               remain_lower100_2_newV.append((did,[(servId,BW)]))
+                            for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                n.TrafficMatrix.DemandDict[did].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                        elif n.TrafficMatrix.DemandDict[did].Source == newdes and n.TrafficMatrix.DemandDict[did].Destination == n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination:
+                            n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=newdes, Destination=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,DemandId=did,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList) 
+                            ff=0
+                            i2=1
+                            for h in range(0,len(remain_lower100_2_newV)):
+                                if (did == remain_lower100_2_newV[h][0] ):
+                                    remain_lower100_2_newV[h][1].append((servId,BW)) 
+                                    ff=1
+                            if ff==0:
+                               remain_lower100_2_newV.append((did,[(servId,BW)]))
+                            for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                                n.TrafficMatrix.DemandDict[did].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes)
+                    if i1==0:
+                       n.TrafficMatrix.add_demand(n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source,n.PhysicalTopology.ClusterDict[k].GatewayId,"X")
+                       LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                       n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source, Destination=n.PhysicalTopology.ClusterDict[k].GatewayId,DemandId=LastId,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                       remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                       for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                           n.TrafficMatrix.DemandDict[LastId].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes) 
+                    if i2==0:
+                       n.TrafficMatrix.add_demand(n.PhysicalTopology.ClusterDict[k].GatewayId,n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,"X")
+                       LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                       n.TrafficMatrix.add_groom_out_10(GroomOutId=servId, Source=n.PhysicalTopology.ClusterDict[k].GatewayId, Destination=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination,DemandId=LastId,Capacity=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Capacity, ServiceIdList=n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList)
+                       remain_lower100_2_newV.append((LastId,[(servId,BW)]))
+                       for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                           n.TrafficMatrix.DemandDict[LastId].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes) 
+                    for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
+                        n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(sid)
+                    n.TrafficMatrix.delete_groom_out_10(Demandid,servId)
+                           
+                           
+                           
+                           
+                  
+        id_in_cluster=[]
+        for i in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+            id_in_cluster.append(n.PhysicalTopology.ClusterDict[i].GatewayId)
+            for j in range(0,len(n.PhysicalTopology.ClusterDict[i].SubNodesId)):
+                id_in_cluster.append(n.PhysicalTopology.ClusterDict[i].SubNodesId[j])
+#        print(id_in_cluster)
+            
+        for i in range(0,len(remain_lower100_2)):
+            for j in range(0,len(remain_lower100_2[i][1])):
+                if remain_lower100_2[i][1][j][0] in n.TrafficMatrix.DemandDict[remain_lower100_2[i][0]].ServiceDict:
+                    if n.TrafficMatrix.DemandDict[remain_lower100_2[i][0]].Source in id_in_cluster:
+                        if n.TrafficMatrix.DemandDict[remain_lower100_2[i][0]].Destination in id_in_cluster :
+                            changing_both_inC(remain_lower100_2[i][0],remain_lower100_2[i][1][j][0],remain_lower100_2[i][1][j][1])
+                        else:
+                            changing_onlysrc_inC(remain_lower100_2[i][0],remain_lower100_2[i][1][j][0],remain_lower100_2[i][1][j][1])
+                    elif n.TrafficMatrix.DemandDict[remain_lower100_2[i][0]].Source not in id_in_cluster:
+                        if n.TrafficMatrix.DemandDict[remain_lower100_2[i][0]].Destination in id_in_cluster :
+                            changing_onlydes_inC(remain_lower100_2[i][0],remain_lower100_2[i][1][j][0],remain_lower100_2[i][1][j][1])
+                        else:
+                            ff=0
+                            for h in range(0,len(remain_lower100_2_newV)):
+                               if (remain_lower100_2[i][0] == remain_lower100_2_newV[h][0] ):
+                                   remain_lower100_2_newV[h][1].append((remain_lower100_2[i][1][j][0],remain_lower100_2[i][1][j][1])) 
+                                   ff=1
+                            if ff==0:
+                                remain_lower100_2_newV.append((remain_lower100_2[i][0],[(remain_lower100_2[i][1][j][0],remain_lower100_2[i][1][j][1])]))
+                elif (remain_lower100_2[i][0],remain_lower100_2[i][1][j][0]) in n.TrafficMatrix.GroomOut10Dict:
+#                    for k in n.TrafficMatrix.GroomOut10Dict[(remain_lower100_2[i][0],remain_lower100_2[i][1][j][0])].ServiceIdList:
+                    if n.TrafficMatrix.DemandDict[remain_lower100_2[i][0]].Source in id_in_cluster:
+                        if n.TrafficMatrix.DemandDict[remain_lower100_2[i][0]].Destination in id_in_cluster :
+                            changing_both_inC_groom10(remain_lower100_2[i][0],remain_lower100_2[i][1][j][0],remain_lower100_2[i][1][j][1])
+                        else:
+                            changing_onlysrc_inC_groom10(remain_lower100_2[i][0],remain_lower100_2[i][1][j][0],remain_lower100_2[i][1][j][1])
+                    elif n.TrafficMatrix.DemandDict[remain_lower100_2[i][0]].Source not in id_in_cluster:
+                        if n.TrafficMatrix.DemandDict[remain_lower100_2[i][0]].Destination in id_in_cluster :
+                            changing_onlydes_inC_groom10(remain_lower100_2[i][0],remain_lower100_2[i][1][j][0],remain_lower100_2[i][1][j][1])
+                        else:
+                            ff=0
+                            for h in range(0,len(remain_lower100_2_newV)):
+                                if (remain_lower100_2[i][0] == remain_lower100_2_newV[h][0] ):
+                                    remain_lower100_2_newV[h][1].append((remain_lower100_2[i][1][j][0],remain_lower100_2[i][1][j][1])) 
+                                    ff=1
+                            if ff==0:
+                                remain_lower100_2_newV.append((remain_lower100_2[i][0],[(remain_lower100_2[i][1][j][0],remain_lower100_2[i][1][j][1])]))
+
+            
+        print("**")
+        print(remain_lower100_2_newV)
+        print("**")
+        print(remain_lower100_2)
+        
+#        remain_lower100_2_newV
+#        n.TrafficMatrix.GroomOut10Dict.clear()
+#        n.LightPathDict.clear()
+        for i in range(0,len(remain_lower100_2_newV)):
+            for j in range(0,len(remain_lower100_2_newV[i][1])):
+                if (remain_lower100_2_newV[i][0],remain_lower100_2_newV[i][1][j][0]) in n.TrafficMatrix.GroomOut10Dict:
+                    n.TrafficMatrix.delete_groom_out_10(remain_lower100_2_newV[i][0],remain_lower100_2_newV[i][1][j][0])
+
+        lll=len(n.LightPathDict)
+        print (groom_out10_list)
+        if (len(n.TrafficMatrix.GroomOut10Dict)!=0):
+            for i in range(0,len(groom_out10_list)):
+                for j in range(0,len(groom_out10_list[i][1])):
+                    if (groom_out10_list[i][0],groom_out10_list[i][1][j][0]) in n.TrafficMatrix.GroomOut10Dict:
+                        n.TrafficMatrix.delete_groom_out_10(groom_out10_list[i][0],groom_out10_list[i][1][j][0])
+                        
+        """ for i in range(0,lll+1):
+            if len(n.LightPathDict)!=0:
+                n.del_lightpath(0) """
+        for key in list(n.LightPathDict.keys()):
+            n.del_lightpath(key)
+        
+        
+        
+        service_lower10_SDH=[]
+        service_lower10_E=[]
+        service_lower100=[]
+        remain_lower100_2=[]
+        remaining_service_lower10=[]
+        MP2x_list=[]   
+        MP2x_Dict={}                                 #(DemandId,Service)
+        output_100=[]
+        remain_lower100_dict={}
+        remaining_service_lower10_dict={}
+        groom_out10_list=[]
+        remain_lower100=[]
+        print(MP2x_Dict)
+        for i in n.TrafficMatrix.DemandDict:
+            y=[]
+            z=[]
+            x=[]
+            output_10=[] 
+            for j in n.TrafficMatrix.DemandDict[i].ServiceDict:
+#                if ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_1_Optical") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_4") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_16")):
+                if (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW < 10):
+                    y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
+                elif ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "FE") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "G_1")):
+#                    y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
+                    x.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
+                elif (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW == 10):
+                    z.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
+                else:
+                    n.add_lightpath(n.TrafficMatrix.DemandDict[i].Source, n.TrafficMatrix.DemandDict[i].Destination, 100, [n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id], "Coherent", i,ClusterNum=0)
+                    LastId = n.Lightpath.ReferenceId -1
+#                    print(len(n.LightPathDict),"**")
+                    n.TrafficMatrix.DemandDict[i].ServiceDict[j].LightPathId=LastId
+#                    print(LastId,"***")
+            if y:
+                service_lower10_SDH.append((i,y))
+                output_10.append((i,MP2X(y)))
+                listofs=[]
+                cap=0
+                hhhh=[]
+                for num in range(0,len(output_10[0][1])):
+                    listofs=[]
+                    cap=0
+                    for nu in range(0,len(output_10[0][1][num])):
+                        listofs.append(output_10[0][1][num][nu][0])
+                        cap = cap + output_10[0][1][num][nu][1]
+#                    n.TrafficMatrix.DemandDict[i].add_service(ServiceType= "Groom_out10" ,Sla= 2, Capacity=cap, ServiceIdList=listofs)    
+                    GroomOutId = n.TrafficMatrix.Generate_GroomOutId()
+                    n.TrafficMatrix.add_groom_out_10(GroomOutId= GroomOutId, Source=n.TrafficMatrix.DemandDict[i].Source, Destination=n.TrafficMatrix.DemandDict[i].Destination, DemandId=i, Capacity=cap, ServiceIdList=listofs)
+                    LastId = GroomOutId
+                    ffff=[(LastId,10)]
+                    hhhh.append((LastId,cap,len(listofs)))
+                    z.append((LastId,cap))
+#                    service_lower100.append((i,ffff))
+                groom_out10_list.append((i,hhhh))
+#                print(groom_out10_list)
+            if x:
+                service_lower10_E.append((i,x))
+            
+            if z:
+                service_lower100.append((i,z))
+         
+ 
+        
+        for i in range(0,len(groom_out10_list)):
+            nooo=[]
+            for j in range(0,len(groom_out10_list[i][1])):
+                
+                for k in range(0,len(groom_out10_list[i][1])):
+                    if ((k not in nooo) and (j not in nooo) and (j!=k) and (groom_out10_list[i][1][j][2] + groom_out10_list[i][1][k][2]) <=16):
+                        MP2x_list.append((groom_out10_list[i][0],(groom_out10_list[i][1][j][0],groom_out10_list[i][1][k][0])))
+                        MP2x_Dict.update({groom_out10_list[i][0]:(groom_out10_list[i][1][j][0],groom_out10_list[i][1][k][0])})
+                        nooo.append(j)
+                        nooo.append(k)
+            for m in range(0,len(groom_out10_list[i][1])):
+                if m not in nooo:
+                    remaining_service_lower10.append((groom_out10_list[i][0],groom_out10_list[i][1][m][0])) 
+                    remaining_service_lower10_dict.update({groom_out10_list[i][0]:groom_out10_list[i][1][m][0]})
+                    
+           
+        for i in range(0,len(service_lower100)):
+            NO_LP= math.ceil(len(service_lower100[i][1])/10)
+            orsr=n.TrafficMatrix.DemandDict[service_lower100[i][0]].Source
+            ords=n.TrafficMatrix.DemandDict[service_lower100[i][0]].Destination
+            cls_num=0
+            for k in n.PhysicalTopology.ClusterDict:
+                if (n.PhysicalTopology.ClusterDict[k].GatewayId == orsr and  ords in n.PhysicalTopology.ClusterDict[k].SubNodesId) or (n.PhysicalTopology.ClusterDict[k].GatewayId == ords and  orsr in n.PhysicalTopology.ClusterDict[k].SubNodesId) or (ords in n.PhysicalTopology.ClusterDict[k].SubNodesId and ords in n.PhysicalTopology.ClusterDict[k].SubNodesId):
+                    cls_num=k
+            for j in range(0,NO_LP):
+                list_of_service=[]
+                list_of_service2=[]
+                cap=0
+                for k in range(j*10,(j+1)*10):
+                    if (k < len(service_lower100[i][1])):
+                        list_of_service.append(service_lower100[i][1][k][0])
+                        list_of_service2.append((service_lower100[i][1][k][0],service_lower100[i][1][k][1]))
+                        cap=cap+service_lower100[i][1][k][1]
+                if cap > MP1H_Threshold:
+                    typee="100GE" 
+                else:
+                    typee="NonCoherent"
+                if cap < MP1H_Threshold:
+                    remain_lower100.append((service_lower100[i][0],list_of_service))
+                    remain_lower100_2.append((service_lower100[i][0],list_of_service2))
+                    remain_lower100_dict.update({service_lower100[i][0]:list_of_service})
+#                    n.add_lightpath(n.TrafficMatrix.DemandDict[service_lower100[i][0]].Source, n.TrafficMatrix.DemandDict[service_lower100[i][0]].Destination, Capacity=cap, ServiceIdList=list_of_service, Type=typee, DemandId=service_lower100[i][0],ClusterNum=cls_num)    
+#                    LastId = n.Lightpath.ReferenceId -1
+##                    print(LastId)
+#                    for idd in list_of_service:
+#                        if idd in n.TrafficMatrix.DemandDict[service_lower100[i][0]].ServiceDict:
+#                           n.TrafficMatrix.DemandDict[service_lower100[i][0]].ServiceDict[idd].LightPathId= LastId
+#                        if (service_lower100[i][0],idd) in n.TrafficMatrix.GroomOut10Dict:
+#                            n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].LightPathId= LastId
+
+                        
+                else:
+                    n.add_lightpath(n.TrafficMatrix.DemandDict[service_lower100[i][0]].Source, n.TrafficMatrix.DemandDict[service_lower100[i][0]].Destination, Capacity=cap, ServiceIdList=list_of_service, Type=typee, DemandId=service_lower100[i][0],ClusterNum=0)    
+                    LastId = n.Lightpath.ReferenceId -1
+#                    print(LastId)
+                    for idd in list_of_service:
+                        if idd in n.TrafficMatrix.DemandDict[service_lower100[i][0]].ServiceDict:
+                           n.TrafficMatrix.DemandDict[service_lower100[i][0]].ServiceDict[idd].LightPathId= LastId
+                        if (service_lower100[i][0],idd) in n.TrafficMatrix.GroomOut10Dict:
+                            n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].LightPathId= LastId
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         return remain_lower100_dict,MP2x_Dict,remaining_service_lower10_dict
         #  remain_lower100            (the services which are not assigned to lightpath)  (DemandId,[ServiceId])
         #  MP2x_list                  (MP2X with 2 output)                               (DemandId,[ServiceId(groomout10),ServiceId(groomout10)])
@@ -254,12 +1090,227 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
     
     
     
-""" ans = grooming_fun(n,10)
-#Clustering(n)
-
-print("successful")
- """
+    
 
 
+    
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if __name__ == "__main__":
+
+    n = Network()
+    n.PhysicalTopology.add_node((2,3))
+    n.PhysicalTopology.add_node((6,7))
+    n.PhysicalTopology.add_node((17,-3))
+    n.PhysicalTopology.add_node((17,3))
+    n.PhysicalTopology.add_node((-17,3))
+    n.PhysicalTopology.add_node((-17,8))
+    n.PhysicalTopology.add_link(0,1,4)
+    n.PhysicalTopology.add_link(1,2,1)
+    n.PhysicalTopology.add_link(2,3,1)
+    n.PhysicalTopology.add_link(3,4,1)
+    n.PhysicalTopology.add_link(4,5,1)
+    n.PhysicalTopology.add_cluster(1,[0],"blue")
+    n.PhysicalTopology.add_cluster(2,[3],"RED")
+#    print(n.PhysicalTopology.NodeDict[1].Neighbors)
+#    print("LinkDict: ",n.PhysicalTopology.LinkDict)
+#    print("NodeDict: ",n.PhysicalTopology.NodeDict)
+#    print("ClusterDict: ",n.PhysicalTopology.ClusterDict)
+#    n.PhysicalTopology.del_node(2)
+#    print("NodeDict after deleting a Node: ",n.PhysicalTopology.NodeDict)
+
+#    n.TrafficMatrix.add_demand(1,4,"X")
+#    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+
+    # NOTE: in new procedure for adding service handeling is not automatic and user can add multiple services with same
+    #       id in multiple demands
+
+#    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+#    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
+#
+#    n.TrafficMatrix.add_demand("Tehran", "Shiraz", "")
+#    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+#
+#    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+#    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
+#
+#    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+#    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "10GE", 2)
+#
+#    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+#    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "STM_64", 2)
+
+    # deleting service from demand
+#    n.TrafficMatrix.DemandDict[LastId].ServiceDict.pop(ServiceId)
+#
+#    n.TrafficMatrix.add_demand("Tabriz", "Karaj", "")
+
+    
+
+    # adding 2 services with same id in two different demand
+#    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+#
+#    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "10GE", 2)
+#
+#    n.TrafficMatrix.DemandDict[LastId + 1 ].add_service(ServiceId, "10GE", 2)
+
+    
+#    print("DemandDict: ",n.TrafficMatrix.DemandDict)
+#    print("Demand 1: ",n.TrafficMatrix.DemandDict[1].ServiceDict)
+#    print("Demand 0: ",n.TrafficMatrix.DemandDict[0].ServiceDict)
+
+#    n.add_lightpath(Source= "Tehran",
+#                    Destination= "Shiraz",
+#                    Capacity= 100,
+#                    ServiceIdList= [1, 2],
+#                    Type= "x",
+#                    DemandId= 2)
+#    n.put_results(0, [1 , 3 , 7], [1 ,4 ,7], 27, [5], [9], 25, 14, "111", 14, 31, "1+1")
+#
+#    print("LightpathDict: ", n.LightPathDict)
+#
+#    n.put_params(merge= "Yes",
+#                 alpha= 0.2,
+#                 iterations= 2,
+#                 margin= 4,
+#                 processors= 4,
+#                 k= 1,
+#                 MaxNW= 50,
+#                 GroupSize= 2,
+#                 History= 20,
+#                 Algorithm= "Greedy")
+
+#    print(f"Params result: {n.ParamsObj.__dict__}")
+
+    # example of adding groom_out10
+    # NOTE: assign *LightPathId* if this GroomOut10 is connected to MP1H, otherwise leave it
+    # NOTE: GroomOut10 uses Services ReferenceId so they are unique among themselves and Services
+#    n.TrafficMatrix.add_groom_out_10(Source= "Tehran",
+#                                    Destination= "Mashhad",
+#                                    DemandId= 1,
+#                                    Capacity= 9.6,
+#                                    ServiceIdList= [1,5,9,4,2],
+#                                    LightPathId= 4)
+
+    # NOTE: Grooming Algorithm must return a Dictionary of paired GroomOut10's that belong to same MP2X in format bellow:
+    # { <DemandId> : ( <GroomOut10Id_1>, <GroomOut10Id_2> ) }
+    n.TrafficMatrix.add_demand(5,4,"X")
+    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+    
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"G_1",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_4",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_4",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_4",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_4",2)
+    
+    n.TrafficMatrix.add_demand(1,3,"X")
+    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[1].add_service(ServiceId,"STM_4",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[1].add_service(ServiceId,"STM_4",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
+
+    n.TrafficMatrix.add_demand(1,2,"X")
+    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
+    
+    
+    n.TrafficMatrix.add_demand(0,3,"X")
+    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
+    
+    n.TrafficMatrix.add_demand(0,2,"X")
+    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
+    
+    
+    n.TrafficMatrix.add_demand(4,5,"X")
+    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
+    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
+
+
+    ans = grooming_fun(n,70)
+    #Clustering(n)
+    #n.add_groom_out_100(Source=1,Destination=2,Capacity=40,ServiceIdList=[1,2],Type=40,DemandId=3)
+    print("successful")
+    
 

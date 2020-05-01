@@ -232,7 +232,7 @@ class MP2X_L_Demand(QtWidgets.QWidget):
     
 
                 # deleting groomout10 from common object ( line 1 )
-                Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOut_1_Id)
+                Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOut_1_Id, ids[0])
 
                 
 
@@ -256,7 +256,7 @@ class MP2X_L_Demand(QtWidgets.QWidget):
                                                 mode= "delete")
 
                     # deleting groomout10 from common object ( line 2 )
-                    Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOut_2_Id)
+                    Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOut_2_Id, ids[0])
 
                     
 
@@ -293,14 +293,15 @@ class MP2X_L_Demand(QtWidgets.QWidget):
             DemandTabDataBase["Services"][(source, destination)][key] = 1
             DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
-            # statement bellow checks for removing notification
-            if hasattr( Data["ui"], "failed_nodes"):
+            # statement bellow checks for removing notification ( if there is such a node)
+            if hasattr(Data["ui"], "failed_nodes"):
                 if source in Data["ui"].failed_nodes:
                     x = 0
                     for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
-                        if DemandTabDataBase["Services"][(source, dest)]:
-                            x = 1
-                            break
+                        for value in DemandTabDataBase["Services"][(source, dest)]:
+                            if value == 0:
+                                x = 1
+                                break
                     if x == 0:        
                         Data["ui"].set_failed_nodes_default(source)
             
@@ -794,7 +795,7 @@ class customlabel(QLabel):
                                                 type= "GroomOut10")
                     
                     # deleting groomout10 from common object
-                    Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOutId_1)
+                    Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOutId_1, self.ids[0])
 
                     self.LineVar_1.setStyleSheet("QLabel{ image: url(:/Line_L_SOURCE/LINE_L.png); }")
 
@@ -820,7 +821,7 @@ class customlabel(QLabel):
                                                 type= "GroomOut10")
 
                     # deleting groomout10 from common object
-                    Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOutId_2)
+                    Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOutId_2, self.ids[0])
 
                     self.LineVar_2.setStyleSheet("QLabel{ image: url(:/Line_R_SOURCE/LINE_R.png); }")
 
@@ -857,14 +858,15 @@ class customlabel(QLabel):
             DemandTabDataBase["Services"][(source, destination)][key] = 1
             DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
-            # statement bellow checks for removing notification
-            if hasattr( Data["ui"], "failed_nodes"):
+            # statement bellow checks for removing notification ( if there is such a node)
+            if hasattr(Data["ui"], "failed_nodes"):
                 if source in Data["ui"].failed_nodes:
                     x = 0
                     for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
-                        if DemandTabDataBase["Services"][(source, dest)]:
-                            x = 1
-                            break
+                        for value in DemandTabDataBase["Services"][(source, dest)]:
+                            if value == 0:
+                                x = 1
+                                break
                     if x == 0:        
                         Data["ui"].set_failed_nodes_default(source)
             

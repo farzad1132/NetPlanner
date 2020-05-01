@@ -2403,6 +2403,10 @@ class Ui_MainWindow(object):
 
         self.groomout10_list.setDragEnabled(True)
 
+        self.ShowSubNodes.stateChanged["int"].connect(self.show_subnodes_fun)
+
+        self.Cancel_button.clicked.connect(self.cancel_button_fun)
+
         #self.setStyleSheet("QToolTip { background-color: black; color: white; border: black solid 1px; }")
 
     def retranslateUi(self, MainWindow):
@@ -2526,10 +2530,20 @@ class Ui_MainWindow(object):
 
 
     def create_obj(self):
-        """with open("NetworkObj_greedy.obj", 'wb') as handle:
+        with open("NetworkObj.obj", 'wb') as handle:
             pickle.dump(self.network, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        handle.close() """
+        handle.close()
         pass
+
+    def show_subnodes_fun(self, state):
+        print(f"state: {state}")
+
+        if state == 2:
+            self.webengine.page().runJavaScript('hide_subnodes()')
+            
+        elif state == 0:
+            self.webengine.page().runJavaScript('show_subnodes()')
+
 
     def change_radiobuttons_state(self):
         if self.Max_available_radiobutton.isChecked():
@@ -2564,7 +2578,8 @@ class Ui_MainWindow(object):
     
 
     def DemandMap_Change(self, Working = None, Protection = None, 
-        WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None, LambdaList = None):
+        WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None, WorkingLambdaList = None,
+        ProtectionLambdaList= None):
         #mpl.rcParams["figure.figsize"] = [18.4, 7.8]
         self.MapWidget.canvas.figure.subplots_adjust(left = -0.001, right = 1, top = 1, bottom = -0.005)
         self.MapWidget.canvas.axes.cla()
@@ -2620,7 +2635,7 @@ class Ui_MainWindow(object):
 
             if WorkingSNR != None:
                 SNRList = str(WorkingSNR)
-                WavelengthNumber = str(LambdaList)
+                WavelengthNumber = str(WorkingLambdaList)
                 snr_label = "Working SNR = " + SNRList + '\n' + "Wavelength Number = " + WavelengthNumber
                 self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label=snr_label)
             else:
@@ -2641,7 +2656,7 @@ class Ui_MainWindow(object):
 
             if ProtectionSNR != None:
                 SNRList = str(ProtectionSNR)
-                WavelengthNumber = str(LambdaList)
+                WavelengthNumber = str(ProtectionLambdaList)
                 snr_label1 = "Protection SNR = " + SNRList + '\n' + "Wavelength Number = " + WavelengthNumber          
                 self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label=snr_label1)
             else:
@@ -2664,12 +2679,26 @@ class Ui_MainWindow(object):
 
         self.MapWidget.canvas.draw()
     
+    def cancel_button_fun(self):
+
+        self.webengine.page().runJavaScript('cancel_clustering(\'%s\')' %(self.backend_map.LastGateWay))
+
+        for node in Data["Clustering"][self.backend_map.LastGateWay]["SubNodes"]:
+            self.webengine.page().runJavaScript('cancel_clustering(\'%s\')' %(node))
+
+        Data["Clustering"].pop(self.backend_map.LastGateWay)
+
+        self.SelectSubNode_button_fun()
+    
     def OK_button_fun(self):
         SubNodes = []
         for node in Data["Clustering"][self.backend_map.LastGateWay]["SubNodes"]:
             SubNodes.append(self.NodeIdMap[node])
+            self.webengine.page().runJavaScript('update_cluster_info(\'%s\', \'%s\', \'%s\')' %(node, Data["Clustering"][self.backend_map.LastGateWay]["Color"], 1))
         
         self.network.PhysicalTopology.add_cluster(self.NodeIdMap[self.backend_map.LastGateWay], SubNodes, Data["Clustering"][self.backend_map.LastGateWay]["Color"])
+        self.webengine.page().runJavaScript('update_cluster_info(\'%s\', \'%s\', \'%s\')' %(self.backend_map.LastGateWay, Data["Clustering"][self.backend_map.LastGateWay]["Color"], 0))
+        
         self.SelectSubNode_button_fun()
 
     #TODO: complete this method
@@ -2963,7 +2992,7 @@ class Ui_MainWindow(object):
     def export_excel_fun(self):
         
 
-        def export_excel(filename, network):
+        def export_excel(filename, network, cluster_view = True):
             """
             filename: example.xlsx
             NOTE: if filename is open executing this function will cause an error
@@ -2980,32 +3009,32 @@ class Ui_MainWindow(object):
             working_regens = []
             protection_regens = []
             # Building required lists for different fields
+
             for lightpath in network.LightPathDict.values():
                 sources.append(self.IdNodeMap[lightpath.Source])
                 destinations.append(self.IdNodeMap[lightpath.Destination])
                 wavelengths.append(lightpath.WaveLength[0])
                 routed_types.append(lightpath.Type)
 
+                working_path.append(lightpath.WorkingPath)
+                working_regens.append(lightpath.RegeneratorNode_w)
                 snr = lightpath.SNR_w[0]
                 for snr_temp in lightpath.SNR_w:
                     if snr>snr_temp:
                         snr = snr_temp
                 worst_working_snrs.append(snr)
-
-                snr = lightpath.SNR_p[0]
-                for snr_temp in lightpath.SNR_p:
-                    if snr>snr_temp:
-                        snr = snr_temp
-                worst_protection_snrs.append(snr)
-
-                working_path_name = list(map(lambda x : self.IdNodeMap[x], lightpath.WorkingPath))
-                working_path.append(working_path_name)
-                protection_path_name = list(map(lambda x : self.IdNodeMap[x], lightpath.ProtectionPath))
-                protection_path.append(protection_path_name)
-                working_regens_name = list(map(lambda x : self.IdNodeMap[x], lightpath.RegeneratorNode_w))
-                working_regens.append(working_regens_name)
-                protection_regens_name = list(map(lambda x : self.IdNodeMap[x], lightpath.RegeneratorNode_p))
-                protection_regens.append(protection_regens_name)
+                try:
+                    snr = lightpath.SNR_p[0]
+                    for snr_temp in lightpath.SNR_p:
+                        if snr>snr_temp:
+                            snr = snr_temp
+                    worst_protection_snrs.append(snr)
+                    protection_path.append(lightpath.ProtectionPath)
+                    protection_regens.append(lightpath.RegeneratorNode_p)
+                except:
+                    worst_protection_snrs.append([])
+                    protection_path.append([])
+                    protection_regens.append([])
 
             dictionary = {
             'Source Site' : sources,
@@ -3025,9 +3054,11 @@ class Ui_MainWindow(object):
             workbook  = writer.book
             worksheet = writer.sheets['Routed Demands']
             # Set column size (begininng, end, size)
-            worksheet.set_column(1, 2 , 17)
-            worksheet.set_column(3, 4 , 15)
-            worksheet.set_column(5, 6, 17)
+            center_format = workbook.add_format({'align': 'center', 'valign': 'vcenter'})
+            snr_format = workbook.add_format({'num_format': '0.00', 'align': 'center'})
+            worksheet.set_column(1, 2 , 17,center_format)
+            worksheet.set_column(3, 4 , 15,center_format)
+            worksheet.set_column(5, 6, 17,snr_format)
             worksheet.set_column(7, 7, 40)
             worksheet.set_column(8, 8, 20)
             worksheet.set_column(9, 9, 45)
@@ -3041,18 +3072,18 @@ class Ui_MainWindow(object):
             # Set example specific text and color for some headers
             color = "#FFC000"
             fmt = workbook.add_format()
-            fmt = workbook.add_format({'bg_color': color})
+            fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
             worksheet.write('B1', 'Source Site', fmt)
             worksheet.write('C1', 'Destination Site', fmt)
             
             color = "#FFFF64"
             fmt = workbook.add_format()
-            fmt = workbook.add_format({'bg_color': color})
+            fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
             worksheet.write('H1', 'Working Path', fmt)
             
             color = "#64FF00"
             fmt = workbook.add_format()
-            fmt = workbook.add_format({'bg_color': color})
+            fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
             worksheet.write('E1', 'Wavelength', fmt)
 
             #### Link Stats #######
@@ -3074,9 +3105,9 @@ class Ui_MainWindow(object):
                                                 'min_color': "green",
                                                 'mid_color': "yellow",
                                                 'max_color': "red"})
-            worksheet2.set_column(1, 1 , 12)
+            worksheet2.set_column(1, 1 , 12,center_format)
             worksheet2.set_column(2, 2, 52)
-            worksheet2.set_column(3, 3, 18)
+            worksheet2.set_column(3, 3, 18,center_format)
 
             #### Node Stats #######
             wavelength_number_on_nodes = []
@@ -3097,10 +3128,98 @@ class Ui_MainWindow(object):
                                                 'min_color': "green",
                                                 'mid_color': "yellow",
                                                 'max_color': "red"})
-            worksheet3.set_column(1, 1 , 12)
+            worksheet3.set_column(1, 1 , 12,center_format)
             worksheet3.set_column(2, 2, 52)
-            worksheet3.set_column(3, 3, 18)
+            worksheet3.set_column(3, 3, 18,center_format)
+            
 
+            if cluster_view:
+                for cluster_id in network.PhysicalTopology.ClusterDict.keys():
+                    sources = []
+                    destinations = []
+                    wavelengths = []
+                    routed_types = []
+                    worst_working_snrs = []
+                    worst_protection_snrs = []
+                    working_path = []
+                    protection_path = []
+                    working_regens = []
+                    protection_regens = []
+                    # Building required lists for different fields
+                    for lightpath in network.LightPathDict.values():
+                        if lightpath.ClusterNum == int(cluster_id):
+                            sources.append(self.IdNodeMap[lightpath.Source])
+                            destinations.append(self.IdNodeMap[lightpath.Destination])
+                            wavelengths.append(lightpath.WaveLength[0])
+                            routed_types.append(lightpath.Type)
+
+                            working_path.append(lightpath.WorkingPath)
+                            working_regens.append(lightpath.RegeneratorNode_w)
+                            snr = lightpath.SNR_w[0]
+                            for snr_temp in lightpath.SNR_w:
+                                if snr>snr_temp:
+                                    snr = snr_temp
+                            worst_working_snrs.append(snr)
+                            try:
+                                snr = lightpath.SNR_p[0]
+                                for snr_temp in lightpath.SNR_p:
+                                    if snr>snr_temp:
+                                        snr = snr_temp
+                                worst_protection_snrs.append(snr)
+                                protection_path.append(lightpath.ProtectionPath)
+                                protection_regens.append(lightpath.RegeneratorNode_p)
+                            except:
+                                worst_protection_snrs.append([])
+                                protection_path.append([])
+                                protection_regens.append([])
+                    if sources:
+                        dictionary4 = {
+                        'Source Site' : sources,
+                        'Destination Site' : destinations,
+                        'Demand Type': routed_types,
+                        'Wavelength': wavelengths,
+                        'Working SNR': worst_working_snrs,
+                        'Protection SNR': worst_protection_snrs,
+                        'Working Path': working_path,
+                        'Working Regenerators': working_regens,
+                        'Protection Path': protection_path,
+                        'Protection Regenerators': protection_regens}
+
+                        df4 = pd.DataFrame(dictionary4)
+                        df4.to_excel(writer, sheet_name='Cluster '+str(cluster_id))
+                        worksheet = writer.sheets['Cluster '+str(cluster_id)]
+                        # Set column size (begininng, end, size)
+                        center_format = workbook.add_format({'align': 'center', 'valign': 'vcenter'})
+                        snr_format = workbook.add_format({'num_format': '0.00', 'align': 'center'})
+                        worksheet.set_column(1, 2 , 17,center_format)
+                        worksheet.set_column(3, 4 , 15,center_format)
+                        worksheet.set_column(5, 6, 17,snr_format)
+                        worksheet.set_column(7, 7, 40)
+                        worksheet.set_column(8, 8, 20)
+                        worksheet.set_column(9, 9, 45)
+                        worksheet.set_column(10, 10, 20)
+
+                        # 3-color formatting for snrs
+                        lightpath_number = len(sources)
+                        worksheet.conditional_format('F2:F' + str(lightpath_number+1), {'type': '3_color_scale'})
+                        worksheet.conditional_format('G2:G' + str(lightpath_number+1), {'type': '3_color_scale'})
+                        
+                        # Set example specific text and color for some headers
+                        color = "#FFC000"
+                        fmt = workbook.add_format()
+                        fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
+                        worksheet.write('B1', 'Source Site', fmt)
+                        worksheet.write('C1', 'Destination Site', fmt)
+                        
+                        color = "#FFFF64"
+                        fmt = workbook.add_format()
+                        fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
+                        worksheet.write('H1', 'Working Path', fmt)
+                        
+                        color = "#64FF00"
+                        fmt = workbook.add_format()
+                        fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
+                        worksheet.write('E1', 'Wavelength', fmt)
             writer.save()
 
         if hasattr(self, "RWA_Success"):
@@ -3108,7 +3227,10 @@ class Ui_MainWindow(object):
                 name = QFileDialog.getSaveFileName(MainWindow, "Save Topology", filter = "(*.xlsx)")
                 if name[0] != 0:
                     try:
-                        export_excel(name[0], self.decoded_network)
+                        if not Data["Clustering"]:
+                            export_excel(name[0], self.decoded_network, True)
+                        else:
+                            export_excel(name[0], self.decoded_network)
                     except:
                         pass        
 
@@ -3219,13 +3341,14 @@ class Ui_MainWindow(object):
                     RG_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_p"]
                     SNR_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_w"]
                     SNR_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_p"]
-                    LambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["LambdaList"]
-
+                    WorkingLambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["WorkingLambdaList"]
+                    ProtectionLambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["ProtectionLambdaList"]
                     #print(f"here for calling demand change function <before> ")
 
                     # calling Demand map change function
                     self.DemandMap_Change(WorkingPath, ProtectionPath, WorkingRegeneratorsList = RG_w, ProtectionRegenaratorsList = RG_p
-                                            ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p, LambdaList= LambdaList)
+                                            ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p, WorkingLambdaList= WorkingLambdaList,
+                                            ProtectionLambdaList= ProtectionLambdaList)
     
     def groomout10_list_fun(self, CurItem, PreItem):
         if CurItem is not None:
@@ -3456,7 +3579,10 @@ class Ui_MainWindow(object):
                 IgnoringNodes = None
 
                 for i in range(ServiceDict[service]["Quantity"]):
-                    self.network.TrafficMatrix.DemandDict[id].add_service(service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
+
+                    ServiceId = self.network.TrafficMatrix.DemandDict[0].GenerateId()
+
+                    self.network.TrafficMatrix.DemandDict[id].add_service(ServiceId, service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
             
             # initializing DataBases 
             self.initialize_DemandTabDataBase(Source, Destination)
@@ -3944,6 +4070,8 @@ class Ui_MainWindow(object):
         var marker_num = 0;
         var failed_nodes = new Object();
         var failed_nodes_list = [];
+        var clusters_info = new Object();
+        var clusters_info_list = [];
         var lambdas = new Object();
         var wrapper = document.createElement("div");
         var canvas = document.createElement("canvas");
@@ -4028,6 +4156,65 @@ class Ui_MainWindow(object):
                     }
                 }
                 flag = 1;
+                }
+            });
+        }
+
+        function cancel_clustering(nodename){
+            myFeatureGroup.eachLayer(function (layer) {
+
+                var x = layer["_tooltip"]["_content"];
+                var doc = new DOMParser().parseFromString(x, "text/xml");
+                var z = doc.documentElement.textContent;
+                NodeName = z.replace(/\s/g, '');
+
+                if ( NodeName == nodename ){
+                    var latlng = layer.getLatLng()
+
+                    %s.removeLayer(layer);
+                    layer.remove();
+
+                    change_icon(NodeName, latlng, "blue", 1, "normal")
+
+                }
+            });
+        }
+
+        function update_cluster_info(nodename, color, subnode_state){
+            clusters_info[nodename] = {"Color":color, "SubNode":parseInt(subnode_state)};
+            clusters_info_list.push(nodename);
+        }
+
+        function hide_subnodes(){
+            myFeatureGroup.eachLayer(function (layer) {
+                var x = layer["_tooltip"]["_content"];
+                var doc = new DOMParser().parseFromString(x, "text/xml");
+                var z = doc.documentElement.textContent;
+                NodeName = z.replace(/\s/g, '');
+
+                if (clusters_info_list.includes(NodeName)){
+                    SubNode_state = clusters_info[NodeName]["SubNode"];
+
+                    if (SubNode_state == 1) {
+                        layer.setOpacity(0);
+                    }
+                }
+            });
+        }
+
+        function show_subnodes(){
+            myFeatureGroup.eachLayer(function (layer) {
+                var x = layer["_tooltip"]["_content"];
+                var doc = new DOMParser().parseFromString(x, "text/xml");
+                var z = doc.documentElement.textContent;
+                NodeName = z.replace(/\s/g, '');
+
+                if ( clusters_info_list.includes(NodeName) ){
+                    SubNode_state = clusters_info[NodeName]["SubNode"];
+
+                    if (SubNode_state == 1) {
+                        layer.setOpacity(0.6);
+                    }
                 }
             });
         }
@@ -4205,7 +4392,7 @@ class Ui_MainWindow(object):
         var backend_map = null;
         new QWebChannel(qt.webChannelTransport, function (channel) {
         window.backend_map = channel.objects.backend_map;
-        });""" %(MapVar, MapVar, MapVar, MapVar, MapVar, MapVar)))
+        });""" %(MapVar, MapVar, MapVar, MapVar, MapVar, MapVar, MapVar)))
         Fig.script.add_child(Element("var myFeatureGroup = L.featureGroup().addTo(%s).on(\"click\", groupClick);" %MapVar))
 
         Fig.script.add_child(Element("""%s.eachLayer(function (layer) {
@@ -4408,7 +4595,7 @@ class Ui_MainWindow(object):
                     LineCapacity += ServiceObj.BW
                 else:
                     # if its GroomOut10
-                    ServiceObj = netobj.TrafficMatrix.GroomOut10Dict[ServiceId]
+                    ServiceObj = netobj.TrafficMatrix.GroomOut10Dict[(DemandId, ServiceId)]
                     LineCapacity += ServiceObj.Capacity
 
                 OutputList.append(ServiceObj.Type)
@@ -4577,19 +4764,19 @@ class Ui_MainWindow(object):
             # panel part ( creating panels object )
             PanelId = self.get_panel_num(Source)
 
-            ClientsCapacity_1 , LineCapacity_1 = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].ServiceIdList, netobj)
-            ClientsCapacity_2 , LineCapacity_2 = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].ServiceIdList, netobj)
+            ClientsCapacity_1 , LineCapacity_1 = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].ServiceIdList, netobj)
+            ClientsCapacity_2 , LineCapacity_2 = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].ServiceIdList, netobj)
 
             ClientsCapacity = []
             ClientsCapacity.extend(ClientsCapacity_1)
             ClientsCapacity.extend(ClientsCapacity_2)
 
             ServiceIdList = []
-            ServiceIdList.extend(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].ServiceIdList)
-            ServiceIdList.extend(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].ServiceIdList)
+            ServiceIdList.extend(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].ServiceIdList)
+            ServiceIdList.extend(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].ServiceIdList)
 
-            LightPathId_1 = netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].LightPathId
-            LightPathId_2 = netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].LightPathId
+            LightPathId_1 = netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].LightPathId
+            LightPathId_2 = netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].LightPathId
 
             ClientLen = len(ClientsCapacity) 
             if ClientLen != 16:
@@ -4602,8 +4789,8 @@ class Ui_MainWindow(object):
                                                                     ServiceIdList= ServiceIdList,
                                                                     DemandIdList= [DemandId for _ in range(16)],
                                                                     LineIdList= list(Servicetuple),
-                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].ServiceIdList),
-                                                                    Line_2_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].ServiceIdList),
+                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].ServiceIdList),
+                                                                    Line_2_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].ServiceIdList),
                                                                     Destination= Destination,
                                                                     DualPanelsId= DualPanelsId)
 
@@ -4613,8 +4800,8 @@ class Ui_MainWindow(object):
                                                                     ServiceIdList= ServiceIdList,
                                                                     DemandIdList= [DemandId for _ in range(16)],
                                                                     LineIdList= list(Servicetuple),
-                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[0]].ServiceIdList),
-                                                                    Line_2_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[Servicetuple[1]].ServiceIdList),
+                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].ServiceIdList),
+                                                                    Line_2_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].ServiceIdList),
                                                                     Destination= Source,
                                                                     DualPanelsId= (PanelId, (str(int(PanelId) + 1))))
             
@@ -4738,12 +4925,12 @@ class Ui_MainWindow(object):
 
             DualPanelsId = self.generate_dual_panel_num(Destination)
 
-            LightPathId = netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].LightPathId
+            LightPathId = netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].LightPathId
             
             # panel part ( creating panels object )
             PanelId = self.get_panel_num(Source)
 
-            ClientsCapacity , LineCapacity = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList, netobj)
+            ClientsCapacity , LineCapacity = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList, netobj)
 
             ClientLen = len(ClientsCapacity) 
             if ClientLen != 16:
@@ -4753,20 +4940,20 @@ class Ui_MainWindow(object):
             # creating left panel of MP2X
             DemandTabDataBase["Panels"][Source][PanelId] = MP2X_L(  ClientsCapacity= list(ClientsCapacity),
                                                                     LinesCapacity= [LineCapacity, 0],
-                                                                    ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList),
+                                                                    ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
                                                                     DemandIdList= [DemandId for _ in range(16)],
                                                                     LineIdList= [GroomOutId, None],
-                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList),
+                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
                                                                     Destination= Destination,
                                                                     DualPanelsId= DualPanelsId)
 
             # ** Dual **
             DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = MP2X_L(  ClientsCapacity= list(ClientsCapacity),
                                                                     LinesCapacity= [LineCapacity, 0],
-                                                                    ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList),
+                                                                    ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
                                                                     DemandIdList= [DemandId for _ in range(16)],
                                                                     LineIdList= [GroomOutId, None],
-                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList),
+                                                                    Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
                                                                     Destination= Source,
                                                                     DualPanelsId= (PanelId, (str(int(PanelId) + 1))))
             
@@ -4781,7 +4968,7 @@ class Ui_MainWindow(object):
                                                                                 DualPanelsId = (PanelId, (str(int(PanelId) + 1))) )
             
             # omitting handled services from DemandTabDataBase
-            for service in netobj.TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList:
+            for service in netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList:
                 DemandTabDataBase["Services"][(Source, Destination)][(DemandId, service)] = 1
                 DemandTabDataBase["Services_static"][Source][(DemandId, service)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
@@ -4868,12 +5055,13 @@ class Ui_MainWindow(object):
             Working = lightpath.WorkingPath
             Protection = lightpath.ProtectionPath
             DemandId = lightpath.DemandId
-            WaveLength = lightpath.WaveLength[0]
+            WaveLength = lightpath.WaveLength
             RG_w = lightpath.RegeneratorNode_w
             RG_p = lightpath.RegeneratorNode_p
             SNR_w = list(map(lambda x : round(x, 2), lightpath.SNR_w))
             SNR_p = list(map(lambda x : round(x, 2), lightpath.SNR_p))
-            LambdaList = lightpath.WaveLength
+            WorkingLambdaList = lightpath.WaveLength
+            ProtectionLambdaList = lightpath.WaveLength
 
             # adding pathes to to GroomingTabDataBase ( lightpath part )
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id] = {}
@@ -4883,7 +5071,8 @@ class Ui_MainWindow(object):
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["RG_p"] = RG_p
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_w"] = SNR_w
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_p"] = SNR_p
-            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["LambdaList"] = LambdaList
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["WorkingLambdaList"] = WorkingLambdaList
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["ProtectionLambdaList"] = ProtectionLambdaList
 
             # ** Dual **
             GroomingTabDataBase["LightPathes"][(Destination, Source)][id] = {}
@@ -4893,7 +5082,8 @@ class Ui_MainWindow(object):
             GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["RG_p"] = RG_p
             GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["SNR_w"] = SNR_w
             GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["SNR_p"] = SNR_p
-            GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["LambdaList"] = LambdaList
+            GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["WorkingLambdaList"] = WorkingLambdaList
+            GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["ProtectionLambdaList"] = ProtectionLambdaList
 
             
         # filling LinkSate Part
@@ -4930,8 +5120,6 @@ class Ui_MainWindow(object):
     def create_legend(self, Num_WL, Num_RG, Algorithm, Worst_SNR, RWA_Runtime):
         self.webengine.page().runJavaScript("createLegend(\"%s\", \"%s\", \"%s\", \"%s\", \"%s\")" %(Num_WL, Num_RG, Algorithm, Worst_SNR, RWA_Runtime))
                 
-            
-
          
     def failed_grooming_nodes(self):
 
@@ -5017,7 +5205,10 @@ class Ui_MainWindow(object):
         #self.Demand_Shelf_set()
 
         Remain_lower100,full_mp2x_lines, half_mp2x_lines  = grooming_fun(self.network, int(MP1H_Threshold))
-        print(f"remained lower 100 services : {Remain_lower100}")
+
+        # creating new 
+        self.create_new_demand_services(self.network)
+        
         
         # filling Demand DataBase 
         self.fill_DemandTabDataBase(self.network)
@@ -5060,6 +5251,118 @@ class Ui_MainWindow(object):
 "}")
 
 
+    def create_new_demand_services(self, netobj):
+        for key, value in netobj.TrafficMatrix.DemandDict.items():
+            Source = value.Source
+            Destination = value.Destination
+
+            ServiceIdList = list(value.ServiceDict.keys())
+            
+            # Source_Destination part
+            if not ( Source in DemandTabDataBase["Source_Destination"] ):
+                DemandTabDataBase["Source_Destination"][Source] = {"Source": Source, "DestinationList": []}
+            
+            elif not ( Destination in DemandTabDataBase["Source_Destination"][Source]["DestinationList"] ):
+                DemandTabDataBase["Source_Destination"][Source]["DestinationList"].append(Destination)
+
+            # ** Dual **
+            if not ( Destination in DemandTabDataBase["Source_Destination"] ):
+                DemandTabDataBase["Source_Destination"][Destination] = {"Source": Destination, "DestinationList": []}
+            
+            elif not ( Source in DemandTabDataBase["Source_Destination"][Destination]["DestinationList"] ):
+                DemandTabDataBase["Source_Destination"][Destination]["DestinationList"].append(Source)
+            
+            # services part
+            if not ( (Source, Destination) in DemandTabDataBase["Services"]):
+                DemandTabDataBase["Services"][(Source, Destination)] = {}
+
+            # ** Dual **
+            if not ( (Destination, Source) in DemandTabDataBase["Services"]):
+                DemandTabDataBase["Services"][(Destination, Source)] = {}
+
+            # static_service part
+            if not ( Source in DemandTabDataBase["Services_static"] ):
+                DemandTabDataBase["Services_static"][Source] = {}
+            
+            # ** Dual **
+            if not ( Destination in DemandTabDataBase["Services_static"] ):
+                DemandTabDataBase["Services_static"][Destination] = {}
+
+            for service in ServiceIdList:
+                new_flag = 0
+
+
+                if not ( (key, service) in DemandTabDataBase["Services"][(Source, Destination)] ):
+                    DemandTabDataBase["Services"][(Source, Destination)][(key, service)] = 0
+                
+                # ** Dual **
+                if not ( (key, service) in DemandTabDataBase["Services"][(Destination, Source)] ):
+                    DemandTabDataBase["Services"][(Destination, Source)][(key, service)] = 0
+
+                if not ((key, service) in DemandTabDataBase["Services_static"][Source] ) :
+                    new_flag = 1
+
+                    setattr(self, "Service_item_" + str(Data["Service_item_num"]), QListWidgetItem(value.ServiceDict[service].Type, self.Demand_ServiceList))
+                    item = getattr(self, "Service_item_" + str(Data["Service_item_num"]))
+                    Data["Service_item_num"] += 1
+                    item.setTextAlignment(Qt.AlignCenter)
+                    item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Source}\nDestination: {Destination}")
+                    data = {"DemandId": id, "ServiceId": service}
+
+                    if value.ServiceDict[service].OriginalSource is not None:
+                        data["OriginalSource"] = value.ServiceDict[service].OriginalSource
+                        data["OriginalDestination"] = value.ServiceDict[service].OriginalDestination
+
+                        item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Source}\nDestination: {Destination}\nOriginal Source: {data['OriginalSource']}\nOriginal Destination: {data['OriginalDestination']}")
+
+                    item.setData(Qt.UserRole, data)
+                    item.setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
+
+                    DemandTabDataBase["Services_static"][Source][(key, service)] = item
+
+
+                # ** Dual **
+                if not ((key, service) in DemandTabDataBase["Services_static"][Destination] ) :
+                    new_flag = 1
+                    
+                    setattr(self, "Service_item_" + str(Data["Service_item_num"]), QListWidgetItem(value.ServiceDict[service].Type, self.Demand_ServiceList))
+                    item = getattr(self, "Service_item_" + str(Data["Service_item_num"]))
+                    Data["Service_item_num"] += 1
+                    item.setTextAlignment(Qt.AlignCenter)
+                    item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Destination}\nDestination: {Source}")
+                    data = {"DemandId": id, "ServiceId": service}
+
+                    if value.ServiceDict[service].OriginalSource is not None:
+                        data["OriginalSource"] = value.ServiceDict[service].OriginalSource
+                        data["OriginalDestination"] = value.ServiceDict[service].OriginalDestination
+
+                        item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Destination}\nDestination: {Source}\nOriginal Source: {data['OriginalSource']}\nOriginal Destination: {data['OriginalDestination']}")
+
+                    item.setData(Qt.UserRole, data)
+                    item.setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
+
+                    DemandTabDataBase["Services_static"][Destination][(key, service)] = item
+                
+                if value.ServiceDict[service].OriginalSource is not None and new_flag == 0:
+
+                    UserData = DemandTabDataBase["Services_static"][Source][(key, service)].data(Qt.UserRole)
+                    item = DemandTabDataBase["Services_static"][Source][(key, service)]
+
+                    UserData["OriginalSource"] = value.ServiceDict[service].OriginalSource
+                    UserData["OriginalDestination"] = value.ServiceDict[service].OriginalDestination
+
+                    item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Source}\nDestination: {Destination}\nOriginal Source: {UserData['OriginalSource']}\nOriginal Destination: {UserData['OriginalDestination']}")
+                    item.setData(Qt.UserRole, UserData)
+
+                    # ** Dual **
+                    UserData = DemandTabDataBase["Services_static"][Destination][(key, service)].data(Qt.UserRole)
+                    item = DemandTabDataBase["Services_static"][Destination][(key, service)]
+
+                    UserData["OriginalSource"] = value.ServiceDict[service].OriginalSource
+                    UserData["OriginalDestination"] = value.ServiceDict[service].OriginalDestination
+
+                    item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Destination}\nDestination: {Source}\nOriginal Source: {UserData['OriginalSource']}\nOriginal Destination: {UserData['OriginalDestination']}")
+                    item.setData(Qt.UserRole, UserData)
 
 
     def find_grooming_failed_sources(self):
