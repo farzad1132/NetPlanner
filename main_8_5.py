@@ -2572,7 +2572,8 @@ class Ui_MainWindow(object):
     
 
     def DemandMap_Change(self, Working = None, Protection = None, 
-        WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None, LambdaList = None):
+        WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None, WorkingLambdaList = None,
+        ProtectionLambdaList= None):
         #mpl.rcParams["figure.figsize"] = [18.4, 7.8]
         self.MapWidget.canvas.figure.subplots_adjust(left = -0.001, right = 1, top = 1, bottom = -0.005)
         self.MapWidget.canvas.axes.cla()
@@ -2628,7 +2629,7 @@ class Ui_MainWindow(object):
 
             if WorkingSNR != None:
                 SNRList = str(WorkingSNR)
-                WavelengthNumber = str(LambdaList)
+                WavelengthNumber = str(WorkingLambdaList)
                 snr_label = "Working SNR = " + SNRList + '\n' + "Wavelength Number = " + WavelengthNumber
                 self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label=snr_label)
             else:
@@ -2649,7 +2650,7 @@ class Ui_MainWindow(object):
 
             if ProtectionSNR != None:
                 SNRList = str(ProtectionSNR)
-                WavelengthNumber = str(LambdaList)
+                WavelengthNumber = str(ProtectionLambdaList)
                 snr_label1 = "Protection SNR = " + SNRList + '\n' + "Wavelength Number = " + WavelengthNumber          
                 self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label=snr_label1)
             else:
@@ -2680,6 +2681,8 @@ class Ui_MainWindow(object):
             self.webengine.page().runJavaScript('cancel_clustering(\'%s\')' %(node))
 
         Data["Clustering"].pop(self.backend_map.LastGateWay)
+
+        self.SelectSubNode_button_fun()
     
     def OK_button_fun(self):
         SubNodes = []
@@ -2983,7 +2986,7 @@ class Ui_MainWindow(object):
     def export_excel_fun(self):
         
 
-        def export_excel(filename, network):
+        def export_excel(filename, network, cluster_view = True):
             """
             filename: example.xlsx
             NOTE: if filename is open executing this function will cause an error
@@ -3000,32 +3003,32 @@ class Ui_MainWindow(object):
             working_regens = []
             protection_regens = []
             # Building required lists for different fields
+
             for lightpath in network.LightPathDict.values():
                 sources.append(self.IdNodeMap[lightpath.Source])
                 destinations.append(self.IdNodeMap[lightpath.Destination])
                 wavelengths.append(lightpath.WaveLength[0])
                 routed_types.append(lightpath.Type)
 
+                working_path.append(lightpath.WorkingPath)
+                working_regens.append(lightpath.RegeneratorNode_w)
                 snr = lightpath.SNR_w[0]
                 for snr_temp in lightpath.SNR_w:
                     if snr>snr_temp:
                         snr = snr_temp
                 worst_working_snrs.append(snr)
-
-                snr = lightpath.SNR_p[0]
-                for snr_temp in lightpath.SNR_p:
-                    if snr>snr_temp:
-                        snr = snr_temp
-                worst_protection_snrs.append(snr)
-
-                working_path_name = list(map(lambda x : self.IdNodeMap[x], lightpath.WorkingPath))
-                working_path.append(working_path_name)
-                protection_path_name = list(map(lambda x : self.IdNodeMap[x], lightpath.ProtectionPath))
-                protection_path.append(protection_path_name)
-                working_regens_name = list(map(lambda x : self.IdNodeMap[x], lightpath.RegeneratorNode_w))
-                working_regens.append(working_regens_name)
-                protection_regens_name = list(map(lambda x : self.IdNodeMap[x], lightpath.RegeneratorNode_p))
-                protection_regens.append(protection_regens_name)
+                try:
+                    snr = lightpath.SNR_p[0]
+                    for snr_temp in lightpath.SNR_p:
+                        if snr>snr_temp:
+                            snr = snr_temp
+                    worst_protection_snrs.append(snr)
+                    protection_path.append(lightpath.ProtectionPath)
+                    protection_regens.append(lightpath.RegeneratorNode_p)
+                except:
+                    worst_protection_snrs.append([])
+                    protection_path.append([])
+                    protection_regens.append([])
 
             dictionary = {
             'Source Site' : sources,
@@ -3045,9 +3048,11 @@ class Ui_MainWindow(object):
             workbook  = writer.book
             worksheet = writer.sheets['Routed Demands']
             # Set column size (begininng, end, size)
-            worksheet.set_column(1, 2 , 17)
-            worksheet.set_column(3, 4 , 15)
-            worksheet.set_column(5, 6, 17)
+            center_format = workbook.add_format({'align': 'center', 'valign': 'vcenter'})
+            snr_format = workbook.add_format({'num_format': '0.00', 'align': 'center'})
+            worksheet.set_column(1, 2 , 17,center_format)
+            worksheet.set_column(3, 4 , 15,center_format)
+            worksheet.set_column(5, 6, 17,snr_format)
             worksheet.set_column(7, 7, 40)
             worksheet.set_column(8, 8, 20)
             worksheet.set_column(9, 9, 45)
@@ -3061,18 +3066,18 @@ class Ui_MainWindow(object):
             # Set example specific text and color for some headers
             color = "#FFC000"
             fmt = workbook.add_format()
-            fmt = workbook.add_format({'bg_color': color})
+            fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
             worksheet.write('B1', 'Source Site', fmt)
             worksheet.write('C1', 'Destination Site', fmt)
             
             color = "#FFFF64"
             fmt = workbook.add_format()
-            fmt = workbook.add_format({'bg_color': color})
+            fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
             worksheet.write('H1', 'Working Path', fmt)
             
             color = "#64FF00"
             fmt = workbook.add_format()
-            fmt = workbook.add_format({'bg_color': color})
+            fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
             worksheet.write('E1', 'Wavelength', fmt)
 
             #### Link Stats #######
@@ -3094,9 +3099,9 @@ class Ui_MainWindow(object):
                                                 'min_color': "green",
                                                 'mid_color': "yellow",
                                                 'max_color': "red"})
-            worksheet2.set_column(1, 1 , 12)
+            worksheet2.set_column(1, 1 , 12,center_format)
             worksheet2.set_column(2, 2, 52)
-            worksheet2.set_column(3, 3, 18)
+            worksheet2.set_column(3, 3, 18,center_format)
 
             #### Node Stats #######
             wavelength_number_on_nodes = []
@@ -3117,10 +3122,98 @@ class Ui_MainWindow(object):
                                                 'min_color': "green",
                                                 'mid_color': "yellow",
                                                 'max_color': "red"})
-            worksheet3.set_column(1, 1 , 12)
+            worksheet3.set_column(1, 1 , 12,center_format)
             worksheet3.set_column(2, 2, 52)
-            worksheet3.set_column(3, 3, 18)
+            worksheet3.set_column(3, 3, 18,center_format)
+            
 
+            if cluster_view:
+                for cluster_id in network.PhysicalTopology.ClusterDict.keys():
+                    sources = []
+                    destinations = []
+                    wavelengths = []
+                    routed_types = []
+                    worst_working_snrs = []
+                    worst_protection_snrs = []
+                    working_path = []
+                    protection_path = []
+                    working_regens = []
+                    protection_regens = []
+                    # Building required lists for different fields
+                    for lightpath in network.LightPathDict.values():
+                        if lightpath.ClusterNum == int(cluster_id):
+                            sources.append(self.IdNodeMap[lightpath.Source])
+                            destinations.append(self.IdNodeMap[lightpath.Destination])
+                            wavelengths.append(lightpath.WaveLength[0])
+                            routed_types.append(lightpath.Type)
+
+                            working_path.append(lightpath.WorkingPath)
+                            working_regens.append(lightpath.RegeneratorNode_w)
+                            snr = lightpath.SNR_w[0]
+                            for snr_temp in lightpath.SNR_w:
+                                if snr>snr_temp:
+                                    snr = snr_temp
+                            worst_working_snrs.append(snr)
+                            try:
+                                snr = lightpath.SNR_p[0]
+                                for snr_temp in lightpath.SNR_p:
+                                    if snr>snr_temp:
+                                        snr = snr_temp
+                                worst_protection_snrs.append(snr)
+                                protection_path.append(lightpath.ProtectionPath)
+                                protection_regens.append(lightpath.RegeneratorNode_p)
+                            except:
+                                worst_protection_snrs.append([])
+                                protection_path.append([])
+                                protection_regens.append([])
+                    if sources:
+                        dictionary4 = {
+                        'Source Site' : sources,
+                        'Destination Site' : destinations,
+                        'Demand Type': routed_types,
+                        'Wavelength': wavelengths,
+                        'Working SNR': worst_working_snrs,
+                        'Protection SNR': worst_protection_snrs,
+                        'Working Path': working_path,
+                        'Working Regenerators': working_regens,
+                        'Protection Path': protection_path,
+                        'Protection Regenerators': protection_regens}
+
+                        df4 = pd.DataFrame(dictionary4)
+                        df4.to_excel(writer, sheet_name='Cluster '+str(cluster_id))
+                        worksheet = writer.sheets['Cluster '+str(cluster_id)]
+                        # Set column size (begininng, end, size)
+                        center_format = workbook.add_format({'align': 'center', 'valign': 'vcenter'})
+                        snr_format = workbook.add_format({'num_format': '0.00', 'align': 'center'})
+                        worksheet.set_column(1, 2 , 17,center_format)
+                        worksheet.set_column(3, 4 , 15,center_format)
+                        worksheet.set_column(5, 6, 17,snr_format)
+                        worksheet.set_column(7, 7, 40)
+                        worksheet.set_column(8, 8, 20)
+                        worksheet.set_column(9, 9, 45)
+                        worksheet.set_column(10, 10, 20)
+
+                        # 3-color formatting for snrs
+                        lightpath_number = len(sources)
+                        worksheet.conditional_format('F2:F' + str(lightpath_number+1), {'type': '3_color_scale'})
+                        worksheet.conditional_format('G2:G' + str(lightpath_number+1), {'type': '3_color_scale'})
+                        
+                        # Set example specific text and color for some headers
+                        color = "#FFC000"
+                        fmt = workbook.add_format()
+                        fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
+                        worksheet.write('B1', 'Source Site', fmt)
+                        worksheet.write('C1', 'Destination Site', fmt)
+                        
+                        color = "#FFFF64"
+                        fmt = workbook.add_format()
+                        fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
+                        worksheet.write('H1', 'Working Path', fmt)
+                        
+                        color = "#64FF00"
+                        fmt = workbook.add_format()
+                        fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
+                        worksheet.write('E1', 'Wavelength', fmt)
             writer.save()
 
         if hasattr(self, "RWA_Success"):
@@ -3128,7 +3221,10 @@ class Ui_MainWindow(object):
                 name = QFileDialog.getSaveFileName(MainWindow, "Save Topology", filter = "(*.xlsx)")
                 if name[0] != 0:
                     try:
-                        export_excel(name[0], self.decoded_network)
+                        if not Data["Clustering"]:
+                            export_excel(name[0], self.decoded_network, True)
+                        else:
+                            export_excel(name[0], self.decoded_network)
                     except:
                         pass        
 
@@ -3239,13 +3335,14 @@ class Ui_MainWindow(object):
                     RG_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_p"]
                     SNR_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_w"]
                     SNR_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_p"]
-                    LambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["LambdaList"]
-
+                    WorkingLambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["WorkingLambdaList"]
+                    ProtectionLambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["ProtectionLambdaList"]
                     #print(f"here for calling demand change function <before> ")
 
                     # calling Demand map change function
                     self.DemandMap_Change(WorkingPath, ProtectionPath, WorkingRegeneratorsList = RG_w, ProtectionRegenaratorsList = RG_p
-                                            ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p, LambdaList= LambdaList)
+                                            ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p, WorkingLambdaList= WorkingLambdaList,
+                                            ProtectionLambdaList= ProtectionLambdaList)
     
     def groomout10_list_fun(self, CurItem, PreItem):
         if CurItem is not None:
@@ -4864,12 +4961,13 @@ class Ui_MainWindow(object):
             Working = lightpath.WorkingPath
             Protection = lightpath.ProtectionPath
             DemandId = lightpath.DemandId
-            WaveLength = lightpath.WaveLength[0]
+            WaveLength = lightpath.WaveLength
             RG_w = lightpath.RegeneratorNode_w
             RG_p = lightpath.RegeneratorNode_p
             SNR_w = list(map(lambda x : round(x, 2), lightpath.SNR_w))
             SNR_p = list(map(lambda x : round(x, 2), lightpath.SNR_p))
-            LambdaList = lightpath.WaveLength
+            WorkingLambdaList = lightpath.WaveLength
+            ProtectionLambdaList = lightpath.WaveLength
 
             # adding pathes to to GroomingTabDataBase ( lightpath part )
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id] = {}
@@ -4879,7 +4977,8 @@ class Ui_MainWindow(object):
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["RG_p"] = RG_p
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_w"] = SNR_w
             GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["SNR_p"] = SNR_p
-            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["LambdaList"] = LambdaList
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["WorkingLambdaList"] = WorkingLambdaList
+            GroomingTabDataBase["LightPathes"][(Source, Destination)][id]["ProtectionLambdaList"] = ProtectionLambdaList
 
             # ** Dual **
             GroomingTabDataBase["LightPathes"][(Destination, Source)][id] = {}
@@ -4889,7 +4988,8 @@ class Ui_MainWindow(object):
             GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["RG_p"] = RG_p
             GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["SNR_w"] = SNR_w
             GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["SNR_p"] = SNR_p
-            GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["LambdaList"] = LambdaList
+            GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["WorkingLambdaList"] = WorkingLambdaList
+            GroomingTabDataBase["LightPathes"][(Destination, Source)][id]["ProtectionLambdaList"] = ProtectionLambdaList
 
             
         # filling LinkSate Part

@@ -301,7 +301,7 @@ class Network:
             def from_json(cls, data):
                 instance = cls(GatewayId = data['GatewayId'], SubNodesId = data['SubNodesId'], Color = data['Color'])
                 instance.__dict__['Id'] = data['Id']
-                return cls
+                return instance
 
             ReferenceId = 1
             def __init__(self, GatewayId, SubNodesId, Color):
@@ -670,7 +670,7 @@ class Network:
                            WaveLength = data['WaveLength'], RegeneratorNode_w = data['RegeneratorNode_w'],
                            RegeneratorNode_p = data['RegeneratorNode_p'], SNR_th = data['SNR_th'], 
                            LaunchPower = data['LaunchPower'], ModulationType = data['ModulationType'], SNR_w = data['SNR_w'],
-                           SNR_p = data['SNR_p'], ProtectionType = data['ProtectionType'])
+                           SNR_p = data['SNR_p'], ProtectionType = data['ProtectionType'], ClusterNum = data['ClusterNum'])
             instance.__dict__['id'] = data['id']
             return instance
 
@@ -829,7 +829,6 @@ class Network:
             self.Num_WL = None          # Number of used Wavelengths
             self.Num_RG = None          # Number of used Regenerators
             self.Worst_SNR = None
-            self.FailedLightPathIdList = None
 
 
 
