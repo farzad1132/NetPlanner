@@ -8,14 +8,14 @@
 
 
 from PySide2 import QtCore, QtGui, QtWidgets
-import sys
+
 
 class Ui_Source_type_error(object):
     def setupUi(self, Source_type_error):
         Source_type_error.setObjectName("Source_type_error")
         Source_type_error.resize(428, 199)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("errors_readme/error_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/newPrefix/error_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Source_type_error.setWindowIcon(icon)
         Source_type_error.setStyleSheet("background-color: rgb(255, 247, 248);")
         self.gridLayout = QtWidgets.QGridLayout(Source_type_error)
@@ -56,10 +56,9 @@ class Ui_Source_type_error(object):
 "}")
         self.pushButton.setObjectName("pushButton")
         self.gridLayout.addWidget(self.pushButton, 1, 1, 1, 1)
-
+        self.pushButton.clicked.connect(Source_type_error.close)
         self.retranslateUi(Source_type_error)
         QtCore.QMetaObject.connectSlotsByName(Source_type_error)
-        self.pushButton.clicked.connect(Source_type_error.close)
 
     def retranslateUi(self, Source_type_error):
         _translate = QtCore.QCoreApplication.translate
@@ -69,12 +68,12 @@ class Ui_Source_type_error(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.8pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\"> </span></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">&quot;Source&quot; type is an </span><span style=\" font-size:11pt; text-decoration: underline;\">string</span><span style=\" font-size:11pt;\"> !  </span></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">&quot;Source&quot; type is a </span><span style=\" font-size:11pt; text-decoration: underline;\">string</span><span style=\" font-size:11pt;\"> !  </span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\"> </span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"><br /></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">please enter a string input(e.g. (Source , 1)=Tehran).</span></p></body></html>"))
         self.pushButton.setText(_translate("Source_type_error", "ok"))
-        
+from TrafficMatrixError import iconresources
 
 
 if __name__ == "__main__":

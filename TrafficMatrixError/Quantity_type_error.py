@@ -15,7 +15,7 @@ class Ui_Quantity_type_error(object):
         Quantity_type_error.setObjectName("Quantity_type_error")
         Quantity_type_error.resize(485, 219)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("errors_readme/error_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/newPrefix/error_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Quantity_type_error.setWindowIcon(icon)
         Quantity_type_error.setStyleSheet("background-color: rgb(255, 247, 248);")
         self.gridLayout = QtWidgets.QGridLayout(Quantity_type_error)
@@ -56,10 +56,9 @@ class Ui_Quantity_type_error(object):
 "}")
         self.pushButton.setObjectName("pushButton")
         self.gridLayout.addWidget(self.pushButton, 1, 1, 1, 1)
-
+        self.pushButton.clicked.connect(Quantity_type_error.close)
         self.retranslateUi(Quantity_type_error)
         QtCore.QMetaObject.connectSlotsByName(Quantity_type_error)
-        self.pushButton.clicked.connect(Quantity_type_error.close)
 
     def retranslateUi(self, Quantity_type_error):
         _translate = QtCore.QCoreApplication.translate
@@ -72,8 +71,9 @@ class Ui_Quantity_type_error(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:11pt;\">&quot;Quantity&quot; type is an </span><span style=\" font-size:11pt; text-decoration: underline;\">integer</span><span style=\" font-size:11pt;\"> !  </span></p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\"> </span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">please enter a integer input((for all types of services from E1 to 100GE ), (e.g. (Quantity , 1) = 11).</span></p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt;\">please enter an integer input((for all types of services from E1 to 100GE ), (e.g. (Quantity , 1) = 11).</span></p></body></html>"))
         self.pushButton.setText(_translate("Quantity_type_error", "ok"))
+from TrafficMatrixError import iconresources
 
 
 if __name__ == "__main__":
