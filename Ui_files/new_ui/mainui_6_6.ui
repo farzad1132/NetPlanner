@@ -109,6 +109,362 @@ QTabWidget::tab-bar {
          <string>Topology Tab</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_3">
+         <item row="1" column="5">
+          <widget class="QPushButton" name="RWA_pushbutton">
+           <property name="minimumSize">
+            <size>
+             <width>84</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>81</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Bahnschrift Condensed</family>
+             <pointsize>10</pointsize>
+             <weight>9</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton {
+	
+	
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+    border: 2px solid #8f8f91; min-width: 80px;
+	border-color: #673890; 
+    border-radius: 10px;
+}
+
+QPushButton:pressed {
+    background-color:  #8076a3; 
+   
+	background-color: rgb(255, 255, 255);
+}
+QPushButton:hover {
+    background-color: #8076a3; 
+     
+	color: rgb(255, 255, 255);
+}
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+           </property>
+           <property name="text">
+            <string>RWA</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="7">
+          <widget class="QPushButton" name="FinalPlan_pushbutton">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>81</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="palette">
+            <palette>
+             <active>
+              <colorrole role="Button">
+               <brush brushstyle="SolidPattern">
+                <color alpha="255">
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+              <colorrole role="Base">
+               <brush brushstyle="SolidPattern">
+                <color alpha="255">
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+              <colorrole role="Window">
+               <brush brushstyle="SolidPattern">
+                <color alpha="255">
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+             </active>
+             <inactive>
+              <colorrole role="Button">
+               <brush brushstyle="SolidPattern">
+                <color alpha="255">
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+              <colorrole role="Base">
+               <brush brushstyle="SolidPattern">
+                <color alpha="255">
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+              <colorrole role="Window">
+               <brush brushstyle="SolidPattern">
+                <color alpha="255">
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+             </inactive>
+             <disabled>
+              <colorrole role="Button">
+               <brush brushstyle="SolidPattern">
+                <color alpha="255">
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+              <colorrole role="Base">
+               <brush brushstyle="SolidPattern">
+                <color alpha="255">
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+              <colorrole role="Window">
+               <brush brushstyle="SolidPattern">
+                <color alpha="255">
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>255</blue>
+                </color>
+               </brush>
+              </colorrole>
+             </disabled>
+            </palette>
+           </property>
+           <property name="font">
+            <font>
+             <family>Bahnschrift Condensed</family>
+             <pointsize>10</pointsize>
+             <weight>9</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="cursor">
+            <cursorShape>ArrowCursor</cursorShape>
+           </property>
+           <property name="mouseTracking">
+            <bool>false</bool>
+           </property>
+           <property name="tabletTracking">
+            <bool>false</bool>
+           </property>
+           <property name="contextMenuPolicy">
+            <enum>Qt::PreventContextMenu</enum>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton {
+	
+	
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+    border: 2px solid #8f8f91; min-width: 80px;
+	border-color: #673890; 
+    border-radius: 10px;
+}
+
+QPushButton:pressed {
+    background-color:  #8076a3;  
+    
+	color: rgb(255, 255, 255);
+}
+QPushButton:hover {
+    background-color: #8076a3; 
+     
+	color: rgb(255, 255, 255);
+}
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+           </property>
+           <property name="text">
+            <string>Final Plan</string>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="autoRepeatDelay">
+            <number>295</number>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="4">
+          <widget class="Line" name="line_2">
+           <property name="styleSheet">
+            <string notr="true">border-color: rgb(255, 255, 0);</string>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" colspan="10">
+          <widget class="QWebEngineView" name="webengine">
+           <property name="minimumSize">
+            <size>
+             <width>570</width>
+             <height>840</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QPushButton" name="Grooming_pushbutton">
+           <property name="minimumSize">
+            <size>
+             <width>84</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>81</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Bahnschrift Condensed</family>
+             <pointsize>10</pointsize>
+             <weight>9</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton {
+	
+	
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+    border: 2px solid #8f8f91; min-width: 80px;
+	border-color: #673890; 
+    border-radius: 10px;
+}
+
+QPushButton:pressed {
+    background-color:  #8076a3;  
+    
+	color: rgb(255, 255, 255);
+}
+QPushButton:hover {
+    background-color: #8076a3; 
+     
+	color: rgb(255, 255, 255);
+}
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+           </property>
+           <property name="text">
+            <string>Grooming</string>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="11">
+          <widget class="QPushButton" name="pushButton_6">
+           <property name="styleSheet">
+            <string notr="true">QPushButton {
+	color: rgb(117, 117, 117);
+	
+	
+	font: 75 9pt &quot;Bahnschrift Condensed&quot;;
+	
+    border: 2px solid #8f8f91; min-width: 80px;
+	border-color:  #c0c0c0;
+    border-radius: 15px;
+}
+
+
+
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}
+</string>
+           </property>
+           <property name="text">
+            <string>Help
+ Ctrl + H</string>
+           </property>
+          </widget>
+         </item>
          <item row="1" column="6">
           <widget class="Line" name="line_3">
            <property name="orientation">
@@ -148,40 +504,87 @@ QGroupBox::title {
            </property>
            <layout class="QGridLayout" name="gridLayout_6">
             <item row="1" column="0">
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
+             <widget class="QPushButton" name="imports_PushButtton">
+              <property name="minimumSize">
                <size>
-                <width>20</width>
-                <height>40</height>
+                <width>84</width>
+                <height>30</height>
                </size>
               </property>
-             </spacer>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Bahnschrift Condensed</family>
+                <pointsize>10</pointsize>
+                <weight>9</weight>
+                <italic>false</italic>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+	
+	
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+    border: 2px solid #8f8f91; min-width: 80px;
+	border-color: #673890; 
+    border-radius: 10px;
+}
+
+QPushButton:pressed {
+    background-color:  #8076a3;  
+    
+	color: rgb(255, 255, 255);
+}
+QPushButton:hover {
+    background-color: #8076a3; 
+     
+	color: rgb(255, 255, 255);
+}
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+              </property>
+              <property name="text">
+               <string>imports</string>
+              </property>
+             </widget>
             </item>
             <item row="0" column="0">
              <widget class="QToolBox" name="RW_toolBox">
               <property name="styleSheet">
                <string notr="true">QToolBox::tab {
-	background-color: #FFFFFF;
-     border: 2px solid gray; 
+	
+	
+	
+	background-color: rgb(227, 227, 227);
+     border: 1px solid #c0c0c0; 
      
-     border-bottom-color: Ea8686; /* same as the pane color */
-     border-top-left-radius: 7px;
-     border-top-right-radius: 7px;
-     min-width: 28ex;
-     padding: 2px; 
+   
+     
+     min-width: 30ex;
+     padding: 1px; 
      
 	
-	font: 25 11pt &quot;Bahnschrift condensed&quot;;
+	font: 25 11pt &quot;Bahnschrift&quot;;
 }
 
 QToolBox::tab:selected {
 	background-color:#8076a3; /* same as pane color */ 
      margin-left: -4px;
      margin-right: -4px;
-	font: 63 11pt &quot;Bahnschrift SemiBold&quot;; 
+	
+	font: 75 12pt &quot;Bahnschrift&quot;;
    
 	color: rgb(255, 255, 255);
 }
@@ -196,8 +599,8 @@ QToolBox::tab:selected {
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>79</width>
-                 <height>256</height>
+                 <width>280</width>
+                 <height>250</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -607,154 +1010,13 @@ QPushButton:default {
                 </property>
                </widget>
               </widget>
-              <widget class="QWidget" name="import_export_widget">
-               <property name="geometry">
-                <rect>
-                 <x>0</x>
-                 <y>0</y>
-                 <width>79</width>
-                 <height>256</height>
-                </rect>
-               </property>
-               <attribute name="label">
-                <string>import / export</string>
-               </attribute>
-               <widget class="QPushButton" name="imports_PushButtton">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>20</y>
-                  <width>101</width>
-                  <height>101</height>
-                 </rect>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>84</width>
-                  <height>30</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <family>Bahnschrift Condensed</family>
-                  <pointsize>10</pointsize>
-                  <weight>9</weight>
-                  <italic>false</italic>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QPushButton {
-	
-	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4f5f76; 
-    border-radius: 50px;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #FFFFFF, stop: 1 #EB8686);
-}
-
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-} 
-QPushButton:hover{ 
-    background-color: #8076a3 ;
-    
-	color: rgb(255, 255, 255);
-
-}</string>
-                </property>
-                <property name="text">
-                 <string>imports</string>
-                </property>
-               </widget>
-               <widget class="QPushButton" name="SetGatewayNode_button_3">
-                <property name="geometry">
-                 <rect>
-                  <x>140</x>
-                  <y>20</y>
-                  <width>101</width>
-                  <height>101</height>
-                 </rect>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>84</width>
-                  <height>30</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <family>Bahnschrift Condensed</family>
-                  <pointsize>10</pointsize>
-                  <weight>9</weight>
-                  <italic>false</italic>
-                  <bold>false</bold>
-                 </font>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QPushButton {
-	
-	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4f5f76; 
-    border-radius: 50px;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #FFFFFF, stop: 1 #4f5f76);
-}
-
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-} 
-QPushButton:hover{ 
-    background-color: #8076a3;
-   
-	color: rgb(255, 255, 255);
-
-}</string>
-                </property>
-                <property name="text">
-                 <string>export  results</string>
-                </property>
-               </widget>
-              </widget>
               <widget class="QWidget" name="widget_2">
                <property name="geometry">
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>79</width>
-                 <height>256</height>
+                 <width>280</width>
+                 <height>250</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -834,364 +1096,78 @@ QPushButton:hover{
               </widget>
              </widget>
             </item>
+            <item row="3" column="0">
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="2" column="0">
+             <widget class="QPushButton" name="SetGatewayNode_button_3">
+              <property name="minimumSize">
+               <size>
+                <width>84</width>
+                <height>30</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Bahnschrift Condensed</family>
+                <pointsize>10</pointsize>
+                <weight>9</weight>
+                <italic>false</italic>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QPushButton {
+	
+	
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+    border: 2px solid #8f8f91; min-width: 80px;
+	border-color: #673890; 
+    border-radius: 10px;
+}
+
+QPushButton:pressed {
+    background-color:  #8076a3;  
+    
+	color: rgb(255, 255, 255);
+}
+QPushButton:hover {
+    background-color: #8076a3; 
+     
+	color: rgb(255, 255, 255);
+}
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+              </property>
+              <property name="text">
+               <string>export  results</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
-         </item>
-         <item row="1" column="3">
-          <widget class="QPushButton" name="Grooming_pushbutton">
-           <property name="minimumSize">
-            <size>
-             <width>84</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>81</width>
-             <height>50</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Bahnschrift Condensed</family>
-             <pointsize>10</pointsize>
-             <weight>9</weight>
-             <italic>false</italic>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QPushButton {
-	
-	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #673890; 
-    border-radius: 10px;
-}
-
-QPushButton:pressed {
-    background-color:  #8076a3;  
-    
-	color: rgb(255, 255, 255);
-}
-QPushButton:hover {
-    background-color: #8076a3; 
-     
-	color: rgb(255, 255, 255);
-}
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-           </property>
-           <property name="text">
-            <string>Grooming</string>
-           </property>
-           <property name="checkable">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" colspan="10">
-          <widget class="QWebEngineView" name="webengine">
-           <property name="minimumSize">
-            <size>
-             <width>1570</width>
-             <height>840</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="7">
-          <widget class="QPushButton" name="FinalPlan_pushbutton">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>81</width>
-             <height>50</height>
-            </size>
-           </property>
-           <property name="palette">
-            <palette>
-             <active>
-              <colorrole role="Button">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>255</red>
-                 <green>255</green>
-                 <blue>255</blue>
-                </color>
-               </brush>
-              </colorrole>
-              <colorrole role="Base">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>255</red>
-                 <green>255</green>
-                 <blue>255</blue>
-                </color>
-               </brush>
-              </colorrole>
-              <colorrole role="Window">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>255</red>
-                 <green>255</green>
-                 <blue>255</blue>
-                </color>
-               </brush>
-              </colorrole>
-             </active>
-             <inactive>
-              <colorrole role="Button">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>255</red>
-                 <green>255</green>
-                 <blue>255</blue>
-                </color>
-               </brush>
-              </colorrole>
-              <colorrole role="Base">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>255</red>
-                 <green>255</green>
-                 <blue>255</blue>
-                </color>
-               </brush>
-              </colorrole>
-              <colorrole role="Window">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>255</red>
-                 <green>255</green>
-                 <blue>255</blue>
-                </color>
-               </brush>
-              </colorrole>
-             </inactive>
-             <disabled>
-              <colorrole role="Button">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>255</red>
-                 <green>255</green>
-                 <blue>255</blue>
-                </color>
-               </brush>
-              </colorrole>
-              <colorrole role="Base">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>255</red>
-                 <green>255</green>
-                 <blue>255</blue>
-                </color>
-               </brush>
-              </colorrole>
-              <colorrole role="Window">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>255</red>
-                 <green>255</green>
-                 <blue>255</blue>
-                </color>
-               </brush>
-              </colorrole>
-             </disabled>
-            </palette>
-           </property>
-           <property name="font">
-            <font>
-             <family>Bahnschrift Condensed</family>
-             <pointsize>10</pointsize>
-             <weight>9</weight>
-             <italic>false</italic>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="cursor">
-            <cursorShape>ArrowCursor</cursorShape>
-           </property>
-           <property name="mouseTracking">
-            <bool>false</bool>
-           </property>
-           <property name="tabletTracking">
-            <bool>false</bool>
-           </property>
-           <property name="contextMenuPolicy">
-            <enum>Qt::PreventContextMenu</enum>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::LeftToRight</enum>
-           </property>
-           <property name="autoFillBackground">
-            <bool>false</bool>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QPushButton {
-	
-	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #673890; 
-    border-radius: 10px;
-}
-
-QPushButton:pressed {
-    background-color:  #8076a3;  
-    
-	color: rgb(255, 255, 255);
-}
-QPushButton:hover {
-    background-color: #8076a3; 
-     
-	color: rgb(255, 255, 255);
-}
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-           </property>
-           <property name="text">
-            <string>Final Plan</string>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-           <property name="autoRepeatDelay">
-            <number>295</number>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="5">
-          <widget class="QPushButton" name="RWA_pushbutton">
-           <property name="minimumSize">
-            <size>
-             <width>84</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>81</width>
-             <height>50</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Bahnschrift Condensed</family>
-             <pointsize>10</pointsize>
-             <weight>9</weight>
-             <italic>false</italic>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QPushButton {
-	
-	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #673890; 
-    border-radius: 10px;
-}
-
-QPushButton:pressed {
-    background-color:  #8076a3; 
-   
-	background-color: rgb(255, 255, 255);
-}
-QPushButton:hover {
-    background-color: #8076a3; 
-     
-	color: rgb(255, 255, 255);
-}
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-           </property>
-           <property name="text">
-            <string>RWA</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="4">
-          <widget class="Line" name="line_2">
-           <property name="styleSheet">
-            <string notr="true">border-color: rgb(255, 255, 0);</string>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="11">
-          <widget class="QPushButton" name="pushButton_6">
-           <property name="styleSheet">
-            <string notr="true">QPushButton {
-	color: rgb(117, 117, 117);
-	
-	
-	font: 75 9pt &quot;Bahnschrift Condensed&quot;;
-	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color:  #c0c0c0;
-    border-radius: 15px;
-}
-
-
-
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}
-</string>
-           </property>
-           <property name="text">
-            <string>Help
- Ctrl + H</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <spacer name="verticalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
          </item>
         </layout>
        </widget>
@@ -1223,11 +1199,23 @@ QTableWidget QTableCornerButton::section {
             <property name="lineWidth">
              <number>1</number>
             </property>
+            <property name="autoScroll">
+             <bool>true</bool>
+            </property>
             <property name="dragDropOverwriteMode">
              <bool>true</bool>
             </property>
             <property name="alternatingRowColors">
              <bool>false</bool>
+            </property>
+            <property name="showGrid">
+             <bool>true</bool>
+            </property>
+            <property name="sortingEnabled">
+             <bool>false</bool>
+            </property>
+            <property name="cornerButtonEnabled">
+             <bool>true</bool>
             </property>
             <property name="rowCount">
              <number>20</number>
@@ -2083,6 +2071,26 @@ QListWidget::item:hover {
     background: #c0c0c0
 }</string>
              </property>
+             <item>
+              <property name="text">
+               <string>4</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>5</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>6</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>7</string>
+              </property>
+             </item>
             </widget>
            </item>
            <item row="6" column="0">
@@ -2126,6 +2134,26 @@ QListWidget::item:hover {
     background : #C0C0C0
 }</string>
              </property>
+             <item>
+              <property name="text">
+               <string>1</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>2</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>3</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>4</string>
+              </property>
+             </item>
             </widget>
            </item>
            <item row="2" column="0">
@@ -2169,6 +2197,21 @@ QListWidget::item:hover {
     background:#c0c0c0
 }</string>
              </property>
+             <item>
+              <property name="text">
+               <string>MP1H</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>TP1H</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>MP2X</string>
+              </property>
+             </item>
             </widget>
            </item>
            <item row="4" column="0">
@@ -2211,6 +2254,26 @@ QListWidget::item:selected:active {
 QListWidget::item:hover {
     background: #c0c0c0 }</string>
              </property>
+             <item>
+              <property name="text">
+               <string>1</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>2</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>3</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>4</string>
+              </property>
+             </item>
             </widget>
            </item>
            <item row="5" column="0">
