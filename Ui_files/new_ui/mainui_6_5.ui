@@ -94,7 +94,7 @@ QTabWidget::tab-bar {
  }r</string>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="TopologyTab">
         <attribute name="title">
