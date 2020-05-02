@@ -73,7 +73,7 @@ class BLANK_Demand(QtWidgets.QWidget):
 
         # removing old panel ( left only )
         panel_widget = Data["DemandPanel_" + str(self.id)].takeAt(0).widget()
-        self.horizontalLayout.removeWidget(panel_widget)
+        Data["DemandPanel_" + str(self.id)].removeWidget(panel_widget)
         panel_widget.deleteLater()
 
         # getting dual panels id
@@ -92,7 +92,7 @@ class BLANK_Demand(QtWidgets.QWidget):
 
             # removing old right panel
             panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
-            Data["ui"].horizontalLayout.removeWidget(panel_widget)
+            Data["DemandPanel_" + str(self.uppernum)].removeWidget(panel_widget)
             panel_widget.deleteLater()
 
             Data["DemandPanel_" + self.uppernum].addWidget(MP2X_R_Demand(self.id, self.nodename, self.Destination, DualPanelsId))
@@ -111,7 +111,7 @@ class BLANK_Demand(QtWidgets.QWidget):
 
             # removing old right panel
             panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
-            Data["ui"].horizontalLayout.removeWidget(panel_widget)
+            Data["DemandPanel_" + str(self.uppernum)].removeWidget(panel_widget)
             panel_widget.deleteLater()
 
             Data["DemandPanel_" + self.uppernum].addWidget(MP1H_R_Demand(self.id, self.nodename, self.Destination, DualPanelsId))
@@ -130,7 +130,7 @@ class BLANK_Demand(QtWidgets.QWidget):
 
             # removing old right panel
             panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
-            Data["ui"].horizontalLayout.removeWidget(panel_widget)
+            Data["DemandPanel_" + str(self.uppernum)].removeWidget(panel_widget)
             panel_widget.deleteLater()
 
 

@@ -178,13 +178,13 @@ class MP2X_L_Demand(QtWidgets.QWidget):
 
             # removing old left panel
             panel_widget = Data["DemandPanel_" + str(self.id)].takeAt(0).widget()
-            Data["ui"].horizontalLayout.removeWidget(panel_widget)
+            Data["DemandPanel_" + str(self.id)].removeWidget(panel_widget)
             panel_widget.deleteLater()
             Data["DemandPanel_" + self.id].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
 
             # removing old right panel
             panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
-            Data["ui"].horizontalLayout.removeWidget(panel_widget)
+            Data["DemandPanel_" + str(self.uppernum)].removeWidget(panel_widget)
             panel_widget.deleteLater()
             Data["DemandPanel_" + self.uppernum].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
 
@@ -482,13 +482,13 @@ class customlabel(QLabel):
                 DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line_1_ServiceIdList.append(self.ids[1])
                 
                 # creating new groom out 10
-                Data["NetworkObj"].TrafficMatrix.add_groom_out_10(Source= self.nodename,
+                GroomOutId = Data["NetworkObj"].TrafficMatrix.Generate_GroomOutId()
+                Data["NetworkObj"].TrafficMatrix.add_groom_out_10(GroomOutId= GroomOutId,
+                                                    Source= self.nodename,
                                                     Destination= self.Destination,
                                                     DemandId= self.ids[1],
                                                     Capacity= self.BWDict[self.servicetype],
                                                     ServiceIdList= [self.ids[0]])
-
-                GroomOutId = max(Data["NetworkObj"].TrafficMatrix.GroomOut10Dict.keys())
 
                 # updating LineIdList in panel object
                 DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0] = GroomOutId
@@ -574,14 +574,14 @@ class customlabel(QLabel):
                 DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line_2_ServiceIdList.append(self.ids[1])
 
                 # creating new groom out 10
-                Data["NetworkObj"].TrafficMatrix.add_groom_out_10(Source= self.nodename,
-                                                    Destination= self.Destination,
-                                                    DemandId= self.ids[1],
-                                                    Capacity= self.BWDict[self.servicetype],
-                                                    ServiceIdList= [self.ids[0]])
+                GroomOutId = Data["NetworkObj"].TrafficMatrix.Generate_GroomOutId()
+                Data["NetworkObj"].TrafficMatrix.add_groom_out_10(GroomOutId= GroomOutId, 
+                                                                    Source= self.nodename,
+                                                                    Destination= self.Destination,
+                                                                    DemandId= self.ids[1],
+                                                                    Capacity= self.BWDict[self.servicetype],
+                                                                    ServiceIdList= [self.ids[0]])
                 
-
-                GroomOutId = max(Data["NetworkObj"].TrafficMatrix.GroomOut10Dict.keys())
 
                 # updating LineIdList in panel object
                 DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1] = GroomOutId

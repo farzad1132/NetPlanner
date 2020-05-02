@@ -95,13 +95,13 @@ class TP1H_L_Demand(QtWidgets.QWidget):
 
             # removing old left panel
             panel_widget = Data["DemandPanel_" + str(self.id)].takeAt(0).widget()
-            Data["ui"].horizontalLayout.removeWidget(panel_widget)
+            Data["DemandPanel_" + str(self.id)].removeWidget(panel_widget)
             panel_widget.deleteLater()
             Data["DemandPanel_" + self.id].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
 
             # removing old right panel
             panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
-            Data["ui"].horizontalLayout.removeWidget(panel_widget)
+            Data["DemandPanel_" + str(self.uppernum)].removeWidget(panel_widget)
             panel_widget.deleteLater()
             Data["DemandPanel_" + self.uppernum].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
 

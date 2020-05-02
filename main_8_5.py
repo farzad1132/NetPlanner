@@ -3203,7 +3203,7 @@ class Ui_MainWindow(object):
 
     def GTMErrorWrongDataType(self, column):
 
-        if column == 0 :
+        """ if column == 0 :
             self.ID_type_error_widget = QtWidgets.QWidget()
             self.ID_type_error = Ui_ID_type_error()
             self.ID_type_error.setupUi(self.ID_type_error_widget)
@@ -3217,7 +3217,7 @@ class Ui_MainWindow(object):
             self.Destination_type_error_widget = QtWidgets.QWidget()
             self.Destination_type_error = Ui_Destination_type_error()
             self.Destination_type_error.setupUi(self.Destination_type_error_widget)
-            self.Destination_type_error_widget.show() 
+            self.Destination_type_error_widget.show() """ 
         '''if column == 3 :
             self.OldCableType_type_error_widget = QtWidgets.QWidget()
             self.OldCableType_type_error = Ui_OldCableType_type_error()
@@ -3243,11 +3243,11 @@ class Ui_MainWindow(object):
             self.Status_type_error = Ui_Status_type_error()
             self.Status_type_error.setupUi(self.Status_type_error_widget)
             self.Status_type_error_widget.show() '''
-
+        pass
 
     def TMErrorWrongDataType(self, column_name):
 
-        if column_name == 'Quantity' :
+        """ if column_name == 'Quantity' :
             self.Quantity_type_error_widget = QtWidgets.QWidget()
             self.Quantity_type_error = Ui_Quantity_type_error()
             self.Quantity_type_error.setupUi(self.Quantity_type_error_widget)
@@ -3256,7 +3256,8 @@ class Ui_MainWindow(object):
             self.SLA_type_error_widget = QtWidgets.QWidget()
             self.SLA_type_error = Ui_SLA_type_error()
             self.SLA_type_error.setupUi(self.SLA_type_error_widget)
-            self.SLA_type_error_widget.show()
+            self.SLA_type_error_widget.show() """
+        pass
 
 
     def update_cells(self):
@@ -3857,13 +3858,7 @@ class Ui_MainWindow(object):
                                                                                         Destination= Source,
                                                                                         DualPanelsId = (panelid, (str(int(panelid) + 1))))
 
-                # omitting handeled services from DemandTabDataBase
-                DemandTabDataBase["Services"][(Source, Destination)][(DemandId, lightpath.ServiceIdList[0])] = 1
-                DemandTabDataBase["Services_static"][Source][(DemandId, lightpath.ServiceIdList[0])].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
-                # ** Dual **
-                DemandTabDataBase["Services"][(Destination, Source)][(DemandId, lightpath.ServiceIdList[0])] = 1
-                DemandTabDataBase["Services_static"][Destination][(DemandId, lightpath.ServiceIdList[0])].setBackground(QBrush(Qt.white, Qt.SolidPattern))
             else:
                 panelid = self.get_panel_num(Source)
                 ClientCapacity, LineCapacity = self.create_ClientsCapacityList(DemandId, lightpath.ServiceIdList, netobj)
@@ -3909,15 +3904,6 @@ class Ui_MainWindow(object):
                                                                                         Destination= Source,
                                                                                         DualPanelsId= (panelid, (str(int(panelid) + 1))))
 
-                # omitting handeled services from DemandTabDataBase
-                for ServiceId in lightpath.ServiceIdList:
-                    if (DemandId, ServiceId) in DemandTabDataBase["Services"][(Source, Destination)]:
-                        DemandTabDataBase["Services"][(Source, Destination)][(DemandId, ServiceId)] = 1
-                        DemandTabDataBase["Services_static"][Source][(DemandId, ServiceId)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
-
-                        # ** Dual **
-                        DemandTabDataBase["Services"][(Destination, Source)][(DemandId, ServiceId)] = 1
-                        DemandTabDataBase["Services_static"][Destination][(DemandId, ServiceId)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
                 print(f"panels part--> Source:{Source} panels:{DemandTabDataBase['Panels'][Source]}")
                 print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
@@ -4011,15 +3997,6 @@ class Ui_MainWindow(object):
                                                                                 Destination= Source,
                                                                                 DualPanelsId= (PanelId, (str(int(PanelId) + 1))))
 
-
-            # omitting handled services from DemandTabDataBase
-            for service in ServiceIdList:
-                DemandTabDataBase["Services"][(Source, Destination)][(DemandId, service)] = 1
-                DemandTabDataBase["Services_static"][Source][(DemandId, service)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
-
-                # ** Dual **
-                DemandTabDataBase["Services"][(Destination, Source)][(DemandId, service)] = 1
-                DemandTabDataBase["Services_static"][Destination][(DemandId, service)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
             # creating Qlistwidgetitem item part
             item_1 = QListWidgetItem("GroomOut10", self.groomout10_list)
@@ -4162,15 +4139,6 @@ class Ui_MainWindow(object):
             DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = MP2X_R(LeftId= DualPanelsId[0],
                                                                                 Destination= Source,
                                                                                 DualPanelsId = (PanelId, (str(int(PanelId) + 1))) )
-            
-            # omitting handled services from DemandTabDataBase
-            for service in netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList:
-                DemandTabDataBase["Services"][(Source, Destination)][(DemandId, service)] = 1
-                DemandTabDataBase["Services_static"][Source][(DemandId, service)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
-
-                # ** Dual **
-                DemandTabDataBase["Services"][(Destination, Source)][(DemandId, service)] = 1
-                DemandTabDataBase["Services_static"][Destination][(DemandId, service)].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
             # creating Qlistwidgetitem item part
             item = QListWidgetItem("GroomOut10", self.groomout10_list)
@@ -4335,16 +4303,6 @@ class Ui_MainWindow(object):
 
                 if Num_failed_nodes == 0:
                     break
-            
-            intersect_nodes = list(set(NotifiedNodes) & set(value["SubNodes"]))
-
-            for failed_node in intersect_nodes:
-                failed_nodes[failed_node] =  {"Color": value["Color"], "SubNode": 1}
-                NotifiedNodes.remove(failed_node)
-                Num_failed_nodes -= 1
-
-                if Num_failed_nodes == 0:
-                    break
 
         for remained_nodes in NotifiedNodes:
             # NOTE: default color is blue in this moment
@@ -4398,9 +4356,12 @@ class Ui_MainWindow(object):
         
 
     def grooming_procedure(self, MP1H_Threshold):
-        #self.Demand_Shelf_set()
+
+        self.clean_database_for_grooming(self.network)
 
         Remain_lower100,full_mp2x_lines, half_mp2x_lines  = grooming_fun(self.network, int(MP1H_Threshold))
+
+        self.fill_basic_demandtabdatabase(self.network)
 
         # creating new 
         self.create_new_demand_services(self.network)
@@ -4446,119 +4407,142 @@ class Ui_MainWindow(object):
 "    border-color: navy; /* make the default button prominent */\n"
 "}")
 
+    def clean_database_for_grooming(self, netobj):
+
+        DemandTabDataBase["Source_Destination"].clear()
+        DemandTabDataBase["Services"].clear()
+        DemandTabDataBase["Services_static"].clear()
+        DemandTabDataBase["Panels"].clear()
+        DemandTabDataBase["GroomOut10"].clear()
+        DemandTabDataBase["Lightpathes"].clear()
+
+    
+    def fill_basic_demandtabdatabase(self, netobj):
+
+        SourceList = []
+        DestinationList = []
+        for DemandId, value in netobj.TrafficMatrix.DemandDict.items():
+
+            Source = self.IdNodeMap[value.Source]
+            Destination = self.IdNodeMap[value.Destination]
+
+            DemandTabDataBase["Panels"][Source] = {}
+            DemandTabDataBase["Panels"][Destination] = {}
+
+            DemandTabDataBase["GroomOut10"][(Source, Destination)] = {}
+            DemandTabDataBase["GroomOut10"][(Destination, Source)] = {}
+
+            DemandTabDataBase["Lightpathes"][(Source, Destination)] = {}
+            DemandTabDataBase["Lightpathes"][(Destination, Source)] = {}
+
+            if not ((Source, Destination) in GroomingTabDataBase["LightPathes"]):
+                GroomingTabDataBase["LightPathes"][(Source, Destination)] = {}
+            
+            if not ((Destination, Source) in GroomingTabDataBase["LightPathes"]):
+                GroomingTabDataBase["LightPathes"][(Destination, Source)] = {}
+
+            SourceList.append(Source)
+            DestinationList.append(Destination)
+        
+        for Source in SourceList:
+            if ( Source in DemandTabDataBase["Source_Destination"] ) == False:
+                DemandTabDataBase["Source_Destination"][Source] = {"Source": Source, "DestinationList": []}
+        
+        for Destination in DestinationList:
+            if ( Destination in DemandTabDataBase["Source_Destination"] ) is False:
+                DemandTabDataBase["Source_Destination"][Destination] = {"Source": Destination, "DestinationList": []}
+
+        for i in range(len(SourceList)):
+            Destination = DestinationList[i]
+            Source = SourceList[i]
+            DemandTabDataBase["Source_Destination"][Source]["DestinationList"].append(Destination)
+            DemandTabDataBase["Source_Destination"][Destination]["DestinationList"].append(Source)
+        
+            
 
     def create_new_demand_services(self, netobj):
-        for key, value in netobj.TrafficMatrix.DemandDict.items():
-            Source = value.Source
-            Destination = value.Destination
+        for DemandId, value in netobj.TrafficMatrix.DemandDict.items():
+            Source = self.IdNodeMap[value.Source]
+            Destination = self.IdNodeMap[value.Destination]
 
-            ServiceIdList = list(value.ServiceDict.keys())
-            
-            # Source_Destination part
-            if not ( Source in DemandTabDataBase["Source_Destination"] ):
-                DemandTabDataBase["Source_Destination"][Source] = {"Source": Source, "DestinationList": []}
-            
-            elif not ( Destination in DemandTabDataBase["Source_Destination"][Source]["DestinationList"] ):
-                DemandTabDataBase["Source_Destination"][Source]["DestinationList"].append(Destination)
+            dynamic_service = {}
+            static_service = {}
 
-            # ** Dual **
-            if not ( Destination in DemandTabDataBase["Source_Destination"] ):
-                DemandTabDataBase["Source_Destination"][Destination] = {"Source": Destination, "DestinationList": []}
-            
-            elif not ( Source in DemandTabDataBase["Source_Destination"][Destination]["DestinationList"] ):
-                DemandTabDataBase["Source_Destination"][Destination]["DestinationList"].append(Source)
-            
-            # services part
-            if not ( (Source, Destination) in DemandTabDataBase["Services"]):
-                DemandTabDataBase["Services"][(Source, Destination)] = {}
+            dynamic_service_d = {}
+            static_service_d = {}
 
-            # ** Dual **
-            if not ( (Destination, Source) in DemandTabDataBase["Services"]):
-                DemandTabDataBase["Services"][(Destination, Source)] = {}
-
-            # static_service part
-            if not ( Source in DemandTabDataBase["Services_static"] ):
-                DemandTabDataBase["Services_static"][Source] = {}
-            
-            # ** Dual **
-            if not ( Destination in DemandTabDataBase["Services_static"] ):
-                DemandTabDataBase["Services_static"][Destination] = {}
-
-            for service in ServiceIdList:
-                new_flag = 0
-
-
-                if not ( (key, service) in DemandTabDataBase["Services"][(Source, Destination)] ):
-                    DemandTabDataBase["Services"][(Source, Destination)][(key, service)] = 0
+            for ServiceId, object in value.ServiceDict.items():
+                LightPathId = object.LightPathId
+                Type = object.Type
+                OriginalSource = object.OriginalSource
+                OriginalDestination = object.OriginalDestination
                 
-                # ** Dual **
-                if not ( (key, service) in DemandTabDataBase["Services"][(Destination, Source)] ):
-                    DemandTabDataBase["Services"][(Destination, Source)][(key, service)] = 0
+                if LightPathId is not None:
+                    dynamic_service[(DemandId, ServiceId)] = 1
+                    dynamic_service_d[(DemandId, ServiceId)] = 1
+                else:
+                    dynamic_service[(DemandId, ServiceId)] = 0
+                    dynamic_service_d[(DemandId, ServiceId)] = 0
+            
 
-                if not ((key, service) in DemandTabDataBase["Services_static"][Source] ) :
-                    new_flag = 1
+                setattr(self, "Service_item_" + str(Data["Service_item_num"]), QListWidgetItem(Type, self.Demand_ServiceList))
+                item = getattr(self, "Service_item_" + str(Data["Service_item_num"]))
+                Data["Service_item_num"] += 1
+                item.setTextAlignment(Qt.AlignCenter)
+                item.setToolTip(f"Type: {Type}\nSource: {Source}\nDestination: {Destination}")
+                data = {"DemandId": DemandId, "ServiceId": ServiceId}
 
-                    setattr(self, "Service_item_" + str(Data["Service_item_num"]), QListWidgetItem(value.ServiceDict[service].Type, self.Demand_ServiceList))
-                    item = getattr(self, "Service_item_" + str(Data["Service_item_num"]))
-                    Data["Service_item_num"] += 1
-                    item.setTextAlignment(Qt.AlignCenter)
-                    item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Source}\nDestination: {Destination}")
-                    data = {"DemandId": id, "ServiceId": service}
+                if OriginalSource is not None:
+                    data["OriginalSource"] = self.IdNodeMap[OriginalSource]
+                    data["OriginalDestination"] = self.IdNodeMap[OriginalDestination]
 
-                    if value.ServiceDict[service].OriginalSource is not None:
-                        data["OriginalSource"] = value.ServiceDict[service].OriginalSource
-                        data["OriginalDestination"] = value.ServiceDict[service].OriginalDestination
+                    item.setToolTip(f"Type: {Type}\nSource: {Source}\nDestination: {Destination}\nOriginal Source: {data['OriginalSource']}\nOriginal Destination: {data['OriginalDestination']}")
 
-                        item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Source}\nDestination: {Destination}\nOriginal Source: {data['OriginalSource']}\nOriginal Destination: {data['OriginalDestination']}")
+                item.setData(Qt.UserRole, data)
 
-                    item.setData(Qt.UserRole, data)
+                if LightPathId is None:
                     item.setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
+                else:
+                    item.setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
-                    DemandTabDataBase["Services_static"][Source][(key, service)] = item
+                static_service[(DemandId, ServiceId)] = item
 
 
-                # ** Dual **
-                if not ((key, service) in DemandTabDataBase["Services_static"][Destination] ) :
-                    new_flag = 1
-                    
-                    setattr(self, "Service_item_" + str(Data["Service_item_num"]), QListWidgetItem(value.ServiceDict[service].Type, self.Demand_ServiceList))
-                    item = getattr(self, "Service_item_" + str(Data["Service_item_num"]))
-                    Data["Service_item_num"] += 1
-                    item.setTextAlignment(Qt.AlignCenter)
-                    item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Destination}\nDestination: {Source}")
-                    data = {"DemandId": id, "ServiceId": service}
+                # ** Dual ** 
+                setattr(self, "Service_item_" + str(Data["Service_item_num"]), QListWidgetItem(Type, self.Demand_ServiceList))
+                item = getattr(self, "Service_item_" + str(Data["Service_item_num"]))
+                Data["Service_item_num"] += 1
+                item.setTextAlignment(Qt.AlignCenter)
+                item.setToolTip(f"Type: {Type}\nSource: {Destination}\nDestination: {Source}")
+                data = {"DemandId": DemandId, "ServiceId": ServiceId}
 
-                    if value.ServiceDict[service].OriginalSource is not None:
-                        data["OriginalSource"] = value.ServiceDict[service].OriginalSource
-                        data["OriginalDestination"] = value.ServiceDict[service].OriginalDestination
+                if OriginalSource is not None:
+                    data["OriginalSource"] = self.IdNodeMap[OriginalSource]
+                    data["OriginalDestination"] = self.IdNodeMap[OriginalDestination]
 
-                        item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Destination}\nDestination: {Source}\nOriginal Source: {data['OriginalSource']}\nOriginal Destination: {data['OriginalDestination']}")
+                    item.setToolTip(f"Type: {Type}\nSource: {Destination}\nDestination: {Source}\nOriginal Source: {data['OriginalDestination']}\nOriginal Destination: {data['OriginalSource']}")
 
-                    item.setData(Qt.UserRole, data)
+                item.setData(Qt.UserRole, data)
+
+                if LightPathId is None:
                     item.setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
+                else:
+                    item.setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
-                    DemandTabDataBase["Services_static"][Destination][(key, service)] = item
-                
-                if value.ServiceDict[service].OriginalSource is not None and new_flag == 0:
+                static_service_d[(DemandId, ServiceId)] = item
+            
+            DemandTabDataBase["Services"][(Source, Destination)] = copy.copy(dynamic_service)
+            DemandTabDataBase["Services"][(Destination, Source)] = copy.copy(dynamic_service_d)
 
-                    UserData = DemandTabDataBase["Services_static"][Source][(key, service)].data(Qt.UserRole)
-                    item = DemandTabDataBase["Services_static"][Source][(key, service)]
+            if not ( Source in DemandTabDataBase["Services_static"]): 
+                DemandTabDataBase["Services_static"][Source] = copy.copy(static_service)
+            else:
+                DemandTabDataBase["Services_static"][Source].update(copy.copy(static_service))
 
-                    UserData["OriginalSource"] = value.ServiceDict[service].OriginalSource
-                    UserData["OriginalDestination"] = value.ServiceDict[service].OriginalDestination
-
-                    item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Source}\nDestination: {Destination}\nOriginal Source: {UserData['OriginalSource']}\nOriginal Destination: {UserData['OriginalDestination']}")
-                    item.setData(Qt.UserRole, UserData)
-
-                    # ** Dual **
-                    UserData = DemandTabDataBase["Services_static"][Destination][(key, service)].data(Qt.UserRole)
-                    item = DemandTabDataBase["Services_static"][Destination][(key, service)]
-
-                    UserData["OriginalSource"] = value.ServiceDict[service].OriginalSource
-                    UserData["OriginalDestination"] = value.ServiceDict[service].OriginalDestination
-
-                    item.setToolTip(f"Type: {value.ServiceDict[service].Type}\nSource: {Destination}\nDestination: {Source}\nOriginal Source: {UserData['OriginalSource']}\nOriginal Destination: {UserData['OriginalDestination']}")
-                    item.setData(Qt.UserRole, UserData)
+            if not ( Destination in DemandTabDataBase["Services_static"]):
+                DemandTabDataBase["Services_static"][Destination] = copy.copy(static_service_d)
+            else:
+                DemandTabDataBase["Services_static"][Destination].update(copy.copy(static_service_d))
 
 
     def find_grooming_failed_sources(self):
@@ -4569,8 +4553,16 @@ class Ui_MainWindow(object):
                 if state == 0:
 
                     Source = key[0]
-                    if not (Source in NotifiedNodes):
+                    x = 0
+                    for GateWay , value in Data["Clustering"].items():
+                        if Source in value["SubNodes"]:
+                            x = 1
+                            break
+
+                    if not (Source in NotifiedNodes) and x == 0:
                         NotifiedNodes.append(Source)
+                        break
+                    elif x == 1:
                         break
         
         return NotifiedNodes
