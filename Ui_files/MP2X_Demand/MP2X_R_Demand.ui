@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>114</width>
-    <height>703</height>
+    <height>536</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <item>
     <widget class="QLabel" name="MP2X_R_D">
      <property name="styleSheet">
-      <string notr="true">image: url(:/MP2X_R_SOURCE/MP2X_R_Demand.png);
+      <string notr="true">image: url(:/MP2X_R_SOURCE/MP2X_R.png);
 border-image: none;</string>
      </property>
      <property name="text">
