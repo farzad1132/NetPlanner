@@ -1808,6 +1808,8 @@ class Ui_MainWindow(object):
         self.ViewGroupbox.setEnabled(False)
 
         #self.setStyleSheet("QToolTip { background-color: black; color: white; border: black solid 1px; }")
+        # NOTE ADDED
+        self.splitter.splitterMoved["int", "int"].connect(self.SplitterCommandFun)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -1907,6 +1909,14 @@ class Ui_MainWindow(object):
             self.Demand_tab.setEnabled(False)
         else:
             self.Demand_tab.setEnabled(True)
+
+    def SplitterCommandFun(self, pos):
+        if pos == 0:
+            self.SplitterEventLabel.setText("\t\t\t\t \31 Pull down The Splitter to see The Shelf !")
+        elif pos == 727 or pos == 889:
+            self.SplitterEventLabel.setText("\t\t\t\t \30 Pull up The Splitter to see The Map !")
+        else :
+            self.SplitterEventLabel.setText("")
 
 
 
