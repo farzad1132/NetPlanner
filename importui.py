@@ -340,6 +340,7 @@ class Ui_ImportMenuUI(object):
     
     def call_insert_links(self):
         Data["ui"].insert_link_fun()
+        Data["ui"].Grouping_groupbox.setEnabled(True)
         bus["ImportMenuUI"].close()
     
     def node_import_procedure(self):

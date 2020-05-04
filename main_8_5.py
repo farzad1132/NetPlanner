@@ -1807,6 +1807,8 @@ class Ui_MainWindow(object):
         self.Max_Used_radiobutton.setChecked(True)
         self.ViewGroupbox.setEnabled(False)
 
+        self.Grouping_groupbox.setEnabled(False)
+
         #self.setStyleSheet("QToolTip { background-color: black; color: white; border: black solid 1px; }")
         # NOTE ADDED
         self.splitter.splitterMoved["int", "int"].connect(self.SplitterCommandFun)
@@ -1927,7 +1929,6 @@ class Ui_MainWindow(object):
         pass
 
     def show_subnodes_fun(self, state):
-        print(f"state: {state}")
 
         if state == 2:
             self.webengine.page().runJavaScript('hide_subnodes()')
@@ -4598,6 +4599,14 @@ class Ui_MainWindow(object):
 
         # Enabling View GroupBox
         self.ViewGroupbox.setEnabled(True)
+
+        # disabling Clustering GroupBox except ShowSubNodes
+        self.SetGatewayNode_button.setEnabled(False)
+        self.SelectSubNode_button.setEnabled(False)
+        self.OK_button.setEnabled(False)
+        self.Cancel_button.setEnabled(False)
+        self.cluster_type_combobox.setEnabled(False)
+        self.ClusterColor_combobox.setEnabled(False)
 
         self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
 "    \n"
