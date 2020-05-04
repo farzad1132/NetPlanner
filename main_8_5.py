@@ -126,26 +126,23 @@ class Backend_map(QObject):
     def change_tab_to4(self,degreename):
         degreename = degreename.strip()
         print(">>>>>>",degreename)
-        if Data["Stage_flag"] == "Grooming":
-            Data["TabWidget"].setCurrentIndex(2)
-            Data["Clicked_Node"] = degreename
-            Data["ui"].clicked_Node_flag = True
-            Data["SelectNodeCombo"].setCurrentText(degreename)
-            # TODO: check this function and delete it
-            #ui.SelectNode_combo_change()
 
         if Data["Stage_flag"] == "Demand":
-            Data["ui"].clicked_Node_flag = True
-            Data["ui"].update_Demand_lightpath_list_flag = False
-            Data["TabWidget"].setCurrentIndex(2)
-            Data["ui"].update_Demand_lightpath_list_flag = True
             Data["Clicked_Node"] = degreename
-            rep_source = DemandTabDataBase["Source_Destination"][degreename]["Source"]
-            if rep_source == Data["Demand_Source_combo"].currentText():
-                Data["Demand_Source_combo"].setCurrentText(rep_source)
-                Data["ui"].Demand_Source_combobox_Change()
-            else:
-                Data["Demand_Source_combo"].setCurrentText(rep_source)
+
+            if degreename in DemandTabDataBase["Source_Destination"]:
+                Data["ui"].clicked_Node_flag = True
+                Data["ui"].update_Demand_lightpath_list_flag = False
+                Data["TabWidget"].setCurrentIndex(2)
+                Data["ui"].update_Demand_lightpath_list_flag = True
+                
+                
+                rep_source = DemandTabDataBase["Source_Destination"][degreename]["Source"]
+                if rep_source == Data["Demand_Source_combo"].currentText():
+                    Data["Demand_Source_combo"].setCurrentText(rep_source)
+                    Data["ui"].Demand_Source_combobox_Change()
+                else:
+                    Data["Demand_Source_combo"].setCurrentText(rep_source)
 
 
 class Ui_MainWindow(object):
@@ -2962,15 +2959,8 @@ class Ui_MainWindow(object):
             Source = SourceList[i]
             DemandTabDataBase["Source_Destination"][Source]["DestinationList"].append(Destination)
             DemandTabDataBase["Source_Destination"][Destination]["DestinationList"].append(Source)
+
         
-        """ for value in Data["Nodes"].values():
-            NodeName = value["Node"]
-            if not (NodeName in DemandTabDataBase["Source_Destination"]):
-                for node, value in DemandTabDataBase["Source_Destination"].items():
-                    des_list = value["DestinationList"]
-                    if NodeName in des_list:
-                        DemandTabDataBase["Source_Destination"][NodeName] = {"Source":node, "DestinationList": des_list}
-                        break """
 
 
         self.Demand_Source_combobox.clear()
