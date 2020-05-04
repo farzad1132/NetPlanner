@@ -1651,7 +1651,6 @@ class Ui_MainWindow(object):
         self.formLayout_4.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.Demand_Source_combobox)
         self.gridLayout_4.addLayout(self.formLayout_4, 0, 0, 1, 1)
         self.SplitterEventLabel = QtWidgets.QLabel(self.tab)
-        self.SplitterEventLabel.setText("")
         self.SplitterEventLabel.setObjectName("SplitterEventLabel")
         self.gridLayout_4.addWidget(self.SplitterEventLabel, 0, 1, 1, 1)
         spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -1896,6 +1895,7 @@ class Ui_MainWindow(object):
         self.ClientLabel_21.setText(_translate("MainWindow", " Network Panels"))
         self.ClientLabel_22.setText(_translate("MainWindow", " LightPathes "))
         self.SelectNode_Label_13.setText(_translate("MainWindow", "   Source"))
+        self.SplitterEventLabel.setText(_translate("MainWindow", "      "))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
 
     # NOTE:ADDED
@@ -4752,8 +4752,6 @@ class Ui_MainWindow(object):
         except:
             pass
         self.decoded_network = decoded_network
-
-
 
 if __name__ == "__main__":
     import sys
