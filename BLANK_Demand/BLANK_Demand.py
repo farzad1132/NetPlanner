@@ -40,6 +40,8 @@ class BLANK_Demand(QtWidgets.QWidget):
         self.setAcceptDrops(True)
 
     def dragEnterEvent(self, event):
+        AcceptedPanels = ["MP2X", "MP1H", "TP1H"]
+
         
         #TODO: update this
         DoublePanels = ["MP2D","MP2X","TPAX","MPBD","MPAD","RG1H", "MP1H", "TP1H"]
@@ -48,12 +50,14 @@ class BLANK_Demand(QtWidgets.QWidget):
         model.dropMimeData(event.mimeData(), Qt.CopyAction, 0,0, QModelIndex())
         text = model.item(0,0).text()
 
-        if DoublePanels.count(text) != 0:
-            #if Data["Nodes"][self.nodename]["Panels"].get(uppernum,0) == 0:
-            if DemandTabDataBase["Panels"][self.nodename].get(self.uppernum, 0) == 0:
+        if text in AcceptedPanels:
+
+            if DoublePanels.count(text) != 0:
+                #if Data["Nodes"][self.nodename]["Panels"].get(uppernum,0) == 0:
+                if DemandTabDataBase["Panels"][self.nodename].get(self.uppernum, 0) == 0:
+                    event.accept()
+            else:
                 event.accept()
-        else:
-            event.accept()
 
         
         super(BLANK_Demand,self).dragEnterEvent(event)
