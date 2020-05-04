@@ -315,6 +315,11 @@ class Ui_ImportMenuUI(object):
         self.SaveChangesBitton.clicked.connect(self.call_savechange)
         self.DrawButton.clicked.connect(self.call_insert_links)
 
+        self.DrawButton.setEnabled(False)
+        self.SaveChangesBitton.setEnabled(False)
+        self.LinkButton.setEnabled(False)
+        self.TrafficButton.setEnabled(False)
+
     def retranslateUi(self, ImportMenuUI):
         _translate = QtCore.QCoreApplication.translate
         ImportMenuUI.setWindowTitle(_translate("ImportMenuUI", "ImportMenuUI"))
@@ -330,6 +335,8 @@ class Ui_ImportMenuUI(object):
     
     def call_savechange(self):
         Data["ui"].SaveChanges_button_fun()
+
+        self.DrawButton.setEnabled(True)
     
     def call_insert_links(self):
         Data["ui"].insert_link_fun()
@@ -340,6 +347,7 @@ class Ui_ImportMenuUI(object):
         nodepath, Node_Success = self.import_nodes_fun()
         self.NodeLineEdit.setText(nodepath[0])
         if Node_Success is True:
+            self.LinkButton.setEnabled(True)
             self.NodeButton.setStyleSheet("QPushButton {\n"
 "    \n"
 "    \n"
@@ -370,6 +378,7 @@ class Ui_ImportMenuUI(object):
         linkpath, Link_Success = self.import_links_fun()
         self.LinkLineEdit.setText(linkpath[0])
         if Link_Success is True:
+            self.TrafficButton.setEnabled(True)
             self.LinkButton.setStyleSheet("QPushButton {\n"
 "    \n"
 "    \n"
@@ -400,6 +409,7 @@ class Ui_ImportMenuUI(object):
         TMpath, TM_Success = self.LoadTM_fun()
         self.TrafficLineEdit.setText(TMpath[0])
         if TM_Success is True:
+            self.SaveChangesBitton.setEnabled(True)
             self.TrafficButton.setStyleSheet("QPushButton {\n"
 "    \n"
 "    \n"
@@ -431,29 +441,32 @@ class Ui_ImportMenuUI(object):
         name = QFileDialog.getOpenFileName(bus["ImportMenuUI"], "Open Topology")
 
         if name[0] != 0 and name[0] != "":
-            with pd.ExcelFile(name[0]) as handle:
-                Temp_data = handle.parse(header=0, skipfooter=0)
-            temp_dic ={}
-            handle.close() 
-            headers = ['ID','Node','Location','ROADM_Type'] 
+            try:
+                with pd.ExcelFile(name[0]) as handle:
+                    Temp_data = handle.parse(header=0, skipfooter=0)
+                temp_dic ={}
+                handle.close() 
+                headers = ['ID','Node','Location','ROADM_Type'] 
 
-            for pointer in headers:
-                temp_dic[pointer] = {}
-                temp_dic[pointer].update(Temp_data[pointer])
-            
-            ProperDict = {}
-            for Row in temp_dic["ID"].keys():
-                Id = temp_dic["ID"][Row]
-                Node = temp_dic["Node"][Row]
-                Location = str(temp_dic["Location"][Row]).split(',')
-                Location = list(map(lambda x : float(x), Location))
+                for pointer in headers:
+                    temp_dic[pointer] = {}
+                    temp_dic[pointer].update(Temp_data[pointer])
+                
+                ProperDict = {}
+                for Row in temp_dic["ID"].keys():
+                    Id = temp_dic["ID"][Row]
+                    Node = temp_dic["Node"][Row]
+                    Location = str(temp_dic["Location"][Row]).split(',')
+                    Location = list(map(lambda x : float(x), Location))
 
-                ROADM_Type = temp_dic["ROADM_Type"][Row]
+                    ROADM_Type = temp_dic["ROADM_Type"][Row]
 
-                ProperDict[Id] = {"Node": Node, "Location": Location, "ROADM_Type":ROADM_Type}
+                    ProperDict[Id] = {"Node": Node, "Location": Location, "ROADM_Type":ROADM_Type}
 
-            Data["Nodes"].update(ProperDict)
-            Node_success = True
+                Data["Nodes"].update(ProperDict)
+                Node_success = True
+            except:
+                Node_success = False
         
         else:
             Node_success = False
@@ -465,45 +478,48 @@ class Ui_ImportMenuUI(object):
         
 
         if name[0] != 0 and name[0] != "":
-            with pd.ExcelFile(name[0]) as handle:
-                Temp_data = handle.parse(header=0, skipfooter=0)
-            temp_dic ={}
-            handle.close()
-            headers = ["ID", "Source", "Destination", "Distance", "Fiber Type", "Loss Coefficient", "Beta", "Gamma", "Dispersion"]
-            
-            for pointer in headers:
-                temp_dic[pointer] = {}
-                temp_dic[pointer].update(Temp_data[pointer])
-            
-            ProperDict = {}
-            for Row in temp_dic["ID"].keys():
-                id = temp_dic["ID"][Row]
-                Source = temp_dic["Source"][Row]
-                Destination = temp_dic["Destination"][Row]
-                Distance = str(temp_dic["Distance"][Row]).split("+")
-                Distance = list(map(lambda x : float(x), Distance))
-
-                Fiber_Type = str(temp_dic["Fiber Type"][Row]).split("+")
-
-                Loss = str(temp_dic["Loss Coefficient"][Row]).split("+")
-                Loss = list(map(lambda x : float(x), Loss))
-
-                Beta = str(temp_dic["Beta"][Row]).split('+')
-                Beta = list(map(lambda x : float(x), Beta))
-
-                Gamma = str(temp_dic["Gamma"][Row]).split('+')
-                Gamma = list(map(lambda x : float(x), Gamma))
-
-                Dispersion = str(temp_dic["Dispersion"][Row]).split('+')
-                Dispersion = list(map(lambda x : float(x), Dispersion))
-
+            try:
+                with pd.ExcelFile(name[0]) as handle:
+                    Temp_data = handle.parse(header=0, skipfooter=0)
+                temp_dic ={}
+                handle.close()
+                headers = ["ID", "Source", "Destination", "Distance", "Fiber Type", "Loss Coefficient", "Beta", "Gamma", "Dispersion"]
                 
-                # TODO: Some Data doesn't exist in Link Dictionary
-                ProperDict[(Source, Destination)] = {"NumSpan": len(Distance), "Length": Distance, "Loss":Loss, "Type":Fiber_Type, "Beta":Beta, "Gamma": Gamma,
-                "Dispersion": Dispersion}
+                for pointer in headers:
+                    temp_dic[pointer] = {}
+                    temp_dic[pointer].update(Temp_data[pointer])
+                
+                ProperDict = {}
+                for Row in temp_dic["ID"].keys():
+                    id = temp_dic["ID"][Row]
+                    Source = temp_dic["Source"][Row]
+                    Destination = temp_dic["Destination"][Row]
+                    Distance = str(temp_dic["Distance"][Row]).split("+")
+                    Distance = list(map(lambda x : float(x), Distance))
 
-            Data["Links"].update(ProperDict)
-            Link_Success = True
+                    Fiber_Type = str(temp_dic["Fiber Type"][Row]).split("+")
+
+                    Loss = str(temp_dic["Loss Coefficient"][Row]).split("+")
+                    Loss = list(map(lambda x : float(x), Loss))
+
+                    Beta = str(temp_dic["Beta"][Row]).split('+')
+                    Beta = list(map(lambda x : float(x), Beta))
+
+                    Gamma = str(temp_dic["Gamma"][Row]).split('+')
+                    Gamma = list(map(lambda x : float(x), Gamma))
+
+                    Dispersion = str(temp_dic["Dispersion"][Row]).split('+')
+                    Dispersion = list(map(lambda x : float(x), Dispersion))
+
+                    
+                    # TODO: Some Data doesn't exist in Link Dictionary
+                    ProperDict[(Source, Destination)] = {"NumSpan": len(Distance), "Length": Distance, "Loss":Loss, "Type":Fiber_Type, "Beta":Beta, "Gamma": Gamma,
+                    "Dispersion": Dispersion}
+
+                Data["Links"].update(ProperDict)
+                Link_Success = True
+            except:
+                Link_Success = False
         
         else:
             Link_Success = False
@@ -514,61 +530,64 @@ class Ui_ImportMenuUI(object):
         name = QFileDialog.getOpenFileName(bus["ImportMenuUI"], "Load Traffic Matrix")
 
         if name[0] != 0 and name[0] != "":
-            with pd.ExcelFile(name[0]) as handle:
-                Temp_data = handle.parse(header=1, skipfooter=0)
+            try:
+                with pd.ExcelFile(name[0]) as handle:
+                    Temp_data = handle.parse(header=1, skipfooter=0)
 
-            handle.close()
-            header_list = ['ID', 'Source', 'Destination', 'Old\nCable\nType', 'Cable\nType', 'Distance\nReal\n(Km)',
-                           'Att. (dB/km)\nfor Network Plan\n(Option 1 or 2)', 'Status',"Degree"]
+                handle.close()
+                header_list = ['ID', 'Source', 'Destination', 'Old\nCable\nType', 'Cable\nType', 'Distance\nReal\n(Km)',
+                            'Att. (dB/km)\nfor Network Plan\n(Option 1 or 2)', 'Status',"Degree"]
 
-            j = -1
-            for i in header_list:
-                dict1 = {}
-                j += 1
-                dict1.update(Temp_data[i])
-                Data["General"]["DataSection"][str(j)].update(dict1)
-                #print(Data["General"]["DataSection"][str(j)])
-                for keys in list(Data["General"]["DataSection"][str(j)].keys()):
-                    text = str(Data["General"]["DataSection"][str(j)][keys])
-                    if text == "nan":
-                        Data["General"]["DataSection"][str(j)].pop(keys)
-                    else:
-                        Data["General"]["DataSection"][str(j)][keys] = text
-            Data["ui"].update_cells()
-            header_list2 = [['Quantity_E1', 'SLA_E1'], ['Quantity_STM1_E', 'SLA_STM1_E'],
-                            ['Quantity_STM1_O', 'λ_STM1_O(nm)', 'SLA_STM1_O'],
-                            ['Quantity_STM4', 'λ_STM4(nm)', 'Concat._STM4', 'SLA_STM4'],
-                            ['Quantity_STM16', 'λ_STM16(nm)', 'Concat._STM16', 'SLA_STM16'],
-                            ['Quantity_STM64', 'λ_STM64(nm)', 'Concat._STM64', 'SLA_STM64'],
-                            ['Quantity_FE', "GranularityxVC12", "GranularityxVC4", 'λ_FE(nm)', 'SLA_FE'],
-                            ['Quantity_GE', 'Granularity_GE', 'λ_GE(nm)', 'SLA_GE'],
-                            ['Quantity_10GE', 'Granularity_10GE', 'λ_10GE(nm)', 'SLA_10GE'],
-                            ['Quantity_40GE', 'Granularity_40GE', 'λ_40GE(nm)', 'SLA_40GE'],
-                            ['Quantity_100GE', 'Granularity_100GE', 'λ_100GE(nm)', 'SLA_100GE']]
-            self.all_headers = ["E1", "STM_1_Electrical", "STM_1_Optical", "STM_4", "STM_16", "STM_64", "FE", "1GE", "10GE",
-                           "40GE", "100GE"]
-            l1 = [["Quantity", "SLA"], ["Quantity", "SLA"], ["Quantity", "λ", "SLA"],
-                  ["Quantity", "λ", "concat.", "SLA"], ["Quantity", "λ", "concat.", "SLA"],
-                  ["Quantity", "λ", "concat.", "SLA"],
-                  ["Quantity", "Granularity_xVC12", "Granularity_xVC4", "λ", "SLA"],
-                  ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"],
-                  ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"]]
-            k = -1
-            for m in self.all_headers:
-                k += 1
-                for j in range(len(header_list2[k])):
+                j = -1
+                for i in header_list:
                     dict1 = {}
-                    dict1.update(Temp_data[header_list2[k][j]])
-                    Data[m]["DataSection"][l1[k][j]].update(dict1)
-                    #print(Data[m]["DataSection"][l1[k][j]])
-                    for keys in list(Data[m]["DataSection"][l1[k][j]].keys()):
-                        text = str(Data[m]["DataSection"][l1[k][j]][keys])
-                        if  text == "nan":
-                            Data[m]["DataSection"][l1[k][j]].pop(keys)
+                    j += 1
+                    dict1.update(Temp_data[i])
+                    Data["General"]["DataSection"][str(j)].update(dict1)
+                    #print(Data["General"]["DataSection"][str(j)])
+                    for keys in list(Data["General"]["DataSection"][str(j)].keys()):
+                        text = str(Data["General"]["DataSection"][str(j)][keys])
+                        if text == "nan":
+                            Data["General"]["DataSection"][str(j)].pop(keys)
                         else:
-                            Data[m]["DataSection"][l1[k][j]][keys] = text
-            
-            TM_Success = True
+                            Data["General"]["DataSection"][str(j)][keys] = text
+                Data["ui"].update_cells()
+                header_list2 = [['Quantity_E1', 'SLA_E1'], ['Quantity_STM1_E', 'SLA_STM1_E'],
+                                ['Quantity_STM1_O', 'λ_STM1_O(nm)', 'SLA_STM1_O'],
+                                ['Quantity_STM4', 'λ_STM4(nm)', 'Concat._STM4', 'SLA_STM4'],
+                                ['Quantity_STM16', 'λ_STM16(nm)', 'Concat._STM16', 'SLA_STM16'],
+                                ['Quantity_STM64', 'λ_STM64(nm)', 'Concat._STM64', 'SLA_STM64'],
+                                ['Quantity_FE', "GranularityxVC12", "GranularityxVC4", 'λ_FE(nm)', 'SLA_FE'],
+                                ['Quantity_GE', 'Granularity_GE', 'λ_GE(nm)', 'SLA_GE'],
+                                ['Quantity_10GE', 'Granularity_10GE', 'λ_10GE(nm)', 'SLA_10GE'],
+                                ['Quantity_40GE', 'Granularity_40GE', 'λ_40GE(nm)', 'SLA_40GE'],
+                                ['Quantity_100GE', 'Granularity_100GE', 'λ_100GE(nm)', 'SLA_100GE']]
+                self.all_headers = ["E1", "STM_1_Electrical", "STM_1_Optical", "STM_4", "STM_16", "STM_64", "FE", "1GE", "10GE",
+                            "40GE", "100GE"]
+                l1 = [["Quantity", "SLA"], ["Quantity", "SLA"], ["Quantity", "λ", "SLA"],
+                    ["Quantity", "λ", "concat.", "SLA"], ["Quantity", "λ", "concat.", "SLA"],
+                    ["Quantity", "λ", "concat.", "SLA"],
+                    ["Quantity", "Granularity_xVC12", "Granularity_xVC4", "λ", "SLA"],
+                    ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"],
+                    ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"]]
+                k = -1
+                for m in self.all_headers:
+                    k += 1
+                    for j in range(len(header_list2[k])):
+                        dict1 = {}
+                        dict1.update(Temp_data[header_list2[k][j]])
+                        Data[m]["DataSection"][l1[k][j]].update(dict1)
+                        #print(Data[m]["DataSection"][l1[k][j]])
+                        for keys in list(Data[m]["DataSection"][l1[k][j]].keys()):
+                            text = str(Data[m]["DataSection"][l1[k][j]][keys])
+                            if  text == "nan":
+                                Data[m]["DataSection"][l1[k][j]].pop(keys)
+                            else:
+                                Data[m]["DataSection"][l1[k][j]][keys] = text
+                
+                TM_Success = True
+            except:
+                TM_Success = False
         
         else:
             TM_Success = False

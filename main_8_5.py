@@ -1804,6 +1804,12 @@ class Ui_MainWindow(object):
 
         self.Cancel_button.clicked.connect(self.cancel_button_fun)
 
+        self.tabWidget.setTabEnabled(1, False)
+        self.tabWidget.setTabEnabled(2, False)
+
+        self.Max_Used_radiobutton.setChecked(True)
+        self.ViewGroupbox.setEnabled(False)
+
         #self.setStyleSheet("QToolTip { background-color: black; color: white; border: black solid 1px; }")
 
     def retranslateUi(self, MainWindow):
@@ -3730,7 +3736,9 @@ class Ui_MainWindow(object):
         self.DemandTabDataBase_Setup()
         self.Demand_Shelf_set()
         self.Fill_Demand_SourceandDestination_combobox()
-    
+
+        self.tabWidget.setTabEnabled(1, True)
+        self.tabWidget.setTabEnabled(2, True)
 
     def set_flags(self):
         self.from_Source_to_Destination_flag = False
@@ -4587,6 +4595,9 @@ class Ui_MainWindow(object):
         RWA_Runtime = time.time() - RWA_Start_Time
         self.fill_GroomingTabDataBase(self.decoded_network, RWA_Runtime)
         self.RWA_Success = True
+
+        # Enabling View GroupBox
+        self.ViewGroupbox.setEnabled(True)
 
         self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
 "    \n"
