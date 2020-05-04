@@ -2081,6 +2081,8 @@ class Ui_MainWindow(object):
         Data["Clustering"].pop(self.backend_map.LastGateWay)
 
         self.SelectSubNode_button.toggle()
+
+        self.Grooming_pushbutton.setEnabled(True)
     
     def OK_button_fun(self):
         SubNodes = []
@@ -2092,6 +2094,8 @@ class Ui_MainWindow(object):
         self.webengine.page().runJavaScript('update_cluster_info(\'%s\', \'%s\', \'%s\')' %(self.backend_map.LastGateWay, Data["Clustering"][self.backend_map.LastGateWay]["Color"], 0))
         
         self.SelectSubNode_button.toggle()
+
+        self.Grooming_pushbutton.setEnabled(True)
 
     #TODO: complete this method
     def working_view_fun(self):
@@ -2126,6 +2130,8 @@ class Ui_MainWindow(object):
             self.backend_map.SubNodeSelect_flag_fun("False")
             self.SelectSubNode_flag_javascript("False")
 
+        self.Grooming_pushbutton.setEnabled(False)
+
 
     def SetNode_gateway_fun(self):
         self.backend_map.SetNode_flag_fun("False")
@@ -2135,6 +2141,8 @@ class Ui_MainWindow(object):
         
         self.backend_map.SetNode_flag_fun("True",self.lastgroup_color)
         self.SetNode_flag_javascript("True")
+        
+        self.Grooming_pushbutton.setEnabled(False)
         
 
     def set_demand_panels(self):
