@@ -4589,10 +4589,23 @@ class Ui_MainWindow(object):
 
 
     def open_RWA_window_fun(self):
-        self.RWA_window_dialog = QtWidgets.QDialog()
-        self.RWA_window = Ui_RWA_Window()
-        self.RWA_window.setupUi(self.RWA_window_dialog)
-        self.RWA_window_dialog.show()
+        
+        x = 0
+        for S_D_Pair in DemandTabDataBase["Services"].values():
+            for state in S_D_Pair.values():
+                if state == 0:
+                    x = 1
+                    break
+            
+            if x == 1:
+                break
+        
+        # TODO: show appropriate message to user
+        if x == 0:
+            self.RWA_window_dialog = QtWidgets.QDialog()
+            self.RWA_window = Ui_RWA_Window()
+            self.RWA_window.setupUi(self.RWA_window_dialog)
+            self.RWA_window_dialog.show()
 
 
     def RWA_procedure(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize,
