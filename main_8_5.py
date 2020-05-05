@@ -18,7 +18,6 @@ import xlrd
 import xlsxwriter
 from pandas import ExcelWriter
 from pandas import ExcelFile
-from newcheck import  Ui_checking
 from Common_Object_def import Network
 import math
 from math import ceil
@@ -35,25 +34,8 @@ from RWA_window import Ui_RWA_Window
 from Ui_files.new_ui import iconresources
 
 from data import *
-from Node_View_Data import Panel_Data
 from grooming_algorithm import grooming_fun
 
-
-from BLANK_panel.BLANK_panel import BLANK_panel
-from SC_panel_final.SC_panel import SC_panel
-from BAF3_panel.BAF3_panel import BAF3_panel
-from LAF3_panel.LAF3_panel import LAF3_panel
-from PAF3_panel.PAF3_panel import PAF3_panel
-from MP2X_panel.MP2X_panel import MP2X_panel
-#from MP2D_panel.MP2D_panel import MP2D_panel
-from MP2D_panel.MP2D_panel_L import MP2D_panel_L
-from MP2D_panel.MP2D_panel_R import MP2D_panel_R
-from TP2X_panel.TP2X_panel import TP2X_panel
-
-from TP1H_Grooming.TP1H_L_Grooming import TP1H_L_Grooming
-from TP1H_Grooming.TP1H_R_Grooming import TP1H_R_Grooming
-from MP1H_Grooming.MP1H_L_Grooming import MP1H_L_Grooming
-from MP1H_Grooming.MP1H_R_Grooming import MP1H_R_Grooming
 
 from BLANK_Demand.BLANK_Demand import BLANK_Demand
 from MP2X_Demand.MP2X_L_Demand import MP2X_L_Demand
@@ -3066,25 +3048,6 @@ class Ui_MainWindow(object):
             self.set_demand_panels()        
             self.DemandMap_Change()
         
-        """ elif Data["DemandTab_firststart_flag"] == False:
-            
-            self.UpdateDemand_ServiceList()
-            self.update_Demand_lightpath_list()
-            self.set_demand_panels()        
-            self.DemandMap_Change() """
-        
-        
-        
-
-        
-
-
-
-        
-        
-        
-            
-
 
     def PhysicalTopologyToObject(self):
 
