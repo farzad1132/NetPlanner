@@ -293,21 +293,35 @@ class MP2X_L_Demand(QtWidgets.QWidget):
             DemandTabDataBase["Services"][(source, destination)][key] = 1
             DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
-            # statement bellow checks for removing notification ( if there is such a node)
-            if hasattr(Data["ui"], "failed_nodes"):
-                if source in Data["ui"].failed_nodes:
+            if source in DemandTabDataBase["Failed_Demands"]:
+                if destination in DemandTabDataBase["Failed_Demands"][source]:
+
                     x = 0
-                    for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
-                        for value in DemandTabDataBase["Services"][(source, dest)]:
-                            if value == 0:
-                                x = 1
-                                break
-                    if x == 0:        
+                    for value in DemandTabDataBase["Services"][(source, destination)].values():
+
+                        if value == 0:
+                            x = 1
+                            break
+                    
+                    if x == 0:
+                        DemandTabDataBase["Failed_Demands"][source].remove(destination)
+                        DemandTabDataBase["Failed_Demands"][destination].remove(source)
+                    
+                    if not DemandTabDataBase["Failed_Demands"][source]:
                         Data["ui"].set_failed_nodes_default(source)
+                    
+                    if not DemandTabDataBase["Failed_Demands"][destination]:
+                        Data["ui"].set_failed_nodes_default(destination)
             
         elif mode == "add":
             DemandTabDataBase["Services"][(source, destination)][key] = 0
             DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
+
+            if not ( source in DemandTabDataBase["Failed_Demands"]):
+                DemandTabDataBase["Failed_Demands"][source] = [destination]
+            
+            else:
+                DemandTabDataBase["Failed_Demands"][source].append(destination)
             
         Data["ui"].UpdateDemand_ServiceList()
     
@@ -327,14 +341,6 @@ class MP2X_L_Demand(QtWidgets.QWidget):
             # deleting desired lightpath from database
             DemandTabDataBase["GroomOut10"][(Source, Destination)].pop(id)
 
-            # correcting upper lightpath id's 
-            """ for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
-                for UpperId in sorted(list(DemandTabDataBase["GroomOut10"][(Source, Des)].keys())):
-                    if UpperId > id:
-                        DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1] = DemandTabDataBase["GroomOut10"][(Source, Des)].pop(UpperId)
-                        UserData = DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1].data(Qt.UserRole)
-                        UserData["GroomOut10Id"] -= 1
-                        DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData)  """
  
         Data["ui"].update_Demand_groomout10_list()
 
@@ -858,21 +864,35 @@ class customlabel(QLabel):
             DemandTabDataBase["Services"][(source, destination)][key] = 1
             DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(Qt.white, Qt.SolidPattern))
 
-            # statement bellow checks for removing notification ( if there is such a node)
-            if hasattr(Data["ui"], "failed_nodes"):
-                if source in Data["ui"].failed_nodes:
+            if source in DemandTabDataBase["Failed_Demands"]:
+                if destination in DemandTabDataBase["Failed_Demands"][source]:
+
                     x = 0
-                    for dest in DemandTabDataBase["Source_Destination"][source]["DestinationList"]:
-                        for value in DemandTabDataBase["Services"][(source, dest)]:
-                            if value == 0:
-                                x = 1
-                                break
-                    if x == 0:        
+                    for value in DemandTabDataBase["Services"][(source, destination)].values():
+
+                        if value == 0:
+                            x = 1
+                            break
+                    
+                    if x == 0:
+                        DemandTabDataBase["Failed_Demands"][source].remove(destination)
+                        DemandTabDataBase["Failed_Demands"][destination].remove(source)
+                    
+                    if not DemandTabDataBase["Failed_Demands"][source]:
                         Data["ui"].set_failed_nodes_default(source)
+                    
+                    if not DemandTabDataBase["Failed_Demands"][destination]:
+                        Data["ui"].set_failed_nodes_default(destination)
             
         elif mode == "add":
             DemandTabDataBase["Services"][(source, destination)][key] = 0
             DemandTabDataBase["Services_static"][source][key].setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
+
+            if not ( source in DemandTabDataBase["Failed_Demands"]):
+                DemandTabDataBase["Failed_Demands"][source] = [destination]
+            
+            else:
+                DemandTabDataBase["Failed_Demands"][source].append(destination)
             
         Data["ui"].UpdateDemand_ServiceList()
     
@@ -891,15 +911,7 @@ class customlabel(QLabel):
         if mode == "delete":
             # deleting desired lightpath from database
             DemandTabDataBase["GroomOut10"][(Source, Destination)].pop(id)
-
-            """ # correcting upper lightpath id's 
-            for Des in DemandTabDataBase["Source_Destination"][Source]["DestinationList"]:
-                for UpperId in sorted(list(DemandTabDataBase["GroomOut10"][(Source, Des)].keys())):
-                    if UpperId > id:
-                        DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1] = DemandTabDataBase["GroomOut10"][(Source, Des)].pop(UpperId)
-                        UserData = DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1].data(Qt.UserRole)
-                        UserData["GroomOut10Id"] -= 1
-                        DemandTabDataBase["GroomOut10"][(Source, Des)][UpperId - 1].setData(Qt.UserRole, UserData) """ 
+ 
  
         Data["ui"].update_Demand_groomout10_list()
 

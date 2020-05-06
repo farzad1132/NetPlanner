@@ -4299,6 +4299,16 @@ class Ui_MainWindow(object):
 
                 if Num_failed_nodes == 0:
                     break
+            
+            intersect_nodes = list(set(NotifiedNodes) & set(value["SubNodes"]))
+
+            for failed_node in intersect_nodes:
+                failed_nodes[failed_node] =  {"Color": value["Color"], "SubNode": 1}
+                NotifiedNodes.remove(failed_node)
+                Num_failed_nodes -= 1
+
+                if Num_failed_nodes == 0:
+                    break
 
         for remained_nodes in NotifiedNodes:
             # NOTE: default color is blue in this moment
@@ -4542,26 +4552,26 @@ class Ui_MainWindow(object):
 
 
     def find_grooming_failed_sources(self):
-        NotifiedNodes = []
 
-        for key, value in DemandTabDataBase["Services"].items():
+        for S_D_Pair, value in DemandTabDataBase["Services"].items():
             for state in value.values():
                 if state == 0:
 
-                    Source = key[0]
-                    x = 0
-                    for GateWay , value in Data["Clustering"].items():
-                        if Source in value["SubNodes"]:
-                            x = 1
-                            break
+                    Source = S_D_Pair[0]
+                    Destination = S_D_Pair[1]
 
-                    if not (Source in NotifiedNodes) and x == 0:
-                        NotifiedNodes.append(Source)
-                        break
-                    elif x == 1:
-                        break
+                    if not (Source in DemandTabDataBase["Failed_Demands"]):
+                        DemandTabDataBase["Failed_Demands"][Source] = [Destination]
+
+                    elif not (Destination in DemandTabDataBase["Failed_Demands"][Source]):
+                        DemandTabDataBase["Failed_Demands"][Source].append(Destination)
+
+                    break
+                
+
+                    
         
-        return NotifiedNodes
+        return list(DemandTabDataBase["Failed_Demands"].keys())
 
     def notify_sources(self):
         pass

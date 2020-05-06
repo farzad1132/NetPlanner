@@ -168,6 +168,10 @@ DemandTabDataBase["GroomOut10"] = {}
 #   text:  "GroomOut10"
 #   data:   { "GroomOut10Id": <GroomOutId>, "Capacity": <Capacity> , "Type": <Type>, "Source": <SourceName>, "Destination": <DestinationName>, "PanelId": <PanelId>, "DemandId": <DemandId>, "MP1H_Client_Id": (<MP1H Id>, <Client Id>)}
 
+DemandTabDataBase["Failed_Demands"] = {}
+# format:
+#       { <SourceName> : <DestinationsList> }
+
 GroomingTabDataBase = {}
 GroomingTabDataBase["LightPathes"] = {}
 # format:
