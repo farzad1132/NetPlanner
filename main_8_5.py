@@ -2285,12 +2285,12 @@ class Ui_MainWindow(object):
             protection_path = []
             working_regens = []
             protection_regens = []
+            unprotected_indices = []
             # Building required lists for different fields
-
             for lightpath in network.LightPathDict.values():
                 sources.append(self.IdNodeMap[lightpath.Source])
                 destinations.append(self.IdNodeMap[lightpath.Destination])
-                wavelengths.append(lightpath.WaveLength[0])
+                wavelengths.append(lightpath.WaveLength)
                 routed_types.append(lightpath.Type)
 
                 working_path.append(lightpath.WorkingPath)
@@ -2309,9 +2309,10 @@ class Ui_MainWindow(object):
                     protection_path.append(lightpath.ProtectionPath)
                     protection_regens.append(lightpath.RegeneratorNode_p)
                 except:
-                    worst_protection_snrs.append([])
+                    worst_protection_snrs.append(None)
                     protection_path.append([])
                     protection_regens.append([])
+                    unprotected_indices.append(len(worst_protection_snrs))
 
             dictionary = {
             'Source Site' : sources,
@@ -2330,6 +2331,9 @@ class Ui_MainWindow(object):
             df.to_excel(writer, sheet_name='Routed Demands')
             workbook  = writer.book
             worksheet = writer.sheets['Routed Demands']
+
+            
+
             # Set column size (begininng, end, size)
             center_format = workbook.add_format({'align': 'center', 'valign': 'vcenter'})
             snr_format = workbook.add_format({'num_format': '0.00', 'align': 'center'})
@@ -2341,6 +2345,18 @@ class Ui_MainWindow(object):
             worksheet.set_column(9, 9, 45)
             worksheet.set_column(10, 10, 20)
 
+            for index in unprotected_indices:
+                color = "#D1D1D1"
+                fmt = workbook.add_format()
+                fmt = workbook.add_format({'bg_color': color})
+                worksheet.set_row(index, cell_format = fmt)
+                fmt = workbook.add_format()
+                fmt = workbook.add_format({'align': 'center', 'bg_color': color})
+                worksheet.write('B'+str(index+1), dictionary['Source Site'][index-1], fmt)
+                worksheet.write('C'+str(index+1), dictionary['Destination Site'][index-1], fmt)
+                worksheet.write('D'+str(index+1), dictionary['Demand Type'][index-1], fmt)
+                worksheet.write('E'+str(index+1), dictionary['Wavelength'][index-1], fmt)
+            
             # 3-color formatting for snrs
             lightpath_number = len(network.LightPathDict.keys())
             worksheet.conditional_format('F2:F' + str(lightpath_number+1), {'type': '3_color_scale'})
@@ -2427,7 +2443,7 @@ class Ui_MainWindow(object):
                         if lightpath.ClusterNum == int(cluster_id):
                             sources.append(self.IdNodeMap[lightpath.Source])
                             destinations.append(self.IdNodeMap[lightpath.Destination])
-                            wavelengths.append(lightpath.WaveLength[0])
+                            wavelengths.append(lightpath.WaveLength)
                             routed_types.append(lightpath.Type)
 
                             working_path.append(lightpath.WorkingPath)
@@ -2449,54 +2465,54 @@ class Ui_MainWindow(object):
                                 worst_protection_snrs.append([])
                                 protection_path.append([])
                                 protection_regens.append([])
-                    if sources:
-                        dictionary4 = {
-                        'Source Site' : sources,
-                        'Destination Site' : destinations,
-                        'Demand Type': routed_types,
-                        'Wavelength': wavelengths,
-                        'Working SNR': worst_working_snrs,
-                        'Protection SNR': worst_protection_snrs,
-                        'Working Path': working_path,
-                        'Working Regenerators': working_regens,
-                        'Protection Path': protection_path,
-                        'Protection Regenerators': protection_regens}
+                if sources:
+                    dictionary4 = {
+                    'Source Site' : sources,
+                    'Destination Site' : destinations,
+                    'Demand Type': routed_types,
+                    'Wavelength': wavelengths,
+                    'Working SNR': worst_working_snrs,
+                    'Protection SNR': worst_protection_snrs,
+                    'Working Path': working_path,
+                    'Working Regenerators': working_regens,
+                    'Protection Path': protection_path,
+                    'Protection Regenerators': protection_regens}
 
-                        df4 = pd.DataFrame(dictionary4)
-                        df4.to_excel(writer, sheet_name='Cluster '+str(cluster_id))
-                        worksheet = writer.sheets['Cluster '+str(cluster_id)]
-                        # Set column size (begininng, end, size)
-                        center_format = workbook.add_format({'align': 'center', 'valign': 'vcenter'})
-                        snr_format = workbook.add_format({'num_format': '0.00', 'align': 'center'})
-                        worksheet.set_column(1, 2 , 17,center_format)
-                        worksheet.set_column(3, 4 , 15,center_format)
-                        worksheet.set_column(5, 6, 17,snr_format)
-                        worksheet.set_column(7, 7, 40)
-                        worksheet.set_column(8, 8, 20)
-                        worksheet.set_column(9, 9, 45)
-                        worksheet.set_column(10, 10, 20)
+                    df4 = pd.DataFrame(dictionary4)
+                    df4.to_excel(writer, sheet_name='Cluster '+str(cluster_id))
+                    worksheet = writer.sheets['Cluster '+str(cluster_id)]
+                    # Set column size (begininng, end, size)
+                    center_format = workbook.add_format({'align': 'center', 'valign': 'vcenter'})
+                    snr_format = workbook.add_format({'num_format': '0.00', 'align': 'center'})
+                    worksheet.set_column(1, 2 , 17,center_format)
+                    worksheet.set_column(3, 4 , 15,center_format)
+                    worksheet.set_column(5, 6, 17,snr_format)
+                    worksheet.set_column(7, 7, 40)
+                    worksheet.set_column(8, 8, 20)
+                    worksheet.set_column(9, 9, 45)
+                    worksheet.set_column(10, 10, 20)
 
-                        # 3-color formatting for snrs
-                        lightpath_number = len(sources)
-                        worksheet.conditional_format('F2:F' + str(lightpath_number+1), {'type': '3_color_scale'})
-                        worksheet.conditional_format('G2:G' + str(lightpath_number+1), {'type': '3_color_scale'})
-                        
-                        # Set example specific text and color for some headers
-                        color = "#FFC000"
-                        fmt = workbook.add_format()
-                        fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
-                        worksheet.write('B1', 'Source Site', fmt)
-                        worksheet.write('C1', 'Destination Site', fmt)
-                        
-                        color = "#FFFF64"
-                        fmt = workbook.add_format()
-                        fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
-                        worksheet.write('H1', 'Working Path', fmt)
-                        
-                        color = "#64FF00"
-                        fmt = workbook.add_format()
-                        fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
-                        worksheet.write('E1', 'Wavelength', fmt)
+                    # 3-color formatting for snrs
+                    lightpath_number = len(sources)
+                    worksheet.conditional_format('F2:F' + str(lightpath_number+1), {'type': '3_color_scale'})
+                    worksheet.conditional_format('G2:G' + str(lightpath_number+1), {'type': '3_color_scale'})
+                    
+                    # Set example specific text and color for some headers
+                    color = "#FFC000"
+                    fmt = workbook.add_format()
+                    fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
+                    worksheet.write('B1', 'Source Site', fmt)
+                    worksheet.write('C1', 'Destination Site', fmt)
+                    
+                    color = "#FFFF64"
+                    fmt = workbook.add_format()
+                    fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
+                    worksheet.write('H1', 'Working Path', fmt)
+                    
+                    color = "#64FF00"
+                    fmt = workbook.add_format()
+                    fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
+                    worksheet.write('E1', 'Wavelength', fmt)
             writer.save()
 
         if hasattr(self, "RWA_Success"):
@@ -4669,7 +4685,7 @@ class Ui_MainWindow(object):
             A function takes in a custom object and returns a dictionary representation of the object.
             This dict representation includes meta data such as the object's module and class names.
             """
-
+            # print(type(obj))
             #  Populate the dictionary with object meta data 
             if isinstance(obj, numpy.int64):
                 obj_dict = int(obj)
@@ -4682,8 +4698,8 @@ class Ui_MainWindow(object):
                 #  Populate the dictionary with object properties
                 obj_dict.update(obj.__dict__)
                 return obj_dict
-        # NetworkObj_GroupILP NetworkObj_greedy NetworkObj_ILP
         net = copy.copy(self.network)
+
         use_sockets = False
 
         # Convert keys to String
@@ -4693,21 +4709,17 @@ class Ui_MainWindow(object):
 
         ##############################################
         # Convert the Network object to JSON message
-        # data = json.dumps(net.TrafficMatrix,default=convert_to_dict,indent=4, sort_keys=True)
+        # data = json.dumps(net.PhysicalTopology.ClusterDict[1],default=convert_to_dict,indent=4, sort_keys=True)
         # print(data)
         # assert False
         data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
 
-        str_keys = list(net.PhysicalTopology.LinkDict.keys())
-        for key in str_keys:
-            Lkey = list(key)
-            ActualKey =( int(Lkey[1]) , int(Lkey[-2]) )
-            net.PhysicalTopology.LinkDict[ActualKey] = net.PhysicalTopology.LinkDict.pop(key)
-
         # This line tests whether the JSON encoded common object is reconstructable!
         decoded_n = Network.from_json(json.loads(data)) 
         assert(isinstance(decoded_n, Network))
-
+        # print(list(decoded_n.LightPathDict.keys()))
+        # data = json.dumps(decoded_n,default=convert_to_dict,indent=4, sort_keys=True)
+        # assert False
         # Establishing a socket.io connection for logging purposes
         if use_sockets:
             sio.connect('http://localhost:5000')
@@ -4724,37 +4736,40 @@ class Ui_MainWindow(object):
         print('####################################################')
         print('Transmitting data to server to solve RWA planning.') 
         # Run the RWA planner on the server
-        res = requests.get('http://localhost:5000/RWA/', json = data)
 
-        if res.ok:
-            # print('####################################################')
-            # print(json.dumps(res.json()))
-            decoded_network = Network.from_json(json.loads(json.dumps(res.json())))
-            # data = json.dumps(decoded_network.ResultObj,default=convert_to_dict,indent=4, sort_keys=True)
-            # print(data)
-            # Converting keys to original version ( Server Side )
-            str_keys = list(decoded_network.PhysicalTopology.LinkDict.keys())
-            for key in str_keys:
-                n_key = ''.join(key.split())
-                Lkey = n_key[1:-1].split(',')
-                ActualKey =( int(Lkey[1]) , int(Lkey[-2]) )
-                decoded_network.PhysicalTopology.LinkDict[ActualKey] = decoded_network.PhysicalTopology.LinkDict.pop(key)
-                
-            str_keys = decoded_network.LightPathDict.keys()
-            for key in str_keys:
-                decoded_network.LightPathDict[int(key)] = decoded_network.LightPathDict.pop(key)
-        if use_sockets:  
-            sio.disconnect()
-            sio.sleep(0)
-        # sio.wait()
-        print('RWA finished and data received in client') 
         try:
-            #print('Sample WaveLength output', decoded_network.LightPathDict[0].WaveLength)
-            #print('Sample Path output', decoded_network.LightPathDict[0].WorkingPath)
-            # export_excel('Test.xlsx',decoded_network)
-            pass
+            res = requests.get('http://localhost:5000/RWA/', json = data)
+            connected_to_server = True
         except:
-            pass
+            warnings.warn("Something goes wrong!\nThe application can not connect to the server.")
+            connected_to_server = False
+        if connected_to_server:
+            if res.ok:
+                # print('####################################################')
+                # print(json.dumps(res.json()))
+                decoded_network = Network.from_json(json.loads(json.dumps(res.json())))
+                # data = json.dumps(decoded_network.LightPathDict,default=convert_to_dict,indent=4, sort_keys=True)
+                # print(data) #PhysicalTopology.LinkDict ResultObj
+                # Converting keys to original version ( Server Side )
+                str_keys = list(decoded_network.PhysicalTopology.LinkDict.keys())
+                for key in str_keys:
+                    n_key = ''.join(key.split())
+                    Lkey = n_key[1:-1].split(',')
+                    ActualKey =( int(Lkey[1]) , int(Lkey[-2]) )
+                    decoded_network.PhysicalTopology.LinkDict[ActualKey] = decoded_network.PhysicalTopology.LinkDict.pop(key)
+                
+                decoded_network.LightPathDict = {int(key): value for key, value in decoded_network.LightPathDict.items()}
+            if use_sockets:  
+                sio.disconnect()
+                sio.sleep(0)
+            # sio.wait()
+            print('RWA finished and data received in client') 
+            # try:
+            #     print('Sample WaveLength output', decoded_network.LightPathDict[0].WaveLength)
+            #     print('Sample Path output', decoded_network.LightPathDict[0].WorkingPath)
+                
+            # except:
+            #     pass
         self.decoded_network = decoded_network
 
 if __name__ == "__main__":
