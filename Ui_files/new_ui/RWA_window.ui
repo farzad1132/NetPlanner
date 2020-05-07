@@ -17,6 +17,19 @@
    <string notr="true">background-color: rgb(226, 226, 226);r</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
    <item row="1" column="0">
     <layout class="QGridLayout" name="gridLayout_3">
      <item row="0" column="2">
@@ -107,32 +120,43 @@ QPushButton:default {
    </item>
    <item row="0" column="0">
     <widget class="QToolBox" name="RW_toolBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="styleSheet">
       <string notr="true">QToolBox::tab {
-	background-color: rgb(192, 192, 192);
-     border: 2px solid gray; 
+	
+	
+	
+	background-color: rgb(227, 227, 227);
+     border: 1px solid #c0c0c0; 
      
-     border-bottom-color: Ea8686; /* same as the pane color */
-     border-top-left-radius: 7px;
-     border-top-right-radius: 7px;
-     min-width: 28ex;
-     padding: 2px; 
+   
+     
+     min-width: 30ex;
+     padding: 1px; 
      
 	
-	font: 25 9pt &quot;Bahnschrift condensed&quot;;
+	font: 25 11pt &quot;Bahnschrift&quot;;
 }
 
 QToolBox::tab:selected {
 	background-color:#Eb8686; /* same as pane color */ 
      margin-left: -4px;
      margin-right: -4px;
-	font: 63 9pt &quot;Bahnschrift SemiBold&quot;;
+	
+	font: 75 12pt &quot;Bahnschrift&quot;;
+   
+	color: rgb(255, 255, 255);
 }
 
 </string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="Greedy">
       <property name="geometry">
@@ -1238,202 +1262,31 @@ QComboBox QAbstractItemView {
            </property>
           </widget>
          </item>
-        </layout>
-       </item>
-       <item row="1" column="0">
-        <layout class="QFormLayout" name="formLayout_30">
-         <item row="0" column="0">
-          <widget class="QLabel" name="ILP_K_Label">
-           <property name="font">
-            <font>
-             <family>Bahnschrift Condensed</family>
-             <pointsize>10</pointsize>
-             <weight>9</weight>
-             <italic>false</italic>
-             <bold>false</bold>
-            </font>
+         <item row="0" column="1">
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
            </property>
-           <property name="styleSheet">
-            <string notr="true"> QLabel {
-    
-    border-radius: 10px;
-    
-	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-   
-}</string>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
            </property>
-           <property name="text">
-            <string>        k     </string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
+          </spacer>
          </item>
-         <item row="1" column="0">
-          <widget class="QLineEdit" name="ILP_K_LineEdit">
-           <property name="styleSheet">
-            <string notr="true">QLineEdit {
- 
-    border: 2px solid rgb(226, 226, 226);
-	border-bottom-color: rgb(86, 86, 86);
-    padding: 0 8px;
-    
-    selection-background-color: darkgray; 
-	font: 10pt &quot;Bahnschrift&quot;;
-
-}</string>
+         <item row="1" column="1">
+          <spacer name="verticalSpacer_8">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
            </property>
-           <property name="text">
-            <string/>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
            </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="placeholderText">
-            <string>3</string>
-           </property>
-           <property name="clearButtonEnabled">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="1">
-        <layout class="QFormLayout" name="formLayout_31">
-         <item row="0" column="0">
-          <widget class="QLabel" name="ILP_MaxNW_Label">
-           <property name="font">
-            <font>
-             <family>Bahnschrift Condensed</family>
-             <pointsize>10</pointsize>
-             <weight>9</weight>
-             <italic>false</italic>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"> QLabel {
-    
-    border-radius: 10px;
-    
-	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-   
-}</string>
-           </property>
-           <property name="text">
-            <string>Maximum Number of Wavelengths</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLineEdit" name="ILP_MaxNW_LineEdit">
-           <property name="styleSheet">
-            <string notr="true">QLineEdit {
- 
-    border: 2px solid rgb(226, 226, 226);
-	border-bottom-color: rgb(86, 86, 86);
-    padding: 0 8px;
-    
-    selection-background-color: darkgray; 
-	font: 10pt &quot;Bahnschrift&quot;;
-
-}</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="placeholderText">
-            <string>80</string>
-           </property>
-           <property name="clearButtonEnabled">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="2" column="0">
-        <layout class="QFormLayout" name="formLayout_27">
-         <item row="0" column="0">
-          <widget class="QLabel" name="ILP_Alpha_Label">
-           <property name="font">
-            <font>
-             <family>Bahnschrift Condensed</family>
-             <pointsize>10</pointsize>
-             <weight>9</weight>
-             <italic>false</italic>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"> QLabel {
-    
-    border-radius: 10px;
-    
-	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-   
-}</string>
-           </property>
-           <property name="text">
-            <string>      Alpha  </string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLineEdit" name="ILP_Alpha_LineEdit">
-           <property name="styleSheet">
-            <string notr="true">QLineEdit {
- 
-    border: 2px solid rgb(226, 226, 226);
-	border-bottom-color: rgb(86, 86, 86);
-    padding: 0 8px;
-    
-    selection-background-color: darkgray; 
-	font: 10pt &quot;Bahnschrift&quot;;
-
-}</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="placeholderText">
-            <string>0.2</string>
-           </property>
-           <property name="clearButtonEnabled">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="2" column="1">
-        <layout class="QGridLayout" name="gridLayout_5">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
+          </spacer>
          </item>
         </layout>
        </item>
@@ -1497,24 +1350,357 @@ QComboBox QAbstractItemView {
            </property>
           </widget>
          </item>
+         <item row="0" column="1">
+          <spacer name="verticalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="1">
+          <spacer name="verticalSpacer_11">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
         </layout>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="0">
+        <layout class="QFormLayout" name="formLayout_30">
+         <item row="0" column="0">
+          <widget class="QLabel" name="ILP_K_Label">
+           <property name="font">
+            <font>
+             <family>Bahnschrift Condensed</family>
+             <pointsize>10</pointsize>
+             <weight>9</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"> QLabel {
+    
+    border-radius: 10px;
+    
+	
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+   
+}</string>
+           </property>
+           <property name="text">
+            <string>        k     </string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLineEdit" name="ILP_K_LineEdit">
+           <property name="styleSheet">
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
+    padding: 0 8px;
+    
+    selection-background-color: darkgray; 
+	font: 10pt &quot;Bahnschrift&quot;;
+
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="placeholderText">
+            <string>3</string>
+           </property>
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="1">
+          <spacer name="verticalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="1">
+        <layout class="QFormLayout" name="formLayout_31">
+         <item row="0" column="0">
+          <widget class="QLabel" name="ILP_MaxNW_Label">
+           <property name="font">
+            <font>
+             <family>Bahnschrift Condensed</family>
+             <pointsize>10</pointsize>
+             <weight>9</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"> QLabel {
+    
+    border-radius: 10px;
+    
+	
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+   
+}</string>
+           </property>
+           <property name="text">
+            <string>Maximum Number of Wavelengths</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLineEdit" name="ILP_MaxNW_LineEdit">
+           <property name="styleSheet">
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
+    padding: 0 8px;
+    
+    selection-background-color: darkgray; 
+	font: 10pt &quot;Bahnschrift&quot;;
+
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="placeholderText">
+            <string>80</string>
+           </property>
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <spacer name="verticalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="1">
+          <spacer name="verticalSpacer_12">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="4" column="0">
+        <layout class="QFormLayout" name="formLayout_27">
+         <item row="0" column="0">
+          <widget class="QLabel" name="ILP_Alpha_Label">
+           <property name="font">
+            <font>
+             <family>Bahnschrift Condensed</family>
+             <pointsize>10</pointsize>
+             <weight>9</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"> QLabel {
+    
+    border-radius: 10px;
+    
+	
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+   
+}</string>
+           </property>
+           <property name="text">
+            <string>      Alpha  </string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLineEdit" name="ILP_Alpha_LineEdit">
+           <property name="styleSheet">
+            <string notr="true">QLineEdit {
+ 
+    border: 2px solid rgb(226, 226, 226);
+	border-bottom-color: rgb(86, 86, 86);
+    padding: 0 8px;
+    
+    selection-background-color: darkgray; 
+	font: 10pt &quot;Bahnschrift&quot;;
+
+}</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="placeholderText">
+            <string>0.2</string>
+           </property>
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <spacer name="verticalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="1">
+          <spacer name="verticalSpacer_10">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="4" column="1">
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="1" column="0">
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="0" column="0">
+          <spacer name="verticalSpacer_7">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
     </widget>
-   </item>
-   <item row="0" column="1">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>
