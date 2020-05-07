@@ -1254,7 +1254,7 @@ class Ui_MainWindow(object):
 "}")
         self.label_8.setObjectName("label_8")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label_8)
-        self.Demand_Destination_combobox = QtWidgets.QFontComboBox(self.tab)
+        self.Demand_Destination_combobox = QtWidgets.QComboBox(self.tab)
         self.Demand_Destination_combobox.setMinimumSize(QtCore.QSize(121, 30))
         self.Demand_Destination_combobox.setMaximumSize(QtCore.QSize(743, 30))
         self.Demand_Destination_combobox.setStyleSheet("QComboBox {\n"
@@ -3040,7 +3040,12 @@ class Ui_MainWindow(object):
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
 
-        if self.update_demand_service_flag is True and Destination != '':
+
+        if self.update_demand_service_flag is True and Destination != '' and self.Demand_combo_notifications_flag is False:
+
+            if self.Failed_Nodes_flag is True:
+                self.Demand_combobox_highlight_on_off(Source= Source,
+                                                mode= "on")
 
             if self.clicked_Node_flag is True:
                 self.clicked_Node_flag = False
@@ -3055,7 +3060,11 @@ class Ui_MainWindow(object):
             self.set_demand_panels()        
             self.DemandMap_Change()
         
-        elif self.from_Source_to_Destination_flag is False and Destination != '':
+        elif self.from_Source_to_Destination_flag is False and Destination != '' and self.Demand_combo_notifications_flag is False:
+            
+            if self.Failed_Nodes_flag is True:
+                self.Demand_combobox_highlight_on_off(Source= Source,
+                                                mode= "on")
 
 
             self.UpdateDemand_ServiceList()
@@ -3063,6 +3072,38 @@ class Ui_MainWindow(object):
             self.update_Demand_groomout10_list()
             self.set_demand_panels()        
             self.DemandMap_Change()
+    
+    def Demand_combobox_highlight_on_off(self, Source, mode = "on", Target = None):
+        self.Demand_combo_notifications_flag = True
+        if mode == "on":
+            Highlight_Font = QtGui.QFont()
+            Highlight_Font.setBold(True)
+
+            if Target is None:
+                for Destination in DemandTabDataBase["Failed_Demands"][Source]:
+                    index = self.Demand_Destination_combobox.findText(Destination)
+                    if index != -1 :
+                        model = self.Demand_Destination_combobox.model().item(index)
+                        model.setBackground(Qt.red)
+                        model.setFont(Highlight_Font)
+
+            elif Target is not None:
+                index = self.Demand_Destination_combobox.findText(Target)
+                if index != -1:
+                    model = self.Demand_Destination_combobox.model().item(index)
+                    model.setBackground(Qt.red)
+                    model.setFont(Highlight_Font)
+        
+        elif mode == "off" and Target is not None:
+            Highlight_Font = QtGui.QFont()
+            Highlight_Font.setBold(False)
+            index = self.Demand_Destination_combobox.findText(Target)
+            if index != -1:
+                model = self.Demand_Destination_combobox.model().item(index)
+                model.setBackground(Qt.white)
+                model.setFont(Highlight_Font)
+        
+        self.Demand_combo_notifications_flag = False
         
 
     def PhysicalTopologyToObject(self):
@@ -3740,6 +3781,7 @@ class Ui_MainWindow(object):
         self.Data_file_Flag = False
         self.update_Demand_lightpath_list_flag = True
         self.Demand_shelf_init_flag = False
+        self.Failed_Nodes_flag = False
         
     
     def DemandTabDataBase_Setup(self):
@@ -4323,14 +4365,6 @@ class Ui_MainWindow(object):
         self.failed_nodes_javascript(failed_nodes)
 
 
-        # emitting a signal and sending JSON to JS
-
-        
-
-        # NOTE: keep this in mind that you have to change icons againg when ever 
-        #   Service section of that node gets empty ( based on its degree ) 
-        # this should be done in another method ( manual service manipulations method in panels object)
-
     def failed_nodes_javascript(self,failed_nodes):
         for nodename , value in failed_nodes.items():
             color = value["Color"]
@@ -4387,6 +4421,7 @@ class Ui_MainWindow(object):
 
         # changing failed nodes icon ( change to notified version )
         self.failed_grooming_nodes()
+        self.Failed_Nodes_flag = True
 
         self.Grooming_pushbutton.setStyleSheet("QPushButton {\n"
 "    \n"

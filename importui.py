@@ -341,6 +341,7 @@ class Ui_ImportMenuUI(object):
     def call_insert_links(self):
         Data["ui"].insert_link_fun()
         Data["ui"].Grouping_groupbox.setEnabled(True)
+        Data["ui"].Demand_combo_notifications_flag = False
         bus["ImportMenuUI"].close()
     
     def node_import_procedure(self):
