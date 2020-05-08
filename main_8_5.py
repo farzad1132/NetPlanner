@@ -3201,7 +3201,9 @@ class Ui_MainWindow(object):
             elif column== 5 and type(value)==float :
                 Data["General"]["DataSection"][str(column)][str(row)] = value
             elif column== 6 and type(value)==float and value <= 0.3 :
-                Data["General"]["DataSection"][str(column)][str(row)] = value               
+                Data["General"]["DataSection"][str(column)][str(row)] = value
+            elif column == 8 and (str(value) == '1+1_NodeDisjoint' or str(value) =='NoProtection'):
+                Data["General"]["DataSection"][str(column)][str(row)] = value      
             else:
                 # error for wrong data type
                 self.GTMErrorWrongDataType(column)
@@ -3248,8 +3250,14 @@ class Ui_MainWindow(object):
             self.Status_type_error_widget = QtWidgets.QWidget()
             self.Status_type_error = Ui_Status_type_error()
             self.Status_type_error.setupUi(self.Status_type_error_widget)
-            self.Status_type_error_widget.show() '''
+            self.Status_type_error_widget.show()
+        if column == 8 :
+        self.Protection_Type_type_error_widget = QtWidgets.QWidget()
+        self.Protection_Type_type_error = Ui_Status_type_error()
+        self.Protection_Type_type_error.setupUi(self.Protection_Type_type_error_widget)
+        self.Protection_Type_type_error_widget.show()'''
         pass
+
 
     def TMErrorWrongDataType(self, column_name):
 
