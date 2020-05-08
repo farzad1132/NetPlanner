@@ -509,9 +509,9 @@ class customlabel(QLabel):
                 Data["NetworkObj"].TrafficMatrix.add_groom_out_10(GroomOutId= GroomOutId,
                                                     Source= self.nodename,
                                                     Destination= self.Destination,
-                                                    DemandId= self.ids[1],
+                                                    DemandId= self.ids[0],
                                                     Capacity= self.BWDict[self.servicetype],
-                                                    ServiceIdList= [self.ids[0]])
+                                                    ServiceIdList= [self.ids[1]])
 
                 # updating LineIdList in panel object
                 DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0] = GroomOutId
@@ -561,7 +561,7 @@ class customlabel(QLabel):
                 GroomOutId = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0]
 
                 ServiceIdList = [self.ids[1]]
-                Data["NetworkObj"].TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList.extend(ServiceIdList)
+                Data["NetworkObj"].TrafficMatrix.GroomOut10Dict[(self.ids[0],GroomOutId)].ServiceIdList.extend(ServiceIdList)
 
                 # updating LightPath ListWidgetItem Capacity
                 self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
@@ -601,9 +601,9 @@ class customlabel(QLabel):
                 Data["NetworkObj"].TrafficMatrix.add_groom_out_10(GroomOutId= GroomOutId, 
                                                                     Source= self.nodename,
                                                                     Destination= self.Destination,
-                                                                    DemandId= self.ids[1],
+                                                                    DemandId= self.ids[0],
                                                                     Capacity= self.BWDict[self.servicetype],
-                                                                    ServiceIdList= [self.ids[0]])
+                                                                    ServiceIdList= [self.ids[1]])
                 
 
                 # updating LineIdList in panel object
@@ -654,7 +654,7 @@ class customlabel(QLabel):
                 GroomOutId = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1]
 
                 ServiceIdList = [self.ids[1]]
-                Data["NetworkObj"].TrafficMatrix.GroomOut10Dict[GroomOutId].ServiceIdList.extend(ServiceIdList)
+                Data["NetworkObj"].TrafficMatrix.GroomOut10Dict[(self.ids[0], GroomOutId)].ServiceIdList.extend(ServiceIdList)
 
 
                 # updating LightPath ListWidgetItem Capacity

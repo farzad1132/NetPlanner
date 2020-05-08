@@ -500,7 +500,7 @@ class customlabel(QLabel):
 
             # adding LightPathId to groomOut object
             if self.servicetype == "GroomOut10":
-                Data["NetworkObj"].TrafficMatrix.GroomOut10Dict[UserData["GroomOut10Id"]].LightPathId = LightPathId
+                Data["NetworkObj"].TrafficMatrix.GroomOut10Dict[(self.ids[0],UserData["GroomOut10Id"])].LightPathId = LightPathId
 
                 # stricking out item
                 font = DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][UserData["GroomOut10Id"]].font()

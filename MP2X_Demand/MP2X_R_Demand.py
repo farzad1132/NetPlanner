@@ -12,7 +12,7 @@ from MP2X_Demand import Border_R
 
 class MP2X_R_Demand(QtWidgets.QWidget):
 
-    def __init__(self, Panel_ID, nodename, Destination):
+    def __init__(self, Panel_ID, nodename, Destination, DualPanelsId):
         super(MP2X_R_Demand, self).__init__()
 
         self.resize(118, 633)
@@ -22,6 +22,7 @@ class MP2X_R_Demand(QtWidgets.QWidget):
         self.nodename = nodename
         self.Destination = Destination
         self.uppernum = str(int(self.id) + 1)
+        self.DualPanelsId = DualPanelsId
 
         grid=QtWidgets.QGridLayout(self)
         widget=QtWidgets.QWidget(self)

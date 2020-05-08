@@ -354,7 +354,7 @@ class Network:
                     for key in sorted_keys[index:]:
                         self.GroomOut10Dict[key - 1] = self.GroomOut10Dict.pop(key)
 
-            del self.GroomOut10Dict[(Id, DemandId)]
+            del self.GroomOut10Dict[(DemandId, Id)]
             #correct_UpperIds(Id + 1)
 
             #Network.Traffic.Demand.ServiceReferencedId -= 1
