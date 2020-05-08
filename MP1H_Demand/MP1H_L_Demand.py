@@ -475,7 +475,7 @@ class customlabel(QLabel):
                                             Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity,
                                             mode= "add",
                                             type= "100GE",
-                                            PanelId= self.id)
+                                            PanelId= self.DualPanelsId[0])
 
                 DemandTabDataBase["Panels"][self.nodename][self.id].LightPath_flag = 1
 

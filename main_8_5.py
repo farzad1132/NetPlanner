@@ -3078,12 +3078,13 @@ class Ui_MainWindow(object):
             Highlight_Font.setBold(True)
 
             if Target is None:
-                for Destination in DemandTabDataBase["Failed_Demands"][Source]:
-                    index = self.Demand_Destination_combobox.findText(Destination)
-                    if index != -1 :
-                        model = self.Demand_Destination_combobox.model().item(index)
-                        model.setBackground(Qt.red)
-                        model.setFont(Highlight_Font)
+                if Source in DemandTabDataBase["Failed_Demands"]:
+                    for Destination in DemandTabDataBase["Failed_Demands"][Source]:
+                        index = self.Demand_Destination_combobox.findText(Destination)
+                        if index != -1 :
+                            model = self.Demand_Destination_combobox.model().item(index)
+                            model.setBackground(Qt.red)
+                            model.setFont(Highlight_Font)
 
             elif Target is not None:
                 index = self.Demand_Destination_combobox.findText(Target)

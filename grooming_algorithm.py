@@ -732,7 +732,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                                    n.TrafficMatrix.DemandDict[LastId].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes) 
            for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
               n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(sid)
-           n.TrafficMatrix.delete_groom_out_10(Demandid,servId)
+           n.TrafficMatrix.delete_groom_out_10(servId,Demandid)
                            
                            
                            
@@ -798,7 +798,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                            n.TrafficMatrix.DemandDict[LastId].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes) 
                     for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
                         n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(sid)
-                    n.TrafficMatrix.delete_groom_out_10(Demandid,servId)
+                    n.TrafficMatrix.delete_groom_out_10(servId, Demandid)
 
 
 
@@ -861,7 +861,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                            n.TrafficMatrix.DemandDict[LastId].add_service(sid,n.TrafficMatrix.DemandDict[Demandid].ServiceDict[sid].Type,2,OriginalSource=orgsrc,OriginalDestination=orgdes) 
                     for sid in n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].ServiceIdList:
                         n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(sid)
-                    n.TrafficMatrix.delete_groom_out_10(Demandid,servId)
+                    n.TrafficMatrix.delete_groom_out_10(servId, Demandid)
                            
                            
                            
@@ -924,7 +924,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
         for i in range(0,len(remain_lower100_2_newV)):
             for j in range(0,len(remain_lower100_2_newV[i][1])):
                 if (remain_lower100_2_newV[i][0],remain_lower100_2_newV[i][1][j][0]) in n.TrafficMatrix.GroomOut10Dict:
-                    n.TrafficMatrix.delete_groom_out_10(remain_lower100_2_newV[i][0],remain_lower100_2_newV[i][1][j][0])
+                    n.TrafficMatrix.delete_groom_out_10(remain_lower100_2_newV[i][1][j][0], remain_lower100_2_newV[i][0])
 
         lll=len(n.LightPathDict)
         print (groom_out10_list)
@@ -932,7 +932,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
             for i in range(0,len(groom_out10_list)):
                 for j in range(0,len(groom_out10_list[i][1])):
                     if (groom_out10_list[i][0],groom_out10_list[i][1][j][0]) in n.TrafficMatrix.GroomOut10Dict:
-                        n.TrafficMatrix.delete_groom_out_10(groom_out10_list[i][0],groom_out10_list[i][1][j][0])
+                        n.TrafficMatrix.delete_groom_out_10(groom_out10_list[i][1][j][0], groom_out10_list[i][0])
                         
         """ for i in range(0,lll+1):
             if len(n.LightPathDict)!=0:
