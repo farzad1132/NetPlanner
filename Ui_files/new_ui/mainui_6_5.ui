@@ -94,7 +94,7 @@ QTabWidget::tab-bar {
  }r</string>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="TopologyTab">
         <attribute name="title">
@@ -296,134 +296,6 @@ QGroupBox::title {
               <layout class="QGridLayout" name="gridLayout_17">
                <item row="0" column="0">
                 <layout class="QGridLayout" name="gridLayout_16">
-                 <item row="3" column="1" colspan="2">
-                  <widget class="QFontComboBox" name="ClusterColor_combobox">
-                   <property name="maximumSize">
-                    <size>
-                     <width>126</width>
-                     <height>22</height>
-                    </size>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">QComboBox {
-    
-    border-radius: 0px;
-    padding: 1px 18px 1px 5px;
-    min-width: 6em; 
-    
-	border:1px solid rgb(0, 139, 208);
-	
-   
-	
-}
-
-
-
-
-
-/* QComboBox gets the &quot;on&quot; state when the popup is open */
-
-
-QComboBox:on { /* shift the text when the popup opens */
-    padding-top: 3px;
-    padding-left: 4px;
-}
-
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: top right;
-    width: 20px;
-    
-	
-    border-left-width: 2px;
-    border-left-color: darkblue;
-    border-left-style: solid; /* just a single line */
-    border-top-right-radius: 0px; /* same radius as the QComboBox */
-    border-bottom-right-radius: 0px;
-}
-
-QComboBox::down-arrow {
-   
-	image: url(:/newPrefix/dropdown.png); 
-    
-	
-}
-
-QComboBox::down-arrow:on { /* shift the arrow when popup is open */
-    
-	
-	image: url(:/newPrefix/dropup.png);
-}
-
-
-QComboBox QAbstractItemView {
-    
-	border-color:2px solid blue;
-   
-}</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="10" column="1" colspan="2">
-                  <widget class="QPushButton" name="OK_button">
-                   <property name="minimumSize">
-                    <size>
-                     <width>84</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <family>Bahnschrift Condensed</family>
-                     <pointsize>10</pointsize>
-                     <weight>9</weight>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                    </font>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton {
-	
-	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-	
-    border:2px solid black; min-width: 80px;
-	border-color: dark gray; 
-    border-radius: 25px;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
-}
-
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-                   </property>
-                   <property name="text">
-                    <string>Ok</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="0">
-                  <spacer name="horizontalSpacer_8">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>10</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
                  <item row="10" column="0">
                   <widget class="QPushButton" name="Cancel_button">
                    <property name="minimumSize">
@@ -471,22 +343,100 @@ QPushButton:default {
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="0">
-                  <widget class="QLabel" name="GroupColor">
+                 <item row="5" column="0" colspan="3">
+                  <widget class="QPushButton" name="SetGatewayNode_button">
+                   <property name="minimumSize">
+                    <size>
+                     <width>84</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Bahnschrift Condensed</family>
+                     <pointsize>10</pointsize>
+                     <weight>9</weight>
+                     <italic>false</italic>
+                     <bold>false</bold>
+                    </font>
+                   </property>
                    <property name="styleSheet">
-                    <string notr="true">  QLabel {
-    
-    
+                    <string notr="true">QPushButton {
+	
 	
 	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
 	
-   
+    border: 2px solid #8f8f91; min-width: 80px;
+	border-color: #EB8686; 
+    border-radius: 15px;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #FFFFFF, stop: 1 #EB8686);
+}
+
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+} 
+QPushButton:hover{ 
+    background-color: #EB8686 
+
 }</string>
                    </property>
                    <property name="text">
-                    <string>        Cluster Color</string>
+                    <string>Set Node as Gateway</string>
                    </property>
                   </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <spacer name="horizontalSpacer_8">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>10</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="7" column="0">
+                  <widget class="QLabel" name="select_Sub_Nodes_labe">
+                   <property name="font">
+                    <font>
+                     <family>Bahnschrift Condensed</family>
+                     <pointsize>10</pointsize>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string> select Sub Nodes</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="0" colspan="2">
+                  <spacer name="horizontalSpacer_5">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>10</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                  <item row="7" column="1" colspan="2">
                   <widget class="QPushButton" name="SelectSubNode_button">
@@ -551,6 +501,53 @@ QPushButton:default {
                    </property>
                   </spacer>
                  </item>
+                 <item row="10" column="1" colspan="2">
+                  <widget class="QPushButton" name="OK_button">
+                   <property name="minimumSize">
+                    <size>
+                     <width>84</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Bahnschrift Condensed</family>
+                     <pointsize>10</pointsize>
+                     <weight>9</weight>
+                     <italic>false</italic>
+                     <bold>false</bold>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+	
+	
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+	
+    border:2px solid black; min-width: 80px;
+	border-color: dark gray; 
+    border-radius: 25px;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
+}
+
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+                   </property>
+                   <property name="text">
+                    <string>Ok</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="11" column="0" colspan="2">
                   <widget class="QCheckBox" name="ShowSubNodes">
                    <property name="font">
@@ -565,6 +562,36 @@ QPushButton:default {
                    </property>
                    <property name="text">
                     <string>Show Sub Nodes</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0">
+                  <spacer name="horizontalSpacer_9">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>10</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="GroupColor">
+                   <property name="styleSheet">
+                    <string notr="true">  QLabel {
+    
+    
+	
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+   
+}</string>
+                   </property>
+                   <property name="text">
+                    <string>        Cluster Color</string>
                    </property>
                   </widget>
                  </item>
@@ -586,22 +613,7 @@ QPushButton:default {
                   </widget>
                  </item>
                  <item row="1" column="1" colspan="2">
-                  <widget class="QFontComboBox" name="cluster_type_combobox">
-                   <property name="maximumSize">
-                    <size>
-                     <width>126</width>
-                     <height>22</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <family>Bahnschrift Condensed</family>
-                     <pointsize>9</pointsize>
-                    </font>
-                   </property>
-                   <property name="autoFillBackground">
-                    <bool>false</bool>
-                   </property>
+                  <widget class="QComboBox" name="cluster_type_combobox">
                    <property name="styleSheet">
                     <string notr="true">QComboBox {
     
@@ -611,6 +623,7 @@ QPushButton:default {
     
 	border:1px solid rgb(0, 139, 208);
 	
+	font: 9pt &quot;Bahnschrift&quot;;
    
 	
 }
@@ -660,103 +673,74 @@ QComboBox QAbstractItemView {
    
 }</string>
                    </property>
-                   <property name="frame">
+                   <property name="editable">
                     <bool>true</bool>
                    </property>
                   </widget>
                  </item>
-                 <item row="6" column="0" colspan="2">
-                  <spacer name="horizontalSpacer_5">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>10</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="7" column="0">
-                  <widget class="QLabel" name="select_Sub_Nodes_labe">
-                   <property name="font">
-                    <font>
-                     <family>Bahnschrift Condensed</family>
-                     <pointsize>10</pointsize>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string> select Sub Nodes</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="4" column="0">
-                  <spacer name="horizontalSpacer_9">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>10</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="5" column="0" colspan="3">
-                  <widget class="QPushButton" name="SetGatewayNode_button">
-                   <property name="minimumSize">
-                    <size>
-                     <width>84</width>
-                     <height>30</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <family>Bahnschrift Condensed</family>
-                     <pointsize>10</pointsize>
-                     <weight>9</weight>
-                     <italic>false</italic>
-                     <bold>false</bold>
-                    </font>
-                   </property>
+                 <item row="3" column="1" colspan="2">
+                  <widget class="QComboBox" name="ClusterColor_combobox">
                    <property name="styleSheet">
-                    <string notr="true">QPushButton {
+                    <string notr="true">QComboBox {
+    
+    border-radius: 0px;
+    padding: 1px 18px 1px 5px;
+    min-width: 6em; 
+    
+	border:1px solid rgb(0, 139, 208);
 	
+	font: 9pt &quot;Bahnschrift&quot;;
+   
 	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #EB8686; 
-    border-radius: 15px;
 }
 
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #FFFFFF, stop: 1 #EB8686);
+
+
+
+
+/* QComboBox gets the &quot;on&quot; state when the popup is open */
+
+
+QComboBox:on { /* shift the text when the popup opens */
+    padding-top: 3px;
+    padding-left: 4px;
 }
 
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    
+	
+    border-left-width: 2px;
+    border-left-color: darkblue;
+    border-left-style: solid; /* just a single line */
+    border-top-right-radius: 0px; /* same radius as the QComboBox */
+    border-bottom-right-radius: 0px;
 }
 
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-} 
-QPushButton:hover{ 
-    background-color: #EB8686 
+QComboBox::down-arrow {
+   
+	image: url(:/newPrefix/dropdown.png); 
+    
+	
+}
 
+QComboBox::down-arrow:on { /* shift the arrow when popup is open */
+    
+	
+	image: url(:/newPrefix/dropup.png);
+}
+
+
+QComboBox QAbstractItemView {
+    
+	border-color:2px solid blue;
+   
 }</string>
                    </property>
-                   <property name="text">
-                    <string>Set Node as Gateway</string>
+                   <property name="editable">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
@@ -1927,16 +1911,10 @@ QPushButton:default {
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QFontComboBox" name="Demand_Destination_combobox">
+            <widget class="QComboBox" name="Demand_Destination_combobox">
              <property name="minimumSize">
               <size>
                <width>121</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>743</width>
                <height>30</height>
               </size>
              </property>
@@ -1997,6 +1975,9 @@ QComboBox QAbstractItemView {
 	border-color:2px solid blue;
    
 }</string>
+             </property>
+             <property name="editable">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -2397,16 +2378,10 @@ QListWidget::item:hover {
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QFontComboBox" name="Demand_Source_combobox">
+            <widget class="QComboBox" name="Demand_Source_combobox">
              <property name="minimumSize">
               <size>
                <width>121</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>226</width>
                <height>30</height>
               </size>
              </property>
@@ -2468,6 +2443,9 @@ QComboBox QAbstractItemView {
    
 }</string>
              </property>
+             <property name="editable">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
           </layout>
@@ -2475,7 +2453,7 @@ QComboBox QAbstractItemView {
          <item row="0" column="1">
           <widget class="QLabel" name="SplitterEventLabel">
            <property name="text">
-            <string>      </string>
+            <string/>
            </property>
           </widget>
          </item>
