@@ -94,7 +94,7 @@ QTabWidget::tab-bar {
  }r</string>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="TopologyTab">
         <attribute name="title">
@@ -393,7 +393,7 @@ QPushButton:hover{
     
 	border:1px solid rgb(0, 139, 208);
 	
-	font: 9pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
    
 	
 }
@@ -600,9 +600,9 @@ QPushButton:default {
     
 	border:1px solid rgb(0, 139, 208);
 	
-	font: 9pt &quot;Bahnschrift&quot;;
+	font: 10pt &quot;Bahnschrift&quot;;
    
-	
+	text-align:center;
 }
 
 
@@ -1866,7 +1866,7 @@ QPushButton:default {
             <widget class="QComboBox" name="Demand_Destination_combobox">
              <property name="minimumSize">
               <size>
-               <width>121</width>
+               <width>151</width>
                <height>30</height>
               </size>
              </property>
@@ -1880,6 +1880,7 @@ QPushButton:default {
 	border:1px solid rgb(0, 139, 208);
 	
    
+	font: 10pt &quot;Bahnschrift&quot;;
 	
 }
 
@@ -2333,7 +2334,7 @@ QListWidget::item:hover {
             <widget class="QComboBox" name="Demand_Source_combobox">
              <property name="minimumSize">
               <size>
-               <width>121</width>
+               <width>151</width>
                <height>30</height>
               </size>
              </property>
@@ -2347,6 +2348,7 @@ QListWidget::item:hover {
 	border:1px solid rgb(0, 139, 208);
 	
    
+	font: 10pt &quot;Bahnschrift&quot;;
 	
 }
 
