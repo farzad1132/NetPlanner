@@ -2599,14 +2599,24 @@ class Ui_MainWindow(object):
                 LeftPanelId = UserData["PanelId"]
                 left_widget = Data["DemandPanel_" + str(LeftPanelId)].itemAt(0).widget()
                 linevar = left_widget.Line
-                linevar.setStyleSheet(" QLabel{ image: url(:/line/line.png); border: 5px solid blue; }")
+
+                if isinstance(left_widget, MP1H_L_Demand):
+                    linevar.setStyleSheet(" QLabel{ image: url(:/line/line.png); border: 5px solid blue; }")
+                
+                elif isinstance(left_widget, TP1H_L_Demand):
+                    linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); border: 5px solid blue;}")
                 
                 if PreItem is not None:
                     pre_UserData = PreItem.data(Qt.UserRole)
                     pre_LeftPanelId = pre_UserData["PanelId"]
                     pre_left_widget = Data["DemandPanel_" + str(pre_LeftPanelId)].itemAt(0).widget()
                     pre_linevar = pre_left_widget.Line
-                    pre_linevar.setStyleSheet(" QLabel{ image: url(:/line/line.png); }")
+
+                    if isinstance(pre_left_widget, MP1H_L_Demand):
+                        pre_linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
+                    
+                    elif isinstance(pre_left_widget, TP1H_L_Demand):
+                        pre_linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
 
                 if self.RWA_Success is True:
 
@@ -2639,10 +2649,10 @@ class Ui_MainWindow(object):
             index = DemandTabDataBase["Panels"][Source][PanelId].LineIdList.index(GroomOut10Id)
 
             if index == 0:
-                widget.LINE1.setStyleSheet(" QLabel{ image: url(:/Line_L_SOURCE/LINE_L.png); border: 5px solid red; }")
+                widget.LINE1.setStyleSheet(" QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); border: 5px solid red; }")
                 
             else:
-                widget.LINE2.setStyleSheet(" QLabel { image: url(:/Line_R_SOURCE/LINE_R.png); border: 5px solid red; }")
+                widget.LINE2.setStyleSheet(" QLabel { image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); border: 5px solid red; }")
                 
             
             if "MP1H_Client_Id" in UserData:
@@ -2670,10 +2680,10 @@ class Ui_MainWindow(object):
                 index = DemandTabDataBase["Panels"][Source][PanelId].LineIdList.index(GroomOut10Id)
 
                 if index == 0:
-                    widget.LINE1.setStyleSheet(" QLabel{ image: url(:/Line_L_SOURCE/LINE_L.png); }")
+                    widget.LINE1.setStyleSheet(" QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); }")
                     
                 else:
-                    widget.LINE2.setStyleSheet(" QLabel{ image: url(:/Line_R_SOURCE/LINE_R.png); }")
+                    widget.LINE2.setStyleSheet(" QLabel{ image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); }")
                     
                 
                 if "MP1H_Client_Id" in UserData:
