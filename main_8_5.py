@@ -1793,6 +1793,8 @@ class Ui_MainWindow(object):
         # NOTE ADDED
         self.splitter.splitterMoved["int", "int"].connect(self.SplitterCommandFun)
 
+        self.New_Demand_Shelf_Num = 2
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -2130,7 +2132,7 @@ class Ui_MainWindow(object):
 
         Source = self.Demand_Source_combobox.currentText()
         Local_Destination = self.Demand_Destination_combobox.currentText()
-        for i in range(1, 15):
+        for i in range(1, (((self.New_Demand_Shelf_Num - 2) * 14) + 15)):
             # removing old panel
             panel_widget = Data["DemandPanel_" + str(i)].takeAt(0).widget()
             Data["DemandPanel_" + str(i)].removeWidget(panel_widget)
@@ -3805,8 +3807,25 @@ class Ui_MainWindow(object):
                 #self.Demand_mdi.addSubWindow(Data["DemandPanel_" + str(i)])
                 #Data["DemandPanel_" + str(i)].show()
                 self.Demand_shelf_init_flag = True
-
     
+    def add_demand_shelf(self):
+
+        Source = self.Demand_Source_combobox.currentText()
+        Destination = self.Demand_Destination_combobox.currentText()
+
+        setattr(self, "shelf_" + str(self.New_Demand_Shelf_Num), QWidget())
+        setattr(self, "shelf_" + str(self.New_Demand_Shelf_Num) + "_layout", QtWidgets.QHBoxLayout(getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num))))
+
+        for i in range(((self.New_Demand_Shelf_Num - 1) * 14) + 1, ((self.New_Demand_Shelf_Num - 1) * 14) + 15):
+            setattr(self, "DemandPanel_" + str(i), QWidget(getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num))))
+            getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num) + "_layout").addWidget(getattr(self, "DemandPanel_" + str(i)))
+            Data["DemandPanel_" + str(i)] = QtWidgets.QGridLayout(getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num)))
+            Data["DemandPanel_" + str(i)].setMargin(0)
+            Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Destination))
+        
+        self.Demand_tab.addTab(getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num)), "Shelf " + str(self.New_Demand_Shelf_Num))
+        
+        self.New_Demand_Shelf_Num += 1
 
 
     def get_panel_num(self, Source):
@@ -3817,6 +3836,10 @@ class Ui_MainWindow(object):
                 return "1"
             IdList = list(map(lambda x : int(x), IdList))
             MaxId = max(IdList)
+
+            if (MaxId + 1) // 15 >= self.New_Demand_Shelf_Num - 1:
+                self.add_demand_shelf()
+
             return str(MaxId + 1)
 
     def create_ClientsCapacityList(self, DemandId, ServiceIdList, netobj):
