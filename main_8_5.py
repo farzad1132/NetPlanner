@@ -2693,15 +2693,34 @@ class Ui_MainWindow(object):
         if name[0] != 0:
             workbook = xlsxwriter.Workbook(name[0])
             worksheet = workbook.add_worksheet() 
+            worksheet.set_tab_color('red')
+            worksheet.freeze_panes('I1')
+            header1 = '&CTRAFFIC MATRIX'
+            worksheet.set_header(header=header1)
+            centerized = workbook.add_format({'align': 'center'})
             #data_format = workbook.add_format({'bg_color': '#D21F3C'})
+            format1 = workbook.add_format({'bg_color': '#FFC7CE',
+                               'font_color': '#9C0006'})
+
+            format2 =  workbook.add_format({'bg_color': '#C6EFCE',
+                               'font_color': '#006100'})
+
+            format3 =  workbook.add_format({'bg_color': '#C6FGCE',
+                               'font_color': '#006111'})
+
             column = 0
             for i in range(8):
                 row = 2
-                worksheet.write(1, i,header_list[i])
+                worksheet.write(1, i,header_list[i], centerized)
                 for item in list(Data["General"]["DataSection"][str(i)].values()):
-                        worksheet.write(row, column, item)   
+                        worksheet.write(row, column, item, centerized)   
                         row += 1
                 column += 1          
+            
+            worksheet.conditional_format('A2:H2', {'type': 'cell',
+                                         'criteria': '>=',
+                                         'value': 50,
+                                         'format': format1})
 
             header_list2 = {"E1":["Quantity", "SLA"], "STM_1_Electrical":["Quantity", "SLA"], "STM_1_Optical":
                             ["Quantity", "λ", "SLA"], "STM_4":
@@ -2725,13 +2744,15 @@ class Ui_MainWindow(object):
                             'Quantity_40GE', 'Granularity_40GE', 'λ_40GE(nm)', 'SLA_40GE',
                             'Quantity_100GE', 'Granularity_100GE', 'λ_100GE(nm)', 'SLA_100GE']
 
-            worksheet.set_column('J:AW', 12)
             worksheet.set_row(0, 50)
+            worksheet.set_column(0, 7, 20)
+            worksheet.set_column('I:AV', 20)
             merge_format = workbook.add_format({
             'bold': 1,
             'border': 1,
             'align': 'center',
             'valign': 'vcenter'})
+
             
 
             #worksheet.set_row(6, 50) 
@@ -2751,21 +2772,31 @@ class Ui_MainWindow(object):
 
             for item2 in header_list3:
                 i+=1
-                worksheet.write(1, i, item2)
+                worksheet.write(1, i, item2, centerized)
             for key in header_list2.keys():
                 for value in header_list2[key]:
                     row = 2
                     for item3 in list(Data[key]["DataSection"][value].values()):
                         if item3 == 'nan':
-                            worksheet.write(row, column, None)   
+                            worksheet.write(row, column, None, centerized)   
                             row += 1
                         else:
-                            worksheet.write(row, column, item3)
+                            worksheet.write(row, column, item3, centerized)
                             row += 1
                     column +=1
 
-            workbook.close()
+            worksheet.conditional_format('I1:AV1', {'type': 'cell',
+                                         'criteria': '>=',
+                                         'value': 50,
+                                         'format': format2})
 
+            worksheet.conditional_format('I2:AV2', {'type': 'cell',
+                                         'criteria': '>=',
+                                         'value': 50,
+                                         'format': format3})                                        
+
+            workbook.close()
+            
         
         #print(dict1["Destination"])
         
