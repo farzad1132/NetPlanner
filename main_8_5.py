@@ -2052,13 +2052,13 @@ class Ui_MainWindow(object):
         self.MapWidget.canvas.draw()
     
     def cancel_button_fun(self):
+        if hasattr(self.backend_map, "LastGateWay"):
+            self.webengine.page().runJavaScript('cancel_clustering(\'%s\')' %(self.backend_map.LastGateWay))
 
-        self.webengine.page().runJavaScript('cancel_clustering(\'%s\')' %(self.backend_map.LastGateWay))
+            for node in Data["Clustering"][self.backend_map.LastGateWay]["SubNodes"]:
+                self.webengine.page().runJavaScript('cancel_clustering(\'%s\')' %(node))
 
-        for node in Data["Clustering"][self.backend_map.LastGateWay]["SubNodes"]:
-            self.webengine.page().runJavaScript('cancel_clustering(\'%s\')' %(node))
-
-        Data["Clustering"].pop(self.backend_map.LastGateWay)
+            Data["Clustering"].pop(self.backend_map.LastGateWay)
 
         self.SelectSubNode_button.toggle()
 
