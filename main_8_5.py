@@ -3815,11 +3815,14 @@ class Ui_MainWindow(object):
 
         setattr(self, "shelf_" + str(self.New_Demand_Shelf_Num), QWidget())
         setattr(self, "shelf_" + str(self.New_Demand_Shelf_Num) + "_layout", QtWidgets.QHBoxLayout(getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num))))
+        
+        getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num) + "_layout").setContentsMargins(0, 0, 0, 0)
+        getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num) + "_layout").setSpacing(0)
 
         for i in range(((self.New_Demand_Shelf_Num - 1) * 14) + 1, ((self.New_Demand_Shelf_Num - 1) * 14) + 15):
             setattr(self, "DemandPanel_" + str(i), QWidget(getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num))))
             getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num) + "_layout").addWidget(getattr(self, "DemandPanel_" + str(i)))
-            Data["DemandPanel_" + str(i)] = QtWidgets.QGridLayout(getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num)))
+            Data["DemandPanel_" + str(i)] = QtWidgets.QGridLayout(getattr(self, "DemandPanel_" + str(i)))
             Data["DemandPanel_" + str(i)].setMargin(0)
             Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Destination))
         
