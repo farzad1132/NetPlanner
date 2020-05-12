@@ -1,11 +1,14 @@
 <RCC>
   <qresource prefix="newPrefix">
+    <file>open_blue.png</file>
     <file>add-icon.png</file>
-    <file>open.png</file>
-    <file>new.png</file>
+    <file>new_gray.png</file>
     <file>error_icon.png</file>
-    <file>save_grey.png</file>
+    <file>open_gray.png</file>
+    <file>new_blue.png</file>
     <file>dropup.png</file>
+    <file>save_gray.png</file>
+    <file>save_blue.png</file>
     <file>dropdown.png</file>
   </qresource>
 </RCC>
