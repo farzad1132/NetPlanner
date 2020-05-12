@@ -1712,8 +1712,8 @@ class Ui_MainWindow(object):
 
 
         self.panels_name = ["BAF3","BLANK","LAF3","MP1H","MP2D","MP2X","OS5","PAF3","SC","SM2","TP1H","TP2X","TPAX","WS4"]
-
-        self.SaveChanges_button.clicked.connect(self.SaveChanges_button_fun)
+        #NOTE:edited
+        self.SaveChanges_button.clicked.connect(self.SaveTM_fun)
 
         self.tabWidget.currentChanged["int"].connect(self.main_tab_clicked)
 
@@ -2745,7 +2745,11 @@ class Ui_MainWindow(object):
                             'Quantity_100GE', 'Granularity_100GE', 'λ_100GE(nm)', 'SLA_100GE']
 
             worksheet.set_row(0, 50)
-            worksheet.set_column(0, 7, 20)
+            worksheet.set_column(0, 2, 10)
+            worksheet.set_column(3, 4, 13)
+            worksheet.set_column(5, 5, 17)
+            worksheet.set_column(6, 6, 40)
+            worksheet.set_column(7, 7, 10)
             worksheet.set_column('I:AV', 20)
             merge_format = workbook.add_format({
             'bold': 1,
