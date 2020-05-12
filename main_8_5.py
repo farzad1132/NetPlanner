@@ -2273,12 +2273,12 @@ class Ui_MainWindow(object):
 
             count = self.Demand_tab.count()
 
-            if count < DemandTabDataBase["Shelf_Count"][Source] - 1:
-                for i in range(count + 1, DemandTabDataBase["Shelf_Count"][Source]):
-                    self.Demand_tab.addTab(getattr(self, "Shelf_" + str(i)), "Shelf " + str(i))
+            if count < DemandTabDataBase["Shelf_Count"][Source]:
+                for i in range(count, DemandTabDataBase["Shelf_Count"][Source]):
+                    self.Demand_tab.addTab(getattr(self, "Shelf_" + str(i + 1)), "shelf " + str(i + 1))
             
-            elif count > DemandTabDataBase["Shelf_Count"][Source] - 1:
-                for i in range(DemandTabDataBase["Shelf_Count"][Source] + 1, count + 1):
+            elif count > DemandTabDataBase["Shelf_Count"][Source]:
+                for i in range(DemandTabDataBase["Shelf_Count"][Source] , count):
                     self.Demand_tab.removeTab(i)
 
     def export_excel_fun(self):
@@ -2893,14 +2893,16 @@ class Ui_MainWindow(object):
         DemandTabDataBase["Panels"][Source] = {}
         DemandTabDataBase["Panels"][Destination] = {}
 
+        DemandTabDataBase["Shelf_Count"][Source] = 1
+        DemandTabDataBase["Shelf_Count"][Destination] = 1
+
     def initialize_GroomingTabDataBase(self, Source, Destination):
         GroomingTabDataBase["LightPathes"][(Source, Destination)] = {}
         GroomingTabDataBase["LightPathes"][(Destination, Source)] = {}
 
         GroomingTabDataBase["Panels"][Source] = {}
         GroomingTabDataBase["Panels"][Destination] = {}
-        DemandTabDataBase["Shelf_Count"][Source] = 1
-        DemandTabDataBase["Shelf_Count"][Destination] = 1
+        
         #GroomingTabDataBase["LinkState"][(Source, Destination)] = []
         
     
@@ -3848,7 +3850,7 @@ class Ui_MainWindow(object):
         self.New_Demand_Shelf_Num += 1
 
 
-    def get_panel_num(self, Source, Destination):
+    def get_panel_num(self, Source):
             IdList = list(DemandTabDataBase["Panels"][Source].keys())
             
             # if shelf is empty this method must return 1 in ## string ##
@@ -3859,8 +3861,9 @@ class Ui_MainWindow(object):
 
             if (MaxId + 1) // 15 >= self.New_Demand_Shelf_Num - 1:
                 self.add_demand_shelf()
-                DemandTabDataBase["Shelf_Count"][Source] = self.New_Demand_Shelf_Num
-                DemandTabDataBase["Shelf_Count"][Destination] = self.New_Demand_Shelf_Num
+            
+            if ((MaxId + 1) // 15 ) + 1 > DemandTabDataBase["Shelf_Count"][Source]:
+                DemandTabDataBase["Shelf_Count"][Source] = ((MaxId + 1) // 15 ) + 1
 
             return str(MaxId + 1)
 
@@ -3910,7 +3913,7 @@ class Ui_MainWindow(object):
             
             # checking wheather lightpath is created by tp1h or not
             if len(lightpath.ServiceIdList) == 1:
-                panelid = self.get_panel_num(Source, Destination)
+                panelid = self.get_panel_num(Source)
                 #DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
                 DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(  DemandId= DemandId,
                                                                         ServiceId= lightpath.ServiceIdList[0],
@@ -3942,7 +3945,7 @@ class Ui_MainWindow(object):
 
 
             else:
-                panelid = self.get_panel_num(Source, Destination)
+                panelid = self.get_panel_num(Source)
                 ClientCapacity, LineCapacity = self.create_ClientsCapacityList(DemandId, lightpath.ServiceIdList, netobj)
                 #LineCapacity = len(ClientCapacity) * 10
                 
@@ -4026,7 +4029,7 @@ class Ui_MainWindow(object):
             DualPanelsId = self.generate_dual_panel_num(Destination)
             
             # panel part ( creating panels object )
-            PanelId = self.get_panel_num(Source, Destination)
+            PanelId = self.get_panel_num(Source)
 
             ClientsCapacity_1 , LineCapacity_1 = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].ServiceIdList, netobj)
             ClientsCapacity_2 , LineCapacity_2 = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].ServiceIdList, netobj)
@@ -4183,7 +4186,7 @@ class Ui_MainWindow(object):
             LightPathId = netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].LightPathId
             
             # panel part ( creating panels object )
-            PanelId = self.get_panel_num(Source, Destination)
+            PanelId = self.get_panel_num(Source)
 
             ClientsCapacity , LineCapacity = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList, netobj)
 
@@ -4280,6 +4283,9 @@ class Ui_MainWindow(object):
         IdList = list(map(lambda x : int(x), IdList))
         if len(IdList) == max(IdList):
             MaxId = max(IdList)
+
+            if ((MaxId + 1) // 15) + 1 > DemandTabDataBase["Shelf_Count"][Destination]:
+                DemandTabDataBase["Shelf_Count"][Destination] = ((MaxId + 1) // 15) + 1
             return (str(MaxId + 1), str(MaxId + 2))
         else:
             for i in range(1,max(IdList), 2):
@@ -4519,6 +4525,9 @@ class Ui_MainWindow(object):
 
             DemandTabDataBase["Lightpathes"][(Source, Destination)] = {}
             DemandTabDataBase["Lightpathes"][(Destination, Source)] = {}
+
+            DemandTabDataBase["Shelf_Count"][Source] = 1
+            DemandTabDataBase["Shelf_Count"][Destination] = 1
 
             if not ((Source, Destination) in GroomingTabDataBase["LightPathes"]):
                 GroomingTabDataBase["LightPathes"][(Source, Destination)] = {}
