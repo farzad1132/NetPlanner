@@ -1795,6 +1795,8 @@ class Ui_MainWindow(object):
 
         self.New_Demand_Shelf_Num = 2
 
+        self.pushButton_6.clicked.connect(self.add_shelf_button_fun)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -2275,7 +2277,7 @@ class Ui_MainWindow(object):
 
             if count < DemandTabDataBase["Shelf_Count"][Source]:
                 for i in range(count, DemandTabDataBase["Shelf_Count"][Source]):
-                    self.Demand_tab.addTab(getattr(self, "Shelf_" + str(i + 1)), "shelf " + str(i + 1))
+                    self.Demand_tab.addTab(getattr(self, "shelf_" + str(i + 1)), "Shelf " + str(i + 1))
             
             elif count > DemandTabDataBase["Shelf_Count"][Source]:
                 for i in range(DemandTabDataBase["Shelf_Count"][Source] , count):
@@ -3848,6 +3850,19 @@ class Ui_MainWindow(object):
         self.Demand_tab.addTab(getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num)), "Shelf " + str(self.New_Demand_Shelf_Num))
         
         self.New_Demand_Shelf_Num += 1
+
+    def add_shelf_button_fun(self):
+        Source = self.Demand_Source_combobox.currentText()
+
+        if Source != "":
+            if self.New_Demand_Shelf_Num - 1 == DemandTabDataBase["Shelf_Count"][Source]:
+                self.add_demand_shelf()
+                DemandTabDataBase["Shelf_Count"][Source] += 1
+            
+            elif self.New_Demand_Shelf_Num - 1 > DemandTabDataBase["Shelf_Count"][Source]:
+                DemandTabDataBase["Shelf_Count"][Source] += 1
+                self.show_hide_shelf(Source)
+
 
 
     def get_panel_num(self, Source):
