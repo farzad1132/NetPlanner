@@ -172,6 +172,10 @@ DemandTabDataBase["Failed_Demands"] = {}
 # format:
 #       { <SourceName> : <DestinationsList> }
 
+DemandTabDataBase["Shelf_Count"] = {}
+# format:
+#       { <SourceName>: <LastShelfNum> }
+
 GroomingTabDataBase = {}
 GroomingTabDataBase["LightPathes"] = {}
 # format:

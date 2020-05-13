@@ -1793,6 +1793,10 @@ class Ui_MainWindow(object):
         # NOTE ADDED
         self.splitter.splitterMoved["int", "int"].connect(self.SplitterCommandFun)
 
+        self.New_Demand_Shelf_Num = 2
+
+        self.pushButton_6.clicked.connect(self.add_shelf_button_fun)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -2130,14 +2134,14 @@ class Ui_MainWindow(object):
 
         Source = self.Demand_Source_combobox.currentText()
         Local_Destination = self.Demand_Destination_combobox.currentText()
-        for i in range(1, 15):
+        for i in range(1, (((self.New_Demand_Shelf_Num - 2) * 14) + 15)):
             # removing old panel
             panel_widget = Data["DemandPanel_" + str(i)].takeAt(0).widget()
             Data["DemandPanel_" + str(i)].removeWidget(panel_widget)
             panel_widget.deleteLater()
 
             #print(f"count: {Data['DemandPanel_' + str(i)].count()}")
-
+            
             if str(i) in DemandTabDataBase["Panels"][Source]:
                 panel = DemandTabDataBase["Panels"][Source][str(i)]
                 
@@ -2263,6 +2267,21 @@ class Ui_MainWindow(object):
             
             else:
                 Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Local_Destination))
+
+        self.show_hide_shelf(Source)
+    
+    def show_hide_shelf(self, Source):
+        if Source != "":
+
+            count = self.Demand_tab.count()
+
+            if count < DemandTabDataBase["Shelf_Count"][Source]:
+                for i in range(count, DemandTabDataBase["Shelf_Count"][Source]):
+                    self.Demand_tab.addTab(getattr(self, "shelf_" + str(i + 1)), "Shelf " + str(i + 1))
+            
+            elif count > DemandTabDataBase["Shelf_Count"][Source]:
+                for i in range(DemandTabDataBase["Shelf_Count"][Source] , count):
+                    self.Demand_tab.removeTab(i)
 
     def export_excel_fun(self):
         
@@ -2886,12 +2905,16 @@ class Ui_MainWindow(object):
         DemandTabDataBase["Panels"][Source] = {}
         DemandTabDataBase["Panels"][Destination] = {}
 
+        DemandTabDataBase["Shelf_Count"][Source] = 1
+        DemandTabDataBase["Shelf_Count"][Destination] = 1
+
     def initialize_GroomingTabDataBase(self, Source, Destination):
         GroomingTabDataBase["LightPathes"][(Source, Destination)] = {}
         GroomingTabDataBase["LightPathes"][(Destination, Source)] = {}
 
         GroomingTabDataBase["Panels"][Source] = {}
         GroomingTabDataBase["Panels"][Destination] = {}
+        
         #GroomingTabDataBase["LinkState"][(Source, Destination)] = []
         
     
@@ -3815,8 +3838,41 @@ class Ui_MainWindow(object):
                 #self.Demand_mdi.addSubWindow(Data["DemandPanel_" + str(i)])
                 #Data["DemandPanel_" + str(i)].show()
                 self.Demand_shelf_init_flag = True
-
     
+    def add_demand_shelf(self):
+
+        Source = self.Demand_Source_combobox.currentText()
+        Destination = self.Demand_Destination_combobox.currentText()
+
+        setattr(self, "shelf_" + str(self.New_Demand_Shelf_Num), QWidget())
+        setattr(self, "shelf_" + str(self.New_Demand_Shelf_Num) + "_layout", QtWidgets.QHBoxLayout(getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num))))
+        
+        getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num) + "_layout").setContentsMargins(0, 0, 0, 0)
+        getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num) + "_layout").setSpacing(0)
+
+        for i in range(((self.New_Demand_Shelf_Num - 1) * 14) + 1, ((self.New_Demand_Shelf_Num - 1) * 14) + 15):
+            setattr(self, "DemandPanel_" + str(i), QWidget(getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num))))
+            getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num) + "_layout").addWidget(getattr(self, "DemandPanel_" + str(i)))
+            Data["DemandPanel_" + str(i)] = QtWidgets.QGridLayout(getattr(self, "DemandPanel_" + str(i)))
+            Data["DemandPanel_" + str(i)].setMargin(0)
+            Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Destination))
+        
+        self.Demand_tab.addTab(getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num)), "Shelf " + str(self.New_Demand_Shelf_Num))
+        
+        self.New_Demand_Shelf_Num += 1
+
+    def add_shelf_button_fun(self):
+        Source = self.Demand_Source_combobox.currentText()
+
+        if Source != "":
+            if self.New_Demand_Shelf_Num - 1 == DemandTabDataBase["Shelf_Count"][Source]:
+                self.add_demand_shelf()
+                DemandTabDataBase["Shelf_Count"][Source] += 1
+            
+            elif self.New_Demand_Shelf_Num - 1 > DemandTabDataBase["Shelf_Count"][Source]:
+                DemandTabDataBase["Shelf_Count"][Source] += 1
+                self.show_hide_shelf(Source)
+
 
 
     def get_panel_num(self, Source):
@@ -3827,6 +3883,13 @@ class Ui_MainWindow(object):
                 return "1"
             IdList = list(map(lambda x : int(x), IdList))
             MaxId = max(IdList)
+
+            if (MaxId + 1) // 15 >= self.New_Demand_Shelf_Num - 1:
+                self.add_demand_shelf()
+            
+            if ((MaxId + 1) // 15 ) + 1 > DemandTabDataBase["Shelf_Count"][Source]:
+                DemandTabDataBase["Shelf_Count"][Source] = ((MaxId + 1) // 15 ) + 1
+
             return str(MaxId + 1)
 
     def create_ClientsCapacityList(self, DemandId, ServiceIdList, netobj):
@@ -4245,6 +4308,9 @@ class Ui_MainWindow(object):
         IdList = list(map(lambda x : int(x), IdList))
         if len(IdList) == max(IdList):
             MaxId = max(IdList)
+
+            if ((MaxId + 1) // 15) + 1 > DemandTabDataBase["Shelf_Count"][Destination]:
+                DemandTabDataBase["Shelf_Count"][Destination] = ((MaxId + 1) // 15) + 1
             return (str(MaxId + 1), str(MaxId + 2))
         else:
             for i in range(1,max(IdList), 2):
@@ -4484,6 +4550,9 @@ class Ui_MainWindow(object):
 
             DemandTabDataBase["Lightpathes"][(Source, Destination)] = {}
             DemandTabDataBase["Lightpathes"][(Destination, Source)] = {}
+
+            DemandTabDataBase["Shelf_Count"][Source] = 1
+            DemandTabDataBase["Shelf_Count"][Destination] = 1
 
             if not ((Source, Destination) in GroomingTabDataBase["LightPathes"]):
                 GroomingTabDataBase["LightPathes"][(Source, Destination)] = {}
