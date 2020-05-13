@@ -443,6 +443,7 @@ class Ui_ImportMenuUI(object):
         name = QFileDialog.getOpenFileName(bus["ImportMenuUI"], "Open Topology")
 
         if name[0] != 0 and name[0] != "":
+            Data["Nodes"].clear()
             try:
                 with pd.ExcelFile(name[0]) as handle:
                     Temp_data = handle.parse(header=0, skipfooter=0)
@@ -480,6 +481,7 @@ class Ui_ImportMenuUI(object):
         
 
         if name[0] != 0 and name[0] != "":
+            Data["Links"].clear()
             try:
                 with pd.ExcelFile(name[0]) as handle:
                     Temp_data = handle.parse(header=0, skipfooter=0)

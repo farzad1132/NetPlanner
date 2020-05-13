@@ -2555,7 +2555,7 @@ class Ui_MainWindow(object):
         if index == 2:
             if Data["DemandTab_firststart_flag"] == False:
                 Source = self.Demand_Source_combobox.currentText()
-                self.Demand_Shelf_set()
+                #self.Demand_Shelf_set()
                 if self.clicked_Node_flag == False:
                     self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
                 Data["DemandTab_firststart_flag"] = True
