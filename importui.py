@@ -337,6 +337,9 @@ class Ui_ImportMenuUI(object):
         Data["ui"].SaveChanges_button_fun()
 
         self.DrawButton.setEnabled(True)
+        self.LinkButton.setEnabled(False)
+        self.TrafficButton.setEnabled(False)
+        self.NodeButton.setEnabled(False)
     
     def call_insert_links(self):
         Data["ui"].insert_link_fun()

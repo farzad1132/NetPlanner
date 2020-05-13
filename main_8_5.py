@@ -4496,58 +4496,63 @@ class Ui_MainWindow(object):
 
     def grooming_procedure(self, MP1H_Threshold):
 
-        self.clean_database_for_grooming(self.network)
+        self.clean_database_for_grooming()
 
-        Remain_lower100,full_mp2x_lines, half_mp2x_lines  = grooming_fun(self.network, int(MP1H_Threshold))
-
-        self.fill_basic_demandtabdatabase(self.network)
-
-        # creating new 
-        self.create_new_demand_services(self.network)
+        try:
+            Remain_lower100,full_mp2x_lines, half_mp2x_lines  = grooming_fun(self.network, int(MP1H_Threshold))
         
-        
-        # filling Demand DataBase 
-        self.fill_DemandTabDataBase(self.network)
 
-        # fill MP2X DataBase
-        self.fill_DemandTabDataBase_MP2X(full_MP2X_Dict= full_mp2x_lines,
-                                            half_MP2X_Dict= half_mp2x_lines,
-                                            netobj= self.network)
+            self.fill_basic_demandtabdatabase(self.network)
 
-        """ # NOTE: start debugging
-        print(f"Panels part of DemandTabDataBase: {DemandTabDataBase['Panels']}")
-        # NOTE: end of debugging """
+            # creating new 
+            self.create_new_demand_services(self.network)
+            
+            
+            # filling Demand DataBase 
+            self.fill_DemandTabDataBase(self.network)
 
-        # changing failed nodes icon ( change to notified version )
-        self.failed_grooming_nodes()
-        self.Failed_Nodes_flag = True
+            # fill MP2X DataBase
+            self.fill_DemandTabDataBase_MP2X(full_MP2X_Dict= full_mp2x_lines,
+                                                half_MP2X_Dict= half_mp2x_lines,
+                                                netobj= self.network)
 
-        self.Grooming_pushbutton.setStyleSheet("QPushButton {\n"
-"    \n"
-"    \n"
-"    font: 75 10pt \"Bahnschrift Condensed\";\n"
-"    \n"
-"    border: 2px solid #8f8f91; min-width: 80px;\n"
-"    border-color: #EB8686; \n"
-"    border-radius: 25px;\n"
-"    background-color: green; \n"
-"}\n"
-"\n"
-"QPushButton:pressed,hover {\n"
-"    background-color: #EB8686; \n"
-"}\n"
-"QPushButton:hover {\n"
-"    background-color: #EB8686; \n"
-"}\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
+            """ # NOTE: start debugging
+            print(f"Panels part of DemandTabDataBase: {DemandTabDataBase['Panels']}")
+            # NOTE: end of debugging """
 
-    def clean_database_for_grooming(self, netobj):
+            # changing failed nodes icon ( change to notified version )
+            self.failed_grooming_nodes()
+            self.Failed_Nodes_flag = True
+
+            self.Grooming_pushbutton.setStyleSheet("QPushButton {\n"
+    "    \n"
+    "    \n"
+    "    font: 75 10pt \"Bahnschrift Condensed\";\n"
+    "    \n"
+    "    border: 2px solid #8f8f91; min-width: 80px;\n"
+    "    border-color: #EB8686; \n"
+    "    border-radius: 25px;\n"
+    "    background-color: green; \n"
+    "}\n"
+    "\n"
+    "QPushButton:pressed,hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:flat {\n"
+    "    border: none; /* no border for a flat push button */\n"
+    "}\n"
+    "\n"
+    "QPushButton:default {\n"
+    "    border-color: navy; /* make the default button prominent */\n"
+    "}")
+        except:
+            print("Grooming Algorithm Failed !!!")
+            self.clean_database_for_grooming()
+
+    def clean_database_for_grooming(self):
 
         DemandTabDataBase["Source_Destination"].clear()
         DemandTabDataBase["Services"].clear()
@@ -4737,53 +4742,70 @@ class Ui_MainWindow(object):
     def RWA_procedure(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize,
                             History, Algorithm):
 
-        self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm)
-        RWA_Start_Time = time.time()
-        self.RWA_button_fun()
-        RWA_Runtime = time.time() - RWA_Start_Time
-        self.fill_GroomingTabDataBase(self.decoded_network, RWA_Runtime)
-        self.RWA_Success = True
+        network = self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm)
+        
 
-        # Enabling View GroupBox
-        self.ViewGroupbox.setEnabled(True)
+        try:
+            self.clear_database_for_rwa()
+            RWA_Start_Time = time.time()
+            self.RWA_button_fun(network)
+            RWA_Runtime = time.time() - RWA_Start_Time
+            self.fill_GroomingTabDataBase(self.decoded_network, RWA_Runtime)
+            self.RWA_Success = True
 
-        # disabling Clustering GroupBox except ShowSubNodes
-        self.SetGatewayNode_button.setEnabled(False)
-        self.SelectSubNode_button.setEnabled(False)
-        self.OK_button.setEnabled(False)
-        self.Cancel_button.setEnabled(False)
-        self.cluster_type_combobox.setEnabled(False)
-        self.ClusterColor_combobox.setEnabled(False)
+            # Enabling View GroupBox
+            self.ViewGroupbox.setEnabled(True)
 
-        self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
-"    \n"
-"    \n"
-"    font: 75 10pt \"Bahnschrift Condensed\";\n"
-"    \n"
-"    border: 2px solid #8f8f91; min-width: 80px;\n"
-"    border-color: #EB8686; \n"
-"    border-radius: 25px;\n"
-"    background-color: green; \n"
-"}\n"
-"\n"
-"QPushButton:pressed,hover {\n"
-"    background-color: #EB8686; \n"
-"}\n"
-"QPushButton:hover {\n"
-"    background-color: #EB8686; \n"
-"}\n"
-"QPushButton:flat {\n"
-"    border: none; /* no border for a flat push button */\n"
-"}\n"
-"\n"
-"QPushButton:default {\n"
-"    border-color: navy; /* make the default button prominent */\n"
-"}")
+            # disabling Clustering GroupBox except ShowSubNodes
+            self.SetGatewayNode_button.setEnabled(False)
+            self.SelectSubNode_button.setEnabled(False)
+            self.OK_button.setEnabled(False)
+            self.Cancel_button.setEnabled(False)
+            self.cluster_type_combobox.setEnabled(False)
+            self.ClusterColor_combobox.setEnabled(False)
+
+            self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
+    "    \n"
+    "    \n"
+    "    font: 75 10pt \"Bahnschrift Condensed\";\n"
+    "    \n"
+    "    border: 2px solid #8f8f91; min-width: 80px;\n"
+    "    border-color: #EB8686; \n"
+    "    border-radius: 25px;\n"
+    "    background-color: green; \n"
+    "}\n"
+    "\n"
+    "QPushButton:pressed,hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:flat {\n"
+    "    border: none; /* no border for a flat push button */\n"
+    "}\n"
+    "\n"
+    "QPushButton:default {\n"
+    "    border-color: navy; /* make the default button prominent */\n"
+    "}")
+
+        except:
+            print("RWA Algorithm Failed !!!")
+            del network
+
+    
+    def clear_database_for_rwa(self):
+
+        GroomingTabDataBase["LightPathes"].clear()
+        GroomingTabDataBase["LinkState"].clear()
+        GroomingTabDataBase["NodeState"].clear()
+
 
 
 
     def insert_params_into_obj(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm):
-        self.network.put_params(merge= merge,
+        CopyNetwork = copy.copy(self.network)
+        CopyNetwork.put_params(merge= merge,
                                 alpha= alpha,
                                 iterations= iterations,
                                 margin= margin,
@@ -4795,11 +4817,12 @@ class Ui_MainWindow(object):
                                 Algorithm= Algorithm)
         
         self.MaxNW = MaxNW
+        return CopyNetwork
 
 
         
 
-    def RWA_button_fun(self):
+    def RWA_button_fun(self, netobj):
 
         for lightpath in self.network.LightPathDict.values():
             print(lightpath.__dict__)
@@ -4845,7 +4868,7 @@ class Ui_MainWindow(object):
                 #  Populate the dictionary with object properties
                 obj_dict.update(obj.__dict__)
                 return obj_dict
-        net = copy.copy(self.network)
+        net = copy.copy(netobj)
 
         use_sockets = False
 
