@@ -344,6 +344,7 @@ class Ui_ImportMenuUI(object):
     def call_insert_links(self):
         Data["ui"].insert_link_fun()
         Data["ui"].Grouping_groupbox.setEnabled(True)
+        Data["ui"].ShowSubNodes.setEnabled(False)
         Data["ui"].Demand_combo_notifications_flag = False
         bus["ImportMenuUI"].close()
     
@@ -537,6 +538,7 @@ class Ui_ImportMenuUI(object):
         name = QFileDialog.getOpenFileName(bus["ImportMenuUI"], "Load Traffic Matrix")
 
         if name[0] != 0 and name[0] != "":
+            Data["ui"].clear_tm()
             try:
                 with pd.ExcelFile(name[0]) as handle:
                     Temp_data = handle.parse(header=1, skipfooter=0)

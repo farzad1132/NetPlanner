@@ -1825,6 +1825,8 @@ class Ui_MainWindow(object):
 
         self.addshelf_pushbutton.clicked.connect(self.add_shelf_button_fun)
 
+        self.newfile_pushbutton.clicked.connect(self.new_button_fun)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -2923,6 +2925,91 @@ class Ui_MainWindow(object):
             self.initialize_GroomingTabDataBase(Source, Destination)
 
         #print(f"demandtabdatabase Services: {DemandTabDataBase['Services']}")
+
+    def clear_tm(self):
+        ServiceTypes = ["E1", "STM_1_Electrical", "STM_1_Optical", "STM_4", "STM_16", "STM_64", "FE", "1GE", "10GE",
+                           "40GE", "100GE"]
+        
+        for i in range(1,9):
+            row = str(i)
+            Data["General"]["DataSection"][row].clear()
+        
+        for servicetype in ServiceTypes:
+            for key in Data[servicetype]["DataSection"]:
+                Data[servicetype]["DataSection"][key].clear()
+
+    
+    def new_button_fun(self):
+        
+        self.clean_database_for_grooming()
+        self.clear_database_for_rwa()
+        
+        self.m = folium.Map(location=[35.6892,51.3890],zoom_start=6)
+        self.m.save("map.html")
+        Data["Map_Var"] = self.m
+        Data["Web_Engine"] = self.webengine
+        self.webengine.load(QUrl.fromLocalFile(os.path.abspath('map.html')))
+        self.webengine.show()
+
+        self.tabWidget.setTabEnabled(1, False)
+        self.tabWidget.setTabEnabled(2, False)
+
+        self.ViewGroupbox.setEnabled(False)
+
+        self.Grouping_groupbox.setEnabled(False)
+
+        self.Demand_Source_combobox.clear()
+        self.Demand_Destination_combobox.clear()
+
+        self.Grooming_pushbutton.setStyleSheet("QPushButton {\n"
+    "    \n"
+    "    \n"
+    "    font: 75 10pt \"Bahnschrift Condensed\";\n"
+    "    \n"
+    "    border: 2px solid #8f8f91; min-width: 80px;\n"
+    "    border-color: #EB8686; \n"
+    "    border-radius: 25px;\n"
+    "}\n"
+    "\n"
+    "QPushButton:pressed,hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:flat {\n"
+    "    border: none; /* no border for a flat push button */\n"
+    "}\n"
+    "\n"
+    "QPushButton:default {\n"
+    "    border-color: navy; /* make the default button prominent */\n"
+    "}")
+
+        self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
+    "    \n"
+    "    \n"
+    "    font: 75 10pt \"Bahnschrift Condensed\";\n"
+    "    \n"
+    "    border: 2px solid #8f8f91; min-width: 80px;\n"
+    "    border-color: #EB8686; \n"
+    "    border-radius: 25px;\n"
+    "}\n"
+    "\n"
+    "QPushButton:pressed,hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:flat {\n"
+    "    border: none; /* no border for a flat push button */\n"
+    "}\n"
+    "\n"
+    "QPushButton:default {\n"
+    "    border-color: navy; /* make the default button prominent */\n"
+    "}")
+
+
             
     def initialize_DemandTabDataBase(self, Source, Destination):
         DemandTabDataBase["Lightpathes"][(Source, Destination)] = {}
@@ -4560,6 +4647,9 @@ class Ui_MainWindow(object):
         DemandTabDataBase["Panels"].clear()
         DemandTabDataBase["GroomOut10"].clear()
         DemandTabDataBase["Lightpathes"].clear()
+        DemandTabDataBase["Failed_Demands"].clear()
+
+
 
     
     def fill_basic_demandtabdatabase(self, netobj):
