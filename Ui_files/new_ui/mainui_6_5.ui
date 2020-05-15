@@ -94,7 +94,7 @@ QTabWidget::tab-bar {
  }r</string>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="TopologyTab">
         <attribute name="title">
@@ -1327,7 +1327,7 @@ QPushButton:default {
               <string notr="true">font: 75 9pt &quot;Bahnschrift&quot;;</string>
              </property>
              <property name="text">
-              <string>                open</string>
+              <string>         open</string>
              </property>
             </widget>
            </item>
@@ -1337,7 +1337,7 @@ QPushButton:default {
               <string notr="true">font: 75 9pt &quot;Bahnschrift&quot;;</string>
              </property>
              <property name="text">
-              <string>                 save</string>
+              <string>         save</string>
              </property>
             </widget>
            </item>
