@@ -1065,7 +1065,8 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                            n.TrafficMatrix.DemandDict[service_lower100[i][0]].ServiceDict[idd].LightPathId= LastId
                         if (service_lower100[i][0],idd) in n.TrafficMatrix.GroomOut10Dict:
                             n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].LightPathId= LastId
-
+                            for sid in n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].ServiceIdList:
+                                n.TrafficMatrix.DemandDict[n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].DemandId].ServiceDict[sid].LightPathId= LastId
 
 
 
