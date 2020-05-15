@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="newPrefix">
+    <file>add-icon-blue.png</file>
     <file>add_purple.png</file>
     <file>open_blue.png</file>
     <file>add-icon.png</file>

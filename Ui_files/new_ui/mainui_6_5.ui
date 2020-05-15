@@ -94,7 +94,7 @@ QTabWidget::tab-bar {
  }r</string>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="TopologyTab">
         <attribute name="title">
@@ -2642,21 +2642,16 @@ QComboBox QAbstractItemView {
            <item row="0" column="1">
             <widget class="QPushButton" name="addshelf_pushbutton">
              <property name="styleSheet">
-              <string notr="true">QPushButton { 
-border:none;
-font: 75 10pt &quot;Bahnschrift Condensed&quot;; 
+              <string notr="true">QPushButton{ 
+	image: url(:/newPrefix/add-icon.png); 
+      border:none 
 } 
 QPushButton:hover{ 
-	
-	background-color: rgb(213, 210, 255);
+	image: url(:/newPrefix/add-icon-blue.png); 
 }</string>
              </property>
              <property name="text">
               <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="iconresources.qrc">
-               <normaloff>:/newPrefix/add-icon.png</normaloff>:/newPrefix/add-icon.png</iconset>
              </property>
              <property name="iconSize">
               <size>
