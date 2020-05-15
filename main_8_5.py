@@ -1827,6 +1827,8 @@ class Ui_MainWindow(object):
 
         self.newfile_pushbutton.clicked.connect(self.new_button_fun)
 
+        self.Demand_Shelf_set()
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -2945,7 +2947,10 @@ class Ui_MainWindow(object):
         self.network = Network()
         
         self.clean_database_for_grooming()
-        self.clear_database_for_rwa()
+        
+        GroomingTabDataBase["LightPathes"].clear()  
+        GroomingTabDataBase["LinkState"].clear()
+        GroomingTabDataBase["NodeState"].clear()
         
         self.m = folium.Map(location=[35.6892,51.3890],zoom_start=6)
         self.m.save("map.html")
@@ -3909,7 +3914,7 @@ class Ui_MainWindow(object):
         self.PhysicalTopologyToObject()
         self.TrafficMatrixToObject()
         self.DemandTabDataBase_Setup()
-        self.Demand_Shelf_set()
+        #self.Demand_Shelf_set()
         self.Fill_Demand_SourceandDestination_combobox()
 
         self.tabWidget.setTabEnabled(1, True)
@@ -3926,7 +3931,7 @@ class Ui_MainWindow(object):
         Data["first_run_flag"] = False
         self.Data_file_Flag = False
         self.update_Demand_lightpath_list_flag = True
-        self.Demand_shelf_init_flag = False
+        #self.Demand_shelf_init_flag = False
         self.Failed_Nodes_flag = False
         
     
@@ -3938,20 +3943,20 @@ class Ui_MainWindow(object):
     
     def Demand_Shelf_set(self):
         # TODO: add this method to Demand tab initializer
-        if self.Demand_shelf_init_flag is False: 
-            Source = self.Demand_Source_combobox.currentText()
-            Destination = self.Demand_Destination_combobox.currentText()
-            for i in range(1,15):
-                Data["DemandPanel_" + str(i)] = QtWidgets.QGridLayout(getattr(self, "DemandPanel_" + str(i)))
-                #setattr(self, "DemandPanel_" + str(i),QMdiSubWindow())
-                #Data["DemandPanel_" + str(i)] = getattr(ui, "DemandPanel_" + str(i))
-                #Data["DemandPanel_" + str(i)].setWindowFlag(Qt.FramelessWindowHint)
-                Data["DemandPanel_" + str(i)].setMargin(0)
-                Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Destination))
+        #if self.Demand_shelf_init_flag is False: 
+        Source = self.Demand_Source_combobox.currentText()
+        Destination = self.Demand_Destination_combobox.currentText()
+        for i in range(1,15):
+            Data["DemandPanel_" + str(i)] = QtWidgets.QGridLayout(getattr(self, "DemandPanel_" + str(i)))
+            #setattr(self, "DemandPanel_" + str(i),QMdiSubWindow())
+            #Data["DemandPanel_" + str(i)] = getattr(ui, "DemandPanel_" + str(i))
+            #Data["DemandPanel_" + str(i)].setWindowFlag(Qt.FramelessWindowHint)
+            Data["DemandPanel_" + str(i)].setMargin(0)
+            Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Destination))
 
-                #self.Demand_mdi.addSubWindow(Data["DemandPanel_" + str(i)])
-                #Data["DemandPanel_" + str(i)].show()
-                self.Demand_shelf_init_flag = True
+            #self.Demand_mdi.addSubWindow(Data["DemandPanel_" + str(i)])
+            #Data["DemandPanel_" + str(i)].show()
+            #self.Demand_shelf_init_flag = True
     
     def add_demand_shelf(self):
 
@@ -4889,7 +4894,9 @@ class Ui_MainWindow(object):
     
     def clear_database_for_rwa(self):
 
-        GroomingTabDataBase["LightPathes"].clear()
+        for key in GroomingTabDataBase["LightPathes"].keys():
+            GroomingTabDataBase["LightPathes"][key].clear()
+
         GroomingTabDataBase["LinkState"].clear()
         GroomingTabDataBase["NodeState"].clear()
 
