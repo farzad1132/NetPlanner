@@ -2858,7 +2858,8 @@ class Ui_MainWindow(object):
                   ["Quantity", "Granularity_xVC12", "Granularity_xVC4", "λ", "SLA"],
                   ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"],
                   ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"]]
-
+        
+        RefId = self.network.TrafficMatrix.Demand.DemandReferenceId
         for Row in RowsNumber:
             #id = Data["General"]["DataSection"]["0"][Row]
             
@@ -2915,7 +2916,7 @@ class Ui_MainWindow(object):
 
                 for i in range(ServiceDict[service]["Quantity"]):
 
-                    ServiceId = self.network.TrafficMatrix.DemandDict[0].GenerateId()
+                    ServiceId = self.network.TrafficMatrix.DemandDict[RefId].GenerateId()
 
                     self.network.TrafficMatrix.DemandDict[id].add_service(ServiceId, service, Sla, IgnoringNodes, Wavelength, Granularity, Granularity_xVC12, Granularity_xVC4)
             
@@ -2930,7 +2931,7 @@ class Ui_MainWindow(object):
         ServiceTypes = ["E1", "STM_1_Electrical", "STM_1_Optical", "STM_4", "STM_16", "STM_64", "FE", "1GE", "10GE",
                            "40GE", "100GE"]
         
-        for i in range(1,9):
+        for i in range(0,9):
             row = str(i)
             Data["General"]["DataSection"][row].clear()
         
@@ -2940,6 +2941,8 @@ class Ui_MainWindow(object):
 
     
     def new_button_fun(self):
+
+        self.network = Network()
         
         self.clean_database_for_grooming()
         self.clear_database_for_rwa()
