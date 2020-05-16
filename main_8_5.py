@@ -1,6 +1,6 @@
 from PySide2 import QtCore, QtGui, QtWidgets
 from PySide2.QtWidgets import QApplication,QTableWidget,QTableWidgetItem,QFileDialog,QMdiSubWindow,QWidget,QLabel,QAbstractItemView,QListWidgetItem,QMenu,QFontComboBox
-from PySide2.QtCore import SIGNAL,QObject,Slot
+from PySide2.QtCore import Signal,QObject,Slot, QRunnable, QThreadPool, SIGNAL
 from PySide2.QtGui import QPixmap, QBrush, QColor
 import pickle
 import sys, os
@@ -24,7 +24,7 @@ from math import ceil
 import requests
 import json
 import socketio  
-import time
+import time, traceback
 import copy , warnings
 
 from grooming_window import Ui_grooming_window
@@ -62,6 +62,37 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import utm
 import numpy
+
+class WorkerSignals(QObject):
+
+    finished = Signal()
+    error = Signal(tuple)
+    result = Signal(object)
+
+class Worker(QRunnable):
+
+    def __init__(self, fun, netobj):
+        super(Worker, self).__init__()
+
+        self.fun = fun
+        self.netobj = netobj
+        self.signals = WorkerSignals()
+
+    @Slot()
+    def run(self):
+
+        try:
+            result = self.fun(self.netobj)
+        except:
+            print("RWA Algorithm Failed !!!")
+            traceback.print_exc()
+            exctype, value = sys.exc_info()[:2]
+            self.signals.error.emit((exctype, value, traceback.format_exc()))
+        else:
+            self.signals.result.emit(result)
+        finally:
+            self.signals.finished.emit()
+
 
 class Backend_map(QObject):
 
@@ -1828,6 +1859,8 @@ class Ui_MainWindow(object):
         self.newfile_pushbutton.clicked.connect(self.new_button_fun)
 
         self.Demand_Shelf_set()
+
+        self.threadpool = QThreadPool()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -4843,53 +4876,67 @@ class Ui_MainWindow(object):
         network = self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm)
         
 
-        try:
-            self.clear_database_for_rwa()
-            RWA_Start_Time = time.time()
-            self.RWA_button_fun(network)
-            RWA_Runtime = time.time() - RWA_Start_Time
-            self.fill_GroomingTabDataBase(self.decoded_network, RWA_Runtime)
-            self.RWA_Success = True
+        self.clear_database_for_rwa()
+        
 
-            # Enabling View GroupBox
-            self.ViewGroupbox.setEnabled(True)
+        worker = Worker(self.RWA_button_fun, network)
+        worker.signals.result.connect(self.RWA_Success_slot)
+        worker.signals.finished.connect(self.RWA_finished_slot)
+        worker.signals.error.connect(self.RWA_error_slot)
 
-            # disabling Clustering GroupBox except ShowSubNodes
-            self.SetGatewayNode_button.setEnabled(False)
-            self.SelectSubNode_button.setEnabled(False)
-            self.OK_button.setEnabled(False)
-            self.Cancel_button.setEnabled(False)
-            self.cluster_type_combobox.setEnabled(False)
-            self.ClusterColor_combobox.setEnabled(False)
+        self.RWA_Start_Time = time.time()
+        self.threadpool.start(worker)
 
-            self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
-    "    \n"
-    "    \n"
-    "    font: 75 10pt \"Bahnschrift Condensed\";\n"
-    "    \n"
-    "    border: 2px solid #8f8f91; min-width: 80px;\n"
-    "    border-color: #EB8686; \n"
-    "    border-radius: 25px;\n"
-    "    background-color: green; \n"
-    "}\n"
-    "\n"
-    "QPushButton:pressed,hover {\n"
-    "    background-color: #EB8686; \n"
-    "}\n"
-    "QPushButton:hover {\n"
-    "    background-color: #EB8686; \n"
-    "}\n"
-    "QPushButton:flat {\n"
-    "    border: none; /* no border for a flat push button */\n"
-    "}\n"
-    "\n"
-    "QPushButton:default {\n"
-    "    border-color: navy; /* make the default button prominent */\n"
-    "}")
+        del network
 
-        except:
-            print("RWA Algorithm Failed !!!")
-            del network
+    def RWA_Success_slot(self, RWAObj):
+        self.decoded_network = RWAObj
+
+        RWA_Runtime = time.time() - self.RWA_Start_Time
+        self.fill_GroomingTabDataBase(self.decoded_network, RWA_Runtime)
+        self.RWA_Success = True
+
+        # Enabling View GroupBox
+        self.ViewGroupbox.setEnabled(True)
+
+        # disabling Clustering GroupBox except ShowSubNodes
+        self.SetGatewayNode_button.setEnabled(False)
+        self.SelectSubNode_button.setEnabled(False)
+        self.OK_button.setEnabled(False)
+        self.Cancel_button.setEnabled(False)
+        self.cluster_type_combobox.setEnabled(False)
+        self.ClusterColor_combobox.setEnabled(False)
+
+        self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #EB8686; \n"
+"    border-radius: 25px;\n"
+"    background-color: green; \n"
+"}\n"
+"\n"
+"QPushButton:pressed,hover {\n"
+"    background-color: #EB8686; \n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: #EB8686; \n"
+"}\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+    
+    def RWA_finished_slot(self):
+        print("RWA Algorithm Finished")
+    
+    def RWA_error_slot(self, message):
+        print("fill this <we are in RWA error slot>")
 
     
     def clear_database_for_rwa(self):
@@ -5040,7 +5087,7 @@ class Ui_MainWindow(object):
                 
             # except:
             #     pass
-        self.decoded_network = decoded_network
+        return decoded_network
 
 if __name__ == "__main__":
     import sys
