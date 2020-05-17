@@ -222,82 +222,12 @@ QToolBox::tab:selected {
                  <string>        Cluster Type </string>
                 </property>
                </widget>
-               <widget class="QFontComboBox" name="cluster_type_combobox">
-                <property name="geometry">
-                 <rect>
-                  <x>90</x>
-                  <y>10</y>
-                  <width>126</width>
-                  <height>22</height>
-                 </rect>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>126</width>
-                  <height>22</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <family>Bahnschrift Condensed</family>
-                  <pointsize>9</pointsize>
-                 </font>
-                </property>
-                <property name="autoFillBackground">
-                 <bool>false</bool>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QComboBox {
-    
-    border-radius: 0px;
-    padding: 1px 18px 1px 5px;
-    min-width: 6em; 
-	border:2px solid #8076a3
-}
-QComboBox:on { 
-    padding-top: 3px;
-    padding-left: 4px;
-}
-
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: top right;
-    width: 20px;
-    border-left-width: 2px;
-    border-left-color: darkblue;
-    border-left-style: solid; /* just a single line */
-    border-top-right-radius: 0px; /* same radius as the QComboBox */
-    border-bottom-right-radius: 0px;
-}
-
-QComboBox::down-arrow {
-   
-	image: url(:/newPrefix/dropdown.png); 
-}
-
-QComboBox::down-arrow:on { /* shift the arrow when popup is open */
-    
-	
-	image: url(:/newPrefix/dropup.png);
-}
-
-
-QComboBox QAbstractItemView {
-    
-	border-color:2px solid blue;
-   
-}</string>
-                </property>
-                <property name="frame">
-                 <bool>true</bool>
-                </property>
-               </widget>
                <widget class="QLabel" name="GroupColor">
                 <property name="geometry">
                  <rect>
                   <x>0</x>
                   <y>40</y>
-                  <width>124</width>
+                  <width>91</width>
                   <height>22</height>
                  </rect>
                 </property>
@@ -313,64 +243,6 @@ QComboBox QAbstractItemView {
                 </property>
                 <property name="text">
                  <string>        Cluster Color</string>
-                </property>
-               </widget>
-               <widget class="QFontComboBox" name="ClusterColor_combobox">
-                <property name="geometry">
-                 <rect>
-                  <x>90</x>
-                  <y>40</y>
-                  <width>126</width>
-                  <height>22</height>
-                 </rect>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>126</width>
-                  <height>22</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QComboBox {
-    
-    border-radius: 0px;
-    padding: 1px 18px 1px 5px;
-    min-width: 6em; 
-	border:2px solid #8076a3
-}
-QComboBox:on { 
-    padding-top: 3px;
-    padding-left: 4px;
-}
-
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: top right;
-    width: 20px;
-    border-left-width: 2px;
-    border-left-color: darkblue;
-    border-left-style: solid; /* just a single line */
-    border-top-right-radius: 0px; /* same radius as the QComboBox */
-    border-bottom-right-radius: 0px;
-}
-
-QComboBox::down-arrow {
-   
-	image: url(:/newPrefix/dropdown.png); 
-}
-
-QComboBox::down-arrow:on { /* shift the arrow when popup is open */
-    
-	
-	image: url(:/newPrefix/dropup.png);
-}
-
-
-QComboBox QAbstractItemView {
-    
-	border-color:2px solid blue;
-   
-}</string>
                 </property>
                </widget>
                <widget class="QPushButton" name="SetGatewayNode_button">
@@ -602,14 +474,124 @@ QPushButton:default {
                  <string>Cancel</string>
                 </property>
                </widget>
+               <widget class="QComboBox" name="ClusterColor_combobox">
+                <property name="geometry">
+                 <rect>
+                  <x>110</x>
+                  <y>40</y>
+                  <width>123</width>
+                  <height>22</height>
+                 </rect>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QComboBox {
+    
+    border-radius: 0px;
+    padding: 1px 18px 1px 5px;
+    min-width: 6em; 
+	border:2px solid #8076a3
+}
+QComboBox:on { 
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left-width: 2px;
+    border-left-color: darkblue;
+    border-left-style: solid; /* just a single line */
+    border-top-right-radius: 0px; /* same radius as the QComboBox */
+    border-bottom-right-radius: 0px;
+}
+
+QComboBox::down-arrow {
+   
+	image: url(:/newPrefix/dropdown.png); 
+}
+
+QComboBox::down-arrow:on { /* shift the arrow when popup is open */
+    
+	
+	image: url(:/newPrefix/dropup.png);
+}
+
+
+QComboBox QAbstractItemView {
+    
+	border-color:2px solid blue;
+   
+}</string>
+                </property>
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+               <widget class="QComboBox" name="cluster_type_combobox">
+                <property name="geometry">
+                 <rect>
+                  <x>110</x>
+                  <y>10</y>
+                  <width>123</width>
+                  <height>22</height>
+                 </rect>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">QComboBox {
+    
+    border-radius: 0px;
+    padding: 1px 18px 1px 5px;
+    min-width: 6em; 
+	border:2px solid #8076a3
+}
+QComboBox:on { 
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left-width: 2px;
+    border-left-color: darkblue;
+    border-left-style: solid; /* just a single line */
+    border-top-right-radius: 0px; /* same radius as the QComboBox */
+    border-bottom-right-radius: 0px;
+}
+
+QComboBox::down-arrow {
+   
+	image: url(:/newPrefix/dropdown.png); 
+}
+
+QComboBox::down-arrow:on { /* shift the arrow when popup is open */
+    
+	
+	image: url(:/newPrefix/dropup.png);
+}
+
+
+QComboBox QAbstractItemView {
+    
+	border-color:2px solid blue;
+   
+}</string>
+                </property>
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </widget>
               <widget class="QWidget" name="widget_2">
                <property name="geometry">
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>100</width>
-                 <height>30</height>
+                 <width>280</width>
+                 <height>271</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -705,7 +687,7 @@ QPushButton:default {
             <item row="1" column="0">
              <layout class="QGridLayout" name="gridLayout_6">
               <item row="0" column="1">
-               <widget class="QPushButton" name="SetGatewayNode_button_3">
+               <widget class="QPushButton" name="export_result_button">
                 <property name="minimumSize">
                  <size>
                   <width>84</width>
@@ -1658,7 +1640,7 @@ QListWidget::item:hover {
              </spacer>
             </item>
             <item row="2" column="0" rowspan="2" colspan="2">
-             <widget class="QPushButton" name="SaveChanges_button">
+             <widget class="QPushButton" name="Export_New_Traffic_Matrix_button">
               <property name="minimumSize">
                <size>
                 <width>84</width>
@@ -1718,404 +1700,7 @@ QPushButton:default {
          <string>Demand tab</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="4">
-          <layout class="QFormLayout" name="formLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_8">
-             <property name="minimumSize">
-              <size>
-               <width>120</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>62</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Bahnschrift</family>
-               <pointsize>11</pointsize>
-               <weight>50</weight>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QLabel {
-    border: 2px solid gray;
-	border-color: #8076a3;
-    border-radius: 4px;
-    padding: 2px;
-}</string>
-             </property>
-             <property name="text">
-              <string>     Destination</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QFontComboBox" name="Demand_Destination_combobox">
-             <property name="minimumSize">
-              <size>
-               <width>123</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>743</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QComboBox {
-    
-    border-radius: 0px;
-    padding: 1px 18px 1px 5px;
-    min-width: 6em; 
-	border:2px solid #8076a3
-}
-QComboBox:on { 
-    padding-top: 3px;
-    padding-left: 4px;
-}
-
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: top right;
-    width: 20px;
-    border-left-width: 2px;
-    border-left-color: darkblue;
-    border-left-style: solid; /* just a single line */
-    border-top-right-radius: 0px; /* same radius as the QComboBox */
-    border-bottom-right-radius: 0px;
-}
-
-QComboBox::down-arrow {
-   
-	image: url(:/newPrefix/dropdown.png); 
-}
-
-QComboBox::down-arrow:on { /* shift the arrow when popup is open */
-    
-	
-	image: url(:/newPrefix/dropup.png);
-}
-
-
-QComboBox QAbstractItemView {
-    
-	border-color:2px solid blue;
-   
-}</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLabel" name="SplitterEventLabel">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QFontComboBox" name="Demand_Source_combobox">
-           <property name="minimumSize">
-            <size>
-             <width>123</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>226</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QComboBox {
-    
-    border-radius: 0px;
-    padding: 1px 18px 1px 5px;
-    min-width: 6em; 
-	border:2px solid #8076a3
-}
-QComboBox:on { 
-    padding-top: 3px;
-    padding-left: 4px;
-}
-
-QComboBox::drop-down {
-    subcontrol-origin: padding;
-    subcontrol-position: top right;
-    width: 20px;
-    border-left-width: 2px;
-    border-left-color: darkblue;
-    border-left-style: solid; /* just a single line */
-    border-top-right-radius: 0px; /* same radius as the QComboBox */
-    border-bottom-right-radius: 0px;
-}
-
-QComboBox::down-arrow {
-   
-	image: url(:/newPrefix/dropdown.png); 
-}
-
-QComboBox::down-arrow:on { /* shift the arrow when popup is open */
-    
-	
-	image: url(:/newPrefix/dropup.png);
-}
-
-
-QComboBox QAbstractItemView {
-    
-	border-color:2px solid blue;
-   
-}</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1" colspan="4">
-          <widget class="QSplitter" name="splitter">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="handleWidth">
-            <number>6</number>
-           </property>
-           <widget class="QTabWidget" name="Demand_tab">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>100</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QTabWidget::pane { /* The tab widget frame */
-     border-top: 2px  #C0C0C0;
- }
-
- 
-QTabWidget::tab-bar {
-     alignment: left;
- }
- /* Style the tab using the tab sub-control. Note that
-     it reads QTabBar _not_ QTabWidget */
- QTabBar::tab {
-     
-    
-     border: 2px solid gray;
-     border-bottom-color: none; /* same as the pane color */
-     border-top-left-radius: 0px;
-     border-top-right-radius: 0px;
-     min-width: 20ex;
-     padding: 2px; 
-     
-	
-	font: 25 9pt &quot;Bahnschrift&quot;;
- }
-
-
-
- QTabBar::tab:selected {
-    
-	
-	color: rgb(255, 255, 255);
-    background-color:#8076a3; /* same as pane color */ 
-     
-	font: 63 9pt &quot;Bahnschrift SemiBold&quot;;
- }
-
- QTabBar::tab:!selected {
-     margin-top: -2px; /* make non-selected tabs look smaller */ 
-     
- }
-
- /* make use of negative margins for overlapping tabs */
- QTabBar::tab:selected {
-     /* expand/overlap to the left and right by 4px */
-     margin-left: -4px;
-     margin-right: -4px;
- }
-
- QTabBar::tab:first:selected {
-     margin-left: 0; /* the first selected tab has nothing to overlap with on the left */
- }
-
- QTabBar::tab:last:selected {
-     margin-right: 0; /* the last selected tab has nothing to overlap with on the right */
- }
-
- QTabBar::tab:only-one {
-     margin: 0; /* if there is only one tab, we don't want overlapping margins */
- }r</string>
-            </property>
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <widget class="QWidget" name="tab_8">
-             <attribute name="title">
-              <string>Shelf</string>
-             </attribute>
-             <layout class="QHBoxLayout" name="horizontalLayout_4">
-              <property name="spacing">
-               <number>0</number>
-              </property>
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QWidget" name="DemandPanel_1" native="true"/>
-              </item>
-              <item>
-               <widget class="QWidget" name="DemandPanel_2" native="true"/>
-              </item>
-              <item>
-               <widget class="QWidget" name="DemandPanel_3" native="true"/>
-              </item>
-              <item>
-               <widget class="QWidget" name="DemandPanel_4" native="true"/>
-              </item>
-              <item>
-               <widget class="QWidget" name="DemandPanel_5" native="true"/>
-              </item>
-              <item>
-               <widget class="QWidget" name="DemandPanel_6" native="true"/>
-              </item>
-              <item>
-               <widget class="QWidget" name="DemandPanel_7" native="true"/>
-              </item>
-              <item>
-               <widget class="QWidget" name="DemandPanel_8" native="true"/>
-              </item>
-              <item>
-               <widget class="QWidget" name="DemandPanel_9" native="true"/>
-              </item>
-              <item>
-               <widget class="QWidget" name="DemandPanel_10" native="true"/>
-              </item>
-              <item>
-               <widget class="QWidget" name="DemandPanel_11" native="true"/>
-              </item>
-              <item>
-               <widget class="QWidget" name="DemandPanel_12" native="true"/>
-              </item>
-              <item>
-               <widget class="QWidget" name="DemandPanel_13" native="true"/>
-              </item>
-              <item>
-               <widget class="QWidget" name="DemandPanel_14" native="true"/>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-           <widget class="MapWidget" name="MapWidget" native="true">
-            <property name="minimumSize">
-             <size>
-              <width>821</width>
-              <height>259</height>
-             </size>
-            </property>
-            <widget class="Line" name="line">
-             <property name="geometry">
-              <rect>
-               <x>-340</x>
-               <y>-10</y>
-               <width>2341</width>
-               <height>20</height>
-              </rect>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </widget>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="SelectNode_Label_13">
-           <property name="minimumSize">
-            <size>
-             <width>80</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>43</width>
-             <height>30</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Bahnschrift</family>
-             <pointsize>11</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"> QLabel {
-    border: 2px solid gray;
-	border-color: #4f5f76;
-    border-radius: 4px;
-    padding: 2px;
-}</string>
-           </property>
-           <property name="text">
-            <string>   Source</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label">
-           <property name="font">
-            <font>
-             <family>Bahnschrift Light</family>
-             <pointsize>9</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>                                  add shelf</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
+         <item row="5" column="0">
           <layout class="QGridLayout" name="gridLayout_2">
            <item row="7" column="0">
             <widget class="QLabel" name="ClientLabel_20">
@@ -2449,10 +2034,381 @@ QListWidget::item:hover {
            </item>
           </layout>
          </item>
-         <item row="0" column="0">
-          <widget class="QPushButton" name="pushButton">
+         <item row="5" column="1" colspan="4">
+          <widget class="QSplitter" name="splitter">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="handleWidth">
+            <number>6</number>
+           </property>
+           <widget class="QTabWidget" name="Demand_tab">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>100</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QTabWidget::pane { /* The tab widget frame */
+     border-top: 2px  #C0C0C0;
+ }
+
+ 
+QTabWidget::tab-bar {
+     alignment: left;
+ }
+ /* Style the tab using the tab sub-control. Note that
+     it reads QTabBar _not_ QTabWidget */
+ QTabBar::tab {
+     
+    
+     border: 2px solid gray;
+     border-bottom-color: none; /* same as the pane color */
+     border-top-left-radius: 0px;
+     border-top-right-radius: 0px;
+     min-width: 20ex;
+     padding: 2px; 
+     
+	
+	font: 25 9pt &quot;Bahnschrift&quot;;
+ }
+
+
+
+ QTabBar::tab:selected {
+    
+	
+	color: rgb(255, 255, 255);
+    background-color:#8076a3; /* same as pane color */ 
+     
+	font: 63 9pt &quot;Bahnschrift SemiBold&quot;;
+ }
+
+ QTabBar::tab:!selected {
+     margin-top: -2px; /* make non-selected tabs look smaller */ 
+     
+ }
+
+ /* make use of negative margins for overlapping tabs */
+ QTabBar::tab:selected {
+     /* expand/overlap to the left and right by 4px */
+     margin-left: -4px;
+     margin-right: -4px;
+ }
+
+ QTabBar::tab:first:selected {
+     margin-left: 0; /* the first selected tab has nothing to overlap with on the left */
+ }
+
+ QTabBar::tab:last:selected {
+     margin-right: 0; /* the last selected tab has nothing to overlap with on the right */
+ }
+
+ QTabBar::tab:only-one {
+     margin: 0; /* if there is only one tab, we don't want overlapping margins */
+ }r</string>
+            </property>
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <widget class="QWidget" name="tab_8">
+             <attribute name="title">
+              <string>Shelf</string>
+             </attribute>
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QWidget" name="DemandPanel_1" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_2" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_3" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_4" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_5" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_6" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_7" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_8" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_9" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_10" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_11" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_12" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_13" native="true"/>
+              </item>
+              <item>
+               <widget class="QWidget" name="DemandPanel_14" native="true"/>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+           <widget class="MapWidget" name="MapWidget" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>821</width>
+              <height>259</height>
+             </size>
+            </property>
+            <widget class="Line" name="line">
+             <property name="geometry">
+              <rect>
+               <x>-340</x>
+               <y>-10</y>
+               <width>2341</width>
+               <height>20</height>
+              </rect>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </widget>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="4">
+          <layout class="QFormLayout" name="formLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_8">
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>62</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Bahnschrift</family>
+               <pointsize>11</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QLabel {
+    border: 2px solid gray;
+	border-color: #8076a3;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+             </property>
+             <property name="text">
+              <string>     Destination</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="Demand_Destination_combobox">
+             <property name="minimumSize">
+              <size>
+               <width>123</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QComboBox {
+    
+    border-radius: 0px;
+    padding: 1px 18px 1px 5px;
+    min-width: 6em; 
+	border:2px solid #8076a3
+}
+QComboBox:on { 
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left-width: 2px;
+    border-left-color: darkblue;
+    border-left-style: solid; /* just a single line */
+    border-top-right-radius: 0px; /* same radius as the QComboBox */
+    border-bottom-right-radius: 0px;
+}
+
+QComboBox::down-arrow {
+   
+	image: url(:/newPrefix/dropdown.png); 
+}
+
+QComboBox::down-arrow:on { /* shift the arrow when popup is open */
+    
+	
+	image: url(:/newPrefix/dropup.png);
+}
+
+
+QComboBox QAbstractItemView {
+    
+	border-color:2px solid blue;
+   
+}</string>
+             </property>
+             <property name="editable">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="2">
+          <widget class="QLabel" name="SelectNode_Label_13">
+           <property name="minimumSize">
+            <size>
+             <width>80</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>43</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Bahnschrift</family>
+             <pointsize>11</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
            <property name="styleSheet">
-            <string notr="true">QPushButton{ 
+            <string notr="true"> QLabel {
+    border: 2px solid gray;
+	border-color: #4f5f76;
+    border-radius: 4px;
+    padding: 2px;
+}</string>
+           </property>
+           <property name="text">
+            <string>   Source</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3" rowspan="2">
+          <widget class="QComboBox" name="Demand_Source_combobox">
+           <property name="minimumSize">
+            <size>
+             <width>123</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QComboBox {
+    
+    border-radius: 0px;
+    padding: 1px 18px 1px 5px;
+    min-width: 6em; 
+	border:2px solid #8076a3
+}
+QComboBox:on { 
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 20px;
+    border-left-width: 2px;
+    border-left-color: darkblue;
+    border-left-style: solid; /* just a single line */
+    border-top-right-radius: 0px; /* same radius as the QComboBox */
+    border-bottom-right-radius: 0px;
+}
+
+QComboBox::down-arrow {
+   
+	image: url(:/newPrefix/dropdown.png); 
+}
+
+QComboBox::down-arrow:on { /* shift the arrow when popup is open */
+    
+	
+	image: url(:/newPrefix/dropup.png);
+}
+
+
+QComboBox QAbstractItemView {
+    
+	border-color:2px solid blue;
+   
+}</string>
+           </property>
+           <property name="editable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" rowspan="3">
+          <layout class="QGridLayout" name="gridLayout_14">
+           <item row="0" column="0">
+            <widget class="QPushButton" name="addshelf_pushbuttom">
+             <property name="styleSheet">
+              <string notr="true">QPushButton{ 
  
 	image: url(:/newPrefix/add-icon.png);
 
@@ -2462,12 +2418,42 @@ QPushButton:hover{
 
 	image: url(:/newPrefix/add_purple.png);
 }</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="flat">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label">
+             <property name="font">
+              <font>
+               <family>Bahnschrift Light</family>
+               <pointsize>9</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>                                  add shelf</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="3" column="2">
+          <widget class="QLabel" name="SplitterEventLabel">
+           <property name="font">
+            <font>
+             <family>Bahnschrift</family>
+             <pointsize>9</pointsize>
+            </font>
            </property>
            <property name="text">
             <string/>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
            </property>
           </widget>
          </item>
