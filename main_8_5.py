@@ -67,42 +67,59 @@ class WorkerSignals(QObject):
 
     finished = Signal()
     error = Signal(tuple)
-    result = Signal(object)
+    result_RWA = Signal(object)
+    result_Grooming = Signal(object, tuple)
 
 class Worker(QRunnable):
 
-    def __init__(self, fun, netobj):
+    def __init__(self, fun, Algorithm, netobj, MP1H_TH = None):
         super(Worker, self).__init__()
 
+        self.Algorithm = Algorithm
         self.fun = fun
         self.netobj = netobj
         self.signals = WorkerSignals()
+        self.MP1H_TH = MP1H_TH
 
     @Slot()
     def run(self):
 
-        try:
-            result = self.fun(self.netobj)
-        except:
-            print("RWA Algorithm Failed !!!")
-            traceback.print_exc()
-            exctype, value = sys.exc_info()[:2]
-            self.signals.error.emit((exctype, value, traceback.format_exc()))
-        else:
-            self.signals.result.emit(result)
-        finally:
-            self.signals.finished.emit()
+        if self.Algorithm == "RWA":
+            try:
+                result = self.fun(self.netobj)
+            except:
+                print("RWA Algorithm Failed !!!")
+                traceback.print_exc()
+                exctype, value = sys.exc_info()[:2]
+                self.signals.error.emit((exctype, value, traceback.format_exc()))
+            else:
+                self.signals.result_RWA.emit(result)
+            finally:
+                self.signals.finished.emit()
+        
+        elif self.Algorithm == "Grooming":
+            try:
+                obj, data = self.fun(self.netobj, self.MP1H_TH)
+            except:
+                print("RWA Algorithm Failed !!!")
+                traceback.print_exc()
+                exctype, value = sys.exc_info()[:2]
+                self.signals.error.emit((exctype, value, traceback.format_exc()))
+            else:
+                self.signals.result_Grooming.emit(obj, data)
+            finally:
+                self.signals.finished.emit()
 
 
 class Backend_map(QObject):
 
     @Slot(str)
     def Create_DataBase(self,text):
-        print("last GateWay: ",text)
+        #print("last GateWay: ",text)
         self.LastGateWay = text
 
         # creating grouping database
-        print("we are grouping")
+        #print("we are grouping")
         Data["Clustering"][text] = {}
         Data["Clustering"][text]["Color"] = ui.lastgroup_color
         Data["Clustering"][text]["Type"] = ui.lastgroup_type
@@ -112,7 +129,7 @@ class Backend_map(QObject):
     
     @Slot(str,str)
     def SetNode_flag_fun(self,text,color = ""):
-        print("SetNode_flag: ",text)
+        #print("SetNode_flag: ",text)
         self.SetNode_flag = text
         ui.SetNode_flag_javascript(text)
         ui.ColorTo_javascript(color)
@@ -121,7 +138,7 @@ class Backend_map(QObject):
     
     @Slot(str)
     def SubNodeSelect_flag_fun(self,text):
-        print("SunNodeSelect flag: ",text)
+        #print("SunNodeSelect flag: ",text)
         self.SubNodeSelect_flag = text
         ui.SelectSubNode_flag_javascript(text)
     
@@ -4167,8 +4184,8 @@ class Ui_MainWindow(object):
                                                                                         DualPanelsId= (panelid, (str(int(panelid) + 1))))
 
 
-                print(f"panels part--> Source:{Source} panels:{DemandTabDataBase['Panels'][Source]}")
-                print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+                #print(f"panels part--> Source:{Source} panels:{DemandTabDataBase['Panels'][Source]}")
+                #print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
             
             # lightPath part ( part 2 )
             setattr(self, "LightPath_item_" + str(Data["LightPath_item_num"]), QListWidgetItem("100GE", self.Demand_LineList))
@@ -4540,7 +4557,7 @@ class Ui_MainWindow(object):
                             RWA_Runtime= round(RWA_Runtime, 2))
 
     def send_lambdas_to_JS(self):
-        print(self.webengine.geometry())
+        #print(self.webengine.geometry())
         for key , value in GroomingTabDataBase["LinkState"].items():
             Source = key[0]
             Destination = key[1]
@@ -4588,7 +4605,7 @@ class Ui_MainWindow(object):
                 return json.dumps(self)
         failed_nodes = Double_quote(failed_nodes) """
         self.failed_nodes = failed_nodes
-        print(f" -->> failed nodes : {failed_nodes}")
+        #print(f" -->> failed nodes : {failed_nodes}")
         self.failed_nodes_javascript(failed_nodes)
 
 
@@ -4626,59 +4643,69 @@ class Ui_MainWindow(object):
 
         self.clean_database_for_grooming()
 
-        try:
-            Remain_lower100,full_mp2x_lines, half_mp2x_lines  = grooming_fun(self.network, int(MP1H_Threshold))
+        worker = Worker(grooming_fun, "Grooming", self.network, int(MP1H_Threshold))
+        worker.signals.result_Grooming.connect(self.Grooming_Success_slot)
+        worker.signals.error.connect(self.worker_error_slot)
+        worker.signals.finished.connect(self.finish_Grooming_slot)
+
+        self.threadpool.start(worker)
+    
+
+
+    def Grooming_Success_slot(self, netobj, result):
+        Remain_lower100,full_mp2x_lines, half_mp2x_lines = result
+
+        self.network = netobj
+
+        self.fill_basic_demandtabdatabase(self.network)
+
+        # creating new 
+        self.create_new_demand_services(self.network)
         
+        
+        # filling Demand DataBase 
+        self.fill_DemandTabDataBase(self.network)
 
-            self.fill_basic_demandtabdatabase(self.network)
+        # fill MP2X DataBase
+        self.fill_DemandTabDataBase_MP2X(full_MP2X_Dict= full_mp2x_lines,
+                                            half_MP2X_Dict= half_mp2x_lines,
+                                            netobj= self.network)
 
-            # creating new 
-            self.create_new_demand_services(self.network)
-            
-            
-            # filling Demand DataBase 
-            self.fill_DemandTabDataBase(self.network)
+        """ # NOTE: start debugging
+        print(f"Panels part of DemandTabDataBase: {DemandTabDataBase['Panels']}")
+        # NOTE: end of debugging """
 
-            # fill MP2X DataBase
-            self.fill_DemandTabDataBase_MP2X(full_MP2X_Dict= full_mp2x_lines,
-                                                half_MP2X_Dict= half_mp2x_lines,
-                                                netobj= self.network)
+        # changing failed nodes icon ( change to notified version )
+        self.failed_grooming_nodes()
+        self.Failed_Nodes_flag = True
 
-            """ # NOTE: start debugging
-            print(f"Panels part of DemandTabDataBase: {DemandTabDataBase['Panels']}")
-            # NOTE: end of debugging """
+        self.Grooming_pushbutton.setStyleSheet("QPushButton {\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #EB8686; \n"
+"    border-radius: 25px;\n"
+"    background-color: green; \n"
+"}\n"
+"\n"
+"QPushButton:pressed,hover {\n"
+"    background-color: #EB8686; \n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: #EB8686; \n"
+"}\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
 
-            # changing failed nodes icon ( change to notified version )
-            self.failed_grooming_nodes()
-            self.Failed_Nodes_flag = True
-
-            self.Grooming_pushbutton.setStyleSheet("QPushButton {\n"
-    "    \n"
-    "    \n"
-    "    font: 75 10pt \"Bahnschrift Condensed\";\n"
-    "    \n"
-    "    border: 2px solid #8f8f91; min-width: 80px;\n"
-    "    border-color: #EB8686; \n"
-    "    border-radius: 25px;\n"
-    "    background-color: green; \n"
-    "}\n"
-    "\n"
-    "QPushButton:pressed,hover {\n"
-    "    background-color: #EB8686; \n"
-    "}\n"
-    "QPushButton:hover {\n"
-    "    background-color: #EB8686; \n"
-    "}\n"
-    "QPushButton:flat {\n"
-    "    border: none; /* no border for a flat push button */\n"
-    "}\n"
-    "\n"
-    "QPushButton:default {\n"
-    "    border-color: navy; /* make the default button prominent */\n"
-    "}")
-        except:
-            print("Grooming Algorithm Failed !!!")
-            self.clean_database_for_grooming()
+    def finish_Grooming_slot(self):
+        print("Grooming Algorithm Finished")
 
     def clean_database_for_grooming(self):
 
@@ -4880,9 +4907,9 @@ class Ui_MainWindow(object):
         
 
         worker = Worker(self.RWA_fun, network)
-        worker.signals.result.connect(self.RWA_Success_slot)
+        worker.signals.result_RWA.connect(self.RWA_Success_slot)
         worker.signals.finished.connect(self.RWA_finished_slot)
-        worker.signals.error.connect(self.RWA_error_slot)
+        worker.signals.error.connect(self.worker_error_slot)
 
         self.RWA_Start_Time = time.time()
         self.threadpool.start(worker)
@@ -4935,7 +4962,7 @@ class Ui_MainWindow(object):
     def RWA_finished_slot(self):
         print("RWA Algorithm Finished")
     
-    def RWA_error_slot(self, message):
+    def worker_error_slot(self, message):
         print("fill this <we are in RWA error slot>")
 
     

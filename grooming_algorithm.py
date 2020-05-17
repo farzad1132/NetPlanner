@@ -1083,7 +1083,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 
 
 
-        return remain_lower100_dict,MP2x_Dict,remaining_service_lower10_dict
+        return n, (remain_lower100_dict,MP2x_Dict,remaining_service_lower10_dict)
         #  remain_lower100            (the services which are not assigned to lightpath)  (DemandId,[ServiceId])
         #  MP2x_list                  (MP2X with 2 output)                               (DemandId,[ServiceId(groomout10),ServiceId(groomout10)])
         #  remaining_service_lower10  (MP2X with 1 output)                               (DemandId,ServiceId(groomout10))
