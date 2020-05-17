@@ -721,9 +721,6 @@ QPushButton:default {
            </layout>
           </widget>
          </item>
-         <item row="2" column="9">
-          <layout class="QGridLayout" name="gridLayout_7"/>
-         </item>
          <item row="1" column="6">
           <spacer name="horizontalSpacer_11">
            <property name="orientation">
@@ -737,20 +734,19 @@ QPushButton:default {
            </property>
           </spacer>
          </item>
-         <item row="3" column="0" colspan="9">
-          <widget class="QWebEngineView" name="webengine">
-           <property name="minimumSize">
-            <size>
-             <width>1570</width>
-             <height>840</height>
-            </size>
-           </property>
-          </widget>
+         <item row="2" column="9">
+          <layout class="QGridLayout" name="gridLayout_7"/>
          </item>
          <item row="0" column="9" rowspan="2">
           <layout class="QGridLayout" name="gridLayout_6">
            <item row="0" column="1">
             <widget class="QPushButton" name="openfile_pushbutton">
+             <property name="minimumSize">
+              <size>
+               <width>63</width>
+               <height>30</height>
+              </size>
+             </property>
              <property name="toolTip">
               <string extracomment="open">open</string>
              </property>
@@ -801,8 +797,8 @@ QPushButton:hover{
              </property>
              <property name="minimumSize">
               <size>
-               <width>3</width>
-               <height>0</height>
+               <width>64</width>
+               <height>30</height>
               </size>
              </property>
              <property name="toolTip">
@@ -841,6 +837,12 @@ QPushButton:hover{
            </item>
            <item row="0" column="2">
             <widget class="QPushButton" name="savefile_pushbutton">
+             <property name="minimumSize">
+              <size>
+               <width>64</width>
+               <height>30</height>
+              </size>
+             </property>
              <property name="toolTip">
               <string extracomment="save">save</string>
              </property>
@@ -895,6 +897,157 @@ QPushButton:hover{
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="0" column="3" rowspan="3" colspan="2">
+          <layout class="QGridLayout" name="gridLayout_11">
+           <item row="0" column="1">
+            <widget class="QPushButton" name="Draw_Physical_Topology_pushButton">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>46</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+	
+	
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+	color: rgb(117, 117, 117);
+    border: 2px solid #8f8f91; min-width: 80px;
+	border-color: #4072B3; 
+    border-radius: 10px;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
+}
+
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+             </property>
+             <property name="text">
+              <string>Draw Physical 
+Topology</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QPushButton" name="export_result_button">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>46</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>90</width>
+               <height>46</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Bahnschrift Condensed</family>
+               <pointsize>10</pointsize>
+               <weight>9</weight>
+               <italic>false</italic>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+	
+	
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+	color: rgb(117, 117, 117);
+    border: 2px solid #8f8f91; min-width: 80px;
+	border-color: #4072B3; 
+    border-radius: 15px;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
+}
+
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+             </property>
+             <property name="text">
+              <string>Export 
+Result</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QPushButton" name="import_button">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>46</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>90</width>
+               <height>46</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Bahnschrift Condensed</family>
+               <pointsize>10</pointsize>
+               <weight>9</weight>
+               <italic>false</italic>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton {
+	
+	
+	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
+	
+	color: rgb(117, 117, 117);
+    border: 2px solid #8f8f91; min-width: 80px;
+	border-color: #4072B3; 
+    border-radius: 15px;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
+} 
+
+
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+             </property>
+             <property name="text">
+              <string>Imports</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
          <item row="0" column="7" rowspan="3">
           <widget class="QGroupBox" name="groupBox">
@@ -1317,138 +1470,15 @@ QPushButton:default {
            </layout>
           </widget>
          </item>
-         <item row="0" column="3" rowspan="3" colspan="2">
-          <layout class="QGridLayout" name="gridLayout_11">
-           <item row="0" column="1">
-            <widget class="QPushButton" name="Draw_Physical_Topology_pushButton">
-             <property name="styleSheet">
-              <string notr="true">QPushButton {
-	
-	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-	color: rgb(117, 117, 117);
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
-    border-radius: 10px;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
-}
-
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-             </property>
-             <property name="text">
-              <string>Draw Physical 
-Topology</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QPushButton" name="export_result_button">
-             <property name="maximumSize">
-              <size>
-               <width>81</width>
-               <height>50</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Bahnschrift Condensed</family>
-               <pointsize>10</pointsize>
-               <weight>9</weight>
-               <italic>false</italic>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QPushButton {
-	
-	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-	color: rgb(117, 117, 117);
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
-    border-radius: 15px;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
-}
-
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-             </property>
-             <property name="text">
-              <string>Export 
-Result</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QPushButton" name="import_button">
-             <property name="maximumSize">
-              <size>
-               <width>81</width>
-               <height>50</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Bahnschrift Condensed</family>
-               <pointsize>10</pointsize>
-               <weight>9</weight>
-               <italic>false</italic>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QPushButton {
-	
-	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-	color: rgb(117, 117, 117);
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
-    border-radius: 15px;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
-} 
-
-
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-             </property>
-             <property name="text">
-              <string>Imports</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+         <item row="3" column="0" colspan="9">
+          <widget class="QWebEngineView" name="webengine">
+           <property name="minimumSize">
+            <size>
+             <width>1570</width>
+             <height>840</height>
+            </size>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
