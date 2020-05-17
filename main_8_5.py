@@ -4879,7 +4879,7 @@ class Ui_MainWindow(object):
         self.clear_database_for_rwa()
         
 
-        worker = Worker(self.RWA_button_fun, network)
+        worker = Worker(self.RWA_fun, network)
         worker.signals.result.connect(self.RWA_Success_slot)
         worker.signals.finished.connect(self.RWA_finished_slot)
         worker.signals.error.connect(self.RWA_error_slot)
@@ -4969,33 +4969,7 @@ class Ui_MainWindow(object):
 
         
 
-    def RWA_button_fun(self, netobj):
-
-        for lightpath in self.network.LightPathDict.values():
-            print(lightpath.__dict__)
-
-        # socketio event handling
-
-        sio = socketio.Client()
-
-        @sio.event
-        def connect():
-            print('connection established')
-            #sio.emit('my_message', {'response': 'Connection on client side'})
-
-        @sio.on('rwa_toClient_message')
-        def message(data):
-            print('Server log (RWA): ', data)
-            sio.emit('rwa_message:', "log received on client")
-            
-        @sio.on('grooming_toClient_message')
-        def message(data):
-            print('Server log (Grooming): ', data)
-            sio.emit('grooming_message:', "log received on client")    
-
-        @sio.event
-        def disconnect():
-            print('disconnected from the server.')
+    def RWA_fun(self, netobj):
 
         def convert_to_dict(obj):
             """
@@ -5017,8 +4991,6 @@ class Ui_MainWindow(object):
                 return obj_dict
         net = copy.copy(netobj)
 
-        use_sockets = False
-
         # Convert keys to String
         tuple_keys = list(net.PhysicalTopology.LinkDict.keys())
         for key in tuple_keys:
@@ -5029,33 +5001,24 @@ class Ui_MainWindow(object):
         # data = json.dumps(net.PhysicalTopology.ClusterDict[1],default=convert_to_dict,indent=4, sort_keys=True)
         # print(data)
         # assert False
+        ##############################################
+        # Convert the Network object to JSON message
+        # data = json.dumps(net.PhysicalTopology.ClusterDict[1],default=convert_to_dict,indent=4, sort_keys=True)
+        # print(data)
+        # assert False
         data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
 
         # This line tests whether the JSON encoded common object is reconstructable!
         decoded_n = Network.from_json(json.loads(data)) 
         assert(isinstance(decoded_n, Network))
-        # print(list(decoded_n.LightPathDict.keys()))
-        # data = json.dumps(decoded_n,default=convert_to_dict,indent=4, sort_keys=True)
-        # assert False
-        # Establishing a socket.io connection for logging purposes
-        if use_sockets:
-            sio.connect('http://localhost:5000')
-
-        ##Run the grooming function on the server
-        # print('####################################################')
-        # print('Transmitting data to server for client side grooming.')
-        # res = requests.get('http://localhost:5000/grooming/', json = data)
-
-        # if res.ok:
-            # print(res.json())
-            # print('Grooming finished successfully!')
-            
+        
         print('####################################################')
         print('Transmitting data to server to solve RWA planning.') 
         # Run the RWA planner on the server
 
         try:
             res = requests.get('http://localhost:5000/RWA/', json = data)
+            # res = requests.get('http://192.168.7.20:5000/RWA/', json = data)
             connected_to_server = True
         except:
             warnings.warn("Something goes wrong!\nThe application can not connect to the server.")
@@ -5076,17 +5039,9 @@ class Ui_MainWindow(object):
                     decoded_network.PhysicalTopology.LinkDict[ActualKey] = decoded_network.PhysicalTopology.LinkDict.pop(key)
                 
                 decoded_network.LightPathDict = {int(key): value for key, value in decoded_network.LightPathDict.items()}
-            if use_sockets:  
-                sio.disconnect()
-                sio.sleep(0)
-            # sio.wait()
+            
             print('RWA finished and data received in client') 
-            # try:
-            #     print('Sample WaveLength output', decoded_network.LightPathDict[0].WaveLength)
-            #     print('Sample Path output', decoded_network.LightPathDict[0].WorkingPath)
-                
-            # except:
-            #     pass
+            #export_excel('Test.xlsx',decoded_network)
         return decoded_network
 
 if __name__ == "__main__":
