@@ -4645,7 +4645,7 @@ class Ui_MainWindow(object):
 
         worker = Worker(grooming_fun, "Grooming", self.network, int(MP1H_Threshold))
         worker.signals.result_Grooming.connect(self.Grooming_Success_slot)
-        worker.signals.error.connect(self.worker_error_slot)
+        worker.signals.error.connect(self.grooming_error_slot)
         worker.signals.finished.connect(self.finish_Grooming_slot)
 
         self.threadpool.start(worker)
@@ -4706,6 +4706,9 @@ class Ui_MainWindow(object):
 
     def finish_Grooming_slot(self):
         print("Grooming Algorithm Finished")
+
+    def grooming_error_slot(self):
+        print("Grooming Algorithm Failed")
 
     def clean_database_for_grooming(self):
 
@@ -4906,7 +4909,7 @@ class Ui_MainWindow(object):
         self.clear_database_for_rwa()
         
 
-        worker = Worker(self.RWA_fun, network)
+        worker = Worker(self.RWA_fun, "RWA", network)
         worker.signals.result_RWA.connect(self.RWA_Success_slot)
         worker.signals.finished.connect(self.RWA_finished_slot)
         worker.signals.error.connect(self.worker_error_slot)
