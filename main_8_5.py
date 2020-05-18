@@ -2419,14 +2419,13 @@ class Ui_MainWindow(object):
         if Source != "":
 
             count = self.Demand_tab.count()
+            for i in range(count - 1, 0, -1):
+                self.Demand_tab.removeTab(i)
 
             if count < DemandTabDataBase["Shelf_Count"][Source]:
-                for i in range(count, DemandTabDataBase["Shelf_Count"][Source]):
+                for i in range(1, DemandTabDataBase["Shelf_Count"][Source]):
                     self.Demand_tab.addTab(getattr(self, "shelf_" + str(i + 1)), "Shelf " + str(i + 1))
             
-            elif count > DemandTabDataBase["Shelf_Count"][Source]:
-                for i in range(DemandTabDataBase["Shelf_Count"][Source] , count):
-                    self.Demand_tab.removeTab(i)
 
     def export_excel_fun(self):
         
