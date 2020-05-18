@@ -503,21 +503,21 @@ class Ui_ImportMenuUI(object):
                     Source = temp_dic["Source"][Row]
                     Destination = temp_dic["Destination"][Row]
                     Distance = str(temp_dic["Distance"][Row]).split("+")
-                    Distance = list(map(lambda x : float(x), Distance))
+                    Distance = list(map(lambda x : float(x.strip()), Distance))
 
                     Fiber_Type = str(temp_dic["Fiber Type"][Row]).split("+")
 
                     Loss = str(temp_dic["Loss Coefficient"][Row]).split("+")
-                    Loss = list(map(lambda x : float(x), Loss))
+                    Loss = list(map(lambda x : float(x.strip()), Loss))
 
                     Beta = str(temp_dic["Beta"][Row]).split('+')
-                    Beta = list(map(lambda x : float(x), Beta))
+                    Beta = list(map(lambda x : float(x.strip()), Beta))
 
                     Gamma = str(temp_dic["Gamma"][Row]).split('+')
-                    Gamma = list(map(lambda x : float(x), Gamma))
+                    Gamma = list(map(lambda x : float(x.strip()), Gamma))
 
                     Dispersion = str(temp_dic["Dispersion"][Row]).split('+')
-                    Dispersion = list(map(lambda x : float(x), Dispersion))
+                    Dispersion = list(map(lambda x : float(x.strip()), Dispersion))
 
                     
                     # TODO: Some Data doesn't exist in Link Dictionary
