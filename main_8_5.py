@@ -2412,8 +2412,10 @@ class Ui_MainWindow(object):
             
             else:
                 Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Local_Destination))
-
-        self.show_hide_shelf(Source)
+        
+        if self.pre_source != Source:
+            self.pre_source = Source
+            self.show_hide_shelf(Source)
     
     def show_hide_shelf(self, Source):
         if Source != "":
@@ -2422,9 +2424,8 @@ class Ui_MainWindow(object):
             for i in range(count - 1, 0, -1):
                 self.Demand_tab.removeTab(i)
 
-            if count < DemandTabDataBase["Shelf_Count"][Source]:
-                for i in range(1, DemandTabDataBase["Shelf_Count"][Source]):
-                    self.Demand_tab.addTab(getattr(self, "shelf_" + str(i + 1)), "Shelf " + str(i + 1))
+            for i in range(1, DemandTabDataBase["Shelf_Count"][Source]):
+                self.Demand_tab.addTab(getattr(self, "shelf_" + str(i + 1)), "Shelf " + str(i + 1))
             
 
     def export_excel_fun(self):
@@ -4044,6 +4045,7 @@ class Ui_MainWindow(object):
         self.update_Demand_lightpath_list_flag = True
         #self.Demand_shelf_init_flag = False
         self.Failed_Nodes_flag = False
+        self.pre_source = ""
         
     
     def DemandTabDataBase_Setup(self):
@@ -5097,6 +5099,7 @@ class Ui_MainWindow(object):
         # data = json.dumps(net.PhysicalTopology.ClusterDict[1],default=convert_to_dict,indent=4, sort_keys=True)
         # print(data)
         # assert False
+        net.TrafficMatrix = None
         data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
 
         # This line tests whether the JSON encoded common object is reconstructable!
