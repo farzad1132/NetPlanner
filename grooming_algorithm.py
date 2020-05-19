@@ -148,9 +148,9 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 #                if ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_1_Optical") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_4") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_16")):
                 if (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW < 10):
                     y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
-                elif ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "FE") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "G_1")):
-#                    y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
-                    x.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
+#                elif ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "FE") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "G_1")):
+##                    y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
+#                    x.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                 elif (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW == 10):
                     z.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                 else:
@@ -964,9 +964,9 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 #                if ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_1_Optical") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_4") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_16")):
                 if (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW < 10):
                     y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
-                elif ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "FE") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "G_1")):
-#                    y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
-                    x.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
+#                elif ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "FE") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "G_1")):
+##                    y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
+#                    x.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                 elif (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW == 10):
                     z.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                 else:
@@ -1115,198 +1115,21 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 
 if __name__ == "__main__":
 
-    n = Network()
-    n.PhysicalTopology.add_node((2,3))
-    n.PhysicalTopology.add_node((6,7))
-    n.PhysicalTopology.add_node((17,-3))
-    n.PhysicalTopology.add_node((17,3))
-    n.PhysicalTopology.add_node((-17,3))
-    n.PhysicalTopology.add_node((-17,8))
-    n.PhysicalTopology.add_link(0,1,4)
-    n.PhysicalTopology.add_link(1,2,1)
-    n.PhysicalTopology.add_link(2,3,1)
-    n.PhysicalTopology.add_link(3,4,1)
-    n.PhysicalTopology.add_link(4,5,1)
-    n.PhysicalTopology.add_cluster(1,[0],"blue")
-    n.PhysicalTopology.add_cluster(2,[3],"RED")
-#    print(n.PhysicalTopology.NodeDict[1].Neighbors)
-#    print("LinkDict: ",n.PhysicalTopology.LinkDict)
-#    print("NodeDict: ",n.PhysicalTopology.NodeDict)
-#    print("ClusterDict: ",n.PhysicalTopology.ClusterDict)
-#    n.PhysicalTopology.del_node(2)
-#    print("NodeDict after deleting a Node: ",n.PhysicalTopology.NodeDict)
+    with open('NetWorkObj.obj', 'rb') as handle:
+        n = pickle.load(handle)                   
+    handle.close()
 
-#    n.TrafficMatrix.add_demand(1,4,"X")
-#    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
-
-    # NOTE: in new procedure for adding service handeling is not automatic and user can add multiple services with same
-    #       id in multiple demands
-
-#    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-#    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
-#
-#    n.TrafficMatrix.add_demand("Tehran", "Shiraz", "")
-#    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
-#
-#    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-#    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
-#
-#    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-#    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "10GE", 2)
-#
-#    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-#    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "STM_64", 2)
-
-    # deleting service from demand
-#    n.TrafficMatrix.DemandDict[LastId].ServiceDict.pop(ServiceId)
-#
-#    n.TrafficMatrix.add_demand("Tabriz", "Karaj", "")
+    x = 0
+    for key, value in n.TrafficMatrix.DemandDict.items():
+        for key1, value1 in value.ServiceDict.items():
+            if key1 > x :
+                x = key1
+    
+    n.Traffic.Demand.ServiceIdReference = x
+    n.Traffic.Demand.DemandReferenceId = x
 
     
 
-    # adding 2 services with same id in two different demand
-#    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-#
-#    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "10GE", 2)
-#
-#    n.TrafficMatrix.DemandDict[LastId + 1 ].add_service(ServiceId, "10GE", 2)
-
-    
-#    print("DemandDict: ",n.TrafficMatrix.DemandDict)
-#    print("Demand 1: ",n.TrafficMatrix.DemandDict[1].ServiceDict)
-#    print("Demand 0: ",n.TrafficMatrix.DemandDict[0].ServiceDict)
-
-#    n.add_lightpath(Source= "Tehran",
-#                    Destination= "Shiraz",
-#                    Capacity= 100,
-#                    ServiceIdList= [1, 2],
-#                    Type= "x",
-#                    DemandId= 2)
-#    n.put_results(0, [1 , 3 , 7], [1 ,4 ,7], 27, [5], [9], 25, 14, "111", 14, 31, "1+1")
-#
-#    print("LightpathDict: ", n.LightPathDict)
-#
-#    n.put_params(merge= "Yes",
-#                 alpha= 0.2,
-#                 iterations= 2,
-#                 margin= 4,
-#                 processors= 4,
-#                 k= 1,
-#                 MaxNW= 50,
-#                 GroupSize= 2,
-#                 History= 20,
-#                 Algorithm= "Greedy")
-
-#    print(f"Params result: {n.ParamsObj.__dict__}")
-
-    # example of adding groom_out10
-    # NOTE: assign *LightPathId* if this GroomOut10 is connected to MP1H, otherwise leave it
-    # NOTE: GroomOut10 uses Services ReferenceId so they are unique among themselves and Services
-#    n.TrafficMatrix.add_groom_out_10(Source= "Tehran",
-#                                    Destination= "Mashhad",
-#                                    DemandId= 1,
-#                                    Capacity= 9.6,
-#                                    ServiceIdList= [1,5,9,4,2],
-#                                    LightPathId= 4)
-
-    # NOTE: Grooming Algorithm must return a Dictionary of paired GroomOut10's that belong to same MP2X in format bellow:
-    # { <DemandId> : ( <GroomOut10Id_1>, <GroomOut10Id_2> ) }
-    n.TrafficMatrix.add_demand(5,4,"X")
-    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
-    
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"G_1",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_4",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_4",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_4",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_4",2)
-    
-    n.TrafficMatrix.add_demand(1,3,"X")
-    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_16",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[1].add_service(ServiceId,"STM_4",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[1].add_service(ServiceId,"STM_4",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
-
-    n.TrafficMatrix.add_demand(1,2,"X")
-    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
-    
-    
-    n.TrafficMatrix.add_demand(0,3,"X")
-    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
-    
-    n.TrafficMatrix.add_demand(0,2,"X")
-    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
-    
-    
-    n.TrafficMatrix.add_demand(4,5,"X")
-    LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId,"STM_64",2)
 
 
     ans = grooming_fun(n,70)
