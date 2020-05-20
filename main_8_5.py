@@ -2683,9 +2683,9 @@ class Ui_MainWindow(object):
                 if name[0] != 0:
                     try:
                         if not Data["Clustering"]:
-                            export_excel(name[0], self.decoded_network, True)
-                        else:
                             export_excel(name[0], self.decoded_network)
+                        else:
+                            export_excel(name[0], self.decoded_network, True)
                     except:
                         pass        
 
@@ -4169,7 +4169,7 @@ class Ui_MainWindow(object):
             ## end of debug section """
             
             # checking wheather lightpath is created by tp1h or not
-            if len(lightpath.ServiceIdList) == 1:
+            if lightpath.Capacity == 100:
                 panelid = self.get_panel_num(Source)
                 #DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
                 DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(  DemandId= DemandId,
