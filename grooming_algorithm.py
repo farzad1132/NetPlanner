@@ -148,9 +148,6 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 #                if ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_1_Optical") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_4") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_16")):
                 if (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW < 10):
                     y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
-#                elif ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "FE") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "G_1")):
-##                    y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
-#                    x.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                 elif (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW == 10):
                     z.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                 else:
@@ -232,6 +229,8 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                            n.TrafficMatrix.DemandDict[service_lower100[i][0]].ServiceDict[idd].LightPathId= LastId
                         if (service_lower100[i][0],idd) in n.TrafficMatrix.GroomOut10Dict:
                             n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].LightPathId= LastId
+                            for sid in n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].ServiceIdList:
+                                n.TrafficMatrix.DemandDict[n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].DemandId].ServiceDict[sid].LightPathId= LastId
 #        print(remain_lower100_2)  
 #        print("***",n.TrafficMatrix.DemandDict[0].ServiceDict)
 #        print("***",n.TrafficMatrix.DemandDict[0].Source)
@@ -964,9 +963,6 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 #                if ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_1_Optical") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_4") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "STM_16")):
                 if (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW < 10):
                     y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
-#                elif ((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "FE") or (n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type == "G_1")):
-##                    y.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
-#                    x.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                 elif (n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW == 10):
                     z.append((n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id,n.TrafficMatrix.DemandDict[i].ServiceDict[j].BW))
                 else:
@@ -1038,7 +1034,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                         list_of_service.append(service_lower100[i][1][k][0])
                         list_of_service2.append((service_lower100[i][1][k][0],service_lower100[i][1][k][1]))
                         cap=cap+service_lower100[i][1][k][1]
-                if cap > MP1H_Threshold:
+                if cap >= MP1H_Threshold:
                     typee="100GE" 
                 else:
                     typee="NonCoherent"
@@ -1132,7 +1128,7 @@ if __name__ == "__main__":
 
 
 
-    ans = grooming_fun(n,70)
+    ans = grooming_fun(n,0)
     #Clustering(n)
     #n.add_groom_out_100(Source=1,Destination=2,Capacity=40,ServiceIdList=[1,2],Type=40,DemandId=3)
     print("successful")

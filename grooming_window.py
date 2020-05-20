@@ -14,7 +14,7 @@ bus = {}
 
 class Ui_grooming_window(object):
     def setupUi(self, grooming_window):
-
+        
         # NOTE: added
         bus["grooming_window"] = grooming_window
         grooming_window.setObjectName("grooming_window")
@@ -121,6 +121,7 @@ class Ui_grooming_window(object):
         self.MP1H_Threshold_combobox.addItem("")
         self.MP1H_Threshold_combobox.addItem("")
         self.MP1H_Threshold_combobox.addItem("")
+        self.MP1H_Threshold_combobox.addItem("")
         self.horizontalLayout_2.addWidget(self.MP1H_Threshold_combobox)
         self.layoutWidget1 = QtWidgets.QWidget(grooming_window)
         self.layoutWidget1.setGeometry(QtCore.QRect(195, 185, 391, 41))
@@ -194,7 +195,7 @@ class Ui_grooming_window(object):
         self.gridLayout.addWidget(self.Cancel_button, 0, 1, 1, 1)
 
         self.retranslateUi(grooming_window)
-        self.MP1H_Threshold_combobox.setCurrentIndex(6)
+        self.MP1H_Threshold_combobox.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(grooming_window)
 
         # NOTE: added 
@@ -205,26 +206,26 @@ class Ui_grooming_window(object):
         _translate = QtCore.QCoreApplication.translate
         grooming_window.setWindowTitle(_translate("grooming_window", "Grooming Window"))
         self.MP1HThreshold_label.setText(_translate("grooming_window", "MP1H Threshold"))
-        self.MP1H_Threshold_combobox.setCurrentText(_translate("grooming_window", "70"))
-        self.MP1H_Threshold_combobox.setItemText(0, _translate("grooming_window", "10"))
-        self.MP1H_Threshold_combobox.setItemText(1, _translate("grooming_window", "20"))
-        self.MP1H_Threshold_combobox.setItemText(2, _translate("grooming_window", "30"))
-        self.MP1H_Threshold_combobox.setItemText(3, _translate("grooming_window", "40"))
-        self.MP1H_Threshold_combobox.setItemText(4, _translate("grooming_window", "50"))
-        self.MP1H_Threshold_combobox.setItemText(5, _translate("grooming_window", "60"))
-        self.MP1H_Threshold_combobox.setItemText(6, _translate("grooming_window", "70"))
-        self.MP1H_Threshold_combobox.setItemText(7, _translate("grooming_window", "80"))
-        self.MP1H_Threshold_combobox.setItemText(8, _translate("grooming_window", "90"))
-        self.MP1H_Threshold_combobox.setItemText(9, _translate("grooming_window", "100"))
+        self.MP1H_Threshold_combobox.setCurrentText(_translate("grooming_window", "0"))
+        self.MP1H_Threshold_combobox.setItemText(0, _translate("grooming_window", "0"))
+        self.MP1H_Threshold_combobox.setItemText(1, _translate("grooming_window", "10"))
+        self.MP1H_Threshold_combobox.setItemText(2, _translate("grooming_window", "20"))
+        self.MP1H_Threshold_combobox.setItemText(3, _translate("grooming_window", "30"))
+        self.MP1H_Threshold_combobox.setItemText(4, _translate("grooming_window", "40"))
+        self.MP1H_Threshold_combobox.setItemText(5, _translate("grooming_window", "50"))
+        self.MP1H_Threshold_combobox.setItemText(6, _translate("grooming_window", "60"))
+        self.MP1H_Threshold_combobox.setItemText(7, _translate("grooming_window", "70"))
+        self.MP1H_Threshold_combobox.setItemText(8, _translate("grooming_window", "80"))
+        self.MP1H_Threshold_combobox.setItemText(9, _translate("grooming_window", "90"))
+        self.MP1H_Threshold_combobox.setItemText(10, _translate("grooming_window", "100"))
         self.Start_Grooming_button.setText(_translate("grooming_window", "Start Grooming Algorithm"))
         self.Cancel_button.setText(_translate("grooming_window", "Cancel"))
 
     def start_grooming_fun(self):
-        MP1H_Threshold = str(self.MP1H_Threshold_combobox.currentText())
-        
-        Data["ui"].grooming_procedure(MP1H_Threshold)
-        bus["grooming_window"].close()
-
+            MP1H_Threshold = str(self.MP1H_Threshold_combobox.currentText())
+            
+            Data["ui"].grooming_procedure(MP1H_Threshold)
+            bus["grooming_window"].close()
 
 
 if __name__ == "__main__":
