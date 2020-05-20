@@ -34,7 +34,7 @@ Data["General"]["DataSection"]["4"] = {}
 Data["General"]["DataSection"]["5"] = {}
 Data["General"]["DataSection"]["6"] = {}
 Data["General"]["DataSection"]["7"] = {}
-Data["General"]["DataSection"]["8"] = {} # 8: Degree
+Data["General"]["DataSection"]["8"] = {} # 8: Protection_Type
 
 Data["E1"]["ColumnCount"] = 2
 #Data["E1"]["RowCount"] = 20

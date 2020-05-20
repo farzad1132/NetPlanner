@@ -545,7 +545,7 @@ class Ui_ImportMenuUI(object):
 
                 handle.close()
                 header_list = ['ID', 'Source', 'Destination', 'Old\nCable\nType', 'Cable\nType', 'Distance\nReal\n(Km)',
-                            'Att. (dB/km)\nfor Network Plan\n(Option 1 or 2)', 'Status',"Degree"]
+                            'Att. (dB/km)\nfor Network Plan\n(Option 1 or 2)', 'Status', "Protection_Type"]
 
                 j = -1
                 for i in header_list:

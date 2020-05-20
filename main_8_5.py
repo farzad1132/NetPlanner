@@ -1828,8 +1828,8 @@ class Ui_MainWindow(object):
 
 
         self.panels_name = ["BAF3","BLANK","LAF3","MP1H","MP2D","MP2X","OS5","PAF3","SC","SM2","TP1H","TP2X","TPAX","WS4"]
-
-        #self.SaveChanges_button.clicked.connect(self.SaveChanges_button_fun)
+        #NOTE:edited
+        self.Export_New_Traffic_Matrix_button.clicked.connect(self.SaveTM_fun)
 
         self.tabWidget.currentChanged["int"].connect(self.main_tab_clicked)
 
@@ -2872,15 +2872,34 @@ class Ui_MainWindow(object):
         if name[0] != 0:
             workbook = xlsxwriter.Workbook(name[0])
             worksheet = workbook.add_worksheet() 
+            worksheet.set_tab_color('red')
+            worksheet.freeze_panes('I1')
+            header1 = '&CTRAFFIC MATRIX'
+            worksheet.set_header(header=header1)
+            centerized = workbook.add_format({'align': 'center'})
             #data_format = workbook.add_format({'bg_color': '#D21F3C'})
+            format1 = workbook.add_format({'bg_color': '#FFC7CE',
+                               'font_color': '#9C0006'})
+
+            format2 =  workbook.add_format({'bg_color': '#C6EFCE',
+                               'font_color': '#006100'})
+
+            format3 =  workbook.add_format({'bg_color': '#C6FGCE',
+                               'font_color': '#006111'})
+
             column = 0
             for i in range(8):
                 row = 2
-                worksheet.write(1, i,header_list[i])
+                worksheet.write(1, i,header_list[i], centerized)
                 for item in list(Data["General"]["DataSection"][str(i)].values()):
-                        worksheet.write(row, column, item)   
+                        worksheet.write(row, column, item, centerized)  
                         row += 1
                 column += 1          
+
+            worksheet.conditional_format('A2:H2', {'type': 'cell',
+                                         'criteria': '>=',
+                                         'value': 50,
+                                         'format': format1})
 
             header_list2 = {"E1":["Quantity", "SLA"], "STM_1_Electrical":["Quantity", "SLA"], "STM_1_Optical":
                             ["Quantity", "λ", "SLA"], "STM_4":
@@ -2904,8 +2923,13 @@ class Ui_MainWindow(object):
                             'Quantity_40GE', 'Granularity_40GE', 'λ_40GE(nm)', 'SLA_40GE',
                             'Quantity_100GE', 'Granularity_100GE', 'λ_100GE(nm)', 'SLA_100GE']
 
-            worksheet.set_column('J:AW', 12)
             worksheet.set_row(0, 50)
+            worksheet.set_column(0, 2, 10)
+            worksheet.set_column(3, 4, 13)
+            worksheet.set_column(5, 5, 17)
+            worksheet.set_column(6, 6, 40)
+            worksheet.set_column(7, 7, 10)
+            worksheet.set_column('I:AV', 20)
             merge_format = workbook.add_format({
             'bold': 1,
             'border': 1,
@@ -2930,18 +2954,28 @@ class Ui_MainWindow(object):
 
             for item2 in header_list3:
                 i+=1
-                worksheet.write(1, i, item2)
+                worksheet.write(1, i, item2, centerized)
             for key in header_list2.keys():
                 for value in header_list2[key]:
                     row = 2
                     for item3 in list(Data[key]["DataSection"][value].values()):
                         if item3 == 'nan':
-                            worksheet.write(row, column, None)   
+                            worksheet.write(row, column, None, centerized)   
                             row += 1
                         else:
-                            worksheet.write(row, column, item3)
+                            worksheet.write(row, column, item3, centerized)
                             row += 1
                     column +=1
+
+worksheet.conditional_format('I1:AV1', {'type': 'cell',
+                                         'criteria': '>=',
+                                         'value': 50,
+                                         'format': format2})
+
+            worksheet.conditional_format('I2:AV2', {'type': 'cell',
+                                         'criteria': '>=',
+                                         'value': 50,
+                                         'format': format3})
 
             workbook.close()
 
@@ -3498,6 +3532,8 @@ class Ui_MainWindow(object):
             elif column== 5 and type(value)==float :
                 Data["General"]["DataSection"][str(column)][str(row)] = value
             elif column== 6 and type(value)==float and value <= 0.3 :
+                Data["General"]["DataSection"][str(column)][str(row)] = value
+            elif column == 8 and (str(value) == '1+1_NodeDisjoint' or str(value) =='NoProtection'):
                 Data["General"]["DataSection"][str(column)][str(row)] = value               
             else:
                 # error for wrong data type
@@ -3545,8 +3581,14 @@ class Ui_MainWindow(object):
             self.Status_type_error_widget = QtWidgets.QWidget()
             self.Status_type_error = Ui_Status_type_error()
             self.Status_type_error.setupUi(self.Status_type_error_widget)
-            self.Status_type_error_widget.show() '''
+            self.Status_type_error_widget.show() 
+            if column == 8 :
+        self.Protection_Type_type_error_widget = QtWidgets.QWidget()
+        self.Protection_Type_type_error = Ui_Status_type_error()
+        self.Protection_Type_type_error.setupUi(self.Protection_Type_type_error_widget)
+        self.Protection_Type_type_error_widget.show()'''
         pass
+
 
     def TMErrorWrongDataType(self, column_name):
 
