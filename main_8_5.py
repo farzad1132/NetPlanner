@@ -63,6 +63,12 @@ import networkx as nx
 import utm
 import numpy
 
+class AlignDelegate(QtWidgets.QStyledItemDelegate):
+    
+    def initStyleOption(self, option, index):
+        super(AlignDelegate, self).initStyleOption(option, index)
+        option.displayAlignment = QtCore.Qt.AlignCenter
+
 class WorkerSignals(QObject):
 
     finished = Signal()
@@ -1940,6 +1946,11 @@ class Ui_MainWindow(object):
         self.threadpool = QThreadPool()
 
         self.Export_New_Traffic_Matrix_button.clicked.connect(self.SaveTM_fun)
+        delegate = AlignDelegate(self.General_TM)
+        self.General_TM.setItemDelegate(delegate)
+
+        delegate = AlignDelegate(self.Traffic_matrix)
+        self.Traffic_matrix.setItemDelegate(delegate)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -3499,13 +3510,13 @@ class Ui_MainWindow(object):
                     Data[header]["DataSection"][column_name][str(row)] = value
                 else:
                     # error for wrong data type
-                    self.TMErrorWrongDataType(column_name)
+                    self.TMErrorWrongDataType(row, column_name, value)
             elif column_name=='SLA' :
                 if str(value).isalpha():
                     Data[header]["DataSection"][column_name][str(row)] = value
                 else:
                     # error for wrong data type
-                    self.TMErrorWrongDataType(column_name)
+                    self.TMErrorWrongDataType(row, column_name, value)
             else:
                 Data[header]["DataSection"][column_name][str(row)] = value
 
@@ -3526,11 +3537,14 @@ class Ui_MainWindow(object):
             if column == 0 and str(value).isdigit():
                 Data["General"]["DataSection"][str(column)][str(row)] = value
         
-            elif column==1 or column==2 or column==3 or column==4 or column==7:
+            elif column==1 or column==2:
+                Data["General"]["DataSection"][str(column)][str(row)] = value
+
+            elif column==3 or column==4 or column==7:
                 if str(value).isalpha():
                     Data["General"]["DataSection"][str(column)][str(row)] = value
                 else:
-                    self.GTMErrorWrongDataType(column)        
+                    self.GTMErrorWrongDataType(row, column, value)        
             
             elif column== 5 and type(value)==float :
                 Data["General"]["DataSection"][str(column)][str(row)] = value
@@ -3540,17 +3554,17 @@ class Ui_MainWindow(object):
                 Data["General"]["DataSection"][str(column)][str(row)] = value               
             else:
                 # error for wrong data type
-                self.GTMErrorWrongDataType(column)
+                self.GTMErrorWrongDataType(row, column, value)
 
 
-    def GTMErrorWrongDataType(self, column):
+    def GTMErrorWrongDataType(self, row, column, value):
 
-        """ if column == 0 :
+        if column == 0 :
             self.ID_type_error_widget = QtWidgets.QWidget()
             self.ID_type_error = Ui_ID_type_error()
             self.ID_type_error.setupUi(self.ID_type_error_widget)
             self.ID_type_error_widget.show()
-        if column == 1 :
+        ''' if column == 1 : # no need to ui files too(the error windows for these columns)
             self.Source_type_error_widget = QtWidgets.QWidget()
             self.Source_type_error = Ui_Source_type_error()
             self.Source_type_error.setupUi(self.Source_type_error_widget)
@@ -3559,8 +3573,8 @@ class Ui_MainWindow(object):
             self.Destination_type_error_widget = QtWidgets.QWidget()
             self.Destination_type_error = Ui_Destination_type_error()
             self.Destination_type_error.setupUi(self.Destination_type_error_widget)
-            self.Destination_type_error_widget.show() """ 
-        '''if column == 3 :
+            self.Destination_type_error_widget.show() '''
+        if column == 3 :
             self.OldCableType_type_error_widget = QtWidgets.QWidget()
             self.OldCableType_type_error = Ui_OldCableType_type_error()
             self.OldCableType_type_error.setupUi(self.OldCableType_type_error_widget)
@@ -3586,15 +3600,14 @@ class Ui_MainWindow(object):
             self.Status_type_error.setupUi(self.Status_type_error_widget)
             self.Status_type_error_widget.show()
         if column == 8 :
-        self.Protection_Type_type_error_widget = QtWidgets.QWidget()
-        self.Protection_Type_type_error = Ui_Status_type_error()
-        self.Protection_Type_type_error.setupUi(self.Protection_Type_type_error_widget)
-        self.Protection_Type_type_error_widget.show()'''
-        pass
+            self.Protection_Type_type_error_widget = QtWidgets.QWidget()
+            self.Protection_Type_type_error = Ui_Status_type_error()
+            self.Protection_Type_type_error.setupUi(self.Protection_Type_type_error_widget)
+            self.Protection_Type_type_error_widget.show()
 
-    def TMErrorWrongDataType(self, column_name):
+    def TMErrorWrongDataType(self, row, column_name, value):
 
-        """ if column_name == 'Quantity' :
+        if column_name == 'Quantity' :
             self.Quantity_type_error_widget = QtWidgets.QWidget()
             self.Quantity_type_error = Ui_Quantity_type_error()
             self.Quantity_type_error.setupUi(self.Quantity_type_error_widget)
@@ -3603,8 +3616,7 @@ class Ui_MainWindow(object):
             self.SLA_type_error_widget = QtWidgets.QWidget()
             self.SLA_type_error = Ui_SLA_type_error()
             self.SLA_type_error.setupUi(self.SLA_type_error_widget)
-            self.SLA_type_error_widget.show() """
-        pass
+            self.SLA_type_error_widget.show() 
 
 
     def update_cells(self):
