@@ -62,7 +62,7 @@ def MP2X(Services_lower10):
             
     
      
-    prob.writeLP("grooming.lp")
+    #prob.writeLP("grooming.lp")
     prob.solve()
     
     #print("Status:", LpStatus[prob.status])
