@@ -2424,7 +2424,7 @@ class Ui_MainWindow(object):
             for i in range(count - 1, 0, -1):
                 self.Demand_tab.removeTab(i)
 
-            for i in range(1, DemandTabDataBase["Shelf_Count"][Source] + 1):
+            for i in range(1, DemandTabDataBase["Shelf_Count"][Source]):
                 self.Demand_tab.addTab(getattr(self, "shelf_" + str(i + 1)), "Shelf " + str(i + 1))
             
 
@@ -2800,54 +2800,24 @@ class Ui_MainWindow(object):
                                             ProtectionLambdaList= ProtectionLambdaList)
     
     def groomout10_list_fun(self, CurItem, PreItem):
-        if CurItem is not None:
-            UserData = CurItem.data(Qt.UserRole)
-            Source = UserData["Source"]
-            Destination = UserData["Destination"]
-            GroomOut10Id = UserData["GroomOut10Id"]
-
-            PanelId = UserData["PanelId"]
-            DemandId = UserData["DemandId"]
-            widget = Data["DemandPanel_" + str(PanelId)].itemAt(0).widget()
-
-            index = DemandTabDataBase["Panels"][Source][PanelId].LineIdList.index(GroomOut10Id)
-
-            if index == 0:
-                widget.LINE1.setStyleSheet(" QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); border: 5px solid red; }")
-                
-            else:
-                widget.LINE2.setStyleSheet(" QLabel { image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); border: 5px solid red; }")
-                
-            
-            if "MP1H_Client_Id" in UserData:
-                MP1H_Id , Client_Id = UserData["MP1H_Client_Id"]
-                MP1H_widget = Data["DemandPanel_" + str(MP1H_Id)].itemAt(0).widget()
-
-                clientvar = getattr(MP1H_widget, "Client" + Client_Id )
-
-                if ( int(Client_Id) - 1 ) % 2 == 1:
-                    clientvar.setStyleSheet(" QLabel{ image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png); border: 5px solid red; }")
-                    
-                else:
-                    clientvar.setStyleSheet(" QLabel{ image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png); border: 5px solid red; }")
-                    
-
-
-            if PreItem is not None:
-                UserData = PreItem.data(Qt.UserRole)
-
+        if change_in_groomoutlist_flag is False:
+            if CurItem is not None:
+                UserData = CurItem.data(Qt.UserRole)
+                Source = UserData["Source"]
+                Destination = UserData["Destination"]
                 GroomOut10Id = UserData["GroomOut10Id"]
 
                 PanelId = UserData["PanelId"]
+                DemandId = UserData["DemandId"]
                 widget = Data["DemandPanel_" + str(PanelId)].itemAt(0).widget()
 
                 index = DemandTabDataBase["Panels"][Source][PanelId].LineIdList.index(GroomOut10Id)
 
                 if index == 0:
-                    widget.LINE1.setStyleSheet(" QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); }")
+                    widget.LINE1.setStyleSheet(" QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); border: 5px solid red; }")
                     
                 else:
-                    widget.LINE2.setStyleSheet(" QLabel{ image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); }")
+                    widget.LINE2.setStyleSheet(" QLabel { image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); border: 5px solid red; }")
                     
                 
                 if "MP1H_Client_Id" in UserData:
@@ -2857,10 +2827,41 @@ class Ui_MainWindow(object):
                     clientvar = getattr(MP1H_widget, "Client" + Client_Id )
 
                     if ( int(Client_Id) - 1 ) % 2 == 1:
-                        clientvar.setStyleSheet(" QLabel{ image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png); }")
+                        clientvar.setStyleSheet(" QLabel{ image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png); border: 5px solid red; }")
                         
                     else:
-                        clientvar.setStyleSheet(" QLabel{ image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png); }")
+                        clientvar.setStyleSheet(" QLabel{ image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png); border: 5px solid red; }")
+                        
+
+
+                if PreItem is not None:
+                    UserData = PreItem.data(Qt.UserRole)
+
+                    GroomOut10Id = UserData["GroomOut10Id"]
+
+                    PanelId = UserData["PanelId"]
+                    widget = Data["DemandPanel_" + str(PanelId)].itemAt(0).widget()
+
+                    index = DemandTabDataBase["Panels"][Source][PanelId].LineIdList.index(GroomOut10Id)
+
+                    if index == 0:
+                        widget.LINE1.setStyleSheet(" QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); }")
+                        
+                    else:
+                        widget.LINE2.setStyleSheet(" QLabel{ image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); }")
+                        
+                    
+                    if "MP1H_Client_Id" in UserData:
+                        MP1H_Id , Client_Id = UserData["MP1H_Client_Id"]
+                        MP1H_widget = Data["DemandPanel_" + str(MP1H_Id)].itemAt(0).widget()
+
+                        clientvar = getattr(MP1H_widget, "Client" + Client_Id )
+
+                        if ( int(Client_Id) - 1 ) % 2 == 1:
+                            clientvar.setStyleSheet(" QLabel{ image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png); }")
+                            
+                        else:
+                            clientvar.setStyleSheet(" QLabel{ image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png); }")
                         
 
 
@@ -3430,10 +3431,12 @@ class Ui_MainWindow(object):
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
 
+        self.change_in_groomoutlist_flag = True
         while self.groomout10_list.count() > 0:
             self.groomout10_list.takeItem(0)
         for value in DemandTabDataBase["GroomOut10"][(Source, Destination)].values():
             self.groomout10_list.addItem(value)
+        self.change_in_groomoutlist_flag = False
 
         
                 
@@ -4046,6 +4049,7 @@ class Ui_MainWindow(object):
         #self.Demand_shelf_init_flag = False
         self.Failed_Nodes_flag = False
         self.pre_source = ""
+        self.change_in_groomoutlist_flag = False
         
     
     def DemandTabDataBase_Setup(self):
@@ -4167,9 +4171,14 @@ class Ui_MainWindow(object):
             print("serviceIdList :", lightpath.ServiceIdList)
 
             ## end of debug section """
+            first_service_object = netobj.TrafficMatrix.DemandDict[DemandId].ServiceDict.get(lightpath.ServiceIdList[0])
+            if first_service_object != None:
+                first_service_type = first_service_object.Type
+            else:
+                first_service_type = None
             
             # checking wheather lightpath is created by tp1h or not
-            if lightpath.Capacity == 100:
+            if lightpath.Capacity == 100 and first_service_type == "100GE":
                 panelid = self.get_panel_num(Source)
                 #DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
                 DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(  DemandId= DemandId,
