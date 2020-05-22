@@ -2424,7 +2424,7 @@ class Ui_MainWindow(object):
             for i in range(count - 1, 0, -1):
                 self.Demand_tab.removeTab(i)
 
-            for i in range(1, DemandTabDataBase["Shelf_Count"][Source]):
+            for i in range(1, DemandTabDataBase["Shelf_Count"][Source] + 1):
                 self.Demand_tab.addTab(getattr(self, "shelf_" + str(i + 1)), "Shelf " + str(i + 1))
             
 
