@@ -1939,7 +1939,7 @@ class Ui_MainWindow(object):
 
         self.threadpool = QThreadPool()
 
-        self.Draw_Physical_Topology_pushButton.clicked_connect(self.start_draw_mode)
+        self.Draw_Physical_Topology_pushButton.clicked.connect(self.start_draw_mode)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -2053,7 +2053,7 @@ class Ui_MainWindow(object):
     
 
     def start_draw_mode(self):
-        self.webengine.page().runJavaScript('')
+        self.webengine.page().runJavaScript('topologyMenuHandler()')
 
 
 
@@ -3626,6 +3626,7 @@ class Ui_MainWindow(object):
         window.backend = channel.objects.backend;
         });"""))'''
         Fig.script.add_child(Element("""
+        var MapVar = %s;
         var  SetNodeGateWay_flag = null;
         var SelectSubNode_flag = null;
         var groupcolor = null;
@@ -3684,7 +3685,7 @@ class Ui_MainWindow(object):
                     
                     myFeatureGroup.removeLayer(layer);
                     latlng = layer.getLatLng()
-                    %s.removeLayer(layer);
+                    MapVar.removeLayer(layer);
                     layer.remove();
                     if (SubNode == 0){
                         change_icon(NodeName, latlng, Color, 1, "notified")
@@ -3710,7 +3711,7 @@ class Ui_MainWindow(object):
                     if (flag == 0){
                     var latlng = layer.getLatLng()
                     
-                    %s.removeLayer(layer);
+                    MapVar.removeLayer(layer);
                     layer.remove();
                     if (subnode == 0){
                         
@@ -3736,7 +3737,7 @@ class Ui_MainWindow(object):
                 if ( NodeName == nodename ){
                     var latlng = layer.getLatLng()
 
-                    %s.removeLayer(layer);
+                    MapVar.removeLayer(layer);
                     layer.remove();
 
                     change_icon(NodeName, latlng, "blue", 1, "normal")
@@ -3787,8 +3788,8 @@ class Ui_MainWindow(object):
             a_value = JSON.parse(value)
             lambdas[[Source, Destination]] = a_value
         }
-        var links_groupfeature = L.featureGroup().addTo(%s).on(\"click\", links_click_event);
-        %s.eachLayer(function (layer) {
+        var links_groupfeature = L.featureGroup().addTo(MapVar).on(\"click\", links_click_event);
+        MapVar.eachLayer(function (layer) {
                if (layer instanceof L.Polyline){
                   layer.addTo(links_groupfeature);
                }
@@ -3928,7 +3929,7 @@ class Ui_MainWindow(object):
                 div.innerHTML += '<h5>Worst SNR on all links<b>: ' + Worst_SNR + '</b></h5>';
                 return div;
             };
-            legend.addTo(%s);
+            legend.addTo(MapVar);
         }
         function change_icon(NodeName, latlng, Color, Opacity, mode){
                 if ( mode == "normal" ){
@@ -3942,7 +3943,7 @@ class Ui_MainWindow(object):
                                         iconSize: [30, 30],
                                         iconAnchor: [20, 30],
                                     });
-                var mark = L.marker(latlng,{opacity:Opacity}).setIcon(myIcon).addTo(%s);
+                var mark = L.marker(latlng,{opacity:Opacity}).setIcon(myIcon).addTo(mapVar);
                 //var pop = L.popup({"maxWidth": "100%%"});
                 //var htm = $(`<div id="htm" style="width: 100.0%%; height: 100.0%%;"><h2>${NodeName}</h2></div>`)[0];
                 //pop.setContent(htm);
@@ -3955,11 +3956,12 @@ class Ui_MainWindow(object):
                 mark.addTo(myFeatureGroup);
         }
 
-        function topologyMenuHandler(mapvar) {
+        function topologyMenuHandler() {
 
             var pathToIcon = "Icons/blue/server_blue.png"
             var markersGroup = myFeatureGroup;
             var linksGroup = links_groupfeature;
+            mymap = MapVar;
 
             var markers = [];
             var links = [];
@@ -4171,8 +4173,8 @@ class Ui_MainWindow(object):
                 }
 
                 if (!areNodeParamsValid(inputParams.paramNames[1], inputParams.paramAllValues[1])) {
-                    popupAlert("Invalid parameter. \n" +
-                        "ROADM TYPE can have a value of \"Directionless\" or \"CDC\".", mymap);
+                    popupAlert("Invalid parameter. " + "ROADM TYPE can have a value of <Directionless> or <CDC> .", mymap);
+                        
                     return;
                 }
 
@@ -4728,7 +4730,7 @@ class Ui_MainWindow(object):
         var backend_map = null;
         new QWebChannel(qt.webChannelTransport, function (channel) {
         window.backend_map = channel.objects.backend_map;
-        });""" %(MapVar, MapVar, MapVar, MapVar, MapVar, MapVar, MapVar)))
+        });""" %MapVar ))
         Fig.script.add_child(Element("var myFeatureGroup = L.featureGroup().addTo(%s).on(\"click\", groupClick);" %MapVar))
 
         Fig.script.add_child(Element("""%s.eachLayer(function (layer) {
