@@ -541,26 +541,24 @@ class Ui_ImportMenuUI(object):
             Data["ui"].clear_tm()
             try:
                 with pd.ExcelFile(name[0]) as handle:
-                    Temp_data = handle.parse(header=1, skipfooter=0)
+                    Temp_data = handle.parse(header=1)
 
                 handle.close()
+                excel_dict = Temp_data.to_dict()
                 header_list = ['ID', 'Source', 'Destination', 'Old\nCable\nType', 'Cable\nType', 'Distance\nReal\n(Km)',
-                            'Att. (dB/km)\nfor Network Plan\n(Option 1 or 2)', 'Status',"Degree"]
+                            'Att. (dB/km)\nfor Network Plan\n(Option 1 or 2)', 'Status', "Degree"]
 
-                j = -1
-                for i in header_list:
-                    dict1 = {}
-                    j += 1
-                    dict1.update(Temp_data[i])
-                    Data["General"]["DataSection"][str(j)].update(dict1)
-                    #print(Data["General"]["DataSection"][str(j)])
-                    for keys in list(Data["General"]["DataSection"][str(j)].keys()):
-                        text = str(Data["General"]["DataSection"][str(j)][keys])
-                        if text == "nan":
-                            Data["General"]["DataSection"][str(j)].pop(keys)
-                        else:
-                            Data["General"]["DataSection"][str(j)][keys] = text
-                Data["ui"].update_cells()
+                # filling General Part
+                i = 0
+                for header in header_list:
+                    temp_dict = {}
+                    for key , value in excel_dict[header].items():
+                        if str(value) != "nan":
+                            temp_dict[key] = value
+                    Data["General"]["DataSection"][str(i)].update(temp_dict)
+                    i += 1
+
+
                 header_list2 = [['Quantity_E1', 'SLA_E1'], ['Quantity_STM1_E', 'SLA_STM1_E'],
                                 ['Quantity_STM1_O', 'λ_STM1_O(nm)', 'SLA_STM1_O'],
                                 ['Quantity_STM4', 'λ_STM4(nm)', 'Concat._STM4', 'SLA_STM4'],
@@ -571,7 +569,7 @@ class Ui_ImportMenuUI(object):
                                 ['Quantity_10GE', 'Granularity_10GE', 'λ_10GE(nm)', 'SLA_10GE'],
                                 ['Quantity_40GE', 'Granularity_40GE', 'λ_40GE(nm)', 'SLA_40GE'],
                                 ['Quantity_100GE', 'Granularity_100GE', 'λ_100GE(nm)', 'SLA_100GE']]
-                self.all_headers = ["E1", "STM_1_Electrical", "STM_1_Optical", "STM_4", "STM_16", "STM_64", "FE", "1GE", "10GE",
+                all_headers = ["E1", "STM_1_Electrical", "STM_1_Optical", "STM_4", "STM_16", "STM_64", "FE", "1GE", "10GE",
                             "40GE", "100GE"]
                 l1 = [["Quantity", "SLA"], ["Quantity", "SLA"], ["Quantity", "λ", "SLA"],
                     ["Quantity", "λ", "concat.", "SLA"], ["Quantity", "λ", "concat.", "SLA"],
@@ -579,20 +577,20 @@ class Ui_ImportMenuUI(object):
                     ["Quantity", "Granularity_xVC12", "Granularity_xVC4", "λ", "SLA"],
                     ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"],
                     ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"]]
-                k = -1
-                for m in self.all_headers:
-                    k += 1
+                k = 0
+                for m in all_headers:
                     for j in range(len(header_list2[k])):
-                        dict1 = {}
-                        dict1.update(Temp_data[header_list2[k][j]])
-                        Data[m]["DataSection"][l1[k][j]].update(dict1)
-                        #print(Data[m]["DataSection"][l1[k][j]])
-                        for keys in list(Data[m]["DataSection"][l1[k][j]].keys()):
-                            text = str(Data[m]["DataSection"][l1[k][j]][keys])
-                            if  text == "nan":
-                                Data[m]["DataSection"][l1[k][j]].pop(keys)
-                            else:
-                                Data[m]["DataSection"][l1[k][j]][keys] = text
+                        temp_dict = {}
+                        for key, value in excel_dict[header_list2[k][j]].items():
+
+                            if str(value) != "nan":
+                                try:
+                                    temp_dict[key] = int(float(value))
+                                except:
+                                    temp_dict[key] = value
+
+                        Data[m]["DataSection"][l1[k][j]].update(temp_dict)
+                    k += 1
                 
                 TM_Success = True
             except:

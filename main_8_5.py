@@ -3226,8 +3226,16 @@ class Ui_MainWindow(object):
     
     def Fill_Demand_SourceandDestination_combobox(self):
 
-        SourceList = list(Data["General"]["DataSection"]["1"].values())
-        DestinationList = list(Data["General"]["DataSection"]["2"].values())
+        Source_item = list(Data["General"]["DataSection"]["1"].items())
+        Destination_item = list(Data["General"]["DataSection"]["2"].items())
+
+        Source_item.sort(key= lambda x : x[0])
+        Destination_item.sort(key= lambda x: x[0])
+
+        SourceList = list(map(lambda x: x[1], Source_item))
+        DestinationList = list(map(lambda x: x[1], Destination_item))
+
+
         Original_Source_list = []
         for Source in SourceList :
             if (Source in DemandTabDataBase["Source_Destination"] ) == False:
@@ -4031,6 +4039,7 @@ class Ui_MainWindow(object):
         self.DemandTabDataBase_Setup()
         #self.Demand_Shelf_set()
         self.Fill_Demand_SourceandDestination_combobox()
+        self.update_cells()
 
         self.tabWidget.setTabEnabled(1, True)
         self.tabWidget.setTabEnabled(2, True)
