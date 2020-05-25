@@ -364,7 +364,7 @@ class Network:
         def del_demand(self, Id):
             del self.DemandDict[Id]
 
-            self.DemandDict.pop(Id)
+            
         
         def GenerateDemandId(self):
                 Network.Traffic.Demand.DemandReferenceId += 1

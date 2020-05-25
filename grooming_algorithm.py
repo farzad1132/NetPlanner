@@ -1011,7 +1011,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                 service_lower100.append((i,z))
          
  
-        
+#        print(groom_out10_list)
         for i in range(0,len(groom_out10_list)):
             nooo=[]
             for j in range(0,len(groom_out10_list[i][1])):
@@ -1019,13 +1019,21 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                 for k in range(0,len(groom_out10_list[i][1])):
                     if ((k not in nooo) and (j not in nooo) and (j!=k) and (groom_out10_list[i][1][j][2] + groom_out10_list[i][1][k][2]) <=16):
                         MP2x_list.append((groom_out10_list[i][0],(groom_out10_list[i][1][j][0],groom_out10_list[i][1][k][0])))
-                        MP2x_Dict.update({groom_out10_list[i][0]:(groom_out10_list[i][1][j][0],groom_out10_list[i][1][k][0])})
+                        if groom_out10_list[i][0] in MP2x_Dict.keys():
+#                            MP2x_Dict.update({groom_out10_list[i][0]:[MP2x_Dict[groom_out10_list[i][0]],(groom_out10_list[i][1][j][0],groom_out10_list[i][1][k][0])]})
+                            MP2x_Dict[groom_out10_list[i][0]].append((groom_out10_list[i][1][j][0],groom_out10_list[i][1][k][0]))
+                        else:
+                            MP2x_Dict.update({groom_out10_list[i][0]:[(groom_out10_list[i][1][j][0],groom_out10_list[i][1][k][0])]})
                         nooo.append(j)
                         nooo.append(k)
+                
             for m in range(0,len(groom_out10_list[i][1])):
                 if m not in nooo:
                     remaining_service_lower10.append((groom_out10_list[i][0],groom_out10_list[i][1][m][0])) 
-                    remaining_service_lower10_dict.update({groom_out10_list[i][0]:groom_out10_list[i][1][m][0]})
+                    if groom_out10_list[i][0] in remaining_service_lower10_dict.keys():
+                        remaining_service_lower10_dict[groom_out10_list[i][0]].append(groom_out10_list[i][1][m][0])
+                    else:
+                        remaining_service_lower10_dict.update({groom_out10_list[i][0]:[groom_out10_list[i][1][m][0]]})  
                     
            
         for i in range(0,len(service_lower100)):
@@ -1078,7 +1086,9 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 
 
 
-
+        for i in  list(n.TrafficMatrix.DemandDict.keys()):
+            if len(n.TrafficMatrix.DemandDict[i].ServiceDict)==0:  
+                n.TrafficMatrix.del_demand(i)                
 
 
 
