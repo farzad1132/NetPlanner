@@ -275,6 +275,8 @@ class MP1H_L_Demand(QtWidgets.QWidget):
                 font.setStrikeOut(False)
                 DemandTabDataBase["GroomOut10"][(source, destination)][key[1]].setFont(font)
 
+                DemandTabDataBase["GroomOut10_status"][(source, destination)][key[1]] = 0
+
                 # deleting MP1h_Client_Id from GroomOut10 Item
                 UserData = DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].data(Qt.UserRole)
                 if "MP1H_Client_Id" in UserData:
@@ -507,8 +509,12 @@ class customlabel(QLabel):
                 font.setStrikeOut(True)
                 DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][UserData["GroomOut10Id"]].setFont(font)
 
+                DemandTabDataBase["GroomOut10_status"][(self.nodename, self.Destination)][UserData["GroomOut10Id"]] = 1
+
                 # ** Dual **
                 DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][UserData["GroomOut10Id"]].setFont(font)
+
+                DemandTabDataBase["GroomOut10_status"][(self.Destination, self.nodename)][UserData["GroomOut10Id"]] = 1
 
             self.setAcceptDrops(False)
             
@@ -815,6 +821,8 @@ class customlabel(QLabel):
                 font = DemandTabDataBase["GroomOut10"][(source, destination)][key[1]].font()
                 font.setStrikeOut(False)
                 DemandTabDataBase["GroomOut10"][(source, destination)][key[1]].setFont(font)
+
+                DemandTabDataBase["GroomOut10_status"][(source, destination)][key[1]] = 0
 
                 # deleting MP1h_Client_Id from GroomOut10 Item
                 UserData = DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].data(Qt.UserRole)
