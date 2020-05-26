@@ -78,7 +78,7 @@ class BLANK_Demand(QtWidgets.QWidget):
         # removing old panel ( left only )
         panel_widget = Data["DemandPanel_" + str(self.id)].takeAt(0).widget()
         Data["DemandPanel_" + str(self.id)].removeWidget(panel_widget)
-        panel_widget.deleteLater()
+        #panel_widget.deleteLater()
 
         # getting dual panels id
         DualPanelsId = self.generate_dual_panel_num(self.Destination)
@@ -107,21 +107,25 @@ class BLANK_Demand(QtWidgets.QWidget):
 
 
         elif text == "MP1H":
-            Data["DemandPanel_" + str(self.id)].addWidget(MP1H_L_Demand(self.id , self.nodename, self.Destination, DualPanelsId))
+            DemandTabDataBase["Panels_Object"][self.nodename][self.id] = MP1H_L_Demand(self.id , self.nodename, self.Destination, DualPanelsId)
+            Data["DemandPanel_" + str(self.id)].addWidget(DemandTabDataBase["Panels_Object"][self.nodename][self.id])
             DemandTabDataBase["Panels"][self.nodename][self.id] = MP1H_L(Destination= self.Destination, DualPanelsId= DualPanelsId)
 
             # ** Dual **
+            DemandTabDataBase["Panels_Object"][self.nodename][self.id] = MP1H_L_Demand(DualPanelsId[0], self.Destination, self.nodename, (self.id, self.uppernum))
             DemandTabDataBase["Panels"][self.Destination][DualPanelsId[0]] = MP1H_L(Destination= self.nodename, DualPanelsId= (self.id, self.uppernum))
 
             # removing old right panel
             panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
             Data["DemandPanel_" + str(self.uppernum)].removeWidget(panel_widget)
-            panel_widget.deleteLater()
+            #panel_widget.deleteLater()
 
-            Data["DemandPanel_" + self.uppernum].addWidget(MP1H_R_Demand(self.id, self.nodename, self.Destination, DualPanelsId))
+            DemandTabDataBase["Panels_Object"][self.nodename][self.uppernum] = MP1H_R_Demand(self.id, self.nodename, self.Destination, DualPanelsId)
+            Data["DemandPanel_" + self.uppernum].addWidget(DemandTabDataBase["Panels_Object"][self.nodename][self.uppernum])
             DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP1H_R(self.uppernum, self.Destination, DualPanelsId)
 
             # ** Dual **
+            DemandTabDataBase["Panels_Object"][self.nodename][DualPanelsId[1]] = MP1H_L_Demand(DualPanelsId[1], self.Destination, self.nodename, (self.id, self.uppernum))
             DemandTabDataBase["Panels"][self.Destination][DualPanelsId[1]] = MP1H_R(DualPanelsId[1], self.nodename, (self.id, self.uppernum))
         
         elif text == "TP1H":

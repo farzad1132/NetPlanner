@@ -161,6 +161,16 @@ DemandTabDataBase["Panels"] = {}
 # format:
 #       { Tehran:{1: MP2X, 2: MP1H, ..} , Karaj:{}, ...}
 
+DemandTabDataBase["Panels_Object"] = {}
+# format:
+#       { <SourceName>: { <PanelNum>: { "Object": <PanelObject>, "State": <state> }}}
+#   PanelNum: Demand Panel Id in String Format
+#   PanelObject: Demand Panel Object ex: MP1H_L_Demand
+
+#   State:
+#   0: no need for update
+#   1: need for update
+
 DemandTabDataBase["GroomOut10"] = {}
 # format:
 #       { ( <SourceName> , <DestinationName> ) : { <GroomGou10_Id> : QlistWidgetItem } }
@@ -303,8 +313,6 @@ class MP1H_L:
         self.LineCapacity = LineCapacity
         self.DualPanelsId = DualPanelsId
     
-    
-
 class MP1H_R:
     def __init__(self, LeftId, Destination, DualPanelsId):
         self.Destination = Destination

@@ -140,14 +140,16 @@ class MP1H_L_Demand(QtWidgets.QWidget):
             # removing old left panel
             panel_widget = Data["DemandPanel_" + str(self.id)].takeAt(0).widget()
             Data["DemandPanel_" + str(self.id)].removeWidget(panel_widget)
-            panel_widget.deleteLater()
-            Data["DemandPanel_" + self.id].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
+            #panel_widget.deleteLater()
+            DemandTabDataBase["Panels_Object"][self.nodename][self.id] = BLANK_Demand(self.id ,  self.nodename, self.Destination)
+            Data["DemandPanel_" + self.id].addWidget(DemandTabDataBase["Panels_Object"][self.nodename][self.id])
 
             # removing old right panel
             panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
             Data["DemandPanel_" + str(self.uppernum)].removeWidget(panel_widget)
-            panel_widget.deleteLater()
-            Data["DemandPanel_" + self.uppernum].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
+            #panel_widget.deleteLater()
+            DemandTabDataBase["Panels_Object"][self.nodename][self.uppernum] = BLANK_Demand(self.id ,  self.nodename, self.Destination)
+            Data["DemandPanel_" + self.uppernum].addWidget(DemandTabDataBase["Panels_Object"][self.nodename][self.uppernum])
 
             if DemandTabDataBase["Panels"][self.nodename][self.id].LineCapacity != 0:
 
@@ -339,21 +341,25 @@ class customlabel(QLabel):
             servicetype = dragtext.strip()
 
             if servicetype in self.allowedservices:
+                self.DualClientVar = DemandTabDataBase["Panels_Object"][self.Destination][self.DualPanelsId[0]].getattr("Client" + str( self.id + 1 ))
+
                 if servicetype == "GroomOut10":
                     if (not model.item(0).font().strikeOut()) and UserData["GroomOut10Id"] in DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)]:
                         if self.ClientNum % 2 == 0:
                             self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                            self.DualClientVar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
                         else:
                             self.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
-
+                            self.DualClientVar.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
                         event.accept()
                             
                 elif DemandTabDataBase["Services"][(self.nodename, self.Destination)].get((UserData["DemandId"], UserData["ServiceId"])) == 0:
                     if self.ClientNum % 2 == 0:
                         self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                        self.DualClientVar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
                     else:
                         self.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
-                    
+                        self.DualClientVar.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
                     event.accept()
 
             super(customlabel,self).dragEnterEvent(event)
@@ -362,8 +368,10 @@ class customlabel(QLabel):
     def dragLeaveEvent(self, event):
         if self.ClientNum % 2 == 0:
             self.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
+            self.DualClientVar.setStyleSheet("image: url(:/CLIENT_L1/CLIENT_L.png);")
         else:
             self.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
+            self.DualClientVar.setStyleSheet("image: url(:/client_r/CLIENT_R.png);")
 
     def dropEvent(self, event):
         event.accept()
@@ -378,13 +386,20 @@ class customlabel(QLabel):
         if servicetype in self.allowedservices:
 
             self.servicetype = servicetype
+            self.DualClientVar = servicetype
+
             if self.servicetype != "GroomOut10":
                 self.ids = (UserData["DemandId"], UserData["ServiceId"])
+                self.DualClientVar.ids = (UserData["DemandId"], UserData["ServiceId"])
+
                 self.setToolTip(DemandTabDataBase["Services_static"][self.nodename][self.ids].toolTip())
+                self.DualClientVar.setToolTip(DemandTabDataBase["Services_static"][self.nodename][self.ids].toolTip())
             else:
                 self.ids = (UserData["DemandId"], UserData["GroomOut10Id"])
+                self.DualClientVar.ids = (UserData["DemandId"], UserData["GroomOut10Id"])
+
                 self.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][self.ids[1]].toolTip())
-            
+                self.DualClientVar.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][self.ids[1]].toolTip())
             
 
             # updating LineCapacity part of panel object

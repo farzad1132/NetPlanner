@@ -2372,11 +2372,11 @@ class Ui_MainWindow(object):
 
                             clientvar.setAcceptDrops(False)
 
-                            # adding tooltip to line port
-                            linevar = getattr(widget, "Line")
-                            linevar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
+                    # adding tooltip to line port
+                    linevar = getattr(widget, "Line")
+                    linevar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
 
-                            linevar.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
+                    linevar.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
 
                 elif isinstance(panel, MP1H_R):
                     Data["DemandPanel_" + str(i)].addWidget(MP1H_R_Demand(str(i), Source, Destination, DualPanelsId))
@@ -3144,6 +3144,9 @@ class Ui_MainWindow(object):
 
         DemandTabDataBase["Panels"][Source] = {}
         DemandTabDataBase["Panels"][Destination] = {}
+
+        DemandTabDataBase["Panels_Object"][Source] = {}
+        DemandTabDataBase["Panels_Object"][Destination] = {}
 
         DemandTabDataBase["Shelf_Count"][Source] = 1
         DemandTabDataBase["Shelf_Count"][Destination] = 1
@@ -4855,6 +4858,7 @@ class Ui_MainWindow(object):
         DemandTabDataBase["Services"].clear()
         DemandTabDataBase["Services_static"].clear()
         DemandTabDataBase["Panels"].clear()
+        DemandTabDataBase["Panels_Object"].clear()
         DemandTabDataBase["GroomOut10"].clear()
         DemandTabDataBase["GroomOut10_status"].clear()
         DemandTabDataBase["Lightpathes"].clear()
@@ -4874,6 +4878,9 @@ class Ui_MainWindow(object):
 
             DemandTabDataBase["Panels"][Source] = {}
             DemandTabDataBase["Panels"][Destination] = {}
+
+            DemandTabDataBase["Panels_Object"][Source] = {}
+            DemandTabDataBase["Panels_Object"][Destination] = {}
 
             DemandTabDataBase["GroomOut10"][(Source, Destination)] = {}
             DemandTabDataBase["GroomOut10"][(Destination, Source)] = {}
