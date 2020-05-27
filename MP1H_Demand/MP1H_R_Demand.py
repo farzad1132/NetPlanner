@@ -11,10 +11,11 @@ from MP1H_Demand import Border_R
 
 class MP1H_R_Demand(QtWidgets.QWidget):
 
-    def __init__(self, Panel_ID, nodename, Destination, DualPanelsId):
-        super(MP1H_R_Demand, self).__init__()
+    def __init__(self, parent, Panel_ID, nodename, Destination, DualPanelsId):
+        super(MP1H_R_Demand, self).__init__(parent= parent)
 
         self.resize(94, 455)
+        self.parent = parent
 
         self.id = str(Panel_ID)
         # nodename == Source in Demand Tab

@@ -1779,6 +1779,9 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         # NOTE: added
+        Data["MainWindow"] = MainWindow
+
+        Data["self"] = self
 
         self.Demand_Source_combobox.clear()
         self.Demand_Destination_combobox.clear()
@@ -1936,6 +1939,8 @@ class Ui_MainWindow(object):
         self.newfile_pushbutton.clicked.connect(self.new_button_fun)
 
         self.Demand_Shelf_set()
+
+        Data["Last_Panel_object"] = 0
 
         self.threadpool = QThreadPool()
 
@@ -2279,7 +2284,22 @@ class Ui_MainWindow(object):
 
         Source = self.Demand_Source_combobox.currentText()
         Local_Destination = self.Demand_Destination_combobox.currentText()
+
         for i in range(1, (((self.New_Demand_Shelf_Num - 2) * 14) + 15)):
+
+            x = panel_widget = Data["DemandPanel_" + str(i)].takeAt(0)
+            if x is not None:
+                panel_widget = x.widget()
+                panel_widget.lower()
+                Data["DemandPanel_" + str(i)].removeWidget(panel_widget)
+                #panel_widget.deleteLater()
+            
+
+            panel = DemandTabDataBase["Panels_Object"][Source][str(i)]
+
+            Data["DemandPanel_" + str(i)].addWidget(panel)
+
+        """ for i in range(1, (((self.New_Demand_Shelf_Num - 2) * 14) + 15)):
             # removing old panel
             panel_widget = Data["DemandPanel_" + str(i)].takeAt(0).widget()
             Data["DemandPanel_" + str(i)].removeWidget(panel_widget)
@@ -2411,7 +2431,7 @@ class Ui_MainWindow(object):
                     Data["DemandPanel_" + str(i)].addWidget(TP1H_R_Demand(str(i), Source, Destination, DualPanelsId))
             
             else:
-                Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Local_Destination))
+                Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Local_Destination)) """
         
         if self.pre_source != Source:
             self.pre_source = Source
@@ -3147,6 +3167,16 @@ class Ui_MainWindow(object):
 
         DemandTabDataBase["Panels_Object"][Source] = {}
         DemandTabDataBase["Panels_Object"][Destination] = {}
+
+        for i in range(1,15):
+            setattr(self, "Panel_object" + str(Data["Last_Panel_object"]), BLANK_Demand(Data["MainWindow"], str(i), Source, Destination))
+            DemandTabDataBase["Panels_Object"][Source][str(i)] = getattr(self, "Panel_object" + str(Data["Last_Panel_object"]))
+            Data["Last_Panel_object"] += 1
+
+            setattr(self, "Panel_object" + str(Data["Last_Panel_object"]), BLANK_Demand(Data["MainWindow"], str(i), Destination, Source))
+            DemandTabDataBase["Panels_Object"][Destination][str(i)] = getattr(self, "Panel_object" + str(Data["Last_Panel_object"]))
+            Data["Last_Panel_object"] += 1
+        
 
         DemandTabDataBase["Shelf_Count"][Source] = 1
         DemandTabDataBase["Shelf_Count"][Destination] = 1
@@ -4080,15 +4110,11 @@ class Ui_MainWindow(object):
         Destination = self.Demand_Destination_combobox.currentText()
         for i in range(1,15):
             Data["DemandPanel_" + str(i)] = QtWidgets.QGridLayout(getattr(self, "DemandPanel_" + str(i)))
-            #setattr(self, "DemandPanel_" + str(i),QMdiSubWindow())
-            #Data["DemandPanel_" + str(i)] = getattr(ui, "DemandPanel_" + str(i))
-            #Data["DemandPanel_" + str(i)].setWindowFlag(Qt.FramelessWindowHint)
+        
             Data["DemandPanel_" + str(i)].setMargin(0)
-            Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Destination))
 
-            #self.Demand_mdi.addSubWindow(Data["DemandPanel_" + str(i)])
-            #Data["DemandPanel_" + str(i)].show()
-            #self.Demand_shelf_init_flag = True
+            #Data["DemandPanel_" + str(i)].addWidget(DemandTabDataBase["Panels_Object"][Source][str(i)])
+
     
     def add_demand_shelf(self):
 
