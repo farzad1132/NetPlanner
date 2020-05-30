@@ -172,6 +172,8 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 #                    n.TrafficMatrix.DemandDict[i].add_service(ServiceType= "Groom_out10" ,Sla= 2, Capacity=cap, ServiceIdList=listofs)    
                     GroomOutId = n.TrafficMatrix.Generate_GroomOutId()
                     n.TrafficMatrix.add_groom_out_10(GroomOutId= GroomOutId, Source=n.TrafficMatrix.DemandDict[i].Source, Destination=n.TrafficMatrix.DemandDict[i].Destination, DemandId=i, Capacity=cap, ServiceIdList=listofs)
+                    for serid in listofs:
+                        n.TrafficMatrix.DemandDict[i].ServiceDict[serid].GroomOutId=(i,GroomOutId)
                     LastId = GroomOutId
                     ffff=[(LastId,10)]
                     hhhh.append((LastId,cap,len(listofs)))
@@ -997,6 +999,8 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 #                    n.TrafficMatrix.DemandDict[i].add_service(ServiceType= "Groom_out10" ,Sla= 2, Capacity=cap, ServiceIdList=listofs)    
                     GroomOutId = n.TrafficMatrix.Generate_GroomOutId()
                     n.TrafficMatrix.add_groom_out_10(GroomOutId= GroomOutId, Source=n.TrafficMatrix.DemandDict[i].Source, Destination=n.TrafficMatrix.DemandDict[i].Destination, DemandId=i, Capacity=cap, ServiceIdList=listofs)
+                    for serid in listofs:
+                        n.TrafficMatrix.DemandDict[i].ServiceDict[serid].GroomOutId=(i,GroomOutId)
                     LastId = GroomOutId
                     ffff=[(LastId,10)]
                     hhhh.append((LastId,cap,len(listofs)))

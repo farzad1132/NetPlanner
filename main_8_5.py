@@ -2214,17 +2214,22 @@ class Ui_MainWindow(object):
         self.Grooming_pushbutton.setEnabled(True)
     
     def OK_button_fun(self):
-        SubNodes = []
-        for node in Data["Clustering"][self.backend_map.LastGateWay]["SubNodes"]:
-            SubNodes.append(self.NodeIdMap[node])
-            self.webengine.page().runJavaScript('update_cluster_info(\'%s\', \'%s\', \'%s\')' %(node, Data["Clustering"][self.backend_map.LastGateWay]["Color"], 1))
-        
-        self.network.PhysicalTopology.add_cluster(self.NodeIdMap[self.backend_map.LastGateWay], SubNodes, Data["Clustering"][self.backend_map.LastGateWay]["Color"])
-        self.webengine.page().runJavaScript('update_cluster_info(\'%s\', \'%s\', \'%s\')' %(self.backend_map.LastGateWay, Data["Clustering"][self.backend_map.LastGateWay]["Color"], 0))
-        
-        self.SelectSubNode_button.toggle()
 
-        self.Grooming_pushbutton.setEnabled(True)
+        if self.backend_map.LastGateWay is not None:
+
+            SubNodes = []
+            for node in Data["Clustering"][self.backend_map.LastGateWay]["SubNodes"]:
+                SubNodes.append(self.NodeIdMap[node])
+                self.webengine.page().runJavaScript('update_cluster_info(\'%s\', \'%s\', \'%s\')' %(node, Data["Clustering"][self.backend_map.LastGateWay]["Color"], 1))
+            
+            self.network.PhysicalTopology.add_cluster(self.NodeIdMap[self.backend_map.LastGateWay], SubNodes, Data["Clustering"][self.backend_map.LastGateWay]["Color"])
+            self.webengine.page().runJavaScript('update_cluster_info(\'%s\', \'%s\', \'%s\')' %(self.backend_map.LastGateWay, Data["Clustering"][self.backend_map.LastGateWay]["Color"], 0))
+            
+            self.SelectSubNode_button.toggle()
+
+            self.backend_map.LastGateWay = None
+
+            self.Grooming_pushbutton.setEnabled(True)
 
     #TODO: complete this method
     def working_view_fun(self):
@@ -4135,8 +4140,8 @@ class Ui_MainWindow(object):
             if (MaxId + 1) // 15 >= self.New_Demand_Shelf_Num - 1:
                 self.add_demand_shelf()
 
-            if ((MaxId + 1) // 15 ) + 1 > DemandTabDataBase["Shelf_Count"][Source]:
-                DemandTabDataBase["Shelf_Count"][Source] = ((MaxId + 1) // 15 ) + 1
+            if ((MaxId + 1) // 14 ) + 1 > DemandTabDataBase["Shelf_Count"][Source]:
+                DemandTabDataBase["Shelf_Count"][Source] = ((MaxId + 1) // 14 ) + 1
 
             for i in range(1, MaxId + 1):
                 if i not in IdList and (i+1) not in IdList:
@@ -4180,7 +4185,7 @@ class Ui_MainWindow(object):
             Source = self.IdNodeMap[lightpath.Source]
             Destination = self.IdNodeMap[lightpath.Destination]
 
-            DualPanelsId = self.generate_dual_panel_num(Destination)
+            
 
             type = lightpath.Type
             DemandId = lightpath.DemandId
@@ -4200,10 +4205,15 @@ class Ui_MainWindow(object):
                 first_service_type = first_service_object.Type
             else:
                 first_service_type = None
+
+            panelid = self.get_panel_num(Source)
+
+            DualPanelsId = self.generate_dual_panel_num(Destination)
+
             
             # checking wheather lightpath is created by tp1h or not
             if lightpath.Capacity == 100 and first_service_type == "100GE":
-                panelid = self.get_panel_num(Source)
+                
                 #DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
                 DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(  DemandId= DemandId,
                                                                         ServiceId= lightpath.ServiceIdList[0],
@@ -4235,7 +4245,6 @@ class Ui_MainWindow(object):
 
 
             else:
-                panelid = self.get_panel_num(Source)
                 ClientCapacity, LineCapacity = self.create_ClientsCapacityList(DemandId, lightpath.ServiceIdList, netobj)
                 #LineCapacity = len(ClientCapacity) * 10
                 
@@ -4318,10 +4327,11 @@ class Ui_MainWindow(object):
 
             for Servicetuple in GroomOutTuple:
 
-                DualPanelsId = self.generate_dual_panel_num(Destination)
-                
                 # panel part ( creating panels object )
                 PanelId = self.get_panel_num(Source)
+                
+                DualPanelsId = self.generate_dual_panel_num(Destination)
+
 
                 ClientsCapacity_1 , LineCapacity_1 = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].ServiceIdList, netobj)
                 ClientsCapacity_2 , LineCapacity_2 = self.create_ClientsCapacityList(DemandId, netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].ServiceIdList, netobj)
@@ -4551,7 +4561,7 @@ class Ui_MainWindow(object):
                 item_d = QListWidgetItem("GroomOut10", self.groomout10_list)
                 UserData_d = {"GroomOut10Id":GroomOutId, "Source":Destination, "Destination":Source, "Capacity":LineCapacity, "Type": "GroomOut10", "PanelId": DualPanelsId[0], "DemandId": DemandId}
                 item_d.setToolTip(f"Source: {Destination}\nDestination: {Source}\nCapacity: {LineCapacity}\nType: GroomOut10")
-                item_d.setData(Qt.UserRole, UserData)
+                item_d.setData(Qt.UserRole, UserData_d)
                 item_d.setTextAlignment(Qt.AlignCenter)
 
                 DemandTabDataBase["GroomOut10_status"][(Destination, Source)][GroomOutId] = 0
@@ -4605,8 +4615,8 @@ class Ui_MainWindow(object):
 
         MaxId = max(IdList)
 
-        if ((MaxId + 1) // 15) + 1 > DemandTabDataBase["Shelf_Count"][Destination]:
-                DemandTabDataBase["Shelf_Count"][Destination] = ((MaxId + 1) // 15) + 1
+        if ((MaxId + 1) // 14) + 1 > DemandTabDataBase["Shelf_Count"][Destination]:
+                DemandTabDataBase["Shelf_Count"][Destination] = ((MaxId + 1) // 14) + 1
 
         for i in range(1, +1):
             if i not in IdList and (i+1) not in IdList:
@@ -4925,17 +4935,21 @@ class Ui_MainWindow(object):
 
             for ServiceId, object in value.ServiceDict.items():
                 LightPathId = object.LightPathId
+                if hasattr(object, 'GroomOutId'):
+                    GroomOutId = object.GroomOutId
+                else:
+                    GroomOutId = None
                 Type = object.Type
                 OriginalSource = object.OriginalSource
                 OriginalDestination = object.OriginalDestination
                 
-                if LightPathId is not None:
+                if LightPathId is not None or GroomOutId is not None:
                     dynamic_service[(DemandId, ServiceId)] = 1
                     dynamic_service_d[(DemandId, ServiceId)] = 1
                 else:
                     dynamic_service[(DemandId, ServiceId)] = 0
                     dynamic_service_d[(DemandId, ServiceId)] = 0
-            
+
 
                 setattr(self, "Service_item_" + str(Data["Service_item_num"]), QListWidgetItem(Type, self.Demand_ServiceList))
                 item = getattr(self, "Service_item_" + str(Data["Service_item_num"]))
@@ -4952,10 +4966,10 @@ class Ui_MainWindow(object):
 
                 item.setData(Qt.UserRole, data)
 
-                if LightPathId is None:
-                    item.setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
-                else:
+                if LightPathId is not None or GroomOutId is not None:
                     item.setBackground(QBrush(Qt.white, Qt.SolidPattern))
+                else:
+                    item.setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
 
                 static_service[(DemandId, ServiceId)] = item
 
@@ -4976,10 +4990,10 @@ class Ui_MainWindow(object):
 
                 item.setData(Qt.UserRole, data)
 
-                if LightPathId is None:
-                    item.setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
-                else:
+                if LightPathId is not None or GroomOutId is not None:
                     item.setBackground(QBrush(Qt.white, Qt.SolidPattern))
+                else:
+                    item.setBackground(QBrush(QColor('#6088C6'), Qt.SolidPattern))
 
                 static_service_d[(DemandId, ServiceId)] = item
             
@@ -4999,6 +5013,7 @@ class Ui_MainWindow(object):
 
     def find_grooming_failed_sources(self):
 
+        # checking in service's
         for S_D_Pair, value in DemandTabDataBase["Services"].items():
             for state in value.values():
                 if state == 0:
@@ -5012,6 +5027,22 @@ class Ui_MainWindow(object):
                     elif not (Destination in DemandTabDataBase["Failed_Demands"][Source]):
                         DemandTabDataBase["Failed_Demands"][Source].append(Destination)
 
+                    break
+        
+        # checking groomout's
+        for S_D_Pair, value in DemandTabDataBase["GroomOut10_status"].items():
+            for state in value.values():
+                if state == 0:
+
+                    Source = S_D_Pair[0]
+                    Destination = S_D_Pair[1]
+
+                    if not (Source in DemandTabDataBase["Failed_Demands"]):
+                        DemandTabDataBase["Failed_Demands"][Source] = [Destination]
+
+                    elif not (Destination in DemandTabDataBase["Failed_Demands"][Source]):
+                        DemandTabDataBase["Failed_Demands"][Source].append(Destination)
+                    
                     break
                 
 

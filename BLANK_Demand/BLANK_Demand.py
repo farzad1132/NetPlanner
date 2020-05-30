@@ -159,8 +159,8 @@ class BLANK_Demand(QtWidgets.QWidget):
 
         MaxId = max(IdList)
 
-        if ((MaxId + 1) // 15) + 1 > DemandTabDataBase["Shelf_Count"][Destination]:
-                DemandTabDataBase["Shelf_Count"][Destination] = ((MaxId + 1) // 15) + 1
+        if ((MaxId + 1) // 14) + 1 > DemandTabDataBase["Shelf_Count"][Destination]:
+                DemandTabDataBase["Shelf_Count"][Destination] = ((MaxId + 1) // 14) + 1
 
         for i in range(1, +1):
             if i not in IdList and (i+1) not in IdList:

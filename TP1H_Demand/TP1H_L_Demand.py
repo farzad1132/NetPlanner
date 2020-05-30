@@ -196,6 +196,11 @@ class TP1H_L_Demand(QtWidgets.QWidget):
                             x = 1
                             break
                     
+                    for value in DemandTabDataBase["GroomOut10_status"][(source, destination)].values():
+                        if value == 0:
+                            x = 1
+                            break
+                    
                     if x == 0:
                         DemandTabDataBase["Failed_Demands"][source].remove(destination)
 
@@ -218,7 +223,7 @@ class TP1H_L_Demand(QtWidgets.QWidget):
             if not ( source in DemandTabDataBase["Failed_Demands"]):
                 DemandTabDataBase["Failed_Demands"][source] = [destination]
             
-            else:
+            elif not ( destination in DemandTabDataBase["Failed_Demands"][source] ):
                 DemandTabDataBase["Failed_Demands"][source].append(destination)
 
             Data["ui"].Demand_combobox_highlight_on_off(Source= source,
@@ -229,7 +234,7 @@ class TP1H_L_Demand(QtWidgets.QWidget):
             if not ( destination in DemandTabDataBase["Failed_Demands"]):
                 DemandTabDataBase["Failed_Demands"][destination] = [source]
             
-            else:
+            elif not ( source in DemandTabDataBase["Failed_Demands"][destination]):
                 DemandTabDataBase["Failed_Demands"][destination].append(source)
             
         Data["ui"].UpdateDemand_ServiceList()
@@ -448,6 +453,11 @@ class customlabel(QLabel):
                             x = 1
                             break
                     
+                    for value in DemandTabDataBase["GroomOut10_status"][(source, destination)].values():
+                        if value == 0:
+                            x = 1
+                            break
+                    
                     if x == 0:
                         DemandTabDataBase["Failed_Demands"][source].remove(destination)
 
@@ -470,7 +480,7 @@ class customlabel(QLabel):
             if not ( source in DemandTabDataBase["Failed_Demands"]):
                 DemandTabDataBase["Failed_Demands"][source] = [destination]
             
-            else:
+            elif not ( destination in DemandTabDataBase["Failed_Demands"][source] ):
                 DemandTabDataBase["Failed_Demands"][source].append(destination)
 
             Data["ui"].Demand_combobox_highlight_on_off(Source= source,
@@ -481,7 +491,7 @@ class customlabel(QLabel):
             if not ( destination in DemandTabDataBase["Failed_Demands"]):
                 DemandTabDataBase["Failed_Demands"][destination] = [source]
             
-            else:
+            elif not ( source in DemandTabDataBase["Failed_Demands"][destination]):
                 DemandTabDataBase["Failed_Demands"][destination].append(source)
             
         Data["ui"].UpdateDemand_ServiceList()
