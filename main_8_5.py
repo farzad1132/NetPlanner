@@ -3521,6 +3521,7 @@ class Ui_MainWindow(object):
                 Data[header]["DataSection"][column_name][str(row)] = value
 
 
+
     def GTM_CellChange_fun(self):
         row = self.General_TM.currentRow()
         if row == (Data["RowCount"] - 1):
@@ -3531,29 +3532,29 @@ class Ui_MainWindow(object):
         value = self.General_TM.item(row,column)
         value = value.text()      
         if value == "":
-            if (str(row) in Data["General"]["DataSection"][column]):
-                Data["General"]["DataSection"][column].pop(str(row))
+            if (row in Data["General"]["DataSection"][str(column)]):
+                Data["General"]["DataSection"][str(column)].pop(row)
         else:
             if column == 0 and str(value).isdigit():
-                Data["General"]["DataSection"][column][str(row)] = value
-        
+                Data["General"]["DataSection"][str(column)][row] = value
+
             elif column==1 or column==2:
-                Data["General"]["DataSection"][column][str(row)] = value
+                Data["General"]["DataSection"][str(column)][row] = value
 
             elif column==3 or column==4 or column==7:
                 if str(value).isalpha():
-                    Data["General"]["DataSection"][column][str(row)] = value
+                    Data["General"]["DataSection"][str(column)][row] = value
                 else:
                     self.GTMErrorWrongDataType(row, column, value)        
             
             elif column== 5 and type(value)==float :
-                Data["General"]["DataSection"][column][str(row)] = value
+                Data["General"]["DataSection"][str(column)][row] = value
             
             elif column== 6 and type(value)==float and value <= 0.3 :
-                Data["General"]["DataSection"][column][str(row)] = value
+                Data["General"]["DataSection"][str(column)][row] = value
             
             elif column == 8 and (str(value) == '1+1_NodeDisjoint' or str(value) =='NoProtection'):
-                Data["General"]["DataSection"][column][str(row)] = value               
+                Data["General"]["DataSection"][str(column)][row] = value               
             else:
                 # error for wrong data type
                 self.GTMErrorWrongDataType(row, column, value)
