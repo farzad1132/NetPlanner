@@ -63,6 +63,12 @@ import networkx as nx
 import utm
 import numpy
 
+class AlignDelegate(QtWidgets.QStyledItemDelegate):
+    
+    def initStyleOption(self, option, index):
+        super(AlignDelegate, self).initStyleOption(option, index)
+        option.displayAlignment = QtCore.Qt.AlignCenter
+
 class WorkerSignals(QObject):
 
     finished = Signal()
@@ -1939,6 +1945,13 @@ class Ui_MainWindow(object):
 
         self.threadpool = QThreadPool()
 
+        self.Export_New_Traffic_Matrix_button.clicked.connect(self.SaveTM_fun)
+        delegate = AlignDelegate(self.General_TM)
+        self.General_TM.setItemDelegate(delegate)
+
+        delegate = AlignDelegate(self.Traffic_matrix)
+        self.Traffic_matrix.setItemDelegate(delegate)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -2871,16 +2884,35 @@ class Ui_MainWindow(object):
         name = QFileDialog.getSaveFileName(MainWindow, "Save Traffic Matrix")
         if name[0] != 0:
             workbook = xlsxwriter.Workbook(name[0])
-            worksheet = workbook.add_worksheet() 
+            worksheet = workbook.add_worksheet()
+            worksheet.set_tab_color('red')
+            worksheet.freeze_panes('I1')
+            header1 = '&CTRAFFIC MATRIX'
+            worksheet.set_header(header=header1)
+            centerized = workbook.add_format({'align': 'center'})
             #data_format = workbook.add_format({'bg_color': '#D21F3C'})
+            format1 = workbook.add_format({'bg_color': '#FFC7CE',
+                               'font_color': '#9C0006'})
+
+            format2 =  workbook.add_format({'bg_color': '#C6EFCE',
+                               'font_color': '#006100'})
+
+            format3 =  workbook.add_format({'bg_color': '#C6FGCE',
+                               'font_color': '#006111'})
             column = 0
             for i in range(8):
                 row = 2
+                worksheet.write(1, i,header_list[i], centerized)
                 worksheet.write(1, i,header_list[i])
                 for item in list(Data["General"]["DataSection"][str(i)].values()):
-                        worksheet.write(row, column, item)   
+                        worksheet.write(row, column, item, centerized)
                         row += 1
-                column += 1          
+                column += 1  
+
+            worksheet.conditional_format('A2:H2', {'type': 'cell',
+                                         'criteria': '>=',
+                                         'value': 50,
+                                         'format': format1})        
 
             header_list2 = {"E1":["Quantity", "SLA"], "STM_1_Electrical":["Quantity", "SLA"], "STM_1_Optical":
                             ["Quantity", "λ", "SLA"], "STM_4":
@@ -2906,6 +2938,12 @@ class Ui_MainWindow(object):
 
             worksheet.set_column('J:AW', 12)
             worksheet.set_row(0, 50)
+            worksheet.set_column(0, 2, 10)
+            worksheet.set_column(3, 4, 13)
+            worksheet.set_column(5, 5, 17)
+            worksheet.set_column(6, 6, 40)
+            worksheet.set_column(7, 7, 10)
+            worksheet.set_column('I:AV', 20)
             merge_format = workbook.add_format({
             'bold': 1,
             'border': 1,
@@ -2930,19 +2968,29 @@ class Ui_MainWindow(object):
 
             for item2 in header_list3:
                 i+=1
-                worksheet.write(1, i, item2)
+                worksheet.write(1, i, item2, centerized)
             for key in header_list2.keys():
                 for value in header_list2[key]:
                     row = 2
                     for item3 in list(Data[key]["DataSection"][value].values()):
                         if item3 == 'nan':
-                            worksheet.write(row, column, None)   
+                            worksheet.write(row, column, None, centerized)  
                             row += 1
                         else:
-                            worksheet.write(row, column, item3)
+                            worksheet.write(row, column, item3, centerized)
                             row += 1
                     column +=1
 
+            worksheet.conditional_format('I1:AV1', {'type': 'cell',
+                                         'criteria': '>=',
+                                         'value': 50,
+                                         'format': format2})
+            
+            worksheet.conditional_format('I2:AV2', {'type': 'cell',
+                                         'criteria': '>=',
+                                         'value': 50,
+                                         'format': format3})
+            
             workbook.close()
 
         
@@ -3462,15 +3510,16 @@ class Ui_MainWindow(object):
                     Data[header]["DataSection"][column_name][str(row)] = value
                 else:
                     # error for wrong data type
-                    self.TMErrorWrongDataType(column_name)
+                    self.TMErrorWrongDataType(row, column_name, value)
             elif column_name=='SLA' :
                 if str(value).isalpha():
                     Data[header]["DataSection"][column_name][str(row)] = value
                 else:
                     # error for wrong data type
-                    self.TMErrorWrongDataType(column_name)
+                    self.TMErrorWrongDataType(row, column_name, value)
             else:
                 Data[header]["DataSection"][column_name][str(row)] = value
+
 
 
     def GTM_CellChange_fun(self):
@@ -3483,35 +3532,42 @@ class Ui_MainWindow(object):
         value = self.General_TM.item(row,column)
         value = value.text()      
         if value == "":
-            if (str(row) in Data["General"]["DataSection"][str(column)]):
-                Data["General"]["DataSection"][str(column)].pop(str(row))
+            if (row in Data["General"]["DataSection"][str(column)]):
+                Data["General"]["DataSection"][str(column)].pop(row)
         else:
             if column == 0 and str(value).isdigit():
-                Data["General"]["DataSection"][str(column)][str(row)] = value
-        
-            elif column==1 or column==2 or column==3 or column==4 or column==7:
+                Data["General"]["DataSection"][str(column)][row] = value
+
+            elif column==1 or column==2:
+                Data["General"]["DataSection"][str(column)][row] = value
+
+            elif column==3 or column==4 or column==7:
                 if str(value).isalpha():
-                    Data["General"]["DataSection"][str(column)][str(row)] = value
+                    Data["General"]["DataSection"][str(column)][row] = value
                 else:
-                    self.GTMErrorWrongDataType(column)        
+                    self.GTMErrorWrongDataType(row, column, value)        
             
             elif column== 5 and type(value)==float :
-                Data["General"]["DataSection"][str(column)][str(row)] = value
+                Data["General"]["DataSection"][str(column)][row] = value
+            
             elif column== 6 and type(value)==float and value <= 0.3 :
-                Data["General"]["DataSection"][str(column)][str(row)] = value               
+                Data["General"]["DataSection"][str(column)][row] = value
+            
+            elif column == 8 and (str(value) == '1+1_NodeDisjoint' or str(value) =='NoProtection'):
+                Data["General"]["DataSection"][str(column)][row] = value               
             else:
                 # error for wrong data type
-                self.GTMErrorWrongDataType(column)
+                self.GTMErrorWrongDataType(row, column, value)
 
 
-    def GTMErrorWrongDataType(self, column):
+    def GTMErrorWrongDataType(self, row, column, value):
 
-        """ if column == 0 :
+        if column == 0 :
             self.ID_type_error_widget = QtWidgets.QWidget()
             self.ID_type_error = Ui_ID_type_error()
             self.ID_type_error.setupUi(self.ID_type_error_widget)
             self.ID_type_error_widget.show()
-        if column == 1 :
+        ''' if column == 1 : # no need to ui files too(the error windows for these columns)
             self.Source_type_error_widget = QtWidgets.QWidget()
             self.Source_type_error = Ui_Source_type_error()
             self.Source_type_error.setupUi(self.Source_type_error_widget)
@@ -3520,8 +3576,8 @@ class Ui_MainWindow(object):
             self.Destination_type_error_widget = QtWidgets.QWidget()
             self.Destination_type_error = Ui_Destination_type_error()
             self.Destination_type_error.setupUi(self.Destination_type_error_widget)
-            self.Destination_type_error_widget.show() """ 
-        '''if column == 3 :
+            self.Destination_type_error_widget.show() '''
+        if column == 3 :
             self.OldCableType_type_error_widget = QtWidgets.QWidget()
             self.OldCableType_type_error = Ui_OldCableType_type_error()
             self.OldCableType_type_error.setupUi(self.OldCableType_type_error_widget)
@@ -3545,12 +3601,16 @@ class Ui_MainWindow(object):
             self.Status_type_error_widget = QtWidgets.QWidget()
             self.Status_type_error = Ui_Status_type_error()
             self.Status_type_error.setupUi(self.Status_type_error_widget)
-            self.Status_type_error_widget.show() '''
-        pass
+            self.Status_type_error_widget.show()
+        if column == 8 :
+            self.Protection_Type_type_error_widget = QtWidgets.QWidget()
+            self.Protection_Type_type_error = Ui_Status_type_error()
+            self.Protection_Type_type_error.setupUi(self.Protection_Type_type_error_widget)
+            self.Protection_Type_type_error_widget.show()
 
-    def TMErrorWrongDataType(self, column_name):
+    def TMErrorWrongDataType(self, row, column_name, value):
 
-        """ if column_name == 'Quantity' :
+        if column_name == 'Quantity' :
             self.Quantity_type_error_widget = QtWidgets.QWidget()
             self.Quantity_type_error = Ui_Quantity_type_error()
             self.Quantity_type_error.setupUi(self.Quantity_type_error_widget)
@@ -3559,8 +3619,7 @@ class Ui_MainWindow(object):
             self.SLA_type_error_widget = QtWidgets.QWidget()
             self.SLA_type_error = Ui_SLA_type_error()
             self.SLA_type_error.setupUi(self.SLA_type_error_widget)
-            self.SLA_type_error_widget.show() """
-        pass
+            self.SLA_type_error_widget.show() 
 
 
     def update_cells(self):
