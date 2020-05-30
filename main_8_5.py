@@ -2460,7 +2460,7 @@ class Ui_MainWindow(object):
                 wavelengths.append(lightpath.WaveLength)
                 routed_types.append(lightpath.Type)
 
-                working_path.append(lightpath.WorkingPath)
+                working_path.append(list(map(lambda x: self.IdNodeMap[x], lightpath.WorkingPath)))
                 working_regens.append(lightpath.RegeneratorNode_w)
                 snr = lightpath.SNR_w[0]
                 for snr_temp in lightpath.SNR_w:
@@ -2473,7 +2473,7 @@ class Ui_MainWindow(object):
                         if snr>snr_temp:
                             snr = snr_temp
                     worst_protection_snrs.append(snr)
-                    protection_path.append(lightpath.ProtectionPath)
+                    protection_path.append(list(map(lambda x: self.IdNodeMap[x], lightpath.ProtectionPath)))
                     protection_regens.append(lightpath.RegeneratorNode_p)
                 except:
                     worst_protection_snrs.append(None)
