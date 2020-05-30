@@ -235,6 +235,8 @@ class MP1H_L_Demand(QtWidgets.QWidget):
                 UserData["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
 
                 DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].setData(Qt.UserRole, UserData)
+
+                DemandTabDataBase["GroomOut10_status"][(source, destination)][key[1]] = 1
             
             if source in DemandTabDataBase["Failed_Demands"]:
                 if destination in DemandTabDataBase["Failed_Demands"][source]:
@@ -242,6 +244,11 @@ class MP1H_L_Demand(QtWidgets.QWidget):
                     x = 0
                     for value in DemandTabDataBase["Services"][(source, destination)].values():
 
+                        if value == 0:
+                            x = 1
+                            break
+                    
+                    for value in DemandTabDataBase["GroomOut10_status"][(source, destination)].values():
                         if value == 0:
                             x = 1
                             break
@@ -275,6 +282,8 @@ class MP1H_L_Demand(QtWidgets.QWidget):
                 font.setStrikeOut(False)
                 DemandTabDataBase["GroomOut10"][(source, destination)][key[1]].setFont(font)
 
+                DemandTabDataBase["GroomOut10_status"][(source, destination)][key[1]] = 0
+
                 # deleting MP1h_Client_Id from GroomOut10 Item
                 UserData = DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].data(Qt.UserRole)
                 if "MP1H_Client_Id" in UserData:
@@ -285,7 +294,7 @@ class MP1H_L_Demand(QtWidgets.QWidget):
             if not ( source in DemandTabDataBase["Failed_Demands"]):
                 DemandTabDataBase["Failed_Demands"][source] = [destination]
             
-            else:
+            elif not ( destination in DemandTabDataBase["Failed_Demands"][source] ):
                 DemandTabDataBase["Failed_Demands"][source].append(destination)
             
             Data["ui"].Demand_combobox_highlight_on_off(Source= source,
@@ -297,7 +306,7 @@ class MP1H_L_Demand(QtWidgets.QWidget):
             if not ( destination in DemandTabDataBase["Failed_Demands"]):
                 DemandTabDataBase["Failed_Demands"][destination] = [source]
             
-            else:
+            elif not ( source in DemandTabDataBase["Failed_Demands"][destination]):
                 DemandTabDataBase["Failed_Demands"][destination].append(source)
 
 
@@ -507,8 +516,12 @@ class customlabel(QLabel):
                 font.setStrikeOut(True)
                 DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][UserData["GroomOut10Id"]].setFont(font)
 
+                DemandTabDataBase["GroomOut10_status"][(self.nodename, self.Destination)][UserData["GroomOut10Id"]] = 1
+
                 # ** Dual **
                 DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][UserData["GroomOut10Id"]].setFont(font)
+
+                DemandTabDataBase["GroomOut10_status"][(self.Destination, self.nodename)][UserData["GroomOut10Id"]] = 1
 
             self.setAcceptDrops(False)
             
@@ -776,6 +789,8 @@ class customlabel(QLabel):
                 UserData["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
 
                 DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].setData(Qt.UserRole, UserData)
+
+                DemandTabDataBase["GroomOut10_status"][(source, destination)][key[1]] = 1
             
             if source in DemandTabDataBase["Failed_Demands"]:
                 if destination in DemandTabDataBase["Failed_Demands"][source]:
@@ -783,6 +798,11 @@ class customlabel(QLabel):
                     x = 0
                     for value in DemandTabDataBase["Services"][(source, destination)].values():
 
+                        if value == 0:
+                            x = 1
+                            break
+                    
+                    for value in DemandTabDataBase["GroomOut10_status"][(source, destination)].values():
                         if value == 0:
                             x = 1
                             break
@@ -816,6 +836,8 @@ class customlabel(QLabel):
                 font.setStrikeOut(False)
                 DemandTabDataBase["GroomOut10"][(source, destination)][key[1]].setFont(font)
 
+                DemandTabDataBase["GroomOut10_status"][(source, destination)][key[1]] = 0
+
                 # deleting MP1h_Client_Id from GroomOut10 Item
                 UserData = DemandTabDataBase["GroomOut10"][(source, destination)][ids[1]].data(Qt.UserRole)
                 if "MP1H_Client_Id" in UserData:
@@ -826,7 +848,7 @@ class customlabel(QLabel):
             if not ( source in DemandTabDataBase["Failed_Demands"]):
                 DemandTabDataBase["Failed_Demands"][source] = [destination]
             
-            else:
+            elif not ( destination in DemandTabDataBase["Failed_Demands"][source] ):
                 DemandTabDataBase["Failed_Demands"][source].append(destination)
             
             Data["ui"].Demand_combobox_highlight_on_off(Source= source,
@@ -838,7 +860,7 @@ class customlabel(QLabel):
             if not ( destination in DemandTabDataBase["Failed_Demands"]):
                 DemandTabDataBase["Failed_Demands"][destination] = [source]
             
-            else:
+            elif not ( source in DemandTabDataBase["Failed_Demands"][destination]):
                 DemandTabDataBase["Failed_Demands"][destination].append(source)
 
 

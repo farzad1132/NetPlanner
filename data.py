@@ -168,6 +168,14 @@ DemandTabDataBase["GroomOut10"] = {}
 #   text:  "GroomOut10"
 #   data:   { "GroomOut10Id": <GroomOutId>, "Capacity": <Capacity> , "Type": <Type>, "Source": <SourceName>, "Destination": <DestinationName>, "PanelId": <PanelId>, "DemandId": <DemandId>, "MP1H_Client_Id": (<MP1H Id>, <Client Id>)}
 
+DemandTabDataBase["GroomOut10_status"] = {}
+# format: 
+#       {(Tehran, karaj): { (1,3) : <State> }, ...}         (1 , 3) ---> 1 : Demand Id , 3 : GroomOut10Id
+# this database just shows that witch GroomOuts are connected to MP1H
+# State:
+#   0: not connected
+#   1: connected
+
 DemandTabDataBase["Failed_Demands"] = {}
 # format:
 #       { <SourceName> : <DestinationsList> }

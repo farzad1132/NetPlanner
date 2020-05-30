@@ -23,8 +23,10 @@ def MP2X(Services_lower10):
     NO_Lineport_MP2x=max(math.ceil(NO_service_lower10/8),math.ceil(sum([pair[1] for pair in Services_lower10])/10))    #number of line ports
     max_number_device=math.ceil(NO_Lineport_MP2x/2)
     max_number_device=max_number_device*2
-    max_number_device=NO_Lineport_MP2x
-        
+#    max_number_device=NO_Lineport_MP2x
+#    if NO_service_lower10 ==81:
+#        print("max=",max_number_device)
+#        print("**",max_number_device)
     for i in range(1,max_number_device+1):
         #y[i]=LpVariable(name='y[i]', cat='Binary')
         y.append(LpVariable(name='y%s'%i, cat='Binary'))
@@ -83,12 +85,10 @@ def MP2X(Services_lower10):
     for i in range( len(ans) - max_number_device ):
         itemName = ans[i].name
         itemValue = ans[i].varValue
-        if len(itemName) == 5:
-            PanelNum = itemName[4]
-            ServiceNum = itemName[1:-2]
-        else:
-            PanelNum = itemName[3]
-            ServiceNum = itemName[1:-2]
+        
+        find_underscore = itemName.index("_")
+        ServiceNum = itemName[1:find_underscore]
+        PanelNum = itemName[(find_underscore+1):]
     
         key_panel = 'y' + PanelNum
         Result[key_panel][itemName] = (itemValue * Services_lower10[int(ServiceNum) - 1][0],itemValue * Services_lower10[int(ServiceNum) - 1][1])
@@ -112,7 +112,8 @@ def MP2X(Services_lower10):
         for inner_key,inner_value in value.items():
             if inner_value[1] != 0:
                 y.append((int (inner_value[0]),inner_value[1]))
-        Output.append(y)
+        if y:
+            Output.append(y)
 #    dele=[]    
 #    for i in range(0, len(Output)):
 #        if (len(Output[i])==0):
@@ -171,6 +172,8 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 #                    n.TrafficMatrix.DemandDict[i].add_service(ServiceType= "Groom_out10" ,Sla= 2, Capacity=cap, ServiceIdList=listofs)    
                     GroomOutId = n.TrafficMatrix.Generate_GroomOutId()
                     n.TrafficMatrix.add_groom_out_10(GroomOutId= GroomOutId, Source=n.TrafficMatrix.DemandDict[i].Source, Destination=n.TrafficMatrix.DemandDict[i].Destination, DemandId=i, Capacity=cap, ServiceIdList=listofs)
+                    for serid in listofs:
+                        n.TrafficMatrix.DemandDict[i].ServiceDict[serid].GroomOutId=(i,GroomOutId)
                     LastId = GroomOutId
                     ffff=[(LastId,10)]
                     hhhh.append((LastId,cap,len(listofs)))
@@ -240,9 +243,11 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
         remain_lower100_2_newV=[] 
         def changing_both_inC(Demandid,servId,BW):
             
-            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+#            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+            for (k,vv) in n.PhysicalTopology.ClusterDict.items():
                 if n.TrafficMatrix.DemandDict[Demandid].Source == n.PhysicalTopology.ClusterDict[k].GatewayId :
-                    for z in range(1,len(n.PhysicalTopology.ClusterDict)+1): 
+#                    for z in range(1,len(n.PhysicalTopology.ClusterDict)+1): 
+                    for (z,vvv) in n.PhysicalTopology.ClusterDict.items():
                        if z!=k and n.TrafficMatrix.DemandDict[Demandid].Destination == n.PhysicalTopology.ClusterDict[z].GatewayId :
                            ff=0
 #                           if(len(remain_lower100_2_newV)!=0):
@@ -302,7 +307,8 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                            if ff==0:
                                 remain_lower100_2_newV.append((Demandid,[(servId,BW)]))
                 elif n.TrafficMatrix.DemandDict[Demandid].Source in  n.PhysicalTopology.ClusterDict[k].SubNodesId :
-                    for z in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+#                    for z in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+                    for (z,vvv) in n.PhysicalTopology.ClusterDict.items():
                         if z==k and (n.TrafficMatrix.DemandDict[Demandid].Destination in n.PhysicalTopology.ClusterDict[z].SubNodesId or n.TrafficMatrix.DemandDict[Demandid].Destination == n.PhysicalTopology.ClusterDict[z].GatewayId):
                             ff=0
                             for h in range(0,len(remain_lower100_2_newV)):
@@ -419,7 +425,8 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
             
         def changing_onlysrc_inC(Demandid,servId,BW):
 
-            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+#            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+            for (k,vv) in n.PhysicalTopology.ClusterDict.items():
                 if n.TrafficMatrix.DemandDict[Demandid].Source == n.PhysicalTopology.ClusterDict[k].GatewayId :
                     ff=0
                     for h in range(0,len(remain_lower100_2_newV)):
@@ -475,7 +482,8 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
             
         def changing_onlydes_inC(Demandid,servId,BW):
             
-            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+#            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+            for (k,vv) in n.PhysicalTopology.ClusterDict.items():
                 if n.TrafficMatrix.DemandDict[Demandid].Destination == n.PhysicalTopology.ClusterDict[k].GatewayId :
                     ff=0
                     for h in range(0,len(remain_lower100_2_newV)):
@@ -531,9 +539,11 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 
         def changing_both_inC_groom10(Demandid,servId,BW): 
            
-           for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+#           for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+           for (k,vv) in n.PhysicalTopology.ClusterDict.items():
                if n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source == n.PhysicalTopology.ClusterDict[k].GatewayId:
-                   for z in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+#                   for z in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+                   for (z,vvv) in n.PhysicalTopology.ClusterDict.items():
                        if z!=k and n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination == n.PhysicalTopology.ClusterDict[z].GatewayId :
                            ff=0
                            for h in range(0,len(remain_lower100_2_newV)):
@@ -600,7 +610,8 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 #                              n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(sid)
 #                           n.TrafficMatrix.delete_groom_out_10(Demandid,servId)
                elif n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Source in n.PhysicalTopology.ClusterDict[k].SubNodesId:
-                   for z in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+#                   for z in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+                   for (z,vvv) in n.PhysicalTopology.ClusterDict.items():
                        if z==k and n.TrafficMatrix.GroomOut10Dict[(Demandid,servId)].Destination == n.PhysicalTopology.ClusterDict[z].GatewayId :
                            ff=0
                            for h in range(0,len(remain_lower100_2_newV)):
@@ -741,7 +752,8 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 
         def changing_onlysrc_inC_groom10(Demandid,servId,BW): 
            
-            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+#            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+            for (k,vv) in n.PhysicalTopology.ClusterDict.items():
                 if n.TrafficMatrix.DemandDict[Demandid].Source == n.PhysicalTopology.ClusterDict[k].GatewayId :
                     ff=0
                     for h in range(0,len(remain_lower100_2_newV)):
@@ -804,7 +816,8 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 
         def changing_onlydes_inC_groom10(Demandid,servId,BW): 
            
-            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+#            for k in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+            for (k,vv) in n.PhysicalTopology.ClusterDict.items():
                 if n.TrafficMatrix.DemandDict[Demandid].Destination == n.PhysicalTopology.ClusterDict[k].GatewayId :
                     ff=0
                     for h in range(0,len(remain_lower100_2_newV)):
@@ -867,7 +880,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                            
                   
         id_in_cluster=[]
-        for i in range(1,len(n.PhysicalTopology.ClusterDict)+1):
+        for (i,vv) in n.PhysicalTopology.ClusterDict.items():
             id_in_cluster.append(n.PhysicalTopology.ClusterDict[i].GatewayId)
             for j in range(0,len(n.PhysicalTopology.ClusterDict[i].SubNodesId)):
                 id_in_cluster.append(n.PhysicalTopology.ClusterDict[i].SubNodesId[j])
@@ -912,10 +925,10 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                                 remain_lower100_2_newV.append((remain_lower100_2[i][0],[(remain_lower100_2[i][1][j][0],remain_lower100_2[i][1][j][1])]))
 
             
-        print("**")
-        print(remain_lower100_2_newV)
-        print("**")
-        print(remain_lower100_2)
+#        print("**")
+#        print(remain_lower100_2_newV)
+#        print("**")
+#        print(remain_lower100_2)
         
 #        remain_lower100_2_newV
 #        n.TrafficMatrix.GroomOut10Dict.clear()
@@ -926,7 +939,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                     n.TrafficMatrix.delete_groom_out_10(remain_lower100_2_newV[i][1][j][0], remain_lower100_2_newV[i][0])
 
         lll=len(n.LightPathDict)
-        print (groom_out10_list)
+#        print (groom_out10_list)
         if (len(n.TrafficMatrix.GroomOut10Dict)!=0):
             for i in range(0,len(groom_out10_list)):
                 for j in range(0,len(groom_out10_list[i][1])):
@@ -940,7 +953,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
             n.del_lightpath(key)
         
         
-        
+
         service_lower10_SDH=[]
         service_lower10_E=[]
         service_lower100=[]
@@ -986,6 +999,8 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 #                    n.TrafficMatrix.DemandDict[i].add_service(ServiceType= "Groom_out10" ,Sla= 2, Capacity=cap, ServiceIdList=listofs)    
                     GroomOutId = n.TrafficMatrix.Generate_GroomOutId()
                     n.TrafficMatrix.add_groom_out_10(GroomOutId= GroomOutId, Source=n.TrafficMatrix.DemandDict[i].Source, Destination=n.TrafficMatrix.DemandDict[i].Destination, DemandId=i, Capacity=cap, ServiceIdList=listofs)
+                    for serid in listofs:
+                        n.TrafficMatrix.DemandDict[i].ServiceDict[serid].GroomOutId=(i,GroomOutId)
                     LastId = GroomOutId
                     ffff=[(LastId,10)]
                     hhhh.append((LastId,cap,len(listofs)))
@@ -1000,7 +1015,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                 service_lower100.append((i,z))
          
  
-        
+#        print(groom_out10_list)
         for i in range(0,len(groom_out10_list)):
             nooo=[]
             for j in range(0,len(groom_out10_list[i][1])):
@@ -1008,13 +1023,21 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                 for k in range(0,len(groom_out10_list[i][1])):
                     if ((k not in nooo) and (j not in nooo) and (j!=k) and (groom_out10_list[i][1][j][2] + groom_out10_list[i][1][k][2]) <=16):
                         MP2x_list.append((groom_out10_list[i][0],(groom_out10_list[i][1][j][0],groom_out10_list[i][1][k][0])))
-                        MP2x_Dict.update({groom_out10_list[i][0]:(groom_out10_list[i][1][j][0],groom_out10_list[i][1][k][0])})
+                        if groom_out10_list[i][0] in MP2x_Dict.keys():
+#                            MP2x_Dict.update({groom_out10_list[i][0]:[MP2x_Dict[groom_out10_list[i][0]],(groom_out10_list[i][1][j][0],groom_out10_list[i][1][k][0])]})
+                            MP2x_Dict[groom_out10_list[i][0]].append((groom_out10_list[i][1][j][0],groom_out10_list[i][1][k][0]))
+                        else:
+                            MP2x_Dict.update({groom_out10_list[i][0]:[(groom_out10_list[i][1][j][0],groom_out10_list[i][1][k][0])]})
                         nooo.append(j)
                         nooo.append(k)
+                
             for m in range(0,len(groom_out10_list[i][1])):
                 if m not in nooo:
                     remaining_service_lower10.append((groom_out10_list[i][0],groom_out10_list[i][1][m][0])) 
-                    remaining_service_lower10_dict.update({groom_out10_list[i][0]:groom_out10_list[i][1][m][0]})
+                    if groom_out10_list[i][0] in remaining_service_lower10_dict.keys():
+                        remaining_service_lower10_dict[groom_out10_list[i][0]].append(groom_out10_list[i][1][m][0])
+                    else:
+                        remaining_service_lower10_dict.update({groom_out10_list[i][0]:[groom_out10_list[i][1][m][0]]})  
                     
            
         for i in range(0,len(service_lower100)):
@@ -1067,7 +1090,9 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 
 
 
-
+        for i in  list(n.TrafficMatrix.DemandDict.keys()):
+            if len(n.TrafficMatrix.DemandDict[i].ServiceDict)==0:  
+                n.TrafficMatrix.del_demand(i)                
 
 
 
@@ -1124,11 +1149,26 @@ if __name__ == "__main__":
     n.Traffic.Demand.ServiceIdReference = x
     n.Traffic.Demand.DemandReferenceId = x
 
+    with open('NetworkObj_2.obj', 'rb') as handle:
+        n2 = pickle.load(handle)                   
+    handle.close()
+
+    x = 0
+    for key, value in n2.TrafficMatrix.DemandDict.items():
+        for key1, value1 in value.ServiceDict.items():
+            if key1 > x :
+                x = key1
+
+    n2.Traffic.Demand.ServiceIdReference = x
+    n2.Traffic.Demand.DemandReferenceId = x
+
     
+    # to see bug 1 run code bellow
+    ans = grooming_fun(n,10)
 
-
-
-    ans = grooming_fun(n,0)
+    # to see bug 2 run code bellow
+#    ans = grooming_fun(n2, 0)
+    
     #Clustering(n)
     #n.add_groom_out_100(Source=1,Destination=2,Capacity=40,ServiceIdList=[1,2],Type=40,DemandId=3)
     print("successful")

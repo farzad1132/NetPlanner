@@ -156,13 +156,28 @@ class BLANK_Demand(QtWidgets.QWidget):
         if not IdList:
             return ("1", "2")
         IdList = list(map(lambda x : int(x), IdList))
-        if len(IdList) == max(IdList):
+
+        MaxId = max(IdList)
+
+        if ((MaxId + 1) // 14) + 1 > DemandTabDataBase["Shelf_Count"][Destination]:
+                DemandTabDataBase["Shelf_Count"][Destination] = ((MaxId + 1) // 14) + 1
+
+        for i in range(1, +1):
+            if i not in IdList and (i+1) not in IdList:
+                return (str(i), str(i+1))
+        
+        return (str(MaxId + 1), str(MaxId + 2))
+
+        """ if len(IdList) == max(IdList):
             MaxId = max(IdList)
+
+            if ((MaxId + 1) // 15) + 1 > DemandTabDataBase["Shelf_Count"][Destination]:
+                DemandTabDataBase["Shelf_Count"][Destination] = ((MaxId + 1) // 15) + 1
             return (str(MaxId + 1), str(MaxId + 2))
         else:
             for i in range(1,max(IdList), 2):
                 if ( i in IdList ) is False:
-                    return (str(i), str(i+1))
+                    return (str(i), str(i+1)) """
 
 
 
