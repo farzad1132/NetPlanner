@@ -3839,10 +3839,15 @@ class Ui_MainWindow(object):
             var doc = new DOMParser().parseFromString(x, "text/xml");
             var z = doc.documentElement.textContent;
             link_key = z.replace(/\s/g, '');
-            link_key = link_key.split("-")
-            lambda_list = lambdas[link_key]
-            
-            drawLines(event.layer, lambda_list, handleMouseOverLines);
+            link_key = link_key.split("-");
+
+
+            if (lambdas.hasOwnProperty(link_key)){
+                lambda_list = lambdas[link_key]
+
+                
+                drawLines(event.layer, lambda_list, handleMouseOverLines);
+            }
             
         }
         function drawLines(layer, lambdaList, callback) {
