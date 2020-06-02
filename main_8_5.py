@@ -1804,25 +1804,32 @@ class Ui_MainWindow(object):
 
         self.tabWidget.setCurrentIndex(0)
 
-        self.m = folium.Map(location=[35.6892,51.3890],zoom_start=6)
-        self.m.save("map.html")
-        Data["Map_Var"] = self.m
-        Data["Web_Engine"] = self.webengine
+        #self.m = folium.Map(location=[35.6892,51.3890],zoom_start=6)
+        #self.m.save("map.html")
+        #Data["Map_Var"] = self.m
+        #Data["Web_Engine"] = self.webengine
         self.webengine.load(QUrl.fromLocalFile(os.path.abspath('map.html')))
         self.webengine.show()
 
         # NOTE: uncomment bellow if you want use console.log
 
-        class WebEnginePage(QWebEnginePage):
+        """ class WebEnginePage(QWebEnginePage):
             def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
                 print("javaScriptConsoleMessage: ", level, message, lineNumber, sourceID)
 
-        self.webengine.setPage(WebEnginePage(self.webengine))
+        self.webengine.setPage(WebEnginePage(self.webengine)) """
         backend_map = Backend_map(MainWindow)
         self.backend_map = backend_map
         channel = QWebChannel(MainWindow)
         channel.registerObject('backend_map', backend_map)
         self.webengine.page().setWebChannel(channel)
+
+        self.webengine.loadFinished.connect(self.onLoadFinished)
+        self.import_button.setEnabled(False)
+        # Debug
+        #self.webengine.page().runJavaScript("add_node(\"%s\", \"%s\")" %("Tehran", [35.26, 45,88]))
+        #self.webengine.page().runJavaScript("add_link(\"%s\", \"%s\", \"%s\", \"%s\")" %([35.26, 45,88], [37.26, 48,88], "Tehran", "Karak"))
+        #self.webengine.page().runJavaScript(f"just_for_test()")
 
         self.Traffic_matrix.cellChanged.connect(self.TM_CellChange_fun)
 
@@ -2040,12 +2047,22 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Demand tab"))
 
 
+
     # NOTE:ADDED
         
         if self.splitter.moveSplitter(0, 0):
             self.Demand_tab.setEnabled(False)
         else:
             self.Demand_tab.setEnabled(True)
+
+    def onLoadFinished(self, ok):
+        if ok:
+            self.import_button.setEnabled(True)
+            """ class WebEnginePage(QWebEnginePage):
+                def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
+                    print("javaScriptConsoleMessage: ", level, message, lineNumber, sourceID)
+
+            self.webengine.setPage(WebEnginePage(self.webengine)) """
 
     def SplitterCommandFun(self, pos):
         if pos == 0:
@@ -2062,38 +2079,41 @@ class Ui_MainWindow(object):
     def receive_DrawMode_data(self, data, deletedOldLayers):
 
         data = json.loads(json.loads(data))
-        data = json.loads(json.loads(deletedOldLayers))
+        deletedOldLayers = json.loads(json.loads(deletedOldLayers))
 
-        # adding , modifying nodes
-        # NOTE: code doesn't support changing old node parameters 
-        for node in data["nodes"].values():
-            NodeName = node["name"]
-            Location = [node["location"]["lat"], node["location"]["lng"]]
-            isNew = node["isNew"]
+        if data:
+            # adding , modifying nodes
+            # NOTE: code doesn't support changing old node parameters 
+            for node in data["nodes"]:
+                if node:
+                    NodeName = node["name"]
+                    Location = [node["location"]["lat"], node["location"]["lng"]]
+                    isNew = node["isNew"]
 
-            if isNew is False:
-                Data["Nodes"][NodeName]["Location"] = Location
-            
-            elif isNew is True:
-                ROADM_Type = node["data"]["ROADM_Type"]
-                Data["Nodes"][NodeName] = {"Location": Location, "ROADM_Type": ROADM_Type}
+                    if isNew is False:
+                        Data["Nodes"][NodeName]["Location"] = Location
+                    
+                    elif isNew is True:
+                        ROADM_Type = node["data"]["ROADM_Type"]
+                        Data["Nodes"][NodeName] = {"Location": Location, "ROADM_Type": ROADM_Type}
 
-        # adding new links
-        # NOTE: code doesn't support changing old link parameters
-        for link in data["links"].values():
-            isNew = link["isNew"]
+            # adding new links
+            # NOTE: code doesn't support changing old link parameters
+            for link in data["links"]:
+                if link:
+                    isNew = link["isNew"]
 
-            if isNew is True:
-                key = (link["start"], link["end"])
-                Length = float(link["data"]["Length"])
-                Fiber_Type = link["data"]["Fiber_Type"]
-                Loss_Coefficient = float(link["data"]["Loss_Coefficient"])
-                Beta = float(link["data"]["Beta"])
-                Gamma = float(link["data"]["Gamma"])
-                Dispersion = float(link["data"]["Gamma"])
+                    if isNew is True:
+                        key = (link["start"], link["end"])
+                        Length = float(link["data"]["Length"])
+                        Fiber_Type = link["data"]["Fiber_Type"]
+                        Loss_Coefficient = float(link["data"]["Loss_Coefficient"])
+                        Beta = float(link["data"]["Beta"])
+                        Gamma = float(link["data"]["Gamma"])
+                        Dispersion = float(link["data"]["Gamma"])
 
-                Data["Links"][key] = {"NumSpan": 1, "Length": Length, "Loss":Loss_Coefficient, "Type":Fiber_Type, "Beta":Beta, "Gamma": Gamma,
-                    "Dispersion": Dispersion}
+                        Data["Links"][key] = {"NumSpan": 1, "Length": Length, "Loss":Loss_Coefficient, "Type":Fiber_Type, "Beta":Beta, "Gamma": Gamma,
+                            "Dispersion": Dispersion}
 
         # deleteing old nodes and links
 
@@ -3111,10 +3131,10 @@ class Ui_MainWindow(object):
         GroomingTabDataBase["LinkState"].clear()
         GroomingTabDataBase["NodeState"].clear()
         
-        self.m = folium.Map(location=[35.6892,51.3890],zoom_start=6)
+        """ self.m = folium.Map(location=[35.6892,51.3890],zoom_start=6)
         self.m.save("map.html")
         Data["Map_Var"] = self.m
-        Data["Web_Engine"] = self.webengine
+        Data["Web_Engine"] = self.webengine """
         self.webengine.load(QUrl.fromLocalFile(os.path.abspath('map.html')))
         self.webengine.show()
 
@@ -3626,460 +3646,26 @@ class Ui_MainWindow(object):
     
     def insert_link_fun(self):
         NodeCorDict = {}
-        """ for id in list(Data["Links"].keys()):
-            source = id[0]
-            destination = id[1]
-            source_cor = Data["Nodes"][source]["Coordinate"]
-            destination_cor = Data["Nodes"][destination]["Coordinate"]
-            loc = [source_cor,destination_cor]
-
-            # drawing nodes and links on map
-            folium.Marker(source_cor,icon=folium.Icon(color="red"), popup=  "<h2>%s</h2>" %source).add_to(self.m)
-            added.append(source)
-            folium.Marker(destination_cor,icon=folium.Icon(color="red"),popup= "<h2>%s</h2>" %destination).add_to(self.m)
-            added.append(destination)
-            folium.PolyLine(loc ,weight = 3,popup = "Link ID: %s"%(id),color = "black",opacity = 0.8).add_to(self.m) """
         for NodeName, data in Data["Nodes"].items():
 
             Node_cor = data["Location"]
             NodeCorDict[NodeName] = Node_cor
-            Icon = folium.features.CustomIcon('Icons\\blue\\server_blue.png',icon_size=(30, 30),icon_anchor=(20,30))
-            folium.Marker(Node_cor ,icon = Icon, tooltip =  "<h2>%s</h2>" %NodeName).add_to(self.m)
+            #Icon = folium.features.CustomIcon('Icons\\blue\\server_blue.png',icon_size=(30, 30),icon_anchor=(20,30))
+            #folium.Marker(Node_cor ,icon = Icon, tooltip =  "<h2>%s</h2>" %NodeName).add_to(self.m)
+            self.webengine.page().runJavaScript("add_node(\"%s\", \"%s\")" %(NodeName, Node_cor))
         
         for link in Data["Links"].keys():
             Source_cor = NodeCorDict[link[0]]
             DesTination_cor = NodeCorDict[link[1]]
-            loc = [Source_cor, DesTination_cor]
-            folium.PolyLine(loc ,weight = 3,tooltip = "<h2>%s - %s</h2>"%(link[0], link[1]),color = "black",opacity = 0.8).add_to(self.m)
+            #loc = [Source_cor, DesTination_cor]
+            #folium.PolyLine(loc ,weight = 3,tooltip = "<h2>%s - %s</h2>"%(link[0], link[1]),color = "black",opacity = 0.8).add_to(self.m)
+            self.webengine.page().runJavaScript("add_link(\"%s\", \"%s\", \"%s\", \"%s\")" %(Source_cor, DesTination_cor, link[0], link[1]))
 
-        self.m.save("map.html")
+        #self.m.save("map.html")
 
         # adding js events and settings on map
 
-        Fig = self.m.get_root()
-        Figtext = Fig.render()
-        self.MapVar = re.findall("var( map_.*)=", Figtext)[0].strip()
-        channel = "qrc:///qtwebchannel/qwebchannel.js"
-        Fig.header.add_child(Element("<script src=%s></script>" %channel))
-        Fig.header.add_child(Element("<link rel=\"stylesheet\" href=\"MainMap_style.css\" />"))
-        '''Fig.script.add_child(Element("""window.onload = function() {
-        new QWebChannel(qt.webChannelTransport, function (channel) {
-        window.backend = channel.objects.backend;
-        });"""))'''
-        Fig.script.add_child(Element("""
-        var MapVar = %s;
-        var  SetNodeGateWay_flag = null;
-        var SelectSubNode_flag = null;
-        var groupcolor = null;
-        var marker_num = 0;
-        var failed_nodes = new Object();
-        var failed_nodes_list = [];
-        var clusters_info = new Object();
-        var clusters_info_list = [];
-        var lambdas = new Object();
-        var wrapper = document.createElement("div");
-        var canvas = document.createElement("canvas");
-        canvas.setAttribute("class", "focusArea");
-        var displayArea = document.createElement('div');
-        // displayArea.textContent = " ";
-        displayArea.setAttribute("id", "displayArea");
-        displayArea.innerHTML = "Wavelength Number: ";
-        canvas.height = 50;
-        canvas.width = 420
-        wrapper.appendChild(canvas);
-        wrapper.appendChild(displayArea);
-        var Num_WL = null;
-        var Num_RG = null;
-        var Algorithm = null;
-        var Worst_SNR = null;
-        //handleMouseOverLines();
-        var globalVar;              // draw mode output ( in JSON format )
-
-
-        function setcolor(text){
-            groupcolor = text;
-        }
-        function SetNode_flag_fun(text){
-            SetNodeGateWay_flag = text;
-        }
-        function SelectSubNode_flag_fun(text){
-            SelectSubNode_flag = text;
-        }
-        function receive_failed_nodes(NodeName, Color, SubNode){
-            failed_nodes[NodeName] = {"Color":Color, "SubNode":parseInt(SubNode)};
-            failed_nodes_list.push(NodeName);
-        }
-        function change_failed_nodes_icon(){
-            
-            // loop on nodes group feature and notify their icon
-            myFeatureGroup.eachLayer(function (layer) {
-                var x = layer["_tooltip"]["_content"];
-                var doc = new DOMParser().parseFromString(x, "text/xml");
-                var z = doc.documentElement.textContent;
-                NodeName = z.replace(/\s/g, '');
-                if (failed_nodes_list.includes(NodeName)){
-                    value = failed_nodes[NodeName]
-                    Color = value["Color"]
-                    SubNode = value["SubNode"]
-                    index = failed_nodes_list.indexOf(NodeName);
-                    failed_nodes_list.splice(index, 1);
-                    
-                    myFeatureGroup.removeLayer(layer);
-                    latlng = layer.getLatLng()
-                    MapVar.removeLayer(layer);
-                    layer.remove();
-                    if (SubNode == 0){
-                        change_icon(NodeName, latlng, Color, 1, "notified")
-                    } else{
-                        change_icon(NodeName, latlng, Color, 0.6, "notified")
-                    }
-                    
-                }
-        });
-        }
-        function set_failed_node_default(Source){
-            var value = failed_nodes[Source];
-            var color = value["Color"];
-            var subnode = value["SubNode"];
-            var flag = 0;
-            
-            myFeatureGroup.eachLayer(function (layer) {
-                var x = layer["_tooltip"]["_content"];
-                var doc = new DOMParser().parseFromString(x, "text/xml");
-                var z = doc.documentElement.textContent;
-                NodeName = z.replace(/\s/g, '');
-                if (NodeName == Source){
-                    if (flag == 0){
-                    var latlng = layer.getLatLng()
-                    
-                    MapVar.removeLayer(layer);
-                    layer.remove();
-                    if (subnode == 0){
-                        
-                        change_icon(NodeName, latlng, color, 1, "normal")
-                    } else{
-                        ("yes sub node is 1")
-                        change_icon(NodeName, latlng, color, 0.6, "normal")
-                    }
-                }
-                flag = 1;
-                }
-            });
-        }
-
-        function cancel_clustering(nodename){
-            myFeatureGroup.eachLayer(function (layer) {
-
-                var x = layer["_tooltip"]["_content"];
-                var doc = new DOMParser().parseFromString(x, "text/xml");
-                var z = doc.documentElement.textContent;
-                NodeName = z.replace(/\s/g, '');
-
-                if ( NodeName == nodename ){
-                    var latlng = layer.getLatLng()
-
-                    MapVar.removeLayer(layer);
-                    layer.remove();
-
-                    change_icon(NodeName, latlng, "blue", 1, "normal")
-
-                }
-            });
-        }
-
-        function update_cluster_info(nodename, color, subnode_state){
-            clusters_info[nodename] = {"Color":color, "SubNode":parseInt(subnode_state)};
-            clusters_info_list.push(nodename);
-        }
-
-        function hide_subnodes(){
-            myFeatureGroup.eachLayer(function (layer) {
-                var x = layer["_tooltip"]["_content"];
-                var doc = new DOMParser().parseFromString(x, "text/xml");
-                var z = doc.documentElement.textContent;
-                NodeName = z.replace(/\s/g, '');
-
-                if (clusters_info_list.includes(NodeName)){
-                    SubNode_state = clusters_info[NodeName]["SubNode"];
-
-                    if (SubNode_state == 1) {
-                        layer.setOpacity(0);
-                    }
-                }
-            });
-        }
-
-        function show_subnodes(){
-            myFeatureGroup.eachLayer(function (layer) {
-                var x = layer["_tooltip"]["_content"];
-                var doc = new DOMParser().parseFromString(x, "text/xml");
-                var z = doc.documentElement.textContent;
-                NodeName = z.replace(/\s/g, '');
-
-                if ( clusters_info_list.includes(NodeName) ){
-                    SubNode_state = clusters_info[NodeName]["SubNode"];
-
-                    if (SubNode_state == 1) {
-                        layer.setOpacity(0.6);
-                    }
-                }
-            });
-        }
-        function receive_lambdas(Source, Destination, value){
-            a_value = JSON.parse(value)
-            lambdas[[Source, Destination]] = a_value
-        }
-        var links_groupfeature = L.featureGroup().addTo(MapVar).on(\"click\", links_click_event);
-        MapVar.eachLayer(function (layer) {
-               if (layer instanceof L.Polyline){
-                  layer.addTo(links_groupfeature);
-               }
-               
-            });
         
-        function google_map_view_set(green, yellow, orange){
-            links_groupfeature.eachLayer(function (layer){
-                var x = layer["_tooltip"]["_content"];
-                var doc = new DOMParser().parseFromString(x, "text/xml");
-                var z = doc.documentElement.textContent;
-                link_key = z.replace(/\s/g, '');
-                link_key = link_key.split("-");
-                lambda_list = lambdas[link_key];
-                Len = lambda_list.length;
-                if ( Len <= green ){
-                    layer.setStyle({
-                        color: 'green'
-                    });
-                } else if ( Len <= yellow ){
-                    layer.setStyle({
-                        color: 'yellow'
-                    });
-                } else if ( Len <= orange ){
-                    layer.setStyle({
-                        color: 'orange'
-                    });
-                } else{
-                    layer.setStyle({
-                        color: 'red'
-                    });
-                }
-            });
-        }
-        function google_map_view_reset(){
-            links_groupfeature.eachLayer(function(layer){
-                layer.setStyle({
-                    color: 'black'
-                });
-            });
-        }
-        
-        
-        
-        function links_click_event(event){
-            var x = event.layer["_tooltip"]["_content"];
-            var doc = new DOMParser().parseFromString(x, "text/xml");
-            var z = doc.documentElement.textContent;
-            link_key = z.replace(/\s/g, '');
-            link_key = link_key.split("-");
-
-
-            if (lambdas.hasOwnProperty(link_key)){
-                lambda_list = lambdas[link_key]
-
-                
-                drawLines(event.layer, lambda_list, handleMouseOverLines);
-            }
-            
-        }
-        function drawLines(layer, lambdaList, callback) {
-            popupOptions = {
-                maxWidth: "auto"
-            };
-            layer.bindPopup(drawDetailBox(lambdaList), popupOptions)
-            
-            callback(lambdaList)
-        }
-        function drawDetailBox(lambdaList) {
-            canvas.height = 90;
-            canvas.width = 806;
-            var h = canvas.height;
-            const lineYStart = 15;
-            const lineYEnd = h - 20;
-            var ctx = canvas.getContext("2d");
-            for (var i = 1; i <= 100; i++) {
-                const lineX = (i * 8) - 4
-                ctx.beginPath();
-                ctx.moveTo(lineX, lineYStart);
-                ctx.lineTo(lineX, lineYEnd);
-                ctx.lineWidth = 2;
-                if (lambdaList.includes(i)) {
-                    ctx.strokeStyle = "black";
-                } else {
-                    ctx.strokeStyle = "gray";
-                }
-                ctx.stroke();
-                ctx.save();
-                var textX = lineX - 4;
-                var textY = h - lineYStart;
-                if (i %% 5 == 0) {
-                    textY = 12;
-                    ctx.translate(textX, textY);
-                    ctx.rotate(-Math.PI / 5);
-                    ctx.translate(-textX, -textY);
-                    ctx.fillText(i, textX, lineYStart);
-                }
-                ctx.restore();
-            }
-            return wrapper;
-        }
-        function handleMouseOverLines(lambdaList) {
-            canvas.addEventListener("mousemove", e => showLineNumberInBox(e, lambdaList));
-            canvas.addEventListener("mouseleave", unshowLineNumberInBox);
-        }
-        function showLineNumberInBox(e, lambdaList) {
-            console.log(e.offsetX);
-            x = e.clientX;
-            y = e.clientY;
-            var lineNum = 0;
-            const xOff = e.offsetX;
-            if (xOff %% 8 >= 2 && xOff %% 8 <= 4) {
-                cursor = " ";
-                lineNum = 1 + parseInt(xOff / 8);
-                if (lambdaList.includes(lineNum)) {
-                    cursor = lineNum;
-                }
-            } else {
-                cursor = " ";
-            }
-            document.getElementById("displayArea").style.display = 'block';
-            document.getElementById("displayArea").innerHTML = 'Wavelength Number: ' + cursor;
-            document.getElementById("displayArea").style.right = x + 'px';
-            document.getElementById("displayArea").style.top = y + 'px';
-        }
-        
-        function unshowLineNumberInBox() {
-                document.getElementById("displayArea").innerHTML = "Wavelength Number: ";
-            }
-        function createLegend(num_WL, num_RG, algorithm , worst_SNR, RWA_Runtime) {
-            Num_WL = num_WL;
-            Num_RG = num_RG;
-            Algorithm = algorithm;
-            Worst_SNR = worst_SNR;
-            var legend = L.control({ position: 'bottomleft' });
-            legend.onAdd = function (map) {
-                var div = L.DomUtil.create("div", "legend");
-                div.style.backgroundColor = 'WHITE';
-                div.innerHTML += '<h5>Total number of used wavelengths<b>: ' + Num_WL + '</b></h5>';
-                div.innerHTML += '<h5>Total number of regenerators<b>: ' + Num_RG + '</b></h5>';
-                div.innerHTML += '<h5>Used algorithm and its runtime<b>: ' + Algorithm + '  ,  ' + RWA_Runtime + ' s' + '</b></h5>';
-                div.innerHTML += '<h5>Worst SNR on all links<b>: ' + Worst_SNR + '</b></h5>';
-                return div;
-            };
-            legend.addTo(MapVar);
-        }
-        function change_icon(NodeName, latlng, Color, Opacity, mode){
-                if ( mode == "normal" ){
-                    var url = "Icons/" + Color + "/server_" + Color + ".png"
-                } else {
-                    var url = "Icons/" + Color + "/server_n" + Color + ".png"
-                }
-                //alert(url)
-                var myIcon = L.icon({
-                                        iconUrl: url,
-                                        iconSize: [30, 30],
-                                        iconAnchor: [20, 30],
-                                    });
-                var mark = L.marker(latlng,{opacity:Opacity}).setIcon(myIcon).addTo(mapVar);
-                //var pop = L.popup({"maxWidth": "100%%"});
-                //var htm = $(`<div id="htm" style="width: 100.0%%; height: 100.0%%;"><h2>${NodeName}</h2></div>`)[0];
-                //pop.setContent(htm);
-                mark.bindTooltip(
-                `<div>
-                     <h2>${NodeName}</h2>
-                 </div>`,
-                {"sticky": true}
-            );
-                mark.addTo(myFeatureGroup);
-        }
-
-        
-
-
-
-        var backend_map = null;
-        new QWebChannel(qt.webChannelTransport, function (channel) {
-        window.backend_map = channel.objects.backend_map;
-        });""" %self.MapVar ))
-
-        Fig.html.add_child(Element("<script src=map_logic.js></script>"))
-        Fig.script.add_child(Element("var myFeatureGroup = L.featureGroup().addTo(%s).on(\"click\", groupClick);" %self.MapVar))
-
-        Fig.script.add_child(Element("""%s.eachLayer(function (layer) {
-               if (layer instanceof L.Marker){
-
-                    
-                    layer.addTo(myFeatureGroup);
-               }
-               
-            });""" %self.MapVar))
-
-        Fig.script.add_child(Element("""function groupClick(event) {
-            //var degreename = event.layer.getPopup().getContent().textContent
-            // TODO: change popup to tooltip
-            //var degreename = event.layer.getTooltip().getContent()
-            //alert(degreename)
-
-            var x = event.layer["_tooltip"]["_content"];
-            var doc = new DOMParser().parseFromString(x, "text/xml");
-            var z = doc.documentElement.textContent;
-            degreename = z.replace(/\s/g, '');
-
-            //alert(groupcolor)
-            
-
-            if (SetNodeGateWay_flag == "True") {
-
-                backend_map.Create_DataBase(degreename)
-
-                var latlng = event.layer.getLatLng();
-                
-                myFeatureGroup.removeLayer(event.layer);
-                %s.removeLayer(event.layer);
-                event.layer.remove();
-                
-                
-                change_icon(degreename, latlng, groupcolor, 1, "normal");
-
-
-                backend_map.SetNode_flag_fun("False",groupcolor)
-
-            } else if ( SelectSubNode_flag == "True") {
-
-                backend_map.AddNode_DataBase(degreename)
-
-                var latlng = event.layer.getLatLng();
-                
-                myFeatureGroup.removeLayer(event.layer);
-                %s.removeLayer(event.layer);
-                event.layer.remove();
-                
-                change_icon(degreename, latlng, groupcolor, 0.6, "normal");
-
-                
-
-
-            } else{
-                backend_map.change_tab_to4(degreename);
-            }
-
-            
-            }
-            """ %(self.MapVar, self.MapVar) ))
-        
-        Fig.save("map.html")
-
-        self.webengine.load(QUrl.fromLocalFile(os.path.abspath('map.html')))
-        self.webengine.show()
 
 
     def SaveChanges_button_fun(self):
