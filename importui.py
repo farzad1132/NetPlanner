@@ -468,7 +468,7 @@ class Ui_ImportMenuUI(object):
 
                     ROADM_Type = temp_dic["ROADM_Type"][Row]
 
-                    ProperDict[Id] = {"Node": Node, "Location": Location, "ROADM_Type":ROADM_Type}
+                    ProperDictNode = {"Location": Location, "ROADM_Type":ROADM_Type}
 
                 Data["Nodes"].update(ProperDict)
                 Node_success = True

@@ -172,6 +172,10 @@ class Backend_map(QObject):
                     Data["ui"].Demand_Source_combobox_Change()
                 else:
                     Data["Demand_Source_combo"].setCurrentText(rep_source)
+    
+    @Slot(str, str)
+    def receive_DrawMode_data(self, data, deletedOldLayers):
+        Data["ui"].receive_DrawMode_data(data, deletedOldLayers)
 
 
 class Ui_MainWindow(object):
@@ -2055,6 +2059,44 @@ class Ui_MainWindow(object):
     def start_draw_mode(self):
         self.webengine.page().runJavaScript('topologyMenuHandler()')
 
+    def receive_DrawMode_data(self, data, deletedOldLayers):
+
+        data = json.loads(json.loads(data))
+        data = json.loads(json.loads(deletedOldLayers))
+
+        # adding , modifying nodes
+        # NOTE: code doesn't support changing old node parameters 
+        for node in data["nodes"].values():
+            NodeName = node["name"]
+            Location = [node["location"]["lat"], node["location"]["lng"]]
+            isNew = node["isNew"]
+
+            if isNew is False:
+                Data["Nodes"][NodeName]["Location"] = Location
+            
+            elif isNew is True:
+                ROADM_Type = node["data"]["ROADM_Type"]
+                Data["Nodes"][NodeName] = {"Location": Location, "ROADM_Type": ROADM_Type}
+
+        # adding new links
+        # NOTE: code doesn't support changing old link parameters
+        for link in data["links"].values():
+            isNew = link["isNew"]
+
+            if isNew is True:
+                key = (link["start"], link["end"])
+                Length = float(link["data"]["Length"])
+                Fiber_Type = link["data"]["Fiber_Type"]
+                Loss_Coefficient = float(link["data"]["Loss_Coefficient"])
+                Beta = float(link["data"]["Beta"])
+                Gamma = float(link["data"]["Gamma"])
+                Dispersion = float(link["data"]["Gamma"])
+
+                Data["Links"][key] = {"NumSpan": 1, "Length": Length, "Loss":Loss_Coefficient, "Type":Fiber_Type, "Beta":Beta, "Gamma": Gamma,
+                    "Dispersion": Dispersion}
+
+        # deleteing old nodes and links
+
 
 
     def create_obj(self):
@@ -2113,10 +2155,9 @@ class Ui_MainWindow(object):
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
 
-        for node in Data["Nodes"].values():
+        for NodeName, node in Data["Nodes"].items():
 
 
-            NodeName = node["Node"]
             id = self.NodeIdMap[NodeName]
             x, y = self.IdLocationMap[id]
 
@@ -3394,10 +3435,10 @@ class Ui_MainWindow(object):
         self.IdNodeMap = {}        # {id : name}
         self.IdLocationMap = {}     # {id : [x , y]}
 
-        for NodeData in Data["Nodes"].values():
+        for NodeName, NodeData in Data["Nodes"].items():
             
-            self.NodeIdMap[NodeData["Node"]] = self.network.Topology.Node.ReferenceId
-            self.IdNodeMap[self.network.Topology.Node.ReferenceId] = NodeData["Node"]
+            self.NodeIdMap[NodeName] = self.network.Topology.Node.ReferenceId
+            self.IdNodeMap[self.network.Topology.Node.ReferenceId] = NodeName
             self.IdLocationMap[self.network.Topology.Node.ReferenceId] = scale_calculation(NodeData["Location"][0], NodeData["Location"][1])
             self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["ROADM_Type"])
         
@@ -3598,8 +3639,8 @@ class Ui_MainWindow(object):
             folium.Marker(destination_cor,icon=folium.Icon(color="red"),popup= "<h2>%s</h2>" %destination).add_to(self.m)
             added.append(destination)
             folium.PolyLine(loc ,weight = 3,popup = "Link ID: %s"%(id),color = "black",opacity = 0.8).add_to(self.m) """
-        for Node, data in Data["Nodes"].items():
-            NodeName = data["Node"]
+        for NodeName, data in Data["Nodes"].items():
+
             Node_cor = data["Location"]
             NodeCorDict[NodeName] = Node_cor
             Icon = folium.features.CustomIcon('Icons\\blue\\server_blue.png',icon_size=(30, 30),icon_anchor=(20,30))
@@ -4071,8 +4112,7 @@ class Ui_MainWindow(object):
         
     
     def DemandTabDataBase_Setup(self):
-        for node in Data["Nodes"].values():
-            nodename = node["Node"]
+        for nodename in Data["Nodes"].keys():
             DemandTabDataBase["Panels"][nodename] = {}
         
     

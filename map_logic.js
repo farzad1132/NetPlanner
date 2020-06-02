@@ -1,4 +1,8 @@
          
+function send_DrawMode_data(){
+    backend_map.receive_DrawMode_data(JSON.stringify(globalVar), JSON.stringify(deletedOldLayers));
+}
+
 // output globals 
 var globalVar;
 var deletedOldLayers = [];
@@ -168,6 +172,8 @@ function topologyMenuHandler() {
         deletedOldLayers = JSON.stringify(deletedOldLayers);
 
         restoreOldFeatureGroupEvents(markersGroup, linksGroup);
+
+        send_DrawMode_data();
     });
 
     doneBtn.innerHTML = "Done";
