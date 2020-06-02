@@ -3538,8 +3538,11 @@ class Ui_MainWindow(object):
             if column == 0 and str(value).isdigit():
                 Data["General"]["DataSection"][str(column)][row] = value
 
-            elif column==1 or column==2:
-                Data["General"]["DataSection"][str(column)][row] = value
+            elif (column==1 or column==2):
+                if str(value) in self.NodeIdMap: # if 'apple' in fruits:
+                    Data["General"]["DataSection"][str(column)][row] = value
+                else:
+                    self.GTM_node_error(row, column, value)
 
             elif column==3 or column==4 or column==7:
                 if str(value).isalpha():
@@ -3560,6 +3563,10 @@ class Ui_MainWindow(object):
                 self.GTMErrorWrongDataType(row, column, value)
 
 
+    def GTM_node_error(self, row, column, value):
+        print('hey hey hey...')
+        # cell should get red
+    
     def GTMErrorWrongDataType(self, row, column, value):
 
         if column == 0 :
