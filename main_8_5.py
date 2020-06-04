@@ -1,3 +1,4 @@
+import pkg_resources.py2_warn
 from PySide2 import QtCore, QtGui, QtWidgets
 from PySide2.QtWidgets import QApplication,QTableWidget,QTableWidgetItem,QFileDialog,QMdiSubWindow,QWidget,QLabel,QAbstractItemView,QListWidgetItem,QMenu,QFontComboBox
 from PySide2.QtCore import Signal,QObject,Slot, QRunnable, QThreadPool, SIGNAL
@@ -23,7 +24,6 @@ import math
 from math import ceil
 import requests
 import json
-import socketio  
 import time, traceback
 import copy , warnings
 
