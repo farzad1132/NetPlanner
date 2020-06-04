@@ -1819,11 +1819,11 @@ class Ui_MainWindow(object):
 
         # NOTE: uncomment bellow if you want use console.log
 
-        class WebEnginePage(QWebEnginePage):
+        """ class WebEnginePage(QWebEnginePage):
             def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
                 print("javaScriptConsoleMessage: ", level, message, lineNumber, sourceID)
 
-        self.webengine.setPage(WebEnginePage(self.webengine))
+        self.webengine.setPage(WebEnginePage(self.webengine)) """
         backend_map = Backend_map(MainWindow)
         self.backend_map = backend_map
         channel = QWebChannel(MainWindow)
@@ -3559,9 +3559,8 @@ class Ui_MainWindow(object):
         
 
         def scale_calculation(lat, lon):
-            u = utm.from_latlon(lat, lon)
-            x = u[0]
-            y = u[1]
+            x = lon
+            y = lat
 
             if x < self.x_max_min[0]:
                 self.x_max_min[0] = x
