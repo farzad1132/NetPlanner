@@ -1813,11 +1813,11 @@ class Ui_MainWindow(object):
 
         # NOTE: uncomment bellow if you want use console.log
 
-        """ class WebEnginePage(QWebEnginePage):
+        class WebEnginePage(QWebEnginePage):
             def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
                 print("javaScriptConsoleMessage: ", level, message, lineNumber, sourceID)
 
-        self.webengine.setPage(WebEnginePage(self.webengine)) """
+        self.webengine.setPage(WebEnginePage(self.webengine))
         backend_map = Backend_map(MainWindow)
         self.backend_map = backend_map
         channel = QWebChannel(MainWindow)
@@ -2115,8 +2115,15 @@ class Ui_MainWindow(object):
                         Data["Links"][key] = {"NumSpan": 1, "Length": Length, "Loss":Loss_Coefficient, "Type":Fiber_Type, "Beta":Beta, "Gamma": Gamma,
                             "Dispersion": Dispersion}
 
-        # deleteing old nodes and links
-
+        # deleteing old nodes
+        for node in deletedOldLayers["nodes"]:
+            Data["Node"].pop(node)
+        
+        # deleteing old links
+        for link in deletedOldLayers["links"]:
+            Source = link["start"]
+            Destination = link["end"]
+            Data["Links"].pop((Source, Destination))
 
 
     def create_obj(self):

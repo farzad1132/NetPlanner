@@ -33,26 +33,3 @@
             <div class="folium-map" id="MapVar" ></div>
             <script src="map_logic.js"></script>
 </body>
-<script>    
-    
-            var MapVar = L.map(
-                "MapVar",
-                {
-                    center: [35.6892, 51.389],
-                    crs: L.CRS.EPSG3857,
-                    zoom: 6,
-                    zoomControl: true,
-                    preferCanvas: false,
-                }
-            );
-
-            
-
-        
-    
-            var tile_layer_3c8d85307f1e400db7a61053d3bf00e6 = L.tileLayer(
-                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                {"detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
-            ).addTo(MapVar);
-        
-</script>

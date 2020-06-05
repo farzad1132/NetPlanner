@@ -374,17 +374,16 @@ function drawDetailBox(lambdaList) {
 }
 function handleMouseOverLines(lambdaList) {
     canvas.addEventListener("mousemove", e => showLineNumberInBox(e, lambdaList));
-    canvas.addEventListener("mouseleave", unshowLineNumberInBox);
+    canvas.addEventListener("mouseleave", e => unshowLineNumberInBox(lambdaList));
 }
 function showLineNumberInBox(e, lambdaList) {
-    console.log(e.offsetX);
     x = e.clientX;
     y = e.clientY;
     var lineNum = 0;
     const xOff = e.offsetX;
-    if (xOff % 8 >= 2 && xOff % 8 <= 4) {
+    if (xOff % 4 <= 2) {
         cursor = " ";
-        lineNum = 1 + parseInt(xOff / 8);
+        lineNum = parseInt(xOff / 4);
         if (lambdaList.includes(lineNum)) {
             cursor = lineNum;
         }
@@ -392,14 +391,17 @@ function showLineNumberInBox(e, lambdaList) {
         cursor = " ";
     }
     document.getElementById("displayArea").style.display = 'block';
-    document.getElementById("displayArea").innerHTML = 'Wavelength Number: ' + cursor;
+    document.getElementById("displayArea").innerHTML = 'Wavelength Number: ' + cursor +
+        "\n Wavelength (total): " + lambdaList.length;
     document.getElementById("displayArea").style.right = x + 'px';
     document.getElementById("displayArea").style.top = y + 'px';
 }
 
-function unshowLineNumberInBox() {
-        document.getElementById("displayArea").innerHTML = "Wavelength Number: ";
-    }
+function unshowLineNumberInBox(lambdaList) {
+    document.getElementById("displayArea").innerHTML = 'Wavelength Number: ' +
+    "\n Wavelength (total): " + lambdaList.length;
+}
+
 function createLegend(num_WL, num_RG, algorithm , worst_SNR, RWA_Runtime) {
     Num_WL = num_WL;
     Num_RG = num_RG;
@@ -409,10 +411,10 @@ function createLegend(num_WL, num_RG, algorithm , worst_SNR, RWA_Runtime) {
     legend.onAdd = function (map) {
         var div = L.DomUtil.create("div", "legend");
         div.style.backgroundColor = 'WHITE';
-        div.innerHTML += '<h5>Total number of used wavelengths<b>: ' + Num_WL + '</b></h5>';
-        div.innerHTML += '<h5>Total number of regenerators<b>: ' + Num_RG + '</b></h5>';
-        div.innerHTML += '<h5>Used algorithm and its runtime<b>: ' + Algorithm + '  ,  ' + RWA_Runtime + ' s' + '</b></h5>';
-        div.innerHTML += '<h5>Worst SNR on all links<b>: ' + Worst_SNR + '</b></h5>';
+        div.innerHTML += '<h4>Total number of used wavelengths<b>: ' + Num_WL + '</b></h4>';
+        div.innerHTML += '<h4>Total number of regenerators<b>: ' + Num_RG + '</b></h4>';
+        div.innerHTML += '<h4>Used algorithm and its runtime<b>: ' + Algorithm + '  ,  ' + RWA_Runtime + ' s' + '</b></h4>';
+        div.innerHTML += '<h4>Worst SNR on all links<b>: ' + Worst_SNR + '</b></h4>';
         return div;
     };
     legend.addTo(MapVar);
@@ -594,11 +596,30 @@ function topologyMenuHandler() {
 
         fixMarkersData(markers);
 
-        deletedOldLayers = deletedOldLayers.map(l => getLayerName(l));
+        var deletedOldLayersName = deletedOldLayers.map(l => getLayerName(l));
 
         //save changed old layers to markers and links
-        saveChangedOldMarkersToMarkers(oldMarkers, markers, deletedOldLayers);
-        saveChangedOldLinktoLink(oldLinks, links, deletedOldLayers);
+        saveChangedOldMarkersToMarkers(oldMarkers, markers, deletedOldLayersName);
+        saveChangedOldLinktoLink(oldLinks, links, deletedOldLayersName);
+
+        deletedOldLayers = {
+            "nodes":
+                deletedOldLayers
+                    .filter(l => l instanceof L.Marker)
+                    .map(l => getLayerName(l)),
+
+            "links":
+                deletedOldLayers
+                    .filter(l => l instanceof L.Polyline)
+                    .map(l => {
+                        name = getLayerName(l);
+                        var name = name.split("-");
+                        return {
+                            "start": name[0].trim(),
+                            "end": name[1].trim()
+                        };
+                    })
+        };
 
         globalVar = {
             "nodes": markers,
