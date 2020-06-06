@@ -61,10 +61,11 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 import matplotlib.pyplot as plt
 import networkx as nx
 from bokeh.plotting import from_networkx, figure
-from bokeh.models import ColumnDataSource, DataRange1d
+from bokeh.models import ColumnDataSource, DataRange1d, Range1d
 from bokeh.models import StaticLayoutProvider, LabelSet
 from bokeh.io import output_file, save
 import utm
+import numpy
 from numpy import cos, sin , deg2rad
 
 class AlignDelegate(QtWidgets.QStyledItemDelegate):
@@ -2123,7 +2124,7 @@ class Ui_MainWindow(object):
 
         # creating plot
         Scale_factor = 10
-        plot = figure(x_range=DataRange1d(start=40, end=65), y_range=DataRange1d(start=25, end=40),
+        plot = figure(x_range=(0, 100), y_range=(0, 100),
             tools='wheel_zoom, pan', active_scroll= 'wheel_zoom', active_drag='pan', toolbar_location=None, sizing_mode= 'stretch_both')
             
         plot.grid.visible = False
@@ -2142,16 +2143,16 @@ class Ui_MainWindow(object):
         index = graph.node_renderer.data_source.data['index']
 
         node_color = ['black' for _ in range(len(self.IdNodeMap))]
-        node_size = [ 4 for _ in range(len(self.IdNodeMap))]
+        node_size = [ 10 for _ in range(len(self.IdNodeMap))]
         
         source_index = index.index(Source)
         destination_index = index.index(Destination)
 
         node_color[source_index] = 'yellow'
-        node_size[source_index] = 10
+        node_size[source_index] = 17
 
         node_color[destination_index] = 'yellow'
-        node_size[destination_index] = 10
+        node_size[destination_index] = 17
 
         if WorkingRegeneratorsList is not None:
             for id in WorkingRegeneratorsList:
@@ -2159,7 +2160,7 @@ class Ui_MainWindow(object):
                 node_index = index.index(node_index)
 
                 node_color[node_index] = 'green'
-                node_size[node_index] = 7
+                node_size[node_index] = 13
         
         if ProtectionRegenaratorsList is not None:
             for id in ProtectionRegenaratorsList:
@@ -2167,7 +2168,7 @@ class Ui_MainWindow(object):
                 node_index = index.index(node_index)
 
                 node_color[node_index] = 'green'
-                node_size[node_index] = 7
+                node_size[node_index] = 13
 
 
         graph.node_renderer.data_source.data['node_color'] = node_color
@@ -2213,6 +2214,11 @@ class Ui_MainWindow(object):
         y = list(map(lambda x: x[1][1], List))
         name = list(map(lambda x: x[0], List))
 
+        x_min = min(x)
+        x_max = max(x)
+
+        y_min = min(y)
+        y_max = max(y)
         #x, y = zip(*graph.layout_provider.graph_layout.values())
 
         source = ColumnDataSource({'x': x, 'y': y,
@@ -2221,6 +2227,9 @@ class Ui_MainWindow(object):
         labels = LabelSet(x='x', y='y', text='name', source= source, level='glyph',
                         x_offset=8, y_offset=8)
         plot.add_layout(labels)
+
+        plot.x_range = Range1d(x_min, x_max)
+        plot.y_range = Range1d(y_min, y_max)
 
         # saving file
         output_file("demand_map.html")
@@ -3556,25 +3565,8 @@ class Ui_MainWindow(object):
 
     def PhysicalTopologyToObject(self):
 
-        self.x_max_min = [1000, 0]
-        self.y_max_min = [1000, 0]
         
-
         def scale_calculation(lat, lon):
-            R = 6371
-            x = R * sin(deg2rad(lon)) * cos(deg2rad(lat))
-            y = R * sin(deg2rad(lon)) * sin(deg2rad(lat))
-
-            if x < self.x_max_min[0]:
-                self.x_max_min[0] = x
-            elif x > self.x_max_min[1]:
-                self.x_max_min[1] = x
-            
-            if y < self.y_max_min[0]:
-                self.y_max_min[0] = y
-            elif y > self.y_max_min[1]:
-                self.y_max_min[1] = y
-
             return [lon, lat]
 
 
