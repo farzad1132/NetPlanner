@@ -2174,7 +2174,8 @@ class Ui_MainWindow(object):
         graph.node_renderer.glyph.update(size='node_size', fill_color="node_color")
 
         # updateing link attributes
-        graph.edge_renderer.data_source.data['link_width'] = [3 for _ in range(len(Data["Links"]))]
+        Num_links = len(graph.edge_renderer.data_source.data["start"])
+        graph.edge_renderer.data_source.data['link_width'] = [3 for _ in range(Num_links)]
         graph.edge_renderer.glyph.update(line_width= "link_width")
 
         if Working is not None:
