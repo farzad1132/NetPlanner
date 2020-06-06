@@ -2124,7 +2124,75 @@ class Ui_MainWindow(object):
             Source = link["start"]
             Destination = link["end"]
             Data["Links"].pop((Source, Destination))
+        
+        self.network = Network()
+        
+        self.clean_database_for_grooming()
+        
+        GroomingTabDataBase["LightPathes"].clear()  
+        GroomingTabDataBase["LinkState"].clear()
+        GroomingTabDataBase["NodeState"].clear()
+    
+        self.tabWidget.setTabEnabled(1, False)
+        self.tabWidget.setTabEnabled(2, False)
 
+        self.ViewGroupbox.setEnabled(False)
+
+        self.Grouping_groupbox.setEnabled(False)
+
+        self.Demand_Source_combobox.clear()
+        self.Demand_Destination_combobox.clear()
+
+        self.Grooming_pushbutton.setStyleSheet("QPushButton {\n"
+    "    \n"
+    "    \n"
+    "    font: 75 10pt \"Bahnschrift Condensed\";\n"
+    "    \n"
+    "    border: 2px solid #8f8f91; min-width: 80px;\n"
+    "    border-color: #EB8686; \n"
+    "    border-radius: 25px;\n"
+    "}\n"
+    "\n"
+    "QPushButton:pressed,hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:flat {\n"
+    "    border: none; /* no border for a flat push button */\n"
+    "}\n"
+    "\n"
+    "QPushButton:default {\n"
+    "    border-color: navy; /* make the default button prominent */\n"
+    "}")
+
+        self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
+    "    \n"
+    "    \n"
+    "    font: 75 10pt \"Bahnschrift Condensed\";\n"
+    "    \n"
+    "    border: 2px solid #8f8f91; min-width: 80px;\n"
+    "    border-color: #EB8686; \n"
+    "    border-radius: 25px;\n"
+    "}\n"
+    "\n"
+    "QPushButton:pressed,hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:flat {\n"
+    "    border: none; /* no border for a flat push button */\n"
+    "}\n"
+    "\n"
+    "QPushButton:default {\n"
+    "    border-color: navy; /* make the default button prominent */\n"
+    "}")
+
+
+    # TODO: setup a window for after drawing mode
 
     def create_obj(self):
         with open("NetworkObj.obj", 'wb') as handle:
