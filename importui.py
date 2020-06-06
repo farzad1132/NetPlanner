@@ -591,6 +591,8 @@ class Ui_ImportMenuUI(object):
 
                         Data[m]["DataSection"][l1[k][j]].update(temp_dict)
                     k += 1
+                Data["ui"].update_cells()
+                Data["ui"].tabWidget.setTabEnabled(1, True)
                 
                 TM_Success = True
             except:

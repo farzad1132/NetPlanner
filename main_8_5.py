@@ -4106,7 +4106,7 @@ class Ui_MainWindow(object):
         self.DemandTabDataBase_Setup()
         #self.Demand_Shelf_set()
         self.Fill_Demand_SourceandDestination_combobox()
-        self.update_cells()
+        #self.update_cells()
 
         self.tabWidget.setTabEnabled(1, True)
         self.tabWidget.setTabEnabled(2, True)
