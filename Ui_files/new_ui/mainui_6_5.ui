@@ -94,7 +94,7 @@ QTabWidget::tab-bar {
  }r</string>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="TopologyTab">
         <attribute name="title">
@@ -904,7 +904,7 @@ QPushButton:hover{
             <widget class="QPushButton" name="Draw_Physical_Topology_pushButton">
              <property name="minimumSize">
               <size>
-               <width>90</width>
+               <width>84</width>
                <height>46</height>
               </size>
              </property>
@@ -943,7 +943,7 @@ Topology</string>
             <widget class="QPushButton" name="export_result_button">
              <property name="minimumSize">
               <size>
-               <width>90</width>
+               <width>84</width>
                <height>46</height>
               </size>
              </property>
@@ -997,7 +997,7 @@ Result</string>
             <widget class="QPushButton" name="import_button">
              <property name="minimumSize">
               <size>
-               <width>90</width>
+               <width>84</width>
                <height>46</height>
               </size>
              </property>
@@ -1487,7 +1487,54 @@ QPushButton:default {
          <string>Traffic Matrix Tab</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_12">
-         <item row="0" column="0">
+         <item row="0" column="1">
+          <widget class="QPushButton" name="Export_New_Traffic_Matrix_button">
+           <property name="minimumSize">
+            <size>
+             <width>84</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Bahnschrift Condensed</family>
+             <pointsize>11</pointsize>
+             <weight>9</weight>
+             <italic>false</italic>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton {
+	
+	
+	font: 75 11pt &quot;Bahnschrift Condensed&quot;;
+	
+    border: 2px solid #8f8f91; min-width: 80px;
+	border-color: #EB8686; 
+    border-radius: 15px;
+}
+
+QPushButton:pressed,hover {
+    background-color: #EB8686; 
+}
+QPushButton:hover {
+    background-color: #EB8686; 
+}
+QPushButton:flat {
+    border: none; /* no border for a flat push button */
+}
+
+QPushButton:default {
+    border-color: navy; /* make the default button prominent */
+}</string>
+           </property>
+           <property name="text">
+            <string>Export New Traffic Matrix</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
           <widget class="QSplitter" name="splitter_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -1679,7 +1726,7 @@ QTableWidget QTableCornerButton::section {
            </widget>
           </widget>
          </item>
-         <item row="0" column="1">
+         <item row="1" column="1">
           <widget class="QGroupBox" name="TM_groupbox">
            <property name="font">
             <font>
@@ -1707,6 +1754,112 @@ QTableWidget QTableCornerButton::section {
             <bool>true</bool>
            </property>
            <layout class="QGridLayout" name="gridLayout_5">
+            <item row="3" column="0" colspan="2">
+             <widget class="QListWidget" name="Errors_listwidget">
+              <property name="font">
+               <font>
+                <family>Bahnschrift</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QListWidget {
+    alternate-background-color: yellow;
+	border:2px double;
+	border-color: #Eb8686;
+	border-radius: 5px; 
+    
+}
+QListWidget {
+    show-decoration-selected: 1; /* make the selection span the entire width of the view */
+}
+
+QListWidget::item:alternate {
+    background: rgb(170, 170, 170);
+}
+
+
+
+
+QListWidget::item:selected:active {
+    background:rgb(255, 84, 92)
+}
+
+QListWidget::item:hover {
+    background: #c0c0c0 }</string>
+              </property>
+              <item>
+               <property name="text">
+                <string>E1</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>STM_1_Electrical</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>STM_1_Optical</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>STM_4</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>STM_16</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>STM_64</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>FE</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>1GE</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>10GE</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>40GE</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>100GE</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="Errors">
+              <property name="styleSheet">
+               <string notr="true">QLabel {
+  
+	
+	font: 63 12pt &quot;Bahnschrift SemiBold Condensed&quot;;
+	background-color: #EE817B;
+}</string>
+              </property>
+              <property name="text">
+               <string>         Errors</string>
+              </property>
+             </widget>
+            </item>
             <item row="0" column="0">
              <widget class="QLabel" name="label_7">
               <property name="font">
@@ -1736,6 +1889,19 @@ QTableWidget QTableCornerButton::section {
                <string>       services</string>
               </property>
              </widget>
+            </item>
+            <item row="4" column="1">
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
             </item>
             <item row="1" column="0" colspan="2">
              <widget class="QListWidget" name="listWidget">
@@ -1835,66 +2001,6 @@ QListWidget::item:hover {
                 <string>100GE</string>
                </property>
               </item>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <spacer name="verticalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="2" column="0" rowspan="2" colspan="2">
-             <widget class="QPushButton" name="Export_New_Traffic_Matrix_button">
-              <property name="minimumSize">
-               <size>
-                <width>84</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <family>Bahnschrift Condensed</family>
-                <pointsize>11</pointsize>
-                <weight>9</weight>
-                <italic>false</italic>
-                <bold>false</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QPushButton {
-	
-	
-	font: 75 11pt &quot;Bahnschrift Condensed&quot;;
-	
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #EB8686; 
-    border-radius: 15px;
-}
-
-QPushButton:pressed,hover {
-    background-color: #EB8686; 
-}
-QPushButton:hover {
-    background-color: #EB8686; 
-}
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-              </property>
-              <property name="text">
-               <string>Export New Traffic Matrix</string>
-              </property>
              </widget>
             </item>
            </layout>
