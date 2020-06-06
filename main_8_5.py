@@ -3629,12 +3629,19 @@ class Ui_MainWindow(object):
         '''item = self.listWidget.currentItem()
         item = str(item.text())'''
     
-        for j in range(Data["General"]["ColumnCount"]):
+        """ for j in range(Data["General"]["ColumnCount"]):
             keys = Data["General"]["DataSection"][str(j)].keys()
             for row in list(keys):
                 cell_data = Data["General"]["DataSection"][str(j)][row]
                 self.General_TM.setCurrentCell(int(row),j)
-                self.General_TM.setItem(int(row),j,QTableWidgetItem(cell_data))
+                self.General_TM.setItem(int(row),j,QTableWidgetItem(cell_data)) """
+
+        # NOTE: new version of this method ( under test )
+        for key, value in Data["General"]["DataSection"].items():
+            for index, data in value.items():
+                self.General_TM.setCurrentCell(int(index), int(key))
+                self.General_TM.setItem(int(index), int(key) ,QTableWidgetItem(data))
+
     
     
     
