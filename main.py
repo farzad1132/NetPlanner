@@ -61,11 +61,11 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 import matplotlib.pyplot as plt
 import networkx as nx
 from bokeh.plotting import from_networkx, figure
-from bokeh.models import ColumnDataSource
+from bokeh.models import ColumnDataSource, DataRange1d
 from bokeh.models import StaticLayoutProvider, LabelSet
 from bokeh.io import output_file, save
 import utm
-import numpy
+from numpy import cos, sin , deg2rad
 
 class AlignDelegate(QtWidgets.QStyledItemDelegate):
     
@@ -2122,8 +2122,9 @@ class Ui_MainWindow(object):
         Destination = self.Demand_Destination_combobox.currentText()
 
         # creating plot
-        plot = figure(x_range=(self.x_max_min[0], self.x_max_min[1]), y_range=(self.y_max_min[0], self.y_max_min[1]),
-                    tools='wheel_zoom, pan', active_scroll= 'wheel_zoom', active_drag='pan', toolbar_location=None, sizing_mode= 'stretch_both')
+        Scale_factor = 10
+        plot = figure(x_range=DataRange1d(start=40, end=65), y_range=DataRange1d(start=25, end=40),
+            tools='wheel_zoom, pan', active_scroll= 'wheel_zoom', active_drag='pan', toolbar_location=None, sizing_mode= 'stretch_both')
             
         plot.grid.visible = False
         plot.axis.visible = False
@@ -3555,13 +3556,14 @@ class Ui_MainWindow(object):
 
     def PhysicalTopologyToObject(self):
 
-        self.x_max_min = [0, 0]
-        self.y_max_min = [0, 0]
+        self.x_max_min = [1000, 0]
+        self.y_max_min = [1000, 0]
         
 
         def scale_calculation(lat, lon):
-            x = lon
-            y = lat
+            R = 6371
+            x = R * sin(deg2rad(lon)) * cos(deg2rad(lat))
+            y = R * sin(deg2rad(lon)) * sin(deg2rad(lat))
 
             if x < self.x_max_min[0]:
                 self.x_max_min[0] = x
@@ -3573,7 +3575,7 @@ class Ui_MainWindow(object):
             elif y > self.y_max_min[1]:
                 self.y_max_min[1] = y
 
-            return [x,y]
+            return [lon, lat]
 
 
         self.NodeIdMap = {}        # { name: id }
