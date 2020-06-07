@@ -2228,8 +2228,8 @@ class Ui_MainWindow(object):
                         x_offset=8, y_offset=8)
         plot.add_layout(labels)
 
-        plot.x_range = Range1d(x_min, x_max)
-        plot.y_range = Range1d(y_min, y_max)
+        plot.x_range = Range1d(x_min - 1 , x_max + 1)
+        plot.y_range = Range1d(y_min - 1, y_max + 1)
 
         # saving file
         output_file("demand_map.html")
