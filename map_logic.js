@@ -41,7 +41,7 @@ canvas.setAttribute("class", "focusArea");
 var displayArea = document.createElement('div');
 // displayArea.textContent = " ";
 displayArea.setAttribute("id", "displayArea");
-displayArea.innerHTML = "Wavelength Number: ";
+displayArea.innerHTML = "Wavelength Number:            ";
 canvas.height = 50;
 canvas.width = 420
 wrapper.appendChild(canvas);
@@ -381,9 +381,9 @@ function showLineNumberInBox(e, lambdaList) {
     y = e.clientY;
     var lineNum = 0;
     const xOff = e.offsetX;
-    if (xOff % 4 <= 2) {
+    if (xOff % 8 >= 2 && xOff % 8 <= 4) {
         cursor = " ";
-        lineNum = parseInt(xOff / 4);
+        lineNum = 1 + parseInt(xOff / 8);
         if (lambdaList.includes(lineNum)) {
             cursor = lineNum;
         }
@@ -392,14 +392,14 @@ function showLineNumberInBox(e, lambdaList) {
     }
     document.getElementById("displayArea").style.display = 'block';
     document.getElementById("displayArea").innerHTML = 'Wavelength Number: ' + cursor +
-        "\n Wavelength (total): " + lambdaList.length;
+        "\n                                Wavelength (total): " + (lambdaList.length - 1);
     document.getElementById("displayArea").style.right = x + 'px';
     document.getElementById("displayArea").style.top = y + 'px';
 }
 
 function unshowLineNumberInBox(lambdaList) {
     document.getElementById("displayArea").innerHTML = 'Wavelength Number: ' +
-    "\n Wavelength (total): " + lambdaList.length;
+    "\n                                Wavelength (total): " + (lambdaList.length - 1);
 }
 
 function createLegend(num_WL, num_RG, algorithm , worst_SNR, RWA_Runtime) {
