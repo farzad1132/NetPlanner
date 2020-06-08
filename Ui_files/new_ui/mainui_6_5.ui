@@ -94,7 +94,7 @@ QTabWidget::tab-bar {
  }r</string>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="TopologyTab">
         <attribute name="title">
@@ -1596,7 +1596,7 @@ for Network Plan </string>
             </column>
             <column>
              <property name="text">
-              <string>Degree</string>
+              <string>Protection_Type</string>
              </property>
             </column>
            </widget>
