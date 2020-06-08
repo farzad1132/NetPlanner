@@ -2650,85 +2650,71 @@ class Ui_MainWindow(object):
             for i in range(1, DemandTabDataBase["Shelf_Count"][Source] + 1):
                 self.Demand_tab.addTab(getattr(self, "shelf_" + str(i + 1)), "Shelf " + str(i + 1))
     
-    def save_node_excel(self):
+    def save_PT_excel(self):
 
-        def create_node_excel(filename):
+        def create_PT_excel(filename):
             workbook = xlsxwriter.Workbook(filename)
 
-            worksheet = workbook.add_worksheet() 
+            worksheet1 = workbook.add_worksheet("Nodes")
+            worksheet2 = workbook.add_worksheet("Links")  
             
-            cell_format = workbook.add_format()
-            cell_format_header = workbook.add_format()
+            cell_format1 = workbook.add_format()
+            cell_format_header1 = workbook.add_format()
 
-            cell_format_header.set_pattern(1)  
-            cell_format_header.set_bg_color('#00C7CE')
+            cell_format_header1.set_pattern(1)  
+            cell_format_header1.set_bg_color('#00C7CE')
             #cell_format_header.set_indent(2)
 
-            cell_format_header.set_center_across()
+            cell_format_header1.set_center_across()
 
-            worksheet.set_column('C:C', 25)
-            worksheet.set_column('D:D', 20)
+            worksheet1.set_column('C:C', 25)
+            worksheet1.set_column('D:D', 20)
 
-            worksheet.write('A1', 'ID', cell_format_header) 
-            worksheet.write('B1', 'Node', cell_format_header) 
-            worksheet.write('C1', 'Location', cell_format_header) 
-            worksheet.write('D1', 'ROEDM_Type', cell_format_header) 
+            worksheet1.write('A1', 'ID', cell_format_header1) 
+            worksheet1.write('B1', 'Node', cell_format_header1) 
+            worksheet1.write('C1', 'Location', cell_format_header1) 
+            worksheet1.write('D1', 'ROEDM_Type', cell_format_header1) 
 
-            cell_format.set_center_across()
+            cell_format1.set_center_across()
 
             row = 1
             id = 1
 
             for NodeName , value in Data["Nodes"].items(): 
 
-                worksheet.write(row, 0, id, cell_format)
-                worksheet.write(row ,1 , NodeName, cell_format)
-                worksheet.write(row ,2 , str(value['Location'][0]) + ',' + str(value['Location'][1]) , cell_format)
-                worksheet.write(row ,3 , value['ROADM_Type'], cell_format)
+                worksheet1.write(row, 0, id, cell_format1)
+                worksheet1.write(row ,1 , NodeName, cell_format1)
+                worksheet1.write(row ,2 , str(value['Location'][0]) + ',' + str(value['Location'][1]) , cell_format1)
+                worksheet1.write(row ,3 , value['ROADM_Type'], cell_format1)
                 row += 1
                 id += 1
 
-            # SAVE part
-            workbook.close()
-        
-        name = QFileDialog.getSaveFileName(MainWindow, "Save Node Excel", filter = "(*.xlsx)")
-        if name[0] != 0:
-            try:
-                create_node_excel(name[0])
-            except:
-                pass 
-    
-    def save_link_excel(self):
-        def create_link_excel(filename):
-            workbook = xlsxwriter.Workbook(filename) 
-            worksheet = workbook.add_worksheet() 
-            
-            cell_format = workbook.add_format()
-            cell_format_header = workbook.add_format()
+            cell_format2 = workbook.add_format()
+            cell_format_header2 = workbook.add_format()
 
-            cell_format_header.set_pattern(1)  
-            cell_format_header.set_bg_color('#FFC7CE')
+            cell_format_header2.set_pattern(1)  
+            cell_format_header2.set_bg_color('#FFC7CE')
             #cell_format_header.set_indent(2)
 
-            cell_format_header.set_center_across()
+            cell_format_header2.set_center_across()
 
-            worksheet.set_column('C:C', 15)
-            worksheet.set_column('E:E', 12)
-            worksheet.set_column('F:F', 18)
-            worksheet.set_column('I:I', 10)
+            worksheet2.set_column('C:C', 15)
+            worksheet2.set_column('E:E', 12)
+            worksheet2.set_column('F:F', 18)
+            worksheet2.set_column('I:I', 10)
 
 
-            worksheet.write('A1', 'ID', cell_format_header) 
-            worksheet.write('B1', 'Source', cell_format_header) 
-            worksheet.write('C1', 'Destination', cell_format_header) 
-            worksheet.write('D1', 'Distance', cell_format_header) 
-            worksheet.write('E1', 'Fiber Type', cell_format_header) 
-            worksheet.write('F1', 'Loss Coefficient', cell_format_header) 
-            worksheet.write('G1', 'Beta', cell_format_header) 
-            worksheet.write('H1', 'Gamma', cell_format_header) 
-            worksheet.write('I1', 'Dispersion', cell_format_header) 
+            worksheet2.write('A1', 'ID', cell_format_header2) 
+            worksheet2.write('B1', 'Source', cell_format_header2) 
+            worksheet2.write('C1', 'Destination', cell_format_header2) 
+            worksheet2.write('D1', 'Distance', cell_format_header2) 
+            worksheet2.write('E1', 'Fiber Type', cell_format_header2) 
+            worksheet2.write('F1', 'Loss Coefficient', cell_format_header2) 
+            worksheet2.write('G1', 'Beta', cell_format_header2) 
+            worksheet2.write('H1', 'Gamma', cell_format_header2) 
+            worksheet2.write('I1', 'Dispersion', cell_format_header2) 
 
-            cell_format.set_center_across()
+            cell_format2.set_center_across()
 
             row = 1
             id = 1
@@ -2738,26 +2724,29 @@ class Ui_MainWindow(object):
 
             for key, value in Data["Links"].items():
 
-                worksheet.write(row, 0, id, cell_format)
-                worksheet.write(row, 1, key[0], cell_format)
-                worksheet.write(row, 2, key[1], cell_format)
-                worksheet.write(row, 3, value['Distance'] , cell_format)
-                worksheet.write(row, 4, value['Fiber Type'], cell_format)
-                worksheet.write(row, 5, value['Loss Coefficient'], cell_format)
-                worksheet.write(row, 6, value['Beta'], cell_format)
-                worksheet.write(row, 7, value['Gamma'], cell_format)
-                worksheet.write(row, 8, value['Dispersion'], cell_format)
+                worksheet2.write(row, 0, id, cell_format2)
+                worksheet2.write(row, 1, key[0], cell_format2)
+                worksheet2.write(row, 2, key[1], cell_format2)
+                worksheet2.write(row, 3, value['Distance'] , cell_format2)
+                worksheet2.write(row, 4, value['Fiber Type'], cell_format2)
+                worksheet2.write(row, 5, value['Loss Coefficient'], cell_format2)
+                worksheet2.write(row, 6, value['Beta'], cell_format2)
+                worksheet2.write(row, 7, value['Gamma'], cell_format2)
+                worksheet2.write(row, 8, value['Dispersion'], cell_format2)
                 row += 1
                 id += 1
 
+            # SAVE part
             workbook.close()
         
-        name = QFileDialog.getSaveFileName(MainWindow, "Save Link Excel", filter = "(*.xlsx)")
+        name = QFileDialog.getSaveFileName(MainWindow, "Save Physical Topology Excel", filter = "(*.xlsx)")
         if name[0] != 0:
             try:
-                create_link_excel(name[0])
+                create_PT_excel(name[0])
             except:
                 pass 
+    
+     
 
     def export_excel_fun(self):
         
