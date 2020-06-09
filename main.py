@@ -50,23 +50,13 @@ from TrafficMatrixError.Destination_type_error import Ui_Destination_type_error
 from TrafficMatrixError.Quantity_type_error import Ui_Quantity_type_error
 from TrafficMatrixError.SLA_type_error import Ui_SLA_type_error
 
-#from mapwidget import MapWidget
-from mapwidget import MapWidget
-import matplotlib as mpl
-from  matplotlib.backends.backend_qt5agg  import  FigureCanvas
-from  matplotlib.figure  import  Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-#from mpl_toolkits.basemap import Basemap
-import matplotlib.pyplot as plt
+
 import networkx as nx
 from bokeh.plotting import from_networkx, figure
 from bokeh.models import ColumnDataSource, DataRange1d, Range1d
 from bokeh.models import StaticLayoutProvider, LabelSet
 from bokeh.io import output_file, save
-import utm
 import numpy
-from numpy import cos, sin , deg2rad
 
 class AlignDelegate(QtWidgets.QStyledItemDelegate):
     
@@ -2320,105 +2310,6 @@ class Ui_MainWindow(object):
 
         self.MapWidget.load(QUrl.fromLocalFile(os.path.abspath('demand_map.html')))
 
-
-        """ #mpl.rcParams["figure.figsize"] = [18.4, 7.8]
-        self.MapWidget.canvas.figure.subplots_adjust(left = -0.001, right = 1, top = 1, bottom = -0.005)
-        self.MapWidget.canvas.axes.cla()
-        Source = self.Demand_Source_combobox.currentText()
-        Destination = self.Demand_Destination_combobox.currentText()
-
-        for node in Data["Nodes"].values():
-
-
-            NodeName = node["Node"]
-            id = self.NodeIdMap[NodeName]
-            x, y = self.IdLocationMap[id]
-
-            if NodeName == Source or NodeName == Destination:
-                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'gold')
-            else:
-                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
-
-            self.MapWidget.canvas.axes.annotate(NodeName, xy = (x, y), xytext = (x, y),
-             color='purple', rotation = 30, 
-             horizontalalignment='left', verticalalignment='center_baseline')
-
-        for key in Data["Links"].keys():
-            InNodeName = key[0]
-            OutNodeName = key[1]
-
-            InNodeId = self.NodeIdMap[InNodeName]
-            OutNodeId = self.NodeIdMap[OutNodeName]
-
-            xIn , yIn = self.IdLocationMap[InNodeId]
-            xOut, yOut = self.IdLocationMap[OutNodeId]
-
-            xl = [xIn, xOut]
-            yl = [yIn, yOut]
-            self.MapWidget.canvas.axes.plot(xl,yl, c='black')
-
-        #self.MapWidget.canvas.axes.plot(G)
-        self.MapWidget.canvas.axes.get_xaxis().set_visible(False)
-        self.MapWidget.canvas.axes.get_yaxis().set_visible(False)
-        self.MapWidget.canvas.axes.set_frame_on(False)
-        
-
-        x_list_W = []
-        y_list_W = []
-        if Working != None:
-            for key in Working:
-
-                x1, y1 = self.IdLocationMap[key]
-
-
-                x_list_W.append(x1)
-                y_list_W.append(y1)
-
-            if WorkingSNR != None:
-                SNRList = str(WorkingSNR)
-                WavelengthNumber = str(WorkingLambdaList)
-                snr_label = "Working SNR = " + SNRList + '\n' + "Wavelength Number = " + WavelengthNumber
-                self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label=snr_label)
-            else:
-                self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label="Working")
-            self.MapWidget.canvas.axes.legend(loc = 'best')
-
-
-        x_list_P = []
-        y_list_P = []
-        if Protection != None:
-            for key in Protection:
-
-                x1, y1 = self.IdLocationMap[key]
-
-
-                x_list_P.append(x1)
-                y_list_P.append(y1)
-
-            if ProtectionSNR != None:
-                SNRList = str(ProtectionSNR)
-                WavelengthNumber = str(ProtectionLambdaList)
-                snr_label1 = "Protection SNR = " + SNRList + '\n' + "Wavelength Number = " + WavelengthNumber          
-                self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label=snr_label1)
-            else:
-                self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label="Protection")
-            self.MapWidget.canvas.axes.legend(loc = 'best')
-
-            
-        if WorkingRegeneratorsList != None:
-            for key in WorkingRegeneratorsList:
-
-                x, y = self.IdLocationMap[key]
-
-                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'green')
-
-        if ProtectionRegenaratorsList != None:
-            for key in ProtectionRegenaratorsList:
-
-                x, y = self.IdLocationMap[key]
-                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'green')
-
-        self.MapWidget.canvas.draw() """
     
     def cancel_button_fun(self):
         if hasattr(self.backend_map, "LastGateWay"):
