@@ -10,7 +10,6 @@ from PySide2.QtWebEngineWidgets import QWebEnginePage
 from PySide2.QtCore import QUrl,Qt,QModelIndex
 from PySide2.QtGui import QStandardItemModel
 from PySide2.QtWebChannel import QWebChannel
-import xlrd
 import xlsxwriter
 from pandas import ExcelWriter
 from pandas import ExcelFile
