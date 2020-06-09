@@ -7,13 +7,9 @@ import sys, os
 import pandas as pd
 from PySide2 import QtWebEngineWidgets
 from PySide2.QtWebEngineWidgets import QWebEnginePage
-import folium,random
 from PySide2.QtCore import QUrl,Qt,QModelIndex
 from PySide2.QtGui import QStandardItemModel
-import re
 from PySide2.QtWebChannel import QWebChannel
-import branca
-from branca.element import Element
 import xlrd
 import xlsxwriter
 from pandas import ExcelWriter
@@ -23,7 +19,6 @@ import math
 from math import ceil
 import requests
 import json
-import socketio  
 import time, traceback
 import copy , warnings
 
@@ -35,6 +30,7 @@ from Ui_files.new_ui import iconresources
 from data import *
 from grooming_algorithm import grooming_fun
 
+from ExportPhysicalTopology import Ui_Export_PT
 
 from BLANK_Demand.BLANK_Demand import BLANK_Demand
 from MP2X_Demand.MP2X_L_Demand import MP2X_L_Demand
@@ -173,6 +169,10 @@ class Backend_map(QObject):
                     Data["ui"].Demand_Source_combobox_Change()
                 else:
                     Data["Demand_Source_combo"].setCurrentText(rep_source)
+    
+    @Slot(str, str)
+    def receive_DrawMode_data(self, data, deletedOldLayers):
+        Data["ui"].receive_DrawMode_data(data, deletedOldLayers)
 
 
 class Ui_MainWindow(object):
@@ -1882,25 +1882,32 @@ class Ui_MainWindow(object):
 
         self.tabWidget.setCurrentIndex(0)
 
-        self.m = folium.Map(location=[35.6892,51.3890],zoom_start=6)
-        self.m.save("map.html")
-        Data["Map_Var"] = self.m
-        Data["Web_Engine"] = self.webengine
+        #self.m = folium.Map(location=[35.6892,51.3890],zoom_start=6)
+        #self.m.save("map.html")
+        #Data["Map_Var"] = self.m
+        #Data["Web_Engine"] = self.webengine
         self.webengine.load(QUrl.fromLocalFile(os.path.abspath('map.html')))
         self.webengine.show()
 
         # NOTE: uncomment bellow if you want use console.log
 
-        """ class WebEnginePage(QWebEnginePage):
+        class WebEnginePage(QWebEnginePage):
             def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
                 print("javaScriptConsoleMessage: ", level, message, lineNumber, sourceID)
 
-        self.webengine.setPage(WebEnginePage(self.webengine)) """
+        self.webengine.setPage(WebEnginePage(self.webengine))
         backend_map = Backend_map(MainWindow)
         self.backend_map = backend_map
         channel = QWebChannel(MainWindow)
         channel.registerObject('backend_map', backend_map)
         self.webengine.page().setWebChannel(channel)
+
+        self.webengine.loadFinished.connect(self.onLoadFinished)
+        self.import_button.setEnabled(False)
+        # Debug
+        #self.webengine.page().runJavaScript("add_node(\"%s\", \"%s\")" %("Tehran", [35.26, 45,88]))
+        #self.webengine.page().runJavaScript("add_link(\"%s\", \"%s\", \"%s\", \"%s\")" %([35.26, 45,88], [37.26, 48,88], "Tehran", "Karak"))
+        #self.webengine.page().runJavaScript(f"just_for_test()")
 
         self.Traffic_matrix.cellChanged.connect(self.TM_CellChange_fun)
 
@@ -2027,6 +2034,7 @@ class Ui_MainWindow(object):
 
         delegate = AlignDelegate(self.Traffic_matrix)
         self.Traffic_matrix.setItemDelegate(delegate)
+        self.Draw_Physical_Topology_pushButton.clicked.connect(self.start_draw_mode)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -2131,6 +2139,15 @@ class Ui_MainWindow(object):
         else:
             self.Demand_tab.setEnabled(True)
 
+    def onLoadFinished(self, ok):
+        if ok:
+            self.import_button.setEnabled(True)
+            """ class WebEnginePage(QWebEnginePage):
+                def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
+                    print("javaScriptConsoleMessage: ", level, message, lineNumber, sourceID)
+
+            self.webengine.setPage(WebEnginePage(self.webengine)) """
+
     def SplitterCommandFun(self, pos):
         if pos == 0:
             self.SplitterEventLabel.setText("\t\t\t\t \31 Pull down The Splitter to see The Shelf !")
@@ -2138,8 +2155,131 @@ class Ui_MainWindow(object):
             self.SplitterEventLabel.setText("\t\t\t\t \30 Pull up The Splitter to see The Map !")
         else :
             self.SplitterEventLabel.setText("")
+    
+
+    def start_draw_mode(self):
+        self.webengine.page().runJavaScript('topologyMenuHandler()')
+
+    def receive_DrawMode_data(self, data, deletedOldLayers):
+
+        data = json.loads(json.loads(data))
+        deletedOldLayers = json.loads(json.loads(deletedOldLayers))
+
+        if data:
+            # adding , modifying nodes
+            # NOTE: code doesn't support changing old node parameters 
+            for node in data["nodes"]:
+                if node:
+                    NodeName = node["name"]
+                    Location = [node["location"]["lat"], node["location"]["lng"]]
+                    isNew = node["isNew"]
+
+                    if isNew is False:
+                        Data["Nodes"][NodeName]["Location"] = Location
+                    
+                    elif isNew is True:
+                        ROADM_Type = node["data"]["ROADM_Type"]
+                        Data["Nodes"][NodeName] = {"Location": Location, "ROADM_Type": ROADM_Type}
+
+            # adding new links
+            # NOTE: code doesn't support changing old link parameters
+            for link in data["links"]:
+                if link:
+                    isNew = link["isNew"]
+
+                    if isNew is True:
+                        key = (link["start"], link["end"])
+                        Length = float(link["data"]["Length"])
+                        Fiber_Type = link["data"]["Fiber_Type"]
+                        Loss_Coefficient = float(link["data"]["Loss_Coefficient"])
+                        Beta = float(link["data"]["Beta"])
+                        Gamma = float(link["data"]["Gamma"])
+                        Dispersion = float(link["data"]["Gamma"])
+
+                        Data["Links"][key] = {"NumSpan": 1, "Length": Length, "Loss":Loss_Coefficient, "Type":Fiber_Type, "Beta":Beta, "Gamma": Gamma,
+                            "Dispersion": Dispersion}
+
+        # deleteing old nodes
+        for node in deletedOldLayers["nodes"]:
+            Data["Node"].pop(node)
+        
+        # deleteing old links
+        for link in deletedOldLayers["links"]:
+            Source = link["start"]
+            Destination = link["end"]
+            Data["Links"].pop((Source, Destination))
+        
+        self.network = Network()
+        
+        self.clean_database_for_grooming()
+        
+        GroomingTabDataBase["LightPathes"].clear()  
+        GroomingTabDataBase["LinkState"].clear()
+        GroomingTabDataBase["NodeState"].clear()
+    
+        self.tabWidget.setTabEnabled(1, False)
+        self.tabWidget.setTabEnabled(2, False)
+
+        self.ViewGroupbox.setEnabled(False)
+
+        self.Grouping_groupbox.setEnabled(False)
+
+        self.Demand_Source_combobox.clear()
+        self.Demand_Destination_combobox.clear()
+
+        self.Grooming_pushbutton.setStyleSheet("QPushButton {\n"
+    "    \n"
+    "    \n"
+    "    font: 75 10pt \"Bahnschrift Condensed\";\n"
+    "    \n"
+    "    border: 2px solid #8f8f91; min-width: 80px;\n"
+    "    border-color: #EB8686; \n"
+    "    border-radius: 25px;\n"
+    "}\n"
+    "\n"
+    "QPushButton:pressed,hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:flat {\n"
+    "    border: none; /* no border for a flat push button */\n"
+    "}\n"
+    "\n"
+    "QPushButton:default {\n"
+    "    border-color: navy; /* make the default button prominent */\n"
+    "}")
+
+        self.RWA_pushbutton.setStyleSheet("QPushButton {\n"
+    "    \n"
+    "    \n"
+    "    font: 75 10pt \"Bahnschrift Condensed\";\n"
+    "    \n"
+    "    border: 2px solid #8f8f91; min-width: 80px;\n"
+    "    border-color: #EB8686; \n"
+    "    border-radius: 25px;\n"
+    "}\n"
+    "\n"
+    "QPushButton:pressed,hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:hover {\n"
+    "    background-color: #EB8686; \n"
+    "}\n"
+    "QPushButton:flat {\n"
+    "    border: none; /* no border for a flat push button */\n"
+    "}\n"
+    "\n"
+    "QPushButton:default {\n"
+    "    border-color: navy; /* make the default button prominent */\n"
+    "}")
 
 
+        self.Ui_Export_PT_dialog = QtWidgets.QDialog()
+        self.Export_PT = Ui_Export_PT()
+        self.Export_PT.setupUi(self.Ui_Export_PT_dialog)
+        self.Ui_Export_PT_dialog.show()
 
     def create_obj(self):
         with open("NetworkObj.obj", 'wb') as handle:
@@ -2541,7 +2681,171 @@ class Ui_MainWindow(object):
 
             for i in range(1, DemandTabDataBase["Shelf_Count"][Source]):
                 self.Demand_tab.addTab(getattr(self, "shelf_" + str(i + 1)), "Shelf " + str(i + 1))
+    
+    def save_PT_excel(self):
+
+        def create_PT_excel(filename):
+            workbook = xlsxwriter.Workbook(filename)
+
+            worksheet1 = workbook.add_worksheet("Nodes")
+            worksheet2 = workbook.add_worksheet("Links")  
             
+            cell_format1 = workbook.add_format()
+            cell_format_header1 = workbook.add_format()
+
+            cell_format_header1.set_pattern(1)  
+            cell_format_header1.set_bg_color('#00C7CE')
+            #cell_format_header.set_indent(2)
+
+            cell_format_header1.set_center_across()
+
+            worksheet1.set_column('C:C', 25)
+            worksheet1.set_column('D:D', 20)
+
+            worksheet1.write('A1', 'ID', cell_format_header1) 
+            worksheet1.write('B1', 'Node', cell_format_header1) 
+            worksheet1.write('C1', 'Location', cell_format_header1) 
+            worksheet1.write('D1', 'ROEDM_Type', cell_format_header1) 
+
+            cell_format1.set_center_across()
+
+            row = 1
+            id = 1
+
+            for NodeName , value in Data["Nodes"].items(): 
+
+                worksheet1.write(row, 0, id, cell_format1)
+                worksheet1.write(row ,1 , NodeName, cell_format1)
+                worksheet1.write(row ,2 , str(value['Location'][0]) + ',' + str(value['Location'][1]) , cell_format1)
+                worksheet1.write(row ,3 , value['ROADM_Type'], cell_format1)
+                row += 1
+                id += 1
+
+            cell_format2 = workbook.add_format()
+            cell_format_header2 = workbook.add_format()
+
+            cell_format_header2.set_pattern(1)  
+            cell_format_header2.set_bg_color('#FFC7CE')
+            #cell_format_header.set_indent(2)
+
+            cell_format_header2.set_center_across()
+
+            worksheet2.set_column('C:C', 15)
+            worksheet2.set_column('E:E', 12)
+            worksheet2.set_column('F:F', 18)
+            worksheet2.set_column('I:I', 10)
+
+
+            worksheet2.write('A1', 'ID', cell_format_header2) 
+            worksheet2.write('B1', 'Source', cell_format_header2) 
+            worksheet2.write('C1', 'Destination', cell_format_header2) 
+            worksheet2.write('D1', 'Distance', cell_format_header2) 
+            worksheet2.write('E1', 'Fiber Type', cell_format_header2) 
+            worksheet2.write('F1', 'Loss Coefficient', cell_format_header2) 
+            worksheet2.write('G1', 'Beta', cell_format_header2) 
+            worksheet2.write('H1', 'Gamma', cell_format_header2) 
+            worksheet2.write('I1', 'Dispersion', cell_format_header2) 
+
+            cell_format2.set_center_across()
+
+            row = 1
+            id = 1
+
+            # link dictionary data structure
+            # dic_link = {(Source, Destination): {'Distance':xxx, 'Fiber Type':xxx, 'Loss Coefficient':xxx, 'Beta':xxx, 'Gamma':xxx, 'Dispersion':xxx}}
+
+            for key, value in Data["Links"].items():
+
+                worksheet2.write(row, 0, id, cell_format2)
+                worksheet2.write(row, 1, key[0], cell_format2)
+                worksheet2.write(row, 2, key[1], cell_format2)
+                worksheet2.write(row, 3, value['Length'][0] , cell_format2)
+                worksheet2.write(row, 4, value['Type'][0], cell_format2)
+                worksheet2.write(row, 5, value['Loss'][0], cell_format2)
+                worksheet2.write(row, 6, value['Beta'][0], cell_format2)
+                worksheet2.write(row, 7, value['Gamma'][0], cell_format2)
+                worksheet2.write(row, 8, value['Dispersion'][0], cell_format2)
+                row += 1
+                id += 1
+
+            # SAVE part
+            workbook.close()
+        
+        name = QFileDialog.getSaveFileName(MainWindow, "Save Physical Topology Excel", filter = "(*.xlsx)")
+        if name[0] != 0:
+            try:
+                create_PT_excel(name[0])
+            except:
+                pass 
+    
+    def LoadTM_fun(self, window):
+        name = QFileDialog.getOpenFileName(window, "Load Traffic Matrix")
+
+        if name[0] != 0 and name[0] != "":
+            Data["ui"].clear_tm()
+            try:
+                with pd.ExcelFile(name[0]) as handle:
+                    Temp_data = handle.parse(header=1, skipfooter=0)
+
+                handle.close()
+                header_list = ['ID', 'Source', 'Destination', 'Old\nCable\nType', 'Cable\nType', 'Distance\nReal\n(Km)',
+                            'Att. (dB/km)\nfor Network Plan\n(Option 1 or 2)', 'Status',"Degree"]
+
+                j = -1
+                for i in header_list:
+                    dict1 = {}
+                    j += 1
+                    dict1.update(Temp_data[i])
+                    Data["General"]["DataSection"][str(j)].update(dict1)
+                    #print(Data["General"]["DataSection"][str(j)])
+                    for keys in list(Data["General"]["DataSection"][str(j)].keys()):
+                        text = str(Data["General"]["DataSection"][str(j)][keys])
+                        if text == "nan":
+                            Data["General"]["DataSection"][str(j)].pop(keys)
+                        else:
+                            Data["General"]["DataSection"][str(j)][keys] = text
+                Data["ui"].update_cells()
+                header_list2 = [['Quantity_E1', 'SLA_E1'], ['Quantity_STM1_E', 'SLA_STM1_E'],
+                                ['Quantity_STM1_O', 'λ_STM1_O(nm)', 'SLA_STM1_O'],
+                                ['Quantity_STM4', 'λ_STM4(nm)', 'Concat._STM4', 'SLA_STM4'],
+                                ['Quantity_STM16', 'λ_STM16(nm)', 'Concat._STM16', 'SLA_STM16'],
+                                ['Quantity_STM64', 'λ_STM64(nm)', 'Concat._STM64', 'SLA_STM64'],
+                                ['Quantity_FE', "GranularityxVC12", "GranularityxVC4", 'λ_FE(nm)', 'SLA_FE'],
+                                ['Quantity_GE', 'Granularity_GE', 'λ_GE(nm)', 'SLA_GE'],
+                                ['Quantity_10GE', 'Granularity_10GE', 'λ_10GE(nm)', 'SLA_10GE'],
+                                ['Quantity_40GE', 'Granularity_40GE', 'λ_40GE(nm)', 'SLA_40GE'],
+                                ['Quantity_100GE', 'Granularity_100GE', 'λ_100GE(nm)', 'SLA_100GE']]
+                self.all_headers = ["E1", "STM_1_Electrical", "STM_1_Optical", "STM_4", "STM_16", "STM_64", "FE", "1GE", "10GE",
+                            "40GE", "100GE"]
+                l1 = [["Quantity", "SLA"], ["Quantity", "SLA"], ["Quantity", "λ", "SLA"],
+                    ["Quantity", "λ", "concat.", "SLA"], ["Quantity", "λ", "concat.", "SLA"],
+                    ["Quantity", "λ", "concat.", "SLA"],
+                    ["Quantity", "Granularity_xVC12", "Granularity_xVC4", "λ", "SLA"],
+                    ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"],
+                    ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"]]
+                k = -1
+                for m in self.all_headers:
+                    k += 1
+                    for j in range(len(header_list2[k])):
+                        dict1 = {}
+                        dict1.update(Temp_data[header_list2[k][j]])
+                        Data[m]["DataSection"][l1[k][j]].update(dict1)
+                        #print(Data[m]["DataSection"][l1[k][j]])
+                        for keys in list(Data[m]["DataSection"][l1[k][j]].keys()):
+                            text = str(Data[m]["DataSection"][l1[k][j]][keys])
+                            if  text == "nan":
+                                Data[m]["DataSection"][l1[k][j]].pop(keys)
+                            else:
+                                Data[m]["DataSection"][l1[k][j]][keys] = text
+                
+                TM_Success = True
+            except:
+                TM_Success = False
+        
+        else:
+            TM_Success = False
+
+        return name, TM_Success
 
     def export_excel_fun(self):
         
@@ -2794,7 +3098,7 @@ class Ui_MainWindow(object):
 
         if hasattr(self, "RWA_Success"):
             if self.RWA_Success is True:
-                name = QFileDialog.getSaveFileName(MainWindow, "Save Topology", filter = "(*.xlsx)")
+                name = QFileDialog.getSaveFileName(MainWindow, "Save Result Excel", filter = "(*.xlsx)")
                 if name[0] != 0:
                     try:
                         if not Data["Clustering"]:
@@ -3215,10 +3519,10 @@ class Ui_MainWindow(object):
         GroomingTabDataBase["LinkState"].clear()
         GroomingTabDataBase["NodeState"].clear()
         
-        self.m = folium.Map(location=[35.6892,51.3890],zoom_start=6)
+        """ self.m = folium.Map(location=[35.6892,51.3890],zoom_start=6)
         self.m.save("map.html")
         Data["Map_Var"] = self.m
-        Data["Web_Engine"] = self.webengine
+        Data["Web_Engine"] = self.webengine """
         self.webengine.load(QUrl.fromLocalFile(os.path.abspath('map.html')))
         self.webengine.show()
 
@@ -3548,10 +3852,10 @@ class Ui_MainWindow(object):
         self.IdLocationMap = {}     # {id : [x , y]}
         self.NodeLocationMap = {}   # { name: [x, y]}
 
-        for NodeData in Data["Nodes"].values():
+        for NodeName, NodeData in Data["Nodes"].items():
             
-            self.NodeIdMap[NodeData["Node"]] = self.network.Topology.Node.ReferenceId
-            self.IdNodeMap[self.network.Topology.Node.ReferenceId] = NodeData["Node"]
+            self.NodeIdMap[NodeName] = self.network.Topology.Node.ReferenceId
+            self.IdNodeMap[self.network.Topology.Node.ReferenceId] = NodeName
             self.IdLocationMap[self.network.Topology.Node.ReferenceId] = scale_calculation(NodeData["Location"][0], NodeData["Location"][1])
             self.NodeLocationMap[NodeData["Node"]] = self.IdLocationMap[self.network.Topology.Node.ReferenceId]
             self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["ROADM_Type"])
@@ -3753,444 +4057,26 @@ class Ui_MainWindow(object):
     
     def insert_link_fun(self):
         NodeCorDict = {}
-        """ for id in list(Data["Links"].keys()):
-            source = id[0]
-            destination = id[1]
-            source_cor = Data["Nodes"][source]["Coordinate"]
-            destination_cor = Data["Nodes"][destination]["Coordinate"]
-            loc = [source_cor,destination_cor]
+        for NodeName, data in Data["Nodes"].items():
 
-            # drawing nodes and links on map
-            folium.Marker(source_cor,icon=folium.Icon(color="red"), popup=  "<h2>%s</h2>" %source).add_to(self.m)
-            added.append(source)
-            folium.Marker(destination_cor,icon=folium.Icon(color="red"),popup= "<h2>%s</h2>" %destination).add_to(self.m)
-            added.append(destination)
-            folium.PolyLine(loc ,weight = 3,popup = "Link ID: %s"%(id),color = "black",opacity = 0.8).add_to(self.m) """
-        for Node, data in Data["Nodes"].items():
-            NodeName = data["Node"]
             Node_cor = data["Location"]
             NodeCorDict[NodeName] = Node_cor
-            Icon = folium.features.CustomIcon('Icons\\blue\\server_blue.png',icon_size=(30, 30),icon_anchor=(20,30))
-            folium.Marker(Node_cor ,icon = Icon, tooltip =  "<h2>%s</h2>" %NodeName).add_to(self.m)
+            #Icon = folium.features.CustomIcon('Icons\\blue\\server_blue.png',icon_size=(30, 30),icon_anchor=(20,30))
+            #folium.Marker(Node_cor ,icon = Icon, tooltip =  "<h2>%s</h2>" %NodeName).add_to(self.m)
+            self.webengine.page().runJavaScript("add_node(\"%s\", \"%s\")" %(NodeName, Node_cor))
         
         for link in Data["Links"].keys():
             Source_cor = NodeCorDict[link[0]]
             DesTination_cor = NodeCorDict[link[1]]
-            loc = [Source_cor, DesTination_cor]
-            folium.PolyLine(loc ,weight = 3,tooltip = "<h2>%s - %s</h2>"%(link[0], link[1]),color = "black",opacity = 0.8).add_to(self.m)
+            #loc = [Source_cor, DesTination_cor]
+            #folium.PolyLine(loc ,weight = 3,tooltip = "<h2>%s - %s</h2>"%(link[0], link[1]),color = "black",opacity = 0.8).add_to(self.m)
+            self.webengine.page().runJavaScript("add_link(\"%s\", \"%s\", \"%s\", \"%s\")" %(Source_cor, DesTination_cor, link[0], link[1]))
 
-        self.m.save("map.html")
+        #self.m.save("map.html")
 
         # adding js events and settings on map
 
-        Fig = self.m.get_root()
-        Figtext = Fig.render()
-        MapVar = re.findall("var( map_.*)=", Figtext)[0].strip()
-        channel = "qrc:///qtwebchannel/qwebchannel.js"
-        Fig.header.add_child(Element("<script src=%s></script>" %channel))
-        Fig.header.add_child(Element("<link rel=\"stylesheet\" href=\"MainMap_style.css\" />"))
-        '''Fig.script.add_child(Element("""window.onload = function() {
-        new QWebChannel(qt.webChannelTransport, function (channel) {
-        window.backend = channel.objects.backend;
-        });"""))'''
-        Fig.script.add_child(Element("""
-        var  SetNodeGateWay_flag = null;
-        var SelectSubNode_flag = null;
-        var groupcolor = null;
-        var marker_num = 0;
-        var failed_nodes = new Object();
-        var failed_nodes_list = [];
-        var clusters_info = new Object();
-        var clusters_info_list = [];
-        var lambdas = new Object();
-        var wrapper = document.createElement("div");
-        var canvas = document.createElement("canvas");
-        canvas.setAttribute("class", "focusArea");
-        var displayArea = document.createElement('div');
-        // displayArea.textContent = " ";
-        displayArea.setAttribute("id", "displayArea");
-        displayArea.innerHTML = "Wavelength Number: ";
-        canvas.height = 50;
-        canvas.width = 420
-        wrapper.appendChild(canvas);
-        wrapper.appendChild(displayArea);
-        var Num_WL = null;
-        var Num_RG = null;
-        var Algorithm = null;
-        var Worst_SNR = null;
-        //handleMouseOverLines();
-        function setcolor(text){
-            groupcolor = text;
-        }
-        function SetNode_flag_fun(text){
-            SetNodeGateWay_flag = text;
-        }
-        function SelectSubNode_flag_fun(text){
-            SelectSubNode_flag = text;
-        }
-        function receive_failed_nodes(NodeName, Color, SubNode){
-            failed_nodes[NodeName] = {"Color":Color, "SubNode":parseInt(SubNode)};
-            failed_nodes_list.push(NodeName);
-        }
-        function change_failed_nodes_icon(){
-            
-            // loop on nodes group feature and notify their icon
-            myFeatureGroup.eachLayer(function (layer) {
-                var x = layer["_tooltip"]["_content"];
-                var doc = new DOMParser().parseFromString(x, "text/xml");
-                var z = doc.documentElement.textContent;
-                NodeName = z.replace(/\s/g, '');
-                if (failed_nodes_list.includes(NodeName)){
-                    value = failed_nodes[NodeName]
-                    Color = value["Color"]
-                    SubNode = value["SubNode"]
-                    index = failed_nodes_list.indexOf(NodeName);
-                    failed_nodes_list.splice(index, 1);
-                    
-                    myFeatureGroup.removeLayer(layer);
-                    latlng = layer.getLatLng()
-                    %s.removeLayer(layer);
-                    layer.remove();
-                    if (SubNode == 0){
-                        change_icon(NodeName, latlng, Color, 1, "notified")
-                    } else{
-                        change_icon(NodeName, latlng, Color, 0.6, "notified")
-                    }
-                    
-                }
-        });
-        }
-        function set_failed_node_default(Source){
-            var value = failed_nodes[Source];
-            var color = value["Color"];
-            var subnode = value["SubNode"];
-            var flag = 0;
-            
-            myFeatureGroup.eachLayer(function (layer) {
-                var x = layer["_tooltip"]["_content"];
-                var doc = new DOMParser().parseFromString(x, "text/xml");
-                var z = doc.documentElement.textContent;
-                NodeName = z.replace(/\s/g, '');
-                if (NodeName == Source){
-                    if (flag == 0){
-                    var latlng = layer.getLatLng()
-                    
-                    %s.removeLayer(layer);
-                    layer.remove();
-                    if (subnode == 0){
-                        
-                        change_icon(NodeName, latlng, color, 1, "normal")
-                    } else{
-                        ("yes sub node is 1")
-                        change_icon(NodeName, latlng, color, 0.6, "normal")
-                    }
-                }
-                flag = 1;
-                }
-            });
-        }
-
-        function cancel_clustering(nodename){
-            myFeatureGroup.eachLayer(function (layer) {
-
-                var x = layer["_tooltip"]["_content"];
-                var doc = new DOMParser().parseFromString(x, "text/xml");
-                var z = doc.documentElement.textContent;
-                NodeName = z.replace(/\s/g, '');
-
-                if ( NodeName == nodename ){
-                    var latlng = layer.getLatLng()
-
-                    %s.removeLayer(layer);
-                    layer.remove();
-
-                    change_icon(NodeName, latlng, "blue", 1, "normal")
-
-                }
-            });
-        }
-
-        function update_cluster_info(nodename, color, subnode_state){
-            clusters_info[nodename] = {"Color":color, "SubNode":parseInt(subnode_state)};
-            clusters_info_list.push(nodename);
-        }
-
-        function hide_subnodes(){
-            myFeatureGroup.eachLayer(function (layer) {
-                var x = layer["_tooltip"]["_content"];
-                var doc = new DOMParser().parseFromString(x, "text/xml");
-                var z = doc.documentElement.textContent;
-                NodeName = z.replace(/\s/g, '');
-
-                if (clusters_info_list.includes(NodeName)){
-                    SubNode_state = clusters_info[NodeName]["SubNode"];
-
-                    if (SubNode_state == 1) {
-                        layer.setOpacity(0);
-                    }
-                }
-            });
-        }
-
-        function show_subnodes(){
-            myFeatureGroup.eachLayer(function (layer) {
-                var x = layer["_tooltip"]["_content"];
-                var doc = new DOMParser().parseFromString(x, "text/xml");
-                var z = doc.documentElement.textContent;
-                NodeName = z.replace(/\s/g, '');
-
-                if ( clusters_info_list.includes(NodeName) ){
-                    SubNode_state = clusters_info[NodeName]["SubNode"];
-
-                    if (SubNode_state == 1) {
-                        layer.setOpacity(0.6);
-                    }
-                }
-            });
-        }
-        function receive_lambdas(Source, Destination, value){
-            a_value = JSON.parse(value)
-            lambdas[[Source, Destination]] = a_value
-        }
-        var links_groupfeature = L.featureGroup().addTo(%s).on(\"click\", links_click_event);
-        %s.eachLayer(function (layer) {
-               if (layer instanceof L.Polyline){
-                  layer.addTo(links_groupfeature);
-               }
-               
-            });
         
-        function google_map_view_set(green, yellow, orange){
-            links_groupfeature.eachLayer(function (layer){
-                var x = layer["_tooltip"]["_content"];
-                var doc = new DOMParser().parseFromString(x, "text/xml");
-                var z = doc.documentElement.textContent;
-                link_key = z.replace(/\s/g, '');
-                link_key = link_key.split("-");
-                lambda_list = lambdas[link_key];
-                Len = lambda_list.length;
-                if ( Len <= green ){
-                    layer.setStyle({
-                        color: 'green'
-                    });
-                } else if ( Len <= yellow ){
-                    layer.setStyle({
-                        color: 'yellow'
-                    });
-                } else if ( Len <= orange ){
-                    layer.setStyle({
-                        color: 'orange'
-                    });
-                } else{
-                    layer.setStyle({
-                        color: 'red'
-                    });
-                }
-            });
-        }
-        function google_map_view_reset(){
-            links_groupfeature.eachLayer(function(layer){
-                layer.setStyle({
-                    color: 'black'
-                });
-            });
-        }
-        
-        
-        
-        function links_click_event(event){
-            var x = event.layer["_tooltip"]["_content"];
-            var doc = new DOMParser().parseFromString(x, "text/xml");
-            var z = doc.documentElement.textContent;
-            link_key = z.replace(/\s/g, '');
-            link_key = link_key.split("-")
-            lambda_list = lambdas[link_key]
-            
-            drawLines(event.layer, lambda_list, handleMouseOverLines);
-            
-        }
-        function drawLines(layer, lambdaList, callback) {
-            popupOptions = {
-                maxWidth: "auto"
-            };
-            layer.bindPopup(drawDetailBox(lambdaList), popupOptions)
-            
-            callback(lambdaList)
-        }
-        function drawDetailBox(lambdaList) {
-            canvas.height = 90;
-            canvas.width = 806;
-            var h = canvas.height;
-            const lineYStart = 15;
-            const lineYEnd = h - 20;
-            var ctx = canvas.getContext("2d");
-            for (var i = 1; i <= 100; i++) {
-                const lineX = (i * 8) - 4
-                ctx.beginPath();
-                ctx.moveTo(lineX, lineYStart);
-                ctx.lineTo(lineX, lineYEnd);
-                ctx.lineWidth = 2;
-                if (lambdaList.includes(i)) {
-                    ctx.strokeStyle = "black";
-                } else {
-                    ctx.strokeStyle = "gray";
-                }
-                ctx.stroke();
-                ctx.save();
-                var textX = lineX - 4;
-                var textY = h - lineYStart;
-                if (i %% 5 == 0) {
-                    textY = 12;
-                    ctx.translate(textX, textY);
-                    ctx.rotate(-Math.PI / 5);
-                    ctx.translate(-textX, -textY);
-                    ctx.fillText(i, textX, lineYStart);
-                }
-                ctx.restore();
-            }
-            return wrapper;
-        }
-        function handleMouseOverLines(lambdaList) {
-            canvas.addEventListener("mousemove", e => showLineNumberInBox(e, lambdaList));
-            canvas.addEventListener("mouseleave", unshowLineNumberInBox);
-        }
-        function showLineNumberInBox(e, lambdaList) {
-            console.log(e.offsetX);
-            x = e.clientX;
-            y = e.clientY;
-            var lineNum = 0;
-            const xOff = e.offsetX;
-            if (xOff %% 8 >= 2 && xOff %% 8 <= 4) {
-                cursor = " ";
-                lineNum = 1 + parseInt(xOff / 8);
-                if (lambdaList.includes(lineNum)) {
-                    cursor = lineNum;
-                }
-            } else {
-                cursor = " ";
-            }
-            document.getElementById("displayArea").style.display = 'block';
-            document.getElementById("displayArea").innerHTML = 'Wavelength Number: ' + cursor;
-            document.getElementById("displayArea").style.right = x + 'px';
-            document.getElementById("displayArea").style.top = y + 'px';
-        }
-        
-        function unshowLineNumberInBox() {
-                document.getElementById("displayArea").innerHTML = "Wavelength Number: ";
-            }
-        function createLegend(num_WL, num_RG, algorithm , worst_SNR, RWA_Runtime) {
-            Num_WL = num_WL;
-            Num_RG = num_RG;
-            Algorithm = algorithm;
-            Worst_SNR = worst_SNR;
-            var legend = L.control({ position: 'bottomleft' });
-            legend.onAdd = function (map) {
-                var div = L.DomUtil.create("div", "legend");
-                div.style.backgroundColor = 'WHITE';
-                div.innerHTML += '<h5>Total number of used wavelengths<b>: ' + Num_WL + '</b></h5>';
-                div.innerHTML += '<h5>Total number of regenerators<b>: ' + Num_RG + '</b></h5>';
-                div.innerHTML += '<h5>Used algorithm and its runtime<b>: ' + Algorithm + '  ,  ' + RWA_Runtime + ' s' + '</b></h5>';
-                div.innerHTML += '<h5>Worst SNR on all links<b>: ' + Worst_SNR + '</b></h5>';
-                return div;
-            };
-            legend.addTo(%s);
-        }
-        function change_icon(NodeName, latlng, Color, Opacity, mode){
-                if ( mode == "normal" ){
-                    var url = "Icons/" + Color + "/server_" + Color + ".png"
-                } else {
-                    var url = "Icons/" + Color + "/server_n" + Color + ".png"
-                }
-                //alert(url)
-                var myIcon = L.icon({
-                                        iconUrl: url,
-                                        iconSize: [30, 30],
-                                        iconAnchor: [20, 30],
-                                    });
-                var mark = L.marker(latlng,{opacity:Opacity}).setIcon(myIcon).addTo(%s);
-                //var pop = L.popup({"maxWidth": "100%%"});
-                //var htm = $(`<div id="htm" style="width: 100.0%%; height: 100.0%%;"><h2>${NodeName}</h2></div>`)[0];
-                //pop.setContent(htm);
-                mark.bindTooltip(
-                `<div>
-                     <h2>${NodeName}</h2>
-                 </div>`,
-                {"sticky": true}
-            );
-                mark.addTo(myFeatureGroup);
-        }
-        var backend_map = null;
-        new QWebChannel(qt.webChannelTransport, function (channel) {
-        window.backend_map = channel.objects.backend_map;
-        });""" %(MapVar, MapVar, MapVar, MapVar, MapVar, MapVar, MapVar)))
-        Fig.script.add_child(Element("var myFeatureGroup = L.featureGroup().addTo(%s).on(\"click\", groupClick);" %MapVar))
-
-        Fig.script.add_child(Element("""%s.eachLayer(function (layer) {
-               if (layer instanceof L.Marker){
-
-                    
-                    layer.addTo(myFeatureGroup);
-               }
-               
-            });""" %MapVar))
-
-        Fig.script.add_child(Element("""function groupClick(event) {
-            //var degreename = event.layer.getPopup().getContent().textContent
-            // TODO: change popup to tooltip
-            //var degreename = event.layer.getTooltip().getContent()
-            //alert(degreename)
-
-            var x = event.layer["_tooltip"]["_content"];
-            var doc = new DOMParser().parseFromString(x, "text/xml");
-            var z = doc.documentElement.textContent;
-            degreename = z.replace(/\s/g, '');
-
-            //alert(groupcolor)
-            
-
-            if (SetNodeGateWay_flag == "True") {
-
-                backend_map.Create_DataBase(degreename)
-
-                var latlng = event.layer.getLatLng();
-                
-                myFeatureGroup.removeLayer(event.layer);
-                %s.removeLayer(event.layer);
-                event.layer.remove();
-                
-                
-                change_icon(degreename, latlng, groupcolor, 1, "normal");
-
-
-                backend_map.SetNode_flag_fun("False",groupcolor)
-
-            } else if ( SelectSubNode_flag == "True") {
-
-                backend_map.AddNode_DataBase(degreename)
-
-                var latlng = event.layer.getLatLng();
-                
-                myFeatureGroup.removeLayer(event.layer);
-                %s.removeLayer(event.layer);
-                event.layer.remove();
-                
-                change_icon(degreename, latlng, groupcolor, 0.6, "normal");
-
-                
-
-
-            } else{
-                backend_map.change_tab_to4(degreename);
-            }
-
-            
-            }
-            """ %(MapVar, MapVar) ))
-        
-        Fig.save("map.html")
-
-        self.webengine.load(QUrl.fromLocalFile(os.path.abspath('map.html')))
-        self.webengine.show()
 
 
     def SaveChanges_button_fun(self):
