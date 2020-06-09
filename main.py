@@ -1910,6 +1910,8 @@ class Ui_MainWindow(object):
         self.Traffic_matrix.cellChanged.connect(self.TM_CellChange_fun)
 
         self.General_TM.cellChanged.connect(self.GTM_CellChange_fun)
+        self.General_TM.cellChanged.connect(self.initialize_error_console)
+        self.Errors_listwidget.itemClicked.connect(self.scroll_to_cell)
 
         #.LoadTM_button.clicked.connect(self.LoadTM_fun)
 
@@ -3636,11 +3638,12 @@ class Ui_MainWindow(object):
         column = self.General_TM.currentColumn()
         value = self.General_TM.item(row,column)
         value = value.text()      
+
         
         if value == "":
             if (row in Data["General"]["DataSection"][str(column)]):
-                #Data["General"]["DataSection"][str(column)].pop(row)
-                pass
+                Data["General"]["DataSection"][str(column)][row]=""
+                
                 
         else:
             if column == 0 and str(value).isdigit():
@@ -3697,28 +3700,44 @@ class Ui_MainWindow(object):
 
             else:
                 self.General_TM.item(row,column).setBackground(Qt.red)
-                #self.General_TM.item(row,column).setBackground(QtGui.QColor(100,150,100))
                 #############################
                 i = {"row":row, "column":column, "value":value}
                 if i not in Data["error_cell_info"]:
                     Data["error_cell_info"].append(i)
                 else:
                     pass
-
         #print(Data["error_cell_info"])
     
+    
     def initialize_error_console(self):
+        
+        self.Errors_listwidget.clear()
+ 
+        errors_contents = ['id', 'source', 'destination', 'oct', 'ct', 'dr', 'att', 'pt']
+ 
+        for error in range(len(Data["error_cell_info"])):
+            
+            row = Data["error_cell_info"][error]["row"]
+            column = Data["error_cell_info"][error]["column"]
+            value = Data["error_cell_info"][error]["value"]
+            content = errors_contents[column]
 
-        errors_contents = ['0', '1', '2', '3', '4', '5', '6', '8']
+            item_content = "(row:" + str(row+1) + " column:" + str(column+1) + "), " + str(value) +" is " + content
+            self.Errors_listwidget.addItem(item_content)
 
-        for error in Data["error_cell_info"]:
-            self.Errors_listwidget.addItem(Data["error_cell_info"]["row"])
+    
+    def scroll_to_cell(self):
+        info = ""
+        info = self.Errors_listwidget.currentItem()
+        info = info.text()
 
-    def scroll_to_cell(self,row,column):
-        #scrollToItem
-        self.General_TM.scrollToItem(self.General_TM.item(row,column))
+        row = int(float(info[5:6]))
+        column = int(float(info[14:15])) #int(float(info[14:15]))
+
+        self.General_TM.scrollToItem(self.General_TM.item(row, column))
         
 
+    
     def update_cells(self):
     
         '''item = self.listWidget.currentItem()
