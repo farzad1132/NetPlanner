@@ -2196,7 +2196,6 @@ class Ui_MainWindow(object):
         Destination = self.Demand_Destination_combobox.currentText()
 
         # creating plot
-        Scale_factor = 10
         plot = figure(x_range=(0, 100), y_range=(0, 100),
             tools='wheel_zoom, pan', active_scroll= 'wheel_zoom', active_drag='pan', toolbar_location=None, sizing_mode= 'stretch_both')
             
@@ -2301,8 +2300,8 @@ class Ui_MainWindow(object):
                         x_offset=8, y_offset=8)
         plot.add_layout(labels)
 
-        plot.x_range = Range1d(x_min - 1 , x_max + 1)
-        plot.y_range = Range1d(y_min - 1, y_max + 1)
+        plot.x_range = Range1d( 0.9999 * x_min , 1.0001 * x_max )
+        plot.y_range = Range1d( 0.9999 * y_min , 1.0001 * y_max )
 
         # saving file
         output_file("demand_map.html")
