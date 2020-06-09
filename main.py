@@ -35,6 +35,7 @@ from Ui_files.new_ui import iconresources
 from data import *
 from grooming_algorithm import grooming_fun
 
+from ExportPhysicalTopology import Ui_Export_PT
 
 from BLANK_Demand.BLANK_Demand import BLANK_Demand
 from MP2X_Demand.MP2X_L_Demand import MP2X_L_Demand
@@ -2273,7 +2274,10 @@ class Ui_MainWindow(object):
     "}")
 
 
-    # TODO: setup a window for after drawing mode
+        self.Ui_Export_PT_dialog = QtWidgets.QDialog()
+        self.Export_PT = Ui_Export_PT()
+        self.Export_PT.setupUi(self.Ui_Export_PT_dialog)
+        self.Ui_Export_PT_dialog.show()
 
     def create_obj(self):
         with open("NetworkObj.obj", 'wb') as handle:
@@ -2727,12 +2731,12 @@ class Ui_MainWindow(object):
                 worksheet2.write(row, 0, id, cell_format2)
                 worksheet2.write(row, 1, key[0], cell_format2)
                 worksheet2.write(row, 2, key[1], cell_format2)
-                worksheet2.write(row, 3, value['Distance'] , cell_format2)
-                worksheet2.write(row, 4, value['Fiber Type'], cell_format2)
-                worksheet2.write(row, 5, value['Loss Coefficient'], cell_format2)
-                worksheet2.write(row, 6, value['Beta'], cell_format2)
-                worksheet2.write(row, 7, value['Gamma'], cell_format2)
-                worksheet2.write(row, 8, value['Dispersion'], cell_format2)
+                worksheet2.write(row, 3, value['Length'][0] , cell_format2)
+                worksheet2.write(row, 4, value['Type'][0], cell_format2)
+                worksheet2.write(row, 5, value['Loss'][0], cell_format2)
+                worksheet2.write(row, 6, value['Beta'][0], cell_format2)
+                worksheet2.write(row, 7, value['Gamma'][0], cell_format2)
+                worksheet2.write(row, 8, value['Dispersion'][0], cell_format2)
                 row += 1
                 id += 1
 
@@ -2746,7 +2750,74 @@ class Ui_MainWindow(object):
             except:
                 pass 
     
-     
+    def LoadTM_fun(self, window):
+        name = QFileDialog.getOpenFileName(window, "Load Traffic Matrix")
+
+        if name[0] != 0 and name[0] != "":
+            Data["ui"].clear_tm()
+            try:
+                with pd.ExcelFile(name[0]) as handle:
+                    Temp_data = handle.parse(header=1, skipfooter=0)
+
+                handle.close()
+                header_list = ['ID', 'Source', 'Destination', 'Old\nCable\nType', 'Cable\nType', 'Distance\nReal\n(Km)',
+                            'Att. (dB/km)\nfor Network Plan\n(Option 1 or 2)', 'Status',"Degree"]
+
+                j = -1
+                for i in header_list:
+                    dict1 = {}
+                    j += 1
+                    dict1.update(Temp_data[i])
+                    Data["General"]["DataSection"][str(j)].update(dict1)
+                    #print(Data["General"]["DataSection"][str(j)])
+                    for keys in list(Data["General"]["DataSection"][str(j)].keys()):
+                        text = str(Data["General"]["DataSection"][str(j)][keys])
+                        if text == "nan":
+                            Data["General"]["DataSection"][str(j)].pop(keys)
+                        else:
+                            Data["General"]["DataSection"][str(j)][keys] = text
+                Data["ui"].update_cells()
+                header_list2 = [['Quantity_E1', 'SLA_E1'], ['Quantity_STM1_E', 'SLA_STM1_E'],
+                                ['Quantity_STM1_O', 'λ_STM1_O(nm)', 'SLA_STM1_O'],
+                                ['Quantity_STM4', 'λ_STM4(nm)', 'Concat._STM4', 'SLA_STM4'],
+                                ['Quantity_STM16', 'λ_STM16(nm)', 'Concat._STM16', 'SLA_STM16'],
+                                ['Quantity_STM64', 'λ_STM64(nm)', 'Concat._STM64', 'SLA_STM64'],
+                                ['Quantity_FE', "GranularityxVC12", "GranularityxVC4", 'λ_FE(nm)', 'SLA_FE'],
+                                ['Quantity_GE', 'Granularity_GE', 'λ_GE(nm)', 'SLA_GE'],
+                                ['Quantity_10GE', 'Granularity_10GE', 'λ_10GE(nm)', 'SLA_10GE'],
+                                ['Quantity_40GE', 'Granularity_40GE', 'λ_40GE(nm)', 'SLA_40GE'],
+                                ['Quantity_100GE', 'Granularity_100GE', 'λ_100GE(nm)', 'SLA_100GE']]
+                self.all_headers = ["E1", "STM_1_Electrical", "STM_1_Optical", "STM_4", "STM_16", "STM_64", "FE", "1GE", "10GE",
+                            "40GE", "100GE"]
+                l1 = [["Quantity", "SLA"], ["Quantity", "SLA"], ["Quantity", "λ", "SLA"],
+                    ["Quantity", "λ", "concat.", "SLA"], ["Quantity", "λ", "concat.", "SLA"],
+                    ["Quantity", "λ", "concat.", "SLA"],
+                    ["Quantity", "Granularity_xVC12", "Granularity_xVC4", "λ", "SLA"],
+                    ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"],
+                    ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"]]
+                k = -1
+                for m in self.all_headers:
+                    k += 1
+                    for j in range(len(header_list2[k])):
+                        dict1 = {}
+                        dict1.update(Temp_data[header_list2[k][j]])
+                        Data[m]["DataSection"][l1[k][j]].update(dict1)
+                        #print(Data[m]["DataSection"][l1[k][j]])
+                        for keys in list(Data[m]["DataSection"][l1[k][j]].keys()):
+                            text = str(Data[m]["DataSection"][l1[k][j]][keys])
+                            if  text == "nan":
+                                Data[m]["DataSection"][l1[k][j]].pop(keys)
+                            else:
+                                Data[m]["DataSection"][l1[k][j]][keys] = text
+                
+                TM_Success = True
+            except:
+                TM_Success = False
+        
+        else:
+            TM_Success = False
+
+        return name, TM_Success
 
     def export_excel_fun(self):
         
