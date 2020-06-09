@@ -7,13 +7,9 @@ import sys, os
 import pandas as pd
 from PySide2 import QtWebEngineWidgets
 from PySide2.QtWebEngineWidgets import QWebEnginePage
-import folium,random
 from PySide2.QtCore import QUrl,Qt,QModelIndex
 from PySide2.QtGui import QStandardItemModel
-import re
 from PySide2.QtWebChannel import QWebChannel
-import branca
-from branca.element import Element
 import xlrd
 import xlsxwriter
 from pandas import ExcelWriter
@@ -23,7 +19,6 @@ import math
 from math import ceil
 import requests
 import json
-import socketio  
 import time, traceback
 import copy , warnings
 
