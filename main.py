@@ -50,17 +50,12 @@ from TrafficMatrixError.Destination_type_error import Ui_Destination_type_error
 from TrafficMatrixError.Quantity_type_error import Ui_Quantity_type_error
 from TrafficMatrixError.SLA_type_error import Ui_SLA_type_error
 
-#from mapwidget import MapWidget
-from mapwidget import MapWidget
-import matplotlib as mpl
-from  matplotlib.backends.backend_qt5agg  import  FigureCanvas
-from  matplotlib.figure  import  Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-#from mpl_toolkits.basemap import Basemap
-import matplotlib.pyplot as plt
+
 import networkx as nx
-import utm
+from bokeh.plotting import from_networkx, figure
+from bokeh.models import ColumnDataSource, DataRange1d, Range1d
+from bokeh.models import StaticLayoutProvider, LabelSet
+from bokeh.io import output_file, save
 import numpy
 
 class AlignDelegate(QtWidgets.QStyledItemDelegate):
@@ -2196,104 +2191,125 @@ class Ui_MainWindow(object):
     def DemandMap_Change(self, Working = None, Protection = None, 
         WorkingRegeneratorsList = None, ProtectionRegenaratorsList = None, WorkingSNR = None, ProtectionSNR = None, WorkingLambdaList = None,
         ProtectionLambdaList= None):
-        #mpl.rcParams["figure.figsize"] = [18.4, 7.8]
-        self.MapWidget.canvas.figure.subplots_adjust(left = -0.001, right = 1, top = 1, bottom = -0.005)
-        self.MapWidget.canvas.axes.cla()
+
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
 
-        for node in Data["Nodes"].values():
+        # creating plot
+        Scale_factor = 10
+        plot = figure(x_range=(0, 100), y_range=(0, 100),
+            tools='wheel_zoom, pan', active_scroll= 'wheel_zoom', active_drag='pan', toolbar_location=None, sizing_mode= 'stretch_both')
+            
+        plot.grid.visible = False
+        plot.axis.visible = False
 
+        # adding networkx graph to bokeh plot
+        graph = from_networkx(self.G, nx.spring_layout)
+        plot.renderers.append(graph)
 
-            NodeName = node["Node"]
-            id = self.NodeIdMap[NodeName]
-            x, y = self.IdLocationMap[id]
+        # fixing nodes positions
+        fixed_layout_provider = StaticLayoutProvider(graph_layout=self.NodeLocationMap)
 
-            if NodeName == Source or NodeName == Destination:
-                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'gold')
-            else:
-                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'black')
+        graph.layout_provider = fixed_layout_provider
 
-            self.MapWidget.canvas.axes.annotate(NodeName, xy = (x, y), xytext = (x, y),
-             color='purple', rotation = 30, 
-             horizontalalignment='left', verticalalignment='center_baseline')
+        # updating node attributes
+        index = graph.node_renderer.data_source.data['index']
 
-        for key in Data["Links"].keys():
-            InNodeName = key[0]
-            OutNodeName = key[1]
-
-            InNodeId = self.NodeIdMap[InNodeName]
-            OutNodeId = self.NodeIdMap[OutNodeName]
-
-            xIn , yIn = self.IdLocationMap[InNodeId]
-            xOut, yOut = self.IdLocationMap[OutNodeId]
-
-            xl = [xIn, xOut]
-            yl = [yIn, yOut]
-            self.MapWidget.canvas.axes.plot(xl,yl, c='black')
-
-        #self.MapWidget.canvas.axes.plot(G)
-        self.MapWidget.canvas.axes.get_xaxis().set_visible(False)
-        self.MapWidget.canvas.axes.get_yaxis().set_visible(False)
-        self.MapWidget.canvas.axes.set_frame_on(False)
+        node_color = ['black' for _ in range(len(self.IdNodeMap))]
+        node_size = [ 10 for _ in range(len(self.IdNodeMap))]
         
+        source_index = index.index(Source)
+        destination_index = index.index(Destination)
 
-        x_list_W = []
-        y_list_W = []
-        if Working != None:
+        node_color[source_index] = 'yellow'
+        node_size[source_index] = 17
+
+        node_color[destination_index] = 'yellow'
+        node_size[destination_index] = 17
+
+        if WorkingRegeneratorsList is not None:
+            for id in WorkingRegeneratorsList:
+                name = self.IdNodeMap[id]
+                node_index = index.index(node_index)
+
+                node_color[node_index] = 'green'
+                node_size[node_index] = 13
+        
+        if ProtectionRegenaratorsList is not None:
+            for id in ProtectionRegenaratorsList:
+                name = self.IdNodeMap[id]
+                node_index = index.index(node_index)
+
+                node_color[node_index] = 'green'
+                node_size[node_index] = 13
+
+
+        graph.node_renderer.data_source.data['node_color'] = node_color
+        graph.node_renderer.data_source.data['node_size'] = node_size
+        graph.node_renderer.glyph.update(size='node_size', fill_color="node_color")
+
+        # updateing link attributes
+        Num_links = len(graph.edge_renderer.data_source.data["start"])
+        graph.edge_renderer.data_source.data['link_width'] = [3 for _ in range(Num_links)]
+        graph.edge_renderer.glyph.update(line_width= "link_width")
+
+        if Working is not None:
+            x_list_w = []
+            y_list_w = []
             for key in Working:
 
                 x1, y1 = self.IdLocationMap[key]
 
+                x_list_w.append(x1)
+                y_list_w.append(y1)
+            
+            Working_legend = 'Working , SNR =' + str(WorkingSNR) + '\n' + 'Working Lambdas: ' + str(WorkingLambdaList)
+            plot.line(x=x_list_w, y=y_list_w, legend_label= Working_legend, line_width=5, line_color = 'blue')
 
-                x_list_W.append(x1)
-                y_list_W.append(y1)
-
-            if WorkingSNR != None:
-                SNRList = str(WorkingSNR)
-                WavelengthNumber = str(WorkingLambdaList)
-                snr_label = "Working SNR = " + SNRList + '\n' + "Wavelength Number = " + WavelengthNumber
-                self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label=snr_label)
-            else:
-                self.MapWidget.canvas.axes.plot(x_list_W, y_list_W, c='blue', alpha = 0.5, linewidth=5, label="Working")
-            self.MapWidget.canvas.axes.legend(loc = 'best')
-
-
-        x_list_P = []
-        y_list_P = []
-        if Protection != None:
+        if Protection is not None:
+            x_list_p = []
+            y_list_p = []
             for key in Protection:
 
                 x1, y1 = self.IdLocationMap[key]
 
+                x_list_p.append(x1)
+                y_list_p.append(y1)
 
-                x_list_P.append(x1)
-                y_list_P.append(y1)
+            Protection_legend = 'Protection , SNR =' + str(ProtectionSNR) + '\n' + 'Protection Lambdas: ' + str(ProtectionLambdaList)
+            plot.line(x=x_list_p, y=y_list_p, legend_label= Protection_legend, line_width=5, line_color= 'red')
 
-            if ProtectionSNR != None:
-                SNRList = str(ProtectionSNR)
-                WavelengthNumber = str(ProtectionLambdaList)
-                snr_label1 = "Protection SNR = " + SNRList + '\n' + "Wavelength Number = " + WavelengthNumber          
-                self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label=snr_label1)
-            else:
-                self.MapWidget.canvas.axes.plot(x_list_P, y_list_P, c='red', alpha = 0.5, linewidth=5, label="Protection")
-            self.MapWidget.canvas.axes.legend(loc = 'best')
+        
 
-            
-        if WorkingRegeneratorsList != None:
-            for key in WorkingRegeneratorsList:
+        # adding nodes label
+        List = list(self.NodeLocationMap.items())
+        x = list(map(lambda x: x[1][0], List))
+        y = list(map(lambda x: x[1][1], List))
+        name = list(map(lambda x: x[0], List))
 
-                x, y = self.IdLocationMap[key]
+        x_min = min(x)
+        x_max = max(x)
 
-                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'green')
+        y_min = min(y)
+        y_max = max(y)
+        #x, y = zip(*graph.layout_provider.graph_layout.values())
 
-        if ProtectionRegenaratorsList != None:
-            for key in ProtectionRegenaratorsList:
+        source = ColumnDataSource({'x': x, 'y': y,
+                                'name': name})
 
-                x, y = self.IdLocationMap[key]
-                self.MapWidget.canvas.axes.plot(x, y, marker ="o", ms=13, color = 'green')
+        labels = LabelSet(x='x', y='y', text='name', source= source, level='glyph',
+                        x_offset=8, y_offset=8)
+        plot.add_layout(labels)
 
-        self.MapWidget.canvas.draw()
+        plot.x_range = Range1d(x_min - 1 , x_max + 1)
+        plot.y_range = Range1d(y_min - 1, y_max + 1)
+
+        # saving file
+        output_file("demand_map.html")
+        save(plot)
+
+        self.MapWidget.load(QUrl.fromLocalFile(os.path.abspath('demand_map.html')))
+
     
     def cancel_button_fun(self):
         if hasattr(self.backend_map, "LastGateWay"):
@@ -3523,23 +3539,22 @@ class Ui_MainWindow(object):
 
     def PhysicalTopologyToObject(self):
 
+        
         def scale_calculation(lat, lon):
-            u = utm.from_latlon(lat, lon)
-            x = u[0]
-            y = u[1]
-
-            return [x,y]
+            return [lon, lat]
 
 
         self.NodeIdMap = {}        # { name: id }
         self.IdNodeMap = {}        # {id : name}
         self.IdLocationMap = {}     # {id : [x , y]}
+        self.NodeLocationMap = {}   # { name: [x, y]}
 
         for NodeData in Data["Nodes"].values():
             
             self.NodeIdMap[NodeData["Node"]] = self.network.Topology.Node.ReferenceId
             self.IdNodeMap[self.network.Topology.Node.ReferenceId] = NodeData["Node"]
             self.IdLocationMap[self.network.Topology.Node.ReferenceId] = scale_calculation(NodeData["Location"][0], NodeData["Location"][1])
+            self.NodeLocationMap[NodeData["Node"]] = self.IdLocationMap[self.network.Topology.Node.ReferenceId]
             self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["ROADM_Type"])
         
         for LinkId , LinkData in Data["Links"].items():
@@ -4208,12 +4223,23 @@ class Ui_MainWindow(object):
         self.Failed_Nodes_flag = False
         self.pre_source = ""
         self.change_in_groomoutlist_flag = False
-        
+
+    
     
     def DemandTabDataBase_Setup(self):
+
+        # creating networkx graph
+        self.G = nx.Graph()
+
         for node in Data["Nodes"].values():
             nodename = node["Node"]
             DemandTabDataBase["Panels"][nodename] = {}
+
+            # adding nodes to graph
+            self.G.add_node(nodename)
+        
+        # adding links to graph
+        self.G.add_edges_from(list(Data["Links"].keys()))
         
     
     def Demand_Shelf_set(self):
