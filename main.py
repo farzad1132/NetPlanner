@@ -1891,11 +1891,11 @@ class Ui_MainWindow(object):
 
         # NOTE: uncomment bellow if you want use console.log
 
-        class WebEnginePage(QWebEnginePage):
+        """ class WebEnginePage(QWebEnginePage):
             def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
                 print("javaScriptConsoleMessage: ", level, message, lineNumber, sourceID)
 
-        self.webengine.setPage(WebEnginePage(self.webengine))
+        self.webengine.setPage(WebEnginePage(self.webengine)) """
         backend_map = Backend_map(MainWindow)
         self.backend_map = backend_map
         channel = QWebChannel(MainWindow)
@@ -2789,7 +2789,7 @@ class Ui_MainWindow(object):
 
                 handle.close()
                 header_list = ['ID', 'Source', 'Destination', 'Old\nCable\nType', 'Cable\nType', 'Distance\nReal\n(Km)',
-                            'Att. (dB/km)\nfor Network Plan\n(Option 1 or 2)', 'Status',"Degree"]
+                            'Att. (dB/km)\nfor Network Plan\n(Option 1 or 2)', 'Status',"Protection_Type"]
 
                 j = -1
                 for i in header_list:
@@ -3857,7 +3857,7 @@ class Ui_MainWindow(object):
             self.NodeIdMap[NodeName] = self.network.Topology.Node.ReferenceId
             self.IdNodeMap[self.network.Topology.Node.ReferenceId] = NodeName
             self.IdLocationMap[self.network.Topology.Node.ReferenceId] = scale_calculation(NodeData["Location"][0], NodeData["Location"][1])
-            self.NodeLocationMap[NodeData["Node"]] = self.IdLocationMap[self.network.Topology.Node.ReferenceId]
+            self.NodeLocationMap[NodeName] = self.IdLocationMap[self.network.Topology.Node.ReferenceId]
             self.network.PhysicalTopology.add_node(NodeData["Location"], NodeData["ROADM_Type"])
         
         for LinkId , LinkData in Data["Links"].items():
@@ -4116,8 +4116,7 @@ class Ui_MainWindow(object):
         # creating networkx graph
         self.G = nx.Graph()
 
-        for node in Data["Nodes"].values():
-            nodename = node["Node"]
+        for nodename in Data["Nodes"].keys():
             DemandTabDataBase["Panels"][nodename] = {}
 
             # adding nodes to graph
