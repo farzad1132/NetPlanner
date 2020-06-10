@@ -3729,18 +3729,21 @@ class Ui_MainWindow(object):
             column = error[1]
             value = Data["error_cell_info"][error]
             content = errors_contents[column]
+            info = (row,column)
 
             item_content = "(row:" + str(row+1) + " column:" + str(column+1) + "), " + str(value) +" is " + content
-            self.Errors_listwidget.addItem(item_content)
+            self.Errors_listwidget.insertItem(0, item_content)
+            temp_item = self.Errors_listwidget.item(0)
+            temp_item.setData(Qt.UserRole, info)
+            
 
-    
     def scroll_to_cell(self):
         info = ""
-        info = self.Errors_listwidget.currentItem()
-        info = info.text()
+        curitem = self.Errors_listwidget.currentItem()
+        info = curitem.data(Qt.UserRole)
 
-        row = int(float(info[5:6]))
-        column = int(float(info[14:15])) #int(float(info[14:15]))
+        row = info[0]
+        column = info[1]
 
         self.General_TM.scrollToItem(self.General_TM.item(row, column))
         

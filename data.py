@@ -18,10 +18,10 @@ Data["Last_Link_ID"] = 0
 Data["Nodes"] = {}  # TODO: write this parts structure
 Data["Links"] = {}  # TODO: write this parts structure
 
-Data["error_cell_info"]=[]
+Data["error_cell_info"]={}
                     
 # format :
-#          [ {"row":<row> , "column":<column> , "value":<value> }, {...} ]
+#           {(<row> ,<column>):<value> ,(...} 
 # row and column of the cell in gtm table which has some errors about datatype or some other errors
 
 Data["Clustering"] = {}
