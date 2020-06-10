@@ -1911,6 +1911,8 @@ class Ui_MainWindow(object):
         self.Traffic_matrix.cellChanged.connect(self.TM_CellChange_fun)
 
         self.General_TM.cellChanged.connect(self.GTM_CellChange_fun)
+        self.General_TM.cellChanged.connect(self.initialize_error_console)
+        self.Errors_listwidget.itemClicked.connect(self.scroll_to_cell)
 
         #.LoadTM_button.clicked.connect(self.LoadTM_fun)
 
@@ -3919,22 +3921,29 @@ class Ui_MainWindow(object):
         value = value.text()
         header = str(self.listWidget.currentItem().text())
         column_name = Data[header]["Headers"][column].strip()
+        address = (row,column)
+
         if value == "":
             if (str(row) in Data[header]["DataSection"][column_name]):
                 Data[header]["DataSection"][column_name].pop(str(row))
+                self.Traffic_matrix.item(row,column).setBackground(Qt.white)
         else:
             if column_name=='Quantity':
                 if str(value).isdigit():
                     Data[header]["DataSection"][column_name][str(row)] = value
+                    self.Traffic_matrix.item(row,column).setBackground(Qt.white)
+
                 else:
-                    # error for wrong data type
-                    self.TMErrorWrongDataType(row, column_name, value)
+                    self.Traffic_matrix.item(row,column).setBackground(Qt.red) 
+
+
             elif column_name=='SLA' :
                 if str(value).isalpha():
                     Data[header]["DataSection"][column_name][str(row)] = value
+                    self.Traffic_matrix.item(row,column).setBackground(Qt.white)
                 else:
-                    # error for wrong data type
-                    self.TMErrorWrongDataType(row, column_name, value)
+                    self.Traffic_matrix.item(row,column).setBackground(Qt.red) 
+
             else:
                 Data[header]["DataSection"][column_name][str(row)] = value
 
@@ -3948,96 +3957,114 @@ class Ui_MainWindow(object):
             self.Traffic_matrix.setRowCount(Data["RowCount"])
         column = self.General_TM.currentColumn()
         value = self.General_TM.item(row,column)
-        value = value.text()      
+        value = value.text()
+        address = (row,column)
+
+
         if value == "":
             if (row in Data["General"]["DataSection"][str(column)]):
-                Data["General"]["DataSection"][str(column)].pop(row)
+                Data["General"]["DataSection"][str(column)][row]=""
+                self.General_TM.item(row,column).setBackground(Qt.white)
+                Data["error_cell_info"].pop(address, None)
+
+
         else:
             if column == 0 and str(value).isdigit():
                 Data["General"]["DataSection"][str(column)][row] = value
+                self.General_TM.item(row,column).setBackground(Qt.white)
+                Data["error_cell_info"].pop(address, None)
+
 
             elif column==1 or column==2:
-                Data["General"]["DataSection"][str(column)][row] = value
-
+                k=0
+                for i in range(len(Data["Nodes"])) :
+                    if str(value) == str(Data["Nodes"][i+1]["Node"]): 
+                        k+=1        
+                    else:
+                        pass
+                if k==1 :
+                    Data["General"]["DataSection"][str(column)][row] = value
+                    self.General_TM.item(row,column).setBackground(Qt.white)
+                    Data["error_cell_info"].pop(address, None)
+                    
+                else:
+                    self.General_TM.item(row,column).setBackground(Qt.red)
+                    ###########################
+                    if address not in Data["error_cell_info"].keys():
+                        Data["error_cell_info"][address]= value
+                    else:
+                        pass
+                    
             elif column==3 or column==4 or column==7:
                 if str(value).isalpha():
                     Data["General"]["DataSection"][str(column)][row] = value
+                    self.General_TM.item(row,column).setBackground(Qt.white)
+                    Data["error_cell_info"].pop(address, None)
                 else:
-                    self.GTMErrorWrongDataType(row, column, value)        
+                    self.General_TM.item(row,column).setBackground(Qt.red) 
+                    ###########################       
+                    if address not in Data["error_cell_info"].keys():
+                        Data["error_cell_info"][address]= value
+                    else:
+                        pass
             
-            elif column== 5 and type(value)==float :
+            #elif column== 5 and type(value)==float :
+            elif column== 5 and isinstance(value, float):
                 Data["General"]["DataSection"][str(column)][row] = value
+                self.General_TM.item(row,column).setBackground(Qt.white)
+                Data["error_cell_info"].pop(address, None)
             
+
             elif column== 6 and type(value)==float and value <= 0.3 :
                 Data["General"]["DataSection"][str(column)][row] = value
-            
+                self.General_TM.item(row,column).setBackground(Qt.white)
+                Data["error_cell_info"].pop(address, None)
+
+
             elif column == 8 and (str(value) == '1+1_NodeDisjoint' or str(value) =='NoProtection'):
-                Data["General"]["DataSection"][str(column)][row] = value               
+                Data["General"]["DataSection"][str(column)][row] = value
+                self.General_TM.item(row,column).setBackground(Qt.white)
+                Data["error_cell_info"].pop(address, None)
+
             else:
-                # error for wrong data type
-                self.GTMErrorWrongDataType(row, column, value)
+                self.General_TM.item(row,column).setBackground(Qt.red)
+                #############################
+                if address not in Data["error_cell_info"].keys():
+                    Data["error_cell_info"][address]= value
+                else:
+                    pass
+    
+    
+    def initialize_error_console(self):
+        
+        self.Errors_listwidget.clear()
+ 
+        errors_contents = ['id', 'source', 'destination', 'oct', 'ct', 'dr', 'att','s', 'pt']
+ 
+        for error in Data["error_cell_info"].keys():
+            
+            row = error[0]
+            column = error[1]
+            value = Data["error_cell_info"][error]
+            content = errors_contents[column]
+            info = (row,column)
 
+            item_content = "(row:" + str(row+1) + " column:" + str(column+1) + "), " + str(value) +" is " + content
+            self.Errors_listwidget.insertItem(0, item_content)
+            temp_item = self.Errors_listwidget.item(0)
+            temp_item.setData(Qt.UserRole, info)
+            
 
-    def GTMErrorWrongDataType(self, row, column, value):
+    def scroll_to_cell(self):
+        info = ""
+        curitem = self.Errors_listwidget.currentItem()
+        info = curitem.data(Qt.UserRole)
 
-        if column == 0 :
-            self.ID_type_error_widget = QtWidgets.QWidget()
-            self.ID_type_error = Ui_ID_type_error()
-            self.ID_type_error.setupUi(self.ID_type_error_widget)
-            self.ID_type_error_widget.show()
-        ''' if column == 1 : # no need to ui files too(the error windows for these columns)
-            self.Source_type_error_widget = QtWidgets.QWidget()
-            self.Source_type_error = Ui_Source_type_error()
-            self.Source_type_error.setupUi(self.Source_type_error_widget)
-            self.Source_type_error_widget.show()
-        if column == 2 :
-            self.Destination_type_error_widget = QtWidgets.QWidget()
-            self.Destination_type_error = Ui_Destination_type_error()
-            self.Destination_type_error.setupUi(self.Destination_type_error_widget)
-            self.Destination_type_error_widget.show() '''
-        if column == 3 :
-            self.OldCableType_type_error_widget = QtWidgets.QWidget()
-            self.OldCableType_type_error = Ui_OldCableType_type_error()
-            self.OldCableType_type_error.setupUi(self.OldCableType_type_error_widget)
-            self.OldCableType_type_error_widget.show() 
-        if column == 4 :
-            self.CableType_type_error_widget = QtWidgets.QWidget()
-            self.CableType_type_error = Ui_CableType_type_error()
-            self.CableType_type_error.setupUi(self.CableType_type_error_widget)
-            self.CableType_type_error_widget.show() 
-        if column == 5 :
-            self.DistanceReal_type_error_widget = QtWidgets.QWidget()
-            self.DistanceReal_type_error = Ui_DistanceReal_type_error()
-            self.DistanceReal_type_error.setupUi(self.DistanceReal_type_error_widget)
-            self.DistanceReal_type_error_widget.show() 
-        if column == 6 :
-            self.Att_type_error_widget = QtWidgets.QWidget()
-            self.Att_type_error = Ui_Att_type_error()
-            self.Att_type_error.setupUi(self.Att_type_error_widget)
-            self.Att_type_error_widget.show() 
-        if column == 7 :
-            self.Status_type_error_widget = QtWidgets.QWidget()
-            self.Status_type_error = Ui_Status_type_error()
-            self.Status_type_error.setupUi(self.Status_type_error_widget)
-            self.Status_type_error_widget.show()
-        if column == 8 :
-            self.Protection_Type_type_error_widget = QtWidgets.QWidget()
-            self.Protection_Type_type_error = Ui_Status_type_error()
-            self.Protection_Type_type_error.setupUi(self.Protection_Type_type_error_widget)
-            self.Protection_Type_type_error_widget.show()
+        row = info[0]
+        column = info[1]
 
-    def TMErrorWrongDataType(self, row, column_name, value):
-
-        if column_name == 'Quantity' :
-            self.Quantity_type_error_widget = QtWidgets.QWidget()
-            self.Quantity_type_error = Ui_Quantity_type_error()
-            self.Quantity_type_error.setupUi(self.Quantity_type_error_widget)
-            self.Quantity_type_error_widget.show()
-        if column_name=='SLA' :
-            self.SLA_type_error_widget = QtWidgets.QWidget()
-            self.SLA_type_error = Ui_SLA_type_error()
-            self.SLA_type_error.setupUi(self.SLA_type_error_widget)
-            self.SLA_type_error_widget.show() 
+        self.General_TM.scrollToItem(self.General_TM.item(row, column))
+        
 
 
     def update_cells(self):

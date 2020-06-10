@@ -18,6 +18,13 @@ Data["Last_Link_ID"] = 0
 Data["Nodes"] = {}  # TODO: write this parts structure
 Data["Links"] = {}  # TODO: write this parts structure
 
+Data["error_cell_info"] = {}
+# format :
+#          {(<row>,<column>):<value>,( ... }
+
+# row and the column of the cell which has something wrong with it... might be datatype or something else
+
+
 Data["Clustering"] = {}
 # format :
 #          {<NodeName> : {"Color": <ColorName>, "Type" : <TypeName> , "SubNodes" : <SubNodesNameList> } }
