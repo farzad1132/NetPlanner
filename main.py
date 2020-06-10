@@ -3604,18 +3604,21 @@ class Ui_MainWindow(object):
         value = value.text()
         header = str(self.listWidget.currentItem().text())
         column_name = Data[header]["Headers"][column].strip()
-        
+        address = (row,column)
         
         if value == "":
             if (str(row) in Data[header]["DataSection"][column_name]):
                 Data[header]["DataSection"][column_name].pop(str(row))
+                self.Traffic_matrix.item(row,column).setBackground(Qt.white)
         else:
             if column_name=='Quantity':
                 if str(value).isdigit():
                     Data[header]["DataSection"][column_name][str(row)] = value
                     self.Traffic_matrix.item(row,column).setBackground(Qt.white)
+
                 else:
                     self.Traffic_matrix.item(row,column).setBackground(Qt.red) 
+
             
             elif column_name=='SLA' :
                 if str(value).isalpha():
@@ -3638,17 +3641,21 @@ class Ui_MainWindow(object):
         column = self.General_TM.currentColumn()
         value = self.General_TM.item(row,column)
         value = value.text()      
+        address = (row,column)
 
         
         if value == "":
             if (row in Data["General"]["DataSection"][str(column)]):
                 Data["General"]["DataSection"][str(column)][row]=""
+                self.General_TM.item(row,column).setBackground(Qt.white)
+                Data["error_cell_info"].pop(address, None)
                 
                 
         else:
             if column == 0 and str(value).isdigit():
                 Data["General"]["DataSection"][str(column)][row] = value
                 self.General_TM.item(row,column).setBackground(Qt.white)
+                Data["error_cell_info"].pop(address, None)
 
 
             elif column==1 or column==2:
@@ -3661,52 +3668,53 @@ class Ui_MainWindow(object):
                 if k==1 :
                     Data["General"]["DataSection"][str(column)][row] = value
                     self.General_TM.item(row,column).setBackground(Qt.white)
+                    Data["error_cell_info"].pop(address, None)
                     
                 else:
                     self.General_TM.item(row,column).setBackground(Qt.red)
                     ###########################
-                    i = {"row":row, "column":column, "value":value}
-                    if i not in Data["error_cell_info"]:
-                        Data["error_cell_info"].append(i)
+                    if address not in Data["error_cell_info"].keys():
+                        Data["error_cell_info"][address]= value
                     else:
                         pass
-
+                    
             elif column==3 or column==4 or column==7:
                 if str(value).isalpha():
                     Data["General"]["DataSection"][str(column)][row] = value
                     self.General_TM.item(row,column).setBackground(Qt.white)
+                    Data["error_cell_info"].pop(address, None)
                 else:
                     self.General_TM.item(row,column).setBackground(Qt.red) 
                     ###########################       
-                    i = {"row":row, "column":column, "value":value}
-                    if i not in  Data["error_cell_info"]:
-                        Data["error_cell_info"].append(i)
+                    if address not in Data["error_cell_info"].keys():
+                        Data["error_cell_info"][address]= value
                     else:
                         pass
 
             elif column== 5 and type(value)==float :
                 Data["General"]["DataSection"][str(column)][row] = value
                 self.General_TM.item(row,column).setBackground(Qt.white)
+                Data["error_cell_info"].pop(address, None)
             
 
             elif column== 6 and type(value)==float and value <= 0.3 :
                 Data["General"]["DataSection"][str(column)][row] = value
                 self.General_TM.item(row,column).setBackground(Qt.white)
+                Data["error_cell_info"].pop(address, None)
 
 
             elif column == 8 and (str(value) == '1+1_NodeDisjoint' or str(value) =='NoProtection'):
                 Data["General"]["DataSection"][str(column)][row] = value
                 self.General_TM.item(row,column).setBackground(Qt.white)
+                Data["error_cell_info"].pop(address, None)
 
             else:
                 self.General_TM.item(row,column).setBackground(Qt.red)
                 #############################
-                i = {"row":row, "column":column, "value":value}
-                if i not in Data["error_cell_info"]:
-                    Data["error_cell_info"].append(i)
+                if address not in Data["error_cell_info"].keys():
+                    Data["error_cell_info"][address]= value
                 else:
                     pass
-        #print(Data["error_cell_info"])
     
     
     def initialize_error_console(self):
@@ -3715,11 +3723,11 @@ class Ui_MainWindow(object):
  
         errors_contents = ['id', 'source', 'destination', 'oct', 'ct', 'dr', 'att', 'pt']
  
-        for error in range(len(Data["error_cell_info"])):
+        for error in Data["error_cell_info"].keys():
             
-            row = Data["error_cell_info"][error]["row"]
-            column = Data["error_cell_info"][error]["column"]
-            value = Data["error_cell_info"][error]["value"]
+            row = error[0]
+            column = error[1]
+            value = Data["error_cell_info"][error]
             content = errors_contents[column]
 
             item_content = "(row:" + str(row+1) + " column:" + str(column+1) + "), " + str(value) +" is " + content
