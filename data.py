@@ -24,6 +24,15 @@ Data["Clustering"] = {}
 
 # keys are row numbers except nodes and links
 
+Data["error_in_TM"] = {}
+#   format:
+#   (<RowNumber> , <Column / ServiceType>, <GTM / TM>) : index
+
+# <RowNumber> : int ( keys in Data )
+# <Column / ServiceType>: str ( "0" to "8"  or  "STM_4" , ..)
+# <GTM / TM>: str ( "GTM" or "TM" )
+# index: int ( index of item error list )
+
 Data["General"]["ColumnCount"] = 9
 Data["General"]["DataSection"] = {}
 Data["General"]["DataSection"]["0"] = {} # 0: Id

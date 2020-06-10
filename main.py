@@ -2035,6 +2035,8 @@ class Ui_MainWindow(object):
         self.Traffic_matrix.setItemDelegate(delegate)
         self.Draw_Physical_Topology_pushButton.clicked.connect(self.start_draw_mode)
 
+        self.Errors_listwidget.itemClicked['QListWidgetItem*'].connect(self.scroll_to_cell)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -3947,97 +3949,106 @@ class Ui_MainWindow(object):
             self.General_TM.setRowCount(Data["RowCount"])
             self.Traffic_matrix.setRowCount(Data["RowCount"])
         column = self.General_TM.currentColumn()
-        value = self.General_TM.item(row,column)
-        value = value.text()      
+        item = self.General_TM.item(row,column)
+        value = item.text()
+
+        key = (row, str(column), "GTM")
+        if key in Data["error_in_TM"]:
+            flag = 1
+        else:
+            flag = 0
+
+        self.General_TM.blockSignals(True)
         if value == "":
             if (row in Data["General"]["DataSection"][str(column)]):
                 Data["General"]["DataSection"][str(column)].pop(row)
+
+        
         else:
-            if column == 0 and str(value).isdigit():
+            if column == 0:
                 Data["General"]["DataSection"][str(column)][row] = value
+                
+                state = value.isdigit()
+
+                if flag and state:
+                    item.setBackground(Qt.white)
+                    self.add_delete_error_in_TM(key, mode = "delete")
+                    Data["error_in_TM"].pop(key)
+
+                elif not flag and not state:
+                    item.setBackground(Qt.red)
+                    index = self.add_delete_error_in_TM(key, mode = "add")     
+                    Data["error_in_TM"][key] = index
 
             elif column==1 or column==2:
                 Data["General"]["DataSection"][str(column)][row] = value
 
-            elif column==3 or column==4 or column==7:
-                if str(value).isalpha():
-                    Data["General"]["DataSection"][str(column)][row] = value
+                if value in Data["Nodes"]:
+                    state = 1
                 else:
-                    self.GTMErrorWrongDataType(row, column, value)        
-            
-            elif column== 5 and type(value)==float :
+                    state = 0
+                
+                if flag and state:
+                    item.setBackground(Qt.white)
+                    self.add_delete_error_in_TM(key, mode = "delete")
+                    Data["error_in_TM"].pop(key)
+                
+                elif not flag and not state:
+                    item.setBackground(Qt.red)
+                    index = self.add_delete_error_in_TM(key, mode = "add")  
+                    Data["error_in_TM"][key] = index
+
+        self.General_TM.blockSignals(False)
+
+        """ elif column==3 or column==4 or column==7:
+            if str(value).isalpha():
                 Data["General"]["DataSection"][str(column)][row] = value
-            
-            elif column== 6 and type(value)==float and value <= 0.3 :
-                Data["General"]["DataSection"][str(column)][row] = value
-            
-            elif column == 8 and (str(value) == '1+1_NodeDisjoint' or str(value) =='NoProtection'):
-                Data["General"]["DataSection"][str(column)][row] = value               
             else:
-                # error for wrong data type
-                self.GTMErrorWrongDataType(row, column, value)
+                self.GTMErrorWrongDataType(row, column, value)        
+        
+        elif column== 5 and type(value)==float :
+            Data["General"]["DataSection"][str(column)][row] = value
+        
+        elif column== 6 and type(value)==float and value <= 0.3 :
+            Data["General"]["DataSection"][str(column)][row] = value
+        
+        elif column == 8 and (str(value) == '1+1_NodeDisjoint' or str(value) =='NoProtection'):
+            Data["General"]["DataSection"][str(column)][row] = value               
+        else:
+            # error for wrong data type
+            self.GTMErrorWrongDataType(row, column, value) """
+    
+    def add_delete_error_in_TM(self, key, mode = "add"):
 
+        row = key[0]
+        column = key[1]
+        table = key[2]
 
-    def GTMErrorWrongDataType(self, row, column, value):
+        
+        if mode == "add":
 
-        if column == 0 :
-            self.ID_type_error_widget = QtWidgets.QWidget()
-            self.ID_type_error = Ui_ID_type_error()
-            self.ID_type_error.setupUi(self.ID_type_error_widget)
-            self.ID_type_error_widget.show()
-        ''' if column == 1 : # no need to ui files too(the error windows for these columns)
-            self.Source_type_error_widget = QtWidgets.QWidget()
-            self.Source_type_error = Ui_Source_type_error()
-            self.Source_type_error.setupUi(self.Source_type_error_widget)
-            self.Source_type_error_widget.show()
-        if column == 2 :
-            self.Destination_type_error_widget = QtWidgets.QWidget()
-            self.Destination_type_error = Ui_Destination_type_error()
-            self.Destination_type_error.setupUi(self.Destination_type_error_widget)
-            self.Destination_type_error_widget.show() '''
-        if column == 3 :
-            self.OldCableType_type_error_widget = QtWidgets.QWidget()
-            self.OldCableType_type_error = Ui_OldCableType_type_error()
-            self.OldCableType_type_error.setupUi(self.OldCableType_type_error_widget)
-            self.OldCableType_type_error_widget.show() 
-        if column == 4 :
-            self.CableType_type_error_widget = QtWidgets.QWidget()
-            self.CableType_type_error = Ui_CableType_type_error()
-            self.CableType_type_error.setupUi(self.CableType_type_error_widget)
-            self.CableType_type_error_widget.show() 
-        if column == 5 :
-            self.DistanceReal_type_error_widget = QtWidgets.QWidget()
-            self.DistanceReal_type_error = Ui_DistanceReal_type_error()
-            self.DistanceReal_type_error.setupUi(self.DistanceReal_type_error_widget)
-            self.DistanceReal_type_error_widget.show() 
-        if column == 6 :
-            self.Att_type_error_widget = QtWidgets.QWidget()
-            self.Att_type_error = Ui_Att_type_error()
-            self.Att_type_error.setupUi(self.Att_type_error_widget)
-            self.Att_type_error_widget.show() 
-        if column == 7 :
-            self.Status_type_error_widget = QtWidgets.QWidget()
-            self.Status_type_error = Ui_Status_type_error()
-            self.Status_type_error.setupUi(self.Status_type_error_widget)
-            self.Status_type_error_widget.show()
-        if column == 8 :
-            self.Protection_Type_type_error_widget = QtWidgets.QWidget()
-            self.Protection_Type_type_error = Ui_Status_type_error()
-            self.Protection_Type_type_error.setupUi(self.Protection_Type_type_error_widget)
-            self.Protection_Type_type_error_widget.show()
+            if column == "0":
+                column_name = "ID"
+            elif column == "1":
+                column_name = "Source"
+            elif column == "2":
+                column_name = "Destination"
 
-    def TMErrorWrongDataType(self, row, column_name, value):
+            text = f"row: {row}, Column: {column_name}"
+            item = QListWidgetItem(text, self.Errors_listwidget)
+            item.setData(Qt.UserRole, key)
+            self.Errors_listwidget.addItem(item)
 
-        if column_name == 'Quantity' :
-            self.Quantity_type_error_widget = QtWidgets.QWidget()
-            self.Quantity_type_error = Ui_Quantity_type_error()
-            self.Quantity_type_error.setupUi(self.Quantity_type_error_widget)
-            self.Quantity_type_error_widget.show()
-        if column_name=='SLA' :
-            self.SLA_type_error_widget = QtWidgets.QWidget()
-            self.SLA_type_error = Ui_SLA_type_error()
-            self.SLA_type_error.setupUi(self.SLA_type_error_widget)
-            self.SLA_type_error_widget.show() 
+            return (self.Errors_listwidget.count() - 1)
+        
+        elif mode == "delete":
+            index = Data["error_in_TM"][key]
+            self.Errors_listwidget.takeItem(index)
+    
+    def scroll_to_cell(self, item):
+
+        key = item.data(Qt.UserRole)
+        self.General_TM.scrollToItem(self.General_TM.item(key[0], int(key[1])))
 
 
     def update_cells(self):
@@ -4045,12 +4056,17 @@ class Ui_MainWindow(object):
         '''item = self.listWidget.currentItem()
         item = str(item.text())'''
     
-        for j in range(Data["General"]["ColumnCount"]):
+        """ for j in range(Data["General"]["ColumnCount"]):
             keys = Data["General"]["DataSection"][str(j)].keys()
             for row in list(keys):
                 cell_data = Data["General"]["DataSection"][str(j)][row]
                 self.General_TM.setCurrentCell(int(row),j)
-                self.General_TM.setItem(int(row),j,QTableWidgetItem(cell_data))
+                self.General_TM.setItem(int(row),j,QTableWidgetItem(cell_data)) """
+        # NOTE: new version of this method ( under test )
+        for key, value in Data["General"]["DataSection"].items():
+            for index, data in value.items():
+                self.General_TM.setCurrentCell(int(index), int(key))
+                self.General_TM.setItem(int(index), int(key) ,QTableWidgetItem(data))
     
     
     
@@ -4087,7 +4103,7 @@ class Ui_MainWindow(object):
         self.DemandTabDataBase_Setup()
         #self.Demand_Shelf_set()
         self.Fill_Demand_SourceandDestination_combobox()
-        self.update_cells()
+        #self.update_cells()
 
         self.tabWidget.setTabEnabled(1, True)
         self.tabWidget.setTabEnabled(2, True)
