@@ -3977,8 +3977,8 @@ class Ui_MainWindow(object):
 
                 elif not flag and not state:
                     item.setBackground(Qt.red)
-                    index = self.add_delete_error_in_TM(key, mode = "add")     
-                    Data["error_in_TM"][key] = index
+                    list_item = self.add_delete_error_in_TM(key, mode = "add")     
+                    Data["error_in_TM"][key] = list_item
 
             elif column==1 or column==2:
                 Data["General"]["DataSection"][str(column)][row] = value
@@ -3995,8 +3995,8 @@ class Ui_MainWindow(object):
                 
                 elif not flag and not state:
                     item.setBackground(Qt.red)
-                    index = self.add_delete_error_in_TM(key, mode = "add")  
-                    Data["error_in_TM"][key] = index
+                    list_item = self.add_delete_error_in_TM(key, mode = "add")  
+                    Data["error_in_TM"][key] = list_item
 
         self.General_TM.blockSignals(False)
 
@@ -4039,10 +4039,11 @@ class Ui_MainWindow(object):
             item.setData(Qt.UserRole, key)
             self.Errors_listwidget.addItem(item)
 
-            return (self.Errors_listwidget.count() - 1)
+            return item
         
         elif mode == "delete":
-            index = Data["error_in_TM"][key]
+            list_item = Data["error_in_TM"][key]
+            index = self.Errors_listwidget.row(list_item)
             self.Errors_listwidget.takeItem(index)
     
     def scroll_to_cell(self, item):
