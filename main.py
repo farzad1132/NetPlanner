@@ -1908,7 +1908,7 @@ class Ui_MainWindow(object):
         #self.webengine.page().runJavaScript("add_link(\"%s\", \"%s\", \"%s\", \"%s\")" %([35.26, 45,88], [37.26, 48,88], "Tehran", "Karak"))
         #self.webengine.page().runJavaScript(f"just_for_test()")
 
-        self.Traffic_matrix.itemChanged.connect(self.TM_CellChange_fun)
+        self.Traffic_matrix.cellChanged.connect(self.TM_CellChange_fun)
 
         self.General_TM.cellChanged.connect(self.GTM_CellChange_fun)
 
@@ -2036,6 +2036,8 @@ class Ui_MainWindow(object):
         self.Draw_Physical_Topology_pushButton.clicked.connect(self.start_draw_mode)
 
         self.Errors_listwidget.itemClicked['QListWidgetItem*'].connect(self.scroll_to_cell)
+
+        self.SaveChanges_PushButton.clicked.connect(self.SaveChanges_button_fun)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -3169,7 +3171,9 @@ class Ui_MainWindow(object):
             for row in list(keys):
                 cell_data = Data[item]["DataSection"][column_name][row]
                 self.Traffic_matrix.setCurrentCell(int(row),i)
-                self.Traffic_matrix.setItem(int(row),i,QTableWidgetItem(cell_data))
+                #self.Traffic_matrix.setItem(int(row),i,QTableWidgetItem(cell_data))
+                #self.Traffic_matrix.item(int(row), i).setText(cell_data)
+                self.Traffic_matrix.setItem(int(row), i, QTableWidgetItem(cell_data))
     
     def Demand_LineList_fun(self, CurItem, PreItem):
         if self.update_Demand_lightpath_list_flag is True:
@@ -3910,14 +3914,15 @@ class Ui_MainWindow(object):
 
 
 
-    def TM_CellChange_fun(self, item):
+    def TM_CellChange_fun(self):
         row = self.Traffic_matrix.currentRow()
         if row == (Data["RowCount"] - 1):
             Data["RowCount"] += 1
             self.Traffic_matrix.setRowCount(Data["RowCount"])
             self.General_TM.setRowCount(Data["RowCount"])
 
-        column = self.Traffic_matrix.column(item)
+        column = self.Traffic_matrix.currentColumn()
+        item = self.Traffic_matrix.item(row,column)
         value = item.text()
         header = str(self.listWidget.currentItem().text())
         column_name = Data[header]["Headers"][column].strip()
