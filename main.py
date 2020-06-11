@@ -1908,7 +1908,7 @@ class Ui_MainWindow(object):
         #self.webengine.page().runJavaScript("add_link(\"%s\", \"%s\", \"%s\", \"%s\")" %([35.26, 45,88], [37.26, 48,88], "Tehran", "Karak"))
         #self.webengine.page().runJavaScript(f"just_for_test()")
 
-        self.Traffic_matrix.cellChanged.connect(self.TM_CellChange_fun)
+        self.Traffic_matrix.itemChanged.connect(self.TM_CellChange_fun)
 
         self.General_TM.cellChanged.connect(self.GTM_CellChange_fun)
 
@@ -3910,36 +3910,46 @@ class Ui_MainWindow(object):
 
 
 
-    def TM_CellChange_fun(self):
+    def TM_CellChange_fun(self, item):
         row = self.Traffic_matrix.currentRow()
         if row == (Data["RowCount"] - 1):
             Data["RowCount"] += 1
             self.Traffic_matrix.setRowCount(Data["RowCount"])
             self.General_TM.setRowCount(Data["RowCount"])
-        column = self.Traffic_matrix.currentColumn()
-        value = self.Traffic_matrix.item(row,column)
-        value = value.text()
+
+        column = self.Traffic_matrix.column(item)
+        value = item.text()
         header = str(self.listWidget.currentItem().text())
         column_name = Data[header]["Headers"][column].strip()
+
+        key = (row, header, "TM")
+        if key in Data["error_in_TM"]:
+            flag = 1
+        else:
+            flag = 0
+
+        self.Traffic_matrix.blockSignals(True)
         if value == "":
             if (str(row) in Data[header]["DataSection"][column_name]):
                 Data[header]["DataSection"][column_name].pop(str(row))
+
+
         else:
             if column_name=='Quantity':
                 if str(value).isdigit():
                     Data[header]["DataSection"][column_name][str(row)] = value
-                else:
-                    # error for wrong data type
-                    self.TMErrorWrongDataType(row, column_name, value)
-            elif column_name=='SLA' :
-                if str(value).isalpha():
-                    Data[header]["DataSection"][column_name][str(row)] = value
-                else:
-                    # error for wrong data type
-                    self.TMErrorWrongDataType(row, column_name, value)
-            else:
-                Data[header]["DataSection"][column_name][str(row)] = value
+            
+                state = value.isdigit()
 
+                if flag and state:
+                    item.setBackground(Qt.white)
+                    self.add_delete_error_in_TM(key, mode = "delete")
+                    Data["error_in_TM"].pop(key)
+
+                elif not flag and not state:
+                    item.setBackground(Qt.red)
+                    list_item = self.add_delete_error_in_TM(key, mode = "add")     
+                    Data["error_in_TM"][key] = list_item
 
 
     def GTM_CellChange_fun(self):
@@ -4026,13 +4036,16 @@ class Ui_MainWindow(object):
 
         
         if mode == "add":
-
-            if column == "0":
-                column_name = "ID"
-            elif column == "1":
-                column_name = "Source"
-            elif column == "2":
-                column_name = "Destination"
+            
+            if table == "GTM":
+                if column == "0":
+                    column_name = "ID"
+                elif column == "1":
+                    column_name = "Source"
+                elif column == "2":
+                    column_name = "Destination"
+            else:
+                column_name = column
 
             text = f"row: {row}, Column: {column_name}"
             item = QListWidgetItem(text, self.Errors_listwidget)
@@ -4047,8 +4060,15 @@ class Ui_MainWindow(object):
             self.Errors_listwidget.takeItem(index)
     
     def scroll_to_cell(self, item):
+        index_map = {"E1": 0, "STM_1_Electrical": 1, "STM_1_Optical": 2, "STM_4": 3, "STM_16": 4, "STM_64": 5, "FE": 6, "1GE": 7, "10GE": 8, "40GE": 9, "100GE": 10}
 
         key = item.data(Qt.UserRole)
+        table = key[2]
+        column = key[1]
+
+        if table == "TM":
+            index = index_map[index]
+            self.listWidget.setCurrentIndex(index)
         self.General_TM.scrollToItem(self.General_TM.item(key[0], int(key[1])))
 
 
