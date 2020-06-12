@@ -2708,7 +2708,7 @@ class Ui_MainWindow(object):
             worksheet1.write('A1', 'ID', cell_format_header1) 
             worksheet1.write('B1', 'Node', cell_format_header1) 
             worksheet1.write('C1', 'Location', cell_format_header1) 
-            worksheet1.write('D1', 'ROEDM_Type', cell_format_header1) 
+            worksheet1.write('D1', 'ROADM_Type', cell_format_header1) 
 
             cell_format1.set_center_across()
 
@@ -4039,7 +4039,56 @@ class Ui_MainWindow(object):
         column = key[1]
         table = key[2]
 
-        
+        if self.Errors_listwidget.count() != 0:
+            self.SaveChanges_PushButton.setEnabled(False)
+            self.SaveChanges_PushButton.setStyleSheet("QPushButton {\n"
+"    \n"
+"    \n"
+"    font: 75 11pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    background-color: red; \n"
+"    border-radius: 15px;\n"
+"}\n"
+"\n"
+"QPushButton:pressed,hover {\n"
+"    background-color: #EB8686; \n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: #EB8686; \n"
+"}\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
+        else:
+            self.SaveChanges_PushButton.setEnabled(True)
+            self.SaveChanges_PushButton.setStyleSheet("QPushButton {\n"
+"    \n"
+"    \n"
+"    font: 75 11pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #EB8686; \n"
+"    border-radius: 15px;\n"
+"}\n"
+"\n"
+"QPushButton:pressed,hover {\n"
+"    background-color: #EB8686; \n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: #EB8686; \n"
+"}\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
         if mode == "add":
             
             if table == "GTM":

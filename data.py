@@ -26,12 +26,12 @@ Data["Clustering"] = {}
 
 Data["error_in_TM"] = {}
 #   format:
-#   (<RowNumber> , <Column / ServiceType>, <GTM / TM>) : index
+#   (<RowNumber> , <Column / ServiceType>, <GTM / TM>) : item
 
 # <RowNumber> : int ( keys in Data )
 # <Column / ServiceType>: str ( "0" to "8"  or  "STM_4" , ..)
 # <GTM / TM>: str ( "GTM" or "TM" )
-# index: int ( index of item error list )
+# item: QListWidgetItem
 
 Data["General"]["ColumnCount"] = 9
 Data["General"]["DataSection"] = {}
