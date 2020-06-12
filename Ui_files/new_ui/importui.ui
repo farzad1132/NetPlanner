@@ -26,9 +26,6 @@
        <weight>7</weight>
        <italic>false</italic>
        <bold>false</bold>
-       <underline>false</underline>
-       <strikeout>false</strikeout>
-       <kerning>true</kerning>
       </font>
      </property>
      <property name="styleSheet">
@@ -50,7 +47,7 @@
    <item row="1" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLineEdit" name="NodeLineEdit">
+      <widget class="QLineEdit" name="PT_LineEdit">
        <property name="styleSheet">
         <string notr="true">QLineEdit {
  
@@ -66,7 +63,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="NodeButton">
+      <widget class="QPushButton" name="PT_button">
        <property name="maximumSize">
         <size>
          <width>999</width>
@@ -109,95 +106,27 @@ QPushButton:default {
 }</string>
        </property>
        <property name="text">
-        <string>Nodes</string>
+        <string>Physical Topology</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
    <item row="2" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QLineEdit" name="LinkLineEdit">
-       <property name="styleSheet">
-        <string notr="true">QLineEdit {
- 
-    border: 2px solid rgb(226, 226, 226);
-	border-bottom-color: rgb(86, 86, 86);
-    padding: 0 8px;
-    
-    selection-background-color: darkgray; 
-	font: 8pt &quot;Bahnschrift&quot;;
-
-}</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="LinkButton">
-       <property name="maximumSize">
-        <size>
-         <width>999</width>
-         <height>999</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Bahnschrift Condensed</family>
-         <pointsize>10</pointsize>
-         <weight>9</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QPushButton {
-	
-	
-	font: 75 10pt &quot;Bahnschrift Condensed&quot;;
-	
-	color: rgb(117, 117, 117);
-    border: 2px solid #8f8f91; min-width: 80px;
-	border-color: #4072B3; 
-    border-radius: 15px;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #dadbde, stop: 1 #f6f7fa);
-} 
-
-
-QPushButton:flat {
-    border: none; /* no border for a flat push button */
-}
-
-QPushButton:default {
-    border-color: navy; /* make the default button prominent */
-}</string>
-       </property>
-       <property name="text">
-        <string>Links</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="0" colspan="2">
     <widget class="Line" name="line_2">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="4" column="1">
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
+   <item row="5" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLineEdit" name="TrafficLineEdit">
@@ -265,7 +194,7 @@ QPushButton:default {
      </item>
     </layout>
    </item>
-   <item row="7" column="0" colspan="2">
+   <item row="6" column="0" colspan="2">
     <layout class="QGridLayout" name="gridLayout_2">
      <item row="0" column="1">
       <widget class="QPushButton" name="SaveChangesBitton">
@@ -294,7 +223,7 @@ QPushButton:default {
 	
     border:2px solid black; min-width: 80px;
 	border-color: dark gray; 
-    border-radius: 25px;
+    border-radius: 5px;
 }
 
 QPushButton:pressed,hover {
@@ -343,7 +272,7 @@ QPushButton:default {
 	
     border:2px solid black; min-width: 80px;
 	border-color: dark gray; 
-    border-radius: 25px;
+    border-radius: 5px;
 }
 
 QPushButton:pressed,hover {
@@ -392,7 +321,7 @@ QPushButton:default {
 	
     border:2px solid black; min-width: 80px;
 	border-color: dark gray; 
-    border-radius: 25px;
+    border-radius: 5px;
 }
 
 QPushButton:pressed,hover {
@@ -416,7 +345,7 @@ QPushButton:default {
      </item>
     </layout>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="3" column="0" colspan="2">
     <widget class="QLabel" name="label">
      <property name="font">
       <font>
