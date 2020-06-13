@@ -2448,7 +2448,7 @@ class Ui_MainWindow(object):
 
         # saving file
         output_file("demand_map.html")
-        save(plot)
+        save(plot, mode='inline')
 
         self.MapWidget.load(QUrl.fromLocalFile(os.path.abspath('demand_map.html')))
 
