@@ -2199,8 +2199,8 @@ class Ui_MainWindow(object):
                         Gamma = float(link["data"]["Gamma"])
                         Dispersion = float(link["data"]["Gamma"])
 
-                        Data["Links"][key] = {"NumSpan": 1, "Length": Length, "Loss":Loss_Coefficient, "Type":Fiber_Type, "Beta":Beta, "Gamma": Gamma,
-                            "Dispersion": Dispersion}
+                        Data["Links"][key] = {"NumSpan": 1, "Length": [Length], "Loss":[Loss_Coefficient], "Type":[Fiber_Type], "Beta":[Beta], "Gamma": [Gamma],
+                            "Dispersion": [Dispersion]}
 
         # deleteing old nodes
         for node in deletedOldLayers["nodes"]:
@@ -3779,7 +3779,7 @@ class Ui_MainWindow(object):
         Destination = self.Demand_Destination_combobox.currentText()
 
 
-        if self.update_demand_service_flag is True and Destination != '' and self.Demand_combo_notifications_flag is False:
+        if self.update_demand_service_flag is True and Destination != '':
 
             if self.Failed_Nodes_flag is True:
                 self.Demand_combobox_highlight_on_off(Source= Source,
@@ -3798,7 +3798,7 @@ class Ui_MainWindow(object):
             self.set_demand_panels()        
             self.DemandMap_Change()
         
-        elif self.from_Source_to_Destination_flag is False and Destination != '' and self.Demand_combo_notifications_flag is False:
+        elif self.from_Source_to_Destination_flag is False and Destination != '':
             
             if self.Failed_Nodes_flag is True:
                 self.Demand_combobox_highlight_on_off(Source= Source,
@@ -3812,7 +3812,7 @@ class Ui_MainWindow(object):
             self.DemandMap_Change()
     
     def Demand_combobox_highlight_on_off(self, Source, mode = "on", Target = None):
-        self.Demand_combo_notifications_flag = True
+        self.Demand_Destination_combobox.blockSignals(True)
         if mode == "on":
             Highlight_Font = QtGui.QFont()
             Highlight_Font.setBold(True)
@@ -3842,7 +3842,7 @@ class Ui_MainWindow(object):
                 model.setBackground(Qt.white)
                 model.setFont(Highlight_Font)
         
-        self.Demand_combo_notifications_flag = False
+        self.Demand_Destination_combobox.blockSignals(False)
         
 
     def PhysicalTopologyToObject(self):
