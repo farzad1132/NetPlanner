@@ -226,7 +226,7 @@ class MP2D_L:
         self.LineCapacity = LineCapacity
 
     def del_client(self, ClientNum, LineCapacity):
-        self.self.ClientsCapacity[ClientNum] = 0
+        self.ClientsCapacity[ClientNum] = 0
         self.LineCapacity = LineCapacity
     
     def set_line_type(self, Type):
