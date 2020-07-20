@@ -1,0 +1,299 @@
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples
+END
+Makefile.in
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/Makefile.in
+END
+CbcCompareUser.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/CbcCompareUser.hpp
+END
+CbcSolver2.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/CbcSolver2.cpp
+END
+CbcSolver3.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/CbcSolver3.cpp
+END
+fast0507.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/fast0507.cpp
+END
+CbcSolver2.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/CbcSolver2.hpp
+END
+CbcSolver3.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/CbcSolver3.hpp
+END
+sudoku.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/sudoku.cpp
+END
+minimum.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/minimum.cpp
+END
+gear.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/gear.cpp
+END
+nway.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/nway.cpp
+END
+repeat.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/repeat.cpp
+END
+CbcBranchLink.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/CbcBranchLink.cpp
+END
+barrier.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/barrier.cpp
+END
+modify.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/modify.cpp
+END
+CbcBranchLink.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/CbcBranchLink.hpp
+END
+link.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/link.cpp
+END
+simpleBAB.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/simpleBAB.cpp
+END
+crew.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/crew.cpp
+END
+sample1.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/sample1.cpp
+END
+sample2.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/sample2.cpp
+END
+CbcBranchUser.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/CbcBranchUser.cpp
+END
+sample3.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/sample3.cpp
+END
+sos.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/sos.cpp
+END
+sample4.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/sample4.cpp
+END
+qmip.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/qmip.cpp
+END
+sample5.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/sample5.cpp
+END
+allCuts.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/allCuts.cpp
+END
+quad.mps
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/quad.mps
+END
+hotstart.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/hotstart.cpp
+END
+CbcBranchUser.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/CbcBranchUser.hpp
+END
+CbcBranchFollow2.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/CbcBranchFollow2.cpp
+END
+ClpQuadInterface.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/ClpQuadInterface.cpp
+END
+fast0507b.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/fast0507b.cpp
+END
+driver2.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/driver2.cpp
+END
+driver3.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/driver3.cpp
+END
+driver4.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/driver4.cpp
+END
+CbcBranchFollow2.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/CbcBranchFollow2.hpp
+END
+ClpQuadInterface.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/ClpQuadInterface.hpp
+END
+longthin.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/longthin.cpp
+END
+sudoku_sample.csv
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/sudoku_sample.csv
+END
+CbcSolverLongThin.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/CbcSolverLongThin.cpp
+END
+qmip2.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/qmip2.cpp
+END
+lotsize.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/lotsize.cpp
+END
+cbc_driverC_sos.c
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/cbc_driverC_sos.c
+END
+quad2.mps
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/quad2.mps
+END
+CbcSolverLongThin.hpp
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/CbcSolverLongThin.hpp
+END
+driver.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/driver.cpp
+END
+CbcCompareUser.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/Cbc/!svn/ver/1758/releases/2.7.5/Cbc/examples/CbcCompareUser.cpp
+END

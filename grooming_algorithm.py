@@ -1,7 +1,7 @@
 
 import pickle
 import copy
-from pulp import LpProblem, LpMinimize, LpVariable, lpSum, LpStatus
+from pulp import LpProblem, LpMinimize, LpVariable, lpSum, LpStatus, COIN_CMD
 
 import networkx as nx
 import math
@@ -62,10 +62,14 @@ def MP2X(Services_lower10):
         prob +=lpSum(x[(i,j)] for i in range(1,NO_service_lower10+1) ) <=max_port,""
     
             
-    
+    import os
+    cwd = os.getcwd()
+    solverdir = 'cbc-2.7.5-win64\\bin\\cbc.exe'  # extracted and renamed CBC solver binary
+    solverdir = os.path.join(cwd, solverdir)
+    solver = COIN_CMD(path=solverdir)
      
     #prob.writeLP("grooming.lp")
-    prob.solve()
+    prob.solve(solver)
     
     #print("Status:", LpStatus[prob.status])
     
