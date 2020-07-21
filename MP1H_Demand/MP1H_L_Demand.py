@@ -1,7 +1,12 @@
-from PySide2 import QtWidgets, QtCore, QtGui
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-from PySide2.QtGui import *
+from PySide2.QtWidgets import (QApplication, QTableWidget, QTableWidgetItem, QFileDialog, QMdiSubWindow, QWidget, QLabel, QAbstractItemView, QListWidgetItem, QMenu, QFontComboBox,
+                                QStyledItemDelegate, QGridLayout, QTabWidget, QGroupBox, QSpacerItem, QSizePolicy, QCheckBox, QRadioButton,
+                                QPushButton, QComboBox, QHBoxLayout, QSplitter, QFrame, QListWidget, QFormLayout, QDialog, QLineEdit)
+
+from PySide2.QtCore import (Signal, QObject, Slot, QRunnable, QThreadPool, SIGNAL, Qt, QSize, QUrl, QModelIndex, QRect, QCoreApplication,
+                            QMetaObject)
+
+from PySide2.QtGui import QPixmap, QBrush, QColor, QFont, QPalette, QStandardItemModel, QLinearGradient, QGradient, QCursor, QIcon
+
 import sys
 import os
 
@@ -29,7 +34,7 @@ from MP1H_Demand import Border_L
 # USE THIS CODE TO CHANGE THE LINE TO SELECTED LINE:
 # self.Line.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
 
-class MP1H_L_Demand(QtWidgets.QWidget):
+class MP1H_L_Demand(QWidget):
 
     def __init__(self, Panel_ID, nodename, Destination, DualPanelsId):
         super(MP1H_L_Demand, self).__init__()
@@ -44,18 +49,18 @@ class MP1H_L_Demand(QtWidgets.QWidget):
 
         self.DualPanelsId = DualPanelsId
 
-        grid=QtWidgets.QGridLayout(self)
-        widget=QtWidgets.QWidget(self)
+        grid=QGridLayout(self)
+        widget=QWidget(self)
         widget.setStyleSheet("border-image:url(:/Border_L_Source/Border_L.png); ")
         grid.setMargin(0)
         grid.addWidget(widget)
-        self.Line = QtWidgets.QLabel(self)
-        self.Line.setMinimumSize(QtCore.QSize(0, 125))
+        self.Line = QLabel(self)
+        self.Line.setMinimumSize(QSize(0, 125))
         self.Line.setStyleSheet("QLabel{ image: url(:/line/line.png); }")
         self.Line.setText("")
         self.Line.setObjectName("Line")
 
-        self.gridLayout = QtWidgets.QGridLayout(self)
+        self.gridLayout = QGridLayout(self)
         self.gridLayout.setContentsMargins(5, 5, 5, 5)
         self.gridLayout.setObjectName("gridLayout")
         self.Client8 = customlabel(self, self.nodename, self.Destination, self.id, 8, self.Line, DualPanelsId= DualPanelsId)
@@ -75,8 +80,8 @@ class MP1H_L_Demand(QtWidgets.QWidget):
         self.gridLayout.addWidget(self.Client7, 5, 0, 1, 1)
         
         self.gridLayout.addWidget(self.Line, 7, 0, 1, 1)
-        self.Socket_Top = QtWidgets.QLabel(self)
-        self.Socket_Top.setMaximumSize(QtCore.QSize(16777215, 50))
+        self.Socket_Top = QLabel(self)
+        self.Socket_Top.setMaximumSize(QSize(16777215, 50))
         self.Socket_Top.setStyleSheet("QLabel{ image: url(:/Socket_top/Socket_top.png); }")
         self.Socket_Top.setText("")
         self.Socket_Top.setObjectName("Socket_Top")
@@ -96,8 +101,8 @@ class MP1H_L_Demand(QtWidgets.QWidget):
         self.Client4.setText("")
         self.Client4.setObjectName("Client4")
         self.gridLayout.addWidget(self.Client4, 3, 1, 1, 1)
-        self.Socket_Bottom = QtWidgets.QLabel(self)
-        self.Socket_Bottom.setMaximumSize(QtCore.QSize(16777215, 50))
+        self.Socket_Bottom = QLabel(self)
+        self.Socket_Bottom.setMaximumSize(QSize(16777215, 50))
         self.Socket_Bottom.setStyleSheet("QLabel{ image: url(:/Socket_Bottom/Socket_bottom.png); }")
         self.Socket_Bottom.setText("")
         self.Socket_Bottom.setObjectName("Socket_Bottom")
@@ -122,7 +127,7 @@ class MP1H_L_Demand(QtWidgets.QWidget):
         self.Client3.setText("")
         self.Client3.setObjectName("Client3")
         self.gridLayout.addWidget(self.Client3, 3, 0, 1, 1)
-        self.MP1H_Title = QtWidgets.QLabel(self)
+        self.MP1H_Title = QLabel(self)
         self.MP1H_Title.setStyleSheet("QLabel{ image: url(:/title/MP1H_title.png); }")
         self.MP1H_Title.setText("")
         self.MP1H_Title.setObjectName("MP1H_Title")
@@ -890,7 +895,7 @@ class customlabel(QLabel):
 
 if __name__ == "__main__":
 
-    app = QtWidgets.QApplication([])
+    app = QApplication([])
     window = MP1H_L_Demand(1,2,3)
     window.show()
     sys.exit(app.exec_())

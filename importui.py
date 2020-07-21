@@ -1,12 +1,15 @@
-from PySide2 import QtWidgets, QtGui, QtCore
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-from PySide2.QtGui import *
+from PySide2.QtWidgets import (QApplication, QTableWidget, QTableWidgetItem, QFileDialog, QMdiSubWindow, QWidget, QLabel, QAbstractItemView, QListWidgetItem, QMenu, QFontComboBox,
+                                QStyledItemDelegate, QGridLayout, QTabWidget, QGroupBox, QSpacerItem, QSizePolicy, QCheckBox, QRadioButton,
+                                QPushButton, QComboBox, QHBoxLayout, QSplitter, QFrame, QListWidget, QFormLayout, QDialog, QLineEdit)
+
+from PySide2.QtCore import (Signal, QObject, Slot, QRunnable, QThreadPool, SIGNAL, Qt, QSize, QUrl, QModelIndex, QRect, QCoreApplication,
+                            QMetaObject)
+
+from PySide2.QtGui import QPixmap, QBrush, QColor, QFont, QPalette, QStandardItemModel, QLinearGradient, QGradient, QCursor, QIcon
 import sys
-import os
 from data import *
 from Common_Object_def import Network
-import pandas as pd
+from pandas import ExcelFile, read_excel
 bus = {}
 
 
@@ -19,10 +22,10 @@ class Ui_ImportMenuUI(object):
         ImportMenuUI.setObjectName("ImportMenuUI")
         ImportMenuUI.resize(459, 319)
         ImportMenuUI.setStyleSheet("background-color:rgb(226, 226, 226);")
-        self.gridLayout = QtWidgets.QGridLayout(ImportMenuUI)
+        self.gridLayout = QGridLayout(ImportMenuUI)
         self.gridLayout.setObjectName("gridLayout")
-        self.PlanningLabel = QtWidgets.QLabel(ImportMenuUI)
-        font = QtGui.QFont()
+        self.PlanningLabel = QLabel(ImportMenuUI)
+        font = QFont()
         font.setFamily("Bahnschrift SemiBold Condensed")
         font.setPointSize(12)
         font.setBold(False)
@@ -35,12 +38,12 @@ class Ui_ImportMenuUI(object):
 "    font: 63 12pt \"Bahnschrift SemiBold Condensed\";\n"
 "    background-color:  #6088C6;\n"
 "}")
-        self.PlanningLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.PlanningLabel.setAlignment(Qt.AlignCenter)
         self.PlanningLabel.setObjectName("PlanningLabel")
         self.gridLayout.addWidget(self.PlanningLabel, 0, 0, 1, 2)
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.PT_LineEdit = QtWidgets.QLineEdit(ImportMenuUI)
+        self.PT_LineEdit = QLineEdit(ImportMenuUI)
         self.PT_LineEdit.setStyleSheet("QLineEdit {\n"
 " \n"
 "    border: 2px solid rgb(226, 226, 226);\n"
@@ -53,9 +56,9 @@ class Ui_ImportMenuUI(object):
 "}")
         self.PT_LineEdit.setObjectName("PT_LineEdit")
         self.horizontalLayout.addWidget(self.PT_LineEdit)
-        self.PT_button = QtWidgets.QPushButton(ImportMenuUI)
-        self.PT_button.setMaximumSize(QtCore.QSize(999, 999))
-        font = QtGui.QFont()
+        self.PT_button = QPushButton(ImportMenuUI)
+        self.PT_button.setMaximumSize(QSize(999, 999))
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -89,19 +92,19 @@ class Ui_ImportMenuUI(object):
         self.PT_button.setObjectName("PT_button")
         self.horizontalLayout.addWidget(self.PT_button)
         self.gridLayout.addLayout(self.horizontalLayout, 1, 0, 1, 2)
-        self.line_2 = QtWidgets.QFrame(ImportMenuUI)
-        self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_2 = QFrame(ImportMenuUI)
+        self.line_2.setFrameShape(QFrame.HLine)
+        self.line_2.setFrameShadow(QFrame.Sunken)
         self.line_2.setObjectName("line_2")
         self.gridLayout.addWidget(self.line_2, 2, 0, 1, 2)
-        self.line = QtWidgets.QFrame(ImportMenuUI)
-        self.line.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line = QFrame(ImportMenuUI)
+        self.line.setFrameShape(QFrame.HLine)
+        self.line.setFrameShadow(QFrame.Sunken)
         self.line.setObjectName("line")
         self.gridLayout.addWidget(self.line, 4, 1, 1, 1)
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.TrafficLineEdit = QtWidgets.QLineEdit(ImportMenuUI)
+        self.TrafficLineEdit = QLineEdit(ImportMenuUI)
         self.TrafficLineEdit.setStyleSheet("QLineEdit {\n"
 " \n"
 "    border: 2px solid rgb(226, 226, 226);\n"
@@ -114,9 +117,9 @@ class Ui_ImportMenuUI(object):
 "}")
         self.TrafficLineEdit.setObjectName("TrafficLineEdit")
         self.horizontalLayout_2.addWidget(self.TrafficLineEdit)
-        self.TrafficButton = QtWidgets.QPushButton(ImportMenuUI)
-        self.TrafficButton.setMaximumSize(QtCore.QSize(999, 999))
-        font = QtGui.QFont()
+        self.TrafficButton = QPushButton(ImportMenuUI)
+        self.TrafficButton.setMaximumSize(QSize(999, 999))
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -150,11 +153,11 @@ class Ui_ImportMenuUI(object):
         self.TrafficButton.setObjectName("TrafficButton")
         self.horizontalLayout_2.addWidget(self.TrafficButton)
         self.gridLayout.addLayout(self.horizontalLayout_2, 5, 0, 1, 2)
-        self.gridLayout_2 = QtWidgets.QGridLayout()
+        self.gridLayout_2 = QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.SaveChangesBitton = QtWidgets.QPushButton(ImportMenuUI)
-        self.SaveChangesBitton.setMaximumSize(QtCore.QSize(165, 100))
-        font = QtGui.QFont()
+        self.SaveChangesBitton = QPushButton(ImportMenuUI)
+        self.SaveChangesBitton.setMaximumSize(QSize(165, 100))
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -188,9 +191,9 @@ class Ui_ImportMenuUI(object):
 "}")
         self.SaveChangesBitton.setObjectName("SaveChangesBitton")
         self.gridLayout_2.addWidget(self.SaveChangesBitton, 0, 1, 1, 1)
-        self.DrawButton = QtWidgets.QPushButton(ImportMenuUI)
-        self.DrawButton.setMaximumSize(QtCore.QSize(165, 100))
-        font = QtGui.QFont()
+        self.DrawButton = QPushButton(ImportMenuUI)
+        self.DrawButton.setMaximumSize(QSize(165, 100))
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -224,9 +227,9 @@ class Ui_ImportMenuUI(object):
 "}")
         self.DrawButton.setObjectName("DrawButton")
         self.gridLayout_2.addWidget(self.DrawButton, 0, 2, 1, 1)
-        self.CloseButton = QtWidgets.QPushButton(ImportMenuUI)
-        self.CloseButton.setMaximumSize(QtCore.QSize(165, 100))
-        font = QtGui.QFont()
+        self.CloseButton = QPushButton(ImportMenuUI)
+        self.CloseButton.setMaximumSize(QSize(165, 100))
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -261,8 +264,8 @@ class Ui_ImportMenuUI(object):
         self.CloseButton.setObjectName("CloseButton")
         self.gridLayout_2.addWidget(self.CloseButton, 0, 0, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_2, 6, 0, 1, 2)
-        self.label = QtWidgets.QLabel(ImportMenuUI)
-        font = QtGui.QFont()
+        self.label = QLabel(ImportMenuUI)
+        font = QFont()
         font.setFamily("Bahnschrift SemiBold Condensed")
         font.setPointSize(12)
         font.setBold(False)
@@ -276,12 +279,12 @@ class Ui_ImportMenuUI(object):
 "  \n"
 "    background-color: rgb(235, 134, 134);\n"
 "}")
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setAlignment(Qt.AlignCenter)
         self.label.setObjectName("label")
         self.gridLayout.addWidget(self.label, 3, 0, 1, 2)
 
         self.retranslateUi(ImportMenuUI)
-        QtCore.QMetaObject.connectSlotsByName(ImportMenuUI)
+        QMetaObject.connectSlotsByName(ImportMenuUI)
 
         # NOTE: added
         self.CloseButton.clicked.connect(ImportMenuUI.close)
@@ -295,7 +298,7 @@ class Ui_ImportMenuUI(object):
         self.TrafficButton.setEnabled(False)
 
     def retranslateUi(self, ImportMenuUI):
-        _translate = QtCore.QCoreApplication.translate
+        _translate = QCoreApplication.translate
         ImportMenuUI.setWindowTitle(_translate("ImportMenuUI", "ImportMenuUI"))
         self.PlanningLabel.setText(_translate("ImportMenuUI", "Import Physical Topology"))
         self.PT_button.setText(_translate("ImportMenuUI", "Physical Topology"))
@@ -358,8 +361,8 @@ class Ui_ImportMenuUI(object):
             Data["Nodes"].clear()
             Data["Links"].clear()
             try:
-                xls = pd.ExcelFile(name[0])
-                Temp_data = pd.read_excel(xls, 'Nodes')
+                xls = ExcelFile(name[0])
+                Temp_data = read_excel(xls, 'Nodes')
                 temp_dic ={}
                 headers = ['ID','Node','Location','ROADM_Type'] 
 
@@ -379,7 +382,7 @@ class Ui_ImportMenuUI(object):
 
                 Data["Nodes"].update(ProperDict)
 
-                Temp_data = pd.read_excel(xls, 'Links')
+                Temp_data = read_excel(xls, 'Links')
                 temp_dic ={}
                 headers = ["ID", "Source", "Destination", "Distance", "Fiber Type", "Loss Coefficient", "Beta", "Gamma", "Dispersion"]
                 
@@ -457,8 +460,8 @@ class Ui_ImportMenuUI(object):
 
 if __name__ == "__main__":
     import sys
-    app = QtWidgets.QApplication(sys.argv)
-    ImportMenuUI = QtWidgets.QWidget()
+    app = QApplication(sys.argv)
+    ImportMenuUI = QWidget()
     ui = Ui_ImportMenuUI()
     ui.setupUi(ImportMenuUI)
     ImportMenuUI.show()

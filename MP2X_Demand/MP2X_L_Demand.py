@@ -1,7 +1,12 @@
-from PySide2 import QtWidgets, QtCore, QtGui
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-from PySide2.QtGui import *
+from PySide2.QtWidgets import (QApplication, QTableWidget, QTableWidgetItem, QFileDialog, QMdiSubWindow, QWidget, QLabel, QAbstractItemView, QListWidgetItem, QMenu, QFontComboBox,
+                                QStyledItemDelegate, QGridLayout, QTabWidget, QGroupBox, QSpacerItem, QSizePolicy, QCheckBox, QRadioButton,
+                                QPushButton, QComboBox, QHBoxLayout, QSplitter, QFrame, QListWidget, QFormLayout, QDialog, QLineEdit)
+
+from PySide2.QtCore import (Signal, QObject, Slot, QRunnable, QThreadPool, SIGNAL, Qt, QSize, QUrl, QModelIndex, QRect, QCoreApplication,
+                            QMetaObject)
+
+from PySide2.QtGui import QPixmap, QBrush, QColor, QFont, QPalette, QStandardItemModel, QLinearGradient, QGradient, QCursor, QIcon
+
 import sys
 import os
 
@@ -36,7 +41,7 @@ from MP2X_Demand import Border_L
 # For right line:
 # self.LINE2.setStyleSheet("QLabel{ image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); }")
 
-class MP2X_L_Demand(QtWidgets.QWidget):
+class MP2X_L_Demand(QWidget):
 
     def __init__(self, Panel_ID, nodename, Destination, DualPanelsId):
         super(MP2X_L_Demand, self).__init__()
@@ -51,26 +56,26 @@ class MP2X_L_Demand(QtWidgets.QWidget):
 
         self.DualPanelsId = DualPanelsId
 
-        grid=QtWidgets.QGridLayout(self)
-        widget=QtWidgets.QWidget(self)
+        grid=QGridLayout(self)
+        widget=QWidget(self)
         widget.setStyleSheet("border-image:url(:/Border_L_Source/Border_L.png); ")
         grid.setMargin(0)
         grid.addWidget(widget)
-        self.gridLayout = QtWidgets.QGridLayout(self)
+        self.gridLayout = QGridLayout(self)
         self.gridLayout.setContentsMargins(5, 9, 5, 5)
         self.gridLayout.setObjectName("gridLayout")
-        self.LINE1 = QtWidgets.QLabel(self)
+        self.LINE1 = QLabel(self)
         self.LINE1.setStyleSheet("QLabel{ image: url(:/Line_L_SOURCE/LINE_L.png); }")
         self.LINE1.setText("")
         self.LINE1.setObjectName("LINE1")
         self.gridLayout.addWidget(self.LINE1, 2, 0, 1, 1)
-        self.LINE2 = QtWidgets.QLabel(self)
-        self.LINE2.setMinimumSize(QtCore.QSize(0, 0))
+        self.LINE2 = QLabel(self)
+        self.LINE2.setMinimumSize(QSize(0, 0))
         self.LINE2.setStyleSheet("QLabel{ image: url(:/Line_R_SOURCE/LINE_R.png); }")
         self.LINE2.setText("")
         self.LINE2.setObjectName("LINE2")
         self.gridLayout.addWidget(self.LINE2, 2, 1, 1, 1)
-        self.MP2X_Title = QtWidgets.QLabel(self)
+        self.MP2X_Title = QLabel(self)
         self.MP2X_Title.setStyleSheet("QLabel{ image: url(:/MP2X_Title_Source/MP2X_Title.png); }")
         self.MP2X_Title.setText("")
         self.MP2X_Title.setObjectName("MP2X_Title")
@@ -80,7 +85,7 @@ class MP2X_L_Demand(QtWidgets.QWidget):
         self.CLIENT13.setText("")
         self.CLIENT13.setObjectName("CLIENT13")
         self.gridLayout.addWidget(self.CLIENT13, 10, 0, 1, 1)
-        self.Socket_bottom = QtWidgets.QLabel(self)
+        self.Socket_bottom = QLabel(self)
         self.Socket_bottom.setStyleSheet("QLabel{ image: url(:/Socket_bottom_Source/Socket_bottom.png); }")
         self.Socket_bottom.setText("")
         self.Socket_bottom.setObjectName("Socket_bottom")
@@ -145,7 +150,7 @@ class MP2X_L_Demand(QtWidgets.QWidget):
         self.CLIENT11.setText("")
         self.CLIENT11.setObjectName("CLIENT11")
         self.gridLayout.addWidget(self.CLIENT11, 9, 0, 1, 1)
-        self.Socket_Top = QtWidgets.QLabel(self)
+        self.Socket_Top = QLabel(self)
         self.Socket_Top.setStyleSheet("QLabel{ image: url(:/Socket_Top_Source/Socket_top.png); }")
         self.Socket_Top.setText("")
         self.Socket_Top.setObjectName("Socket_Top")
@@ -962,7 +967,7 @@ class customlabel(QLabel):
 
 if __name__ == "__main__":
     
-    app = QtWidgets.QApplication([])
+    app = QApplication([])
     window = MP2X_L_Demand(1,2,3)
     window.show()
     sys.exit(app.exec_())

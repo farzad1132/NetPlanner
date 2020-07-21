@@ -1,10 +1,8 @@
 
-import pickle
-import copy
+from pickle import load
 from pulp import LpProblem, LpMinimize, LpVariable, lpSum, LpStatus
 
-import networkx as nx
-import math
+from math import ceil
 
 def MP2X(Services_lower10):
     prob = LpProblem("grooming", LpMinimize )
@@ -19,9 +17,9 @@ def MP2X(Services_lower10):
 
     NO_service_lower10 = len(Services_lower10)
     #print(sum([pair[1] for pair in Services_lower10]))
-    #print(math.ceil(sum([pair[1] for pair in Services_lower10])/20))
-    NO_Lineport_MP2x=max(math.ceil(NO_service_lower10/8),math.ceil(sum([pair[1] for pair in Services_lower10])/10))    #number of line ports
-    max_number_device=math.ceil(NO_Lineport_MP2x/2)
+    #print(ceil(sum([pair[1] for pair in Services_lower10])/20))
+    NO_Lineport_MP2x=max(ceil(NO_service_lower10/8),ceil(sum([pair[1] for pair in Services_lower10])/10))    #number of line ports
+    max_number_device=ceil(NO_Lineport_MP2x/2)
     max_number_device=max_number_device*2
 #    max_number_device=NO_Lineport_MP2x
 #    if NO_service_lower10 ==81:
@@ -205,7 +203,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                     
            
         for i in range(0,len(service_lower100)):
-            NO_LP= math.ceil(len(service_lower100[i][1])/10)
+            NO_LP= ceil(len(service_lower100[i][1])/10)
             for j in range(0,NO_LP):
                 list_of_service=[]
                 list_of_service2=[]
@@ -1041,7 +1039,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                     
            
         for i in range(0,len(service_lower100)):
-            NO_LP= math.ceil(len(service_lower100[i][1])/10)
+            NO_LP= ceil(len(service_lower100[i][1])/10)
             orsr=n.TrafficMatrix.DemandDict[service_lower100[i][0]].Source
             ords=n.TrafficMatrix.DemandDict[service_lower100[i][0]].Destination
             cls_num=0
@@ -1137,7 +1135,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 if __name__ == "__main__":
 
     with open('NetWorkObj.obj', 'rb') as handle:
-        n = pickle.load(handle)                   
+        n = load(handle)                   
     handle.close()
 
     x = 0
@@ -1150,7 +1148,7 @@ if __name__ == "__main__":
     n.Traffic.Demand.DemandReferenceId = x
 
     with open('NetworkObj_2.obj', 'rb') as handle:
-        n2 = pickle.load(handle)                   
+        n2 = load(handle)                   
     handle.close()
 
     x = 0

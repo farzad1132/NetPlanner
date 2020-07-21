@@ -1,7 +1,11 @@
-from PySide2 import QtWidgets, QtGui, QtCore
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-from PySide2.QtGui import *
+from PySide2.QtWidgets import (QApplication, QTableWidget, QTableWidgetItem, QFileDialog, QMdiSubWindow, QWidget, QLabel, QAbstractItemView, QListWidgetItem, QMenu, QFontComboBox,
+                                QStyledItemDelegate, QGridLayout, QTabWidget, QGroupBox, QSpacerItem, QSizePolicy, QCheckBox, QRadioButton,
+                                QPushButton, QComboBox, QHBoxLayout, QSplitter, QFrame, QListWidget, QFormLayout, QDialog, QLineEdit)
+
+from PySide2.QtCore import (Signal, QObject, Slot, QRunnable, QThreadPool, SIGNAL, Qt, QSize, QUrl, QModelIndex, QRect, QCoreApplication,
+                            QMetaObject)
+
+from PySide2.QtGui import QPixmap, QBrush, QColor, QFont, QPalette, QStandardItemModel, QLinearGradient, QGradient, QCursor, QIcon
 import sys
 import os
 from data import *
@@ -16,10 +20,10 @@ class Ui_Export_PT(object):
 
         Export_PT.setObjectName("Export_PT")
         Export_PT.resize(614, 244)
-        self.gridLayout = QtWidgets.QGridLayout(Export_PT)
+        self.gridLayout = QGridLayout(Export_PT)
         self.gridLayout.setObjectName("gridLayout")
-        self.ExportPhysicalTopology_PushButton = QtWidgets.QPushButton(Export_PT)
-        self.ExportPhysicalTopology_PushButton.setMinimumSize(QtCore.QSize(84, 70))
+        self.ExportPhysicalTopology_PushButton = QPushButton(Export_PT)
+        self.ExportPhysicalTopology_PushButton.setMinimumSize(QSize(84, 70))
         self.ExportPhysicalTopology_PushButton.setStyleSheet("QPushButton {\n"
 "    \n"
 "    \n"
@@ -45,8 +49,8 @@ class Ui_Export_PT(object):
 "}")
         self.ExportPhysicalTopology_PushButton.setObjectName("ExportPhysicalTopology_PushButton")
         self.gridLayout.addWidget(self.ExportPhysicalTopology_PushButton, 0, 0, 1, 1)
-        self.label = QtWidgets.QLabel(Export_PT)
-        font = QtGui.QFont()
+        self.label = QLabel(Export_PT)
+        font = QFont()
         font.setFamily("Bahnschrift")
         font.setPointSize(12)
         font.setBold(False)
@@ -54,13 +58,13 @@ class Ui_Export_PT(object):
         self.label.setFont(font)
         self.label.setObjectName("label")
         self.gridLayout.addWidget(self.label, 1, 0, 2, 1)
-        self.line = QtWidgets.QFrame(Export_PT)
-        self.line.setFrameShape(QtWidgets.QFrame.VLine)
-        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line = QFrame(Export_PT)
+        self.line.setFrameShape(QFrame.VLine)
+        self.line.setFrameShadow(QFrame.Sunken)
         self.line.setObjectName("line")
         self.gridLayout.addWidget(self.line, 1, 1, 2, 1)
-        self.EnterTrafficMatrix_PushButton = QtWidgets.QPushButton(Export_PT)
-        self.EnterTrafficMatrix_PushButton.setMinimumSize(QtCore.QSize(84, 50))
+        self.EnterTrafficMatrix_PushButton = QPushButton(Export_PT)
+        self.EnterTrafficMatrix_PushButton.setMinimumSize(QSize(84, 50))
         self.EnterTrafficMatrix_PushButton.setStyleSheet("QPushButton {\n"
 "    \n"
 "    \n"
@@ -86,8 +90,8 @@ class Ui_Export_PT(object):
 "}")
         self.EnterTrafficMatrix_PushButton.setObjectName("EnterTrafficMatrix_PushButton")
         self.gridLayout.addWidget(self.EnterTrafficMatrix_PushButton, 1, 2, 1, 1)
-        self.ImportTrafficMatrixExcel_pushButton = QtWidgets.QPushButton(Export_PT)
-        self.ImportTrafficMatrixExcel_pushButton.setMinimumSize(QtCore.QSize(84, 50))
+        self.ImportTrafficMatrixExcel_pushButton = QPushButton(Export_PT)
+        self.ImportTrafficMatrixExcel_pushButton.setMinimumSize(QSize(84, 50))
         self.ImportTrafficMatrixExcel_pushButton.setStyleSheet("QPushButton {\n"
 "    \n"
 "    \n"
@@ -115,7 +119,7 @@ class Ui_Export_PT(object):
         self.gridLayout.addWidget(self.ImportTrafficMatrixExcel_pushButton, 2, 2, 1, 1)
 
         self.retranslateUi(Export_PT)
-        QtCore.QMetaObject.connectSlotsByName(Export_PT)
+        QMetaObject.connectSlotsByName(Export_PT)
 
         # NOTE: added
         self.ExportPhysicalTopology_PushButton.clicked.connect(self.Export_PT)
@@ -123,7 +127,7 @@ class Ui_Export_PT(object):
         self.EnterTrafficMatrix_PushButton.clicked.connect(self.enter_tm)
 
     def retranslateUi(self, Export_PT):
-        _translate = QtCore.QCoreApplication.translate
+        _translate = QCoreApplication.translate
         Export_PT.setWindowTitle(_translate("Export_PT", "Expot Physical Topology"))
         self.ExportPhysicalTopology_PushButton.setText(_translate("Export_PT", "Export Physical Topology"))
         self.label.setText(_translate("Export_PT", "Adding Traffic Matrix to Project"))
@@ -171,8 +175,8 @@ class Ui_Export_PT(object):
 
 if __name__ == "__main__":
     import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Export_PT = QtWidgets.QWidget()
+    app = QApplication(sys.argv)
+    Export_PT = QWidget()
     ui = Ui_Export_PT()
     ui.setupUi(Export_PT)
     Export_PT.show()

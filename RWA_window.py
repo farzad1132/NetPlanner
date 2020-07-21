@@ -1,9 +1,7 @@
-from PySide2 import QtWidgets, QtGui, QtCore
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-from PySide2.QtGui import *
+from PySide2.QtWidgets import QGridLayout, QToolBox, QWidget, QFormLayout, QLabel, QLineEdit, QComboBox, QApplication, QPushButton, QSpacerItem, QSizePolicy
+from PySide2.QtCore import Qt, QRect, QCoreApplication, QMetaObject
+from PySide2.QtGui import QFont
 import sys
-import os
 from data import *
 from Common_Object_def import Network
 bus = {}
@@ -18,9 +16,9 @@ class Ui_RWA_Window(object):
 
         RWA_Window.setObjectName("RWA_Window")
         RWA_Window.resize(493, 462)
-        self.gridLayout = QtWidgets.QGridLayout(RWA_Window)
+        self.gridLayout = QGridLayout(RWA_Window)
         self.gridLayout.setObjectName("gridLayout")
-        self.RW_toolBox = QtWidgets.QToolBox(RWA_Window)
+        self.RW_toolBox = QToolBox(RWA_Window)
         self.RW_toolBox.setStyleSheet("QToolBox::tab {\n"
 "    background-color: rgb(192, 192, 192);\n"
 "     border: 2px solid gray; \n"
@@ -44,15 +42,15 @@ class Ui_RWA_Window(object):
 "\n"
 "")
         self.RW_toolBox.setObjectName("RW_toolBox")
-        self.Greedy = QtWidgets.QWidget()
-        self.Greedy.setGeometry(QtCore.QRect(0, 0, 475, 321))
+        self.Greedy = QWidget()
+        self.Greedy.setGeometry(QRect(0, 0, 475, 321))
         self.Greedy.setObjectName("Greedy")
-        self.gridLayout_4 = QtWidgets.QGridLayout(self.Greedy)
+        self.gridLayout_4 = QGridLayout(self.Greedy)
         self.gridLayout_4.setObjectName("gridLayout_4")
-        self.formLayout_13 = QtWidgets.QFormLayout()
+        self.formLayout_13 = QFormLayout()
         self.formLayout_13.setObjectName("formLayout_13")
-        self.Greedy_Alpha_Label = QtWidgets.QLabel(self.Greedy)
-        font = QtGui.QFont()
+        self.Greedy_Alpha_Label = QLabel(self.Greedy)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -69,10 +67,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.Greedy_Alpha_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_Alpha_Label.setAlignment(Qt.AlignCenter)
         self.Greedy_Alpha_Label.setObjectName("Greedy_Alpha_Label")
-        self.formLayout_13.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.Greedy_Alpha_Label)
-        self.Greedy_Alpha_LineEdit = QtWidgets.QLineEdit(self.Greedy)
+        self.formLayout_13.setWidget(0, QFormLayout.LabelRole, self.Greedy_Alpha_Label)
+        self.Greedy_Alpha_LineEdit = QLineEdit(self.Greedy)
         self.Greedy_Alpha_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -80,26 +78,26 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.Greedy_Alpha_LineEdit.setText("")
-        self.Greedy_Alpha_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_Alpha_LineEdit.setAlignment(Qt.AlignCenter)
         self.Greedy_Alpha_LineEdit.setClearButtonEnabled(True)
         self.Greedy_Alpha_LineEdit.setObjectName("Greedy_Alpha_LineEdit")
-        self.formLayout_13.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.Greedy_Alpha_LineEdit)
+        self.formLayout_13.setWidget(1, QFormLayout.LabelRole, self.Greedy_Alpha_LineEdit)
         self.gridLayout_4.addLayout(self.formLayout_13, 1, 0, 1, 1)
-        self.mergindemands_gridlayout_3 = QtWidgets.QGridLayout()
+        self.mergindemands_gridlayout_3 = QGridLayout()
         self.mergindemands_gridlayout_3.setObjectName("mergindemands_gridlayout_3")
-        self.Mergin_DemandRe_Label = QtWidgets.QLabel(self.Greedy)
-        font = QtGui.QFont()
+        self.Mergin_DemandRe_Label = QLabel(self.Greedy)
+        font = QFont()
         font.setFamily("Bahnschrift")
         font.setPointSize(9)
         font.setBold(False)
         font.setWeight(50)
         self.Mergin_DemandRe_Label.setFont(font)
         self.Mergin_DemandRe_Label.setStyleSheet(" ")
-        self.Mergin_DemandRe_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.Mergin_DemandRe_Label.setAlignment(Qt.AlignCenter)
         self.Mergin_DemandRe_Label.setObjectName("Mergin_DemandRe_Label")
         self.mergindemands_gridlayout_3.addWidget(self.Mergin_DemandRe_Label, 0, 0, 1, 1)
-        self.Mergin_DemandRe_LineEdit = QtWidgets.QComboBox(self.Greedy)
-        font = QtGui.QFont()
+        self.Mergin_DemandRe_LineEdit = QComboBox(self.Greedy)
+        font = QFont()
         font.setFamily("Bahnschrift")
         font.setPointSize(9)
         self.Mergin_DemandRe_LineEdit.setFont(font)
@@ -164,10 +162,10 @@ class Ui_RWA_Window(object):
         self.Mergin_DemandRe_LineEdit.addItem("")
         self.mergindemands_gridlayout_3.addWidget(self.Mergin_DemandRe_LineEdit, 0, 1, 1, 1)
         self.gridLayout_4.addLayout(self.mergindemands_gridlayout_3, 0, 0, 1, 1)
-        self.formLayout_15 = QtWidgets.QFormLayout()
+        self.formLayout_15 = QFormLayout()
         self.formLayout_15.setObjectName("formLayout_15")
-        self.Greedy_Margin_Label = QtWidgets.QLabel(self.Greedy)
-        font = QtGui.QFont()
+        self.Greedy_Margin_Label = QLabel(self.Greedy)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -184,10 +182,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.Greedy_Margin_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_Margin_Label.setAlignment(Qt.AlignCenter)
         self.Greedy_Margin_Label.setObjectName("Greedy_Margin_Label")
-        self.formLayout_15.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.Greedy_Margin_Label)
-        self.Greedy_Margin_LineEdit = QtWidgets.QLineEdit(self.Greedy)
+        self.formLayout_15.setWidget(0, QFormLayout.LabelRole, self.Greedy_Margin_Label)
+        self.Greedy_Margin_LineEdit = QLineEdit(self.Greedy)
         self.Greedy_Margin_LineEdit.setStyleSheet("\n"
 " QLineEdit {\n"
 "    border: 2px solid gray;\n"
@@ -196,15 +194,15 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.Greedy_Margin_LineEdit.setText("")
-        self.Greedy_Margin_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_Margin_LineEdit.setAlignment(Qt.AlignCenter)
         self.Greedy_Margin_LineEdit.setClearButtonEnabled(True)
         self.Greedy_Margin_LineEdit.setObjectName("Greedy_Margin_LineEdit")
-        self.formLayout_15.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.Greedy_Margin_LineEdit)
+        self.formLayout_15.setWidget(1, QFormLayout.LabelRole, self.Greedy_Margin_LineEdit)
         self.gridLayout_4.addLayout(self.formLayout_15, 2, 0, 1, 1)
-        self.formLayout_14 = QtWidgets.QFormLayout()
+        self.formLayout_14 = QFormLayout()
         self.formLayout_14.setObjectName("formLayout_14")
-        self.Greedy_Iteration_Label = QtWidgets.QLabel(self.Greedy)
-        font = QtGui.QFont()
+        self.Greedy_Iteration_Label = QLabel(self.Greedy)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -222,10 +220,10 @@ class Ui_RWA_Window(object):
 "    border-color: #4072B3; \n"
 "}")
         self.Greedy_Iteration_Label.setMidLineWidth(7)
-        self.Greedy_Iteration_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_Iteration_Label.setAlignment(Qt.AlignCenter)
         self.Greedy_Iteration_Label.setObjectName("Greedy_Iteration_Label")
-        self.formLayout_14.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.Greedy_Iteration_Label)
-        self.Greedy_Iteration_LineEdit = QtWidgets.QLineEdit(self.Greedy)
+        self.formLayout_14.setWidget(0, QFormLayout.LabelRole, self.Greedy_Iteration_Label)
+        self.Greedy_Iteration_LineEdit = QLineEdit(self.Greedy)
         self.Greedy_Iteration_LineEdit.setStyleSheet("\n"
 " QLineEdit {\n"
 "    border: 2px solid gray;\n"
@@ -234,15 +232,15 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.Greedy_Iteration_LineEdit.setText("")
-        self.Greedy_Iteration_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_Iteration_LineEdit.setAlignment(Qt.AlignCenter)
         self.Greedy_Iteration_LineEdit.setClearButtonEnabled(True)
         self.Greedy_Iteration_LineEdit.setObjectName("Greedy_Iteration_LineEdit")
-        self.formLayout_14.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.Greedy_Iteration_LineEdit)
+        self.formLayout_14.setWidget(1, QFormLayout.LabelRole, self.Greedy_Iteration_LineEdit)
         self.gridLayout_4.addLayout(self.formLayout_14, 1, 1, 1, 1)
-        self.formLayout_18 = QtWidgets.QFormLayout()
+        self.formLayout_18 = QFormLayout()
         self.formLayout_18.setObjectName("formLayout_18")
-        self.Greedy_MaxNW_Label = QtWidgets.QLabel(self.Greedy)
-        font = QtGui.QFont()
+        self.Greedy_MaxNW_Label = QLabel(self.Greedy)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(9)
         font.setBold(False)
@@ -259,10 +257,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.Greedy_MaxNW_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_MaxNW_Label.setAlignment(Qt.AlignCenter)
         self.Greedy_MaxNW_Label.setObjectName("Greedy_MaxNW_Label")
-        self.formLayout_18.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.Greedy_MaxNW_Label)
-        self.Greedy_MaxNW_LineEdit = QtWidgets.QLineEdit(self.Greedy)
+        self.formLayout_18.setWidget(0, QFormLayout.LabelRole, self.Greedy_MaxNW_Label)
+        self.Greedy_MaxNW_LineEdit = QLineEdit(self.Greedy)
         self.Greedy_MaxNW_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -270,15 +268,15 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.Greedy_MaxNW_LineEdit.setText("")
-        self.Greedy_MaxNW_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_MaxNW_LineEdit.setAlignment(Qt.AlignCenter)
         self.Greedy_MaxNW_LineEdit.setClearButtonEnabled(True)
         self.Greedy_MaxNW_LineEdit.setObjectName("Greedy_MaxNW_LineEdit")
-        self.formLayout_18.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.Greedy_MaxNW_LineEdit)
+        self.formLayout_18.setWidget(1, QFormLayout.LabelRole, self.Greedy_MaxNW_LineEdit)
         self.gridLayout_4.addLayout(self.formLayout_18, 3, 1, 1, 1)
-        self.formLayout_16 = QtWidgets.QFormLayout()
+        self.formLayout_16 = QFormLayout()
         self.formLayout_16.setObjectName("formLayout_16")
-        self.Greedy_Processors_Label = QtWidgets.QLabel(self.Greedy)
-        font = QtGui.QFont()
+        self.Greedy_Processors_Label = QLabel(self.Greedy)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -295,10 +293,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.Greedy_Processors_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_Processors_Label.setAlignment(Qt.AlignCenter)
         self.Greedy_Processors_Label.setObjectName("Greedy_Processors_Label")
-        self.formLayout_16.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.Greedy_Processors_Label)
-        self.Greedy_Processors_LineEdit = QtWidgets.QLineEdit(self.Greedy)
+        self.formLayout_16.setWidget(0, QFormLayout.LabelRole, self.Greedy_Processors_Label)
+        self.Greedy_Processors_LineEdit = QLineEdit(self.Greedy)
         self.Greedy_Processors_LineEdit.setStyleSheet("\n"
 " QLineEdit {\n"
 "    border: 2px solid gray;\n"
@@ -307,15 +305,15 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.Greedy_Processors_LineEdit.setText("")
-        self.Greedy_Processors_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_Processors_LineEdit.setAlignment(Qt.AlignCenter)
         self.Greedy_Processors_LineEdit.setClearButtonEnabled(True)
         self.Greedy_Processors_LineEdit.setObjectName("Greedy_Processors_LineEdit")
-        self.formLayout_16.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.Greedy_Processors_LineEdit)
+        self.formLayout_16.setWidget(1, QFormLayout.LabelRole, self.Greedy_Processors_LineEdit)
         self.gridLayout_4.addLayout(self.formLayout_16, 2, 1, 1, 1)
-        self.formLayout_17 = QtWidgets.QFormLayout()
+        self.formLayout_17 = QFormLayout()
         self.formLayout_17.setObjectName("formLayout_17")
-        self.Greedy_K_Label = QtWidgets.QLabel(self.Greedy)
-        font = QtGui.QFont()
+        self.Greedy_K_Label = QLabel(self.Greedy)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -332,10 +330,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.Greedy_K_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_K_Label.setAlignment(Qt.AlignCenter)
         self.Greedy_K_Label.setObjectName("Greedy_K_Label")
-        self.formLayout_17.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.Greedy_K_Label)
-        self.Greedy_K_LineEdit = QtWidgets.QLineEdit(self.Greedy)
+        self.formLayout_17.setWidget(0, QFormLayout.LabelRole, self.Greedy_K_Label)
+        self.Greedy_K_LineEdit = QLineEdit(self.Greedy)
         self.Greedy_K_LineEdit.setStyleSheet("\n"
 " QLineEdit {\n"
 "    border: 2px solid gray;\n"
@@ -344,21 +342,21 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.Greedy_K_LineEdit.setText("")
-        self.Greedy_K_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.Greedy_K_LineEdit.setAlignment(Qt.AlignCenter)
         self.Greedy_K_LineEdit.setClearButtonEnabled(True)
         self.Greedy_K_LineEdit.setObjectName("Greedy_K_LineEdit")
-        self.formLayout_17.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.Greedy_K_LineEdit)
+        self.formLayout_17.setWidget(1, QFormLayout.LabelRole, self.Greedy_K_LineEdit)
         self.gridLayout_4.addLayout(self.formLayout_17, 3, 0, 1, 1)
         self.RW_toolBox.addItem(self.Greedy, "")
-        self.Group_ILP = QtWidgets.QWidget()
-        self.Group_ILP.setGeometry(QtCore.QRect(0, 0, 475, 321))
+        self.Group_ILP = QWidget()
+        self.Group_ILP.setGeometry(QRect(0, 0, 475, 321))
         self.Group_ILP.setObjectName("Group_ILP")
-        self.gridLayout_2 = QtWidgets.QGridLayout(self.Group_ILP)
+        self.gridLayout_2 = QGridLayout(self.Group_ILP)
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.formLayout_19 = QtWidgets.QFormLayout()
+        self.formLayout_19 = QFormLayout()
         self.formLayout_19.setObjectName("formLayout_19")
-        self.GroupILP_Alpha_Label = QtWidgets.QLabel(self.Group_ILP)
-        font = QtGui.QFont()
+        self.GroupILP_Alpha_Label = QLabel(self.Group_ILP)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -375,10 +373,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.GroupILP_Alpha_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_Alpha_Label.setAlignment(Qt.AlignCenter)
         self.GroupILP_Alpha_Label.setObjectName("GroupILP_Alpha_Label")
-        self.formLayout_19.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.GroupILP_Alpha_Label)
-        self.GroupILP_Alpha_LineEdit = QtWidgets.QLineEdit(self.Group_ILP)
+        self.formLayout_19.setWidget(0, QFormLayout.LabelRole, self.GroupILP_Alpha_Label)
+        self.GroupILP_Alpha_LineEdit = QLineEdit(self.Group_ILP)
         self.GroupILP_Alpha_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -386,15 +384,15 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.GroupILP_Alpha_LineEdit.setText("")
-        self.GroupILP_Alpha_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_Alpha_LineEdit.setAlignment(Qt.AlignCenter)
         self.GroupILP_Alpha_LineEdit.setClearButtonEnabled(True)
         self.GroupILP_Alpha_LineEdit.setObjectName("GroupILP_Alpha_LineEdit")
-        self.formLayout_19.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.GroupILP_Alpha_LineEdit)
+        self.formLayout_19.setWidget(1, QFormLayout.LabelRole, self.GroupILP_Alpha_LineEdit)
         self.gridLayout_2.addLayout(self.formLayout_19, 0, 0, 1, 1)
-        self.formLayout_20 = QtWidgets.QFormLayout()
+        self.formLayout_20 = QFormLayout()
         self.formLayout_20.setObjectName("formLayout_20")
-        self.GroupILP_Iteration_Label = QtWidgets.QLabel(self.Group_ILP)
-        font = QtGui.QFont()
+        self.GroupILP_Iteration_Label = QLabel(self.Group_ILP)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -411,10 +409,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.GroupILP_Iteration_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_Iteration_Label.setAlignment(Qt.AlignCenter)
         self.GroupILP_Iteration_Label.setObjectName("GroupILP_Iteration_Label")
-        self.formLayout_20.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.GroupILP_Iteration_Label)
-        self.GroupILP_Iteration_LineEdit = QtWidgets.QLineEdit(self.Group_ILP)
+        self.formLayout_20.setWidget(0, QFormLayout.LabelRole, self.GroupILP_Iteration_Label)
+        self.GroupILP_Iteration_LineEdit = QLineEdit(self.Group_ILP)
         self.GroupILP_Iteration_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -422,15 +420,15 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.GroupILP_Iteration_LineEdit.setText("")
-        self.GroupILP_Iteration_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_Iteration_LineEdit.setAlignment(Qt.AlignCenter)
         self.GroupILP_Iteration_LineEdit.setClearButtonEnabled(True)
         self.GroupILP_Iteration_LineEdit.setObjectName("GroupILP_Iteration_LineEdit")
-        self.formLayout_20.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.GroupILP_Iteration_LineEdit)
+        self.formLayout_20.setWidget(1, QFormLayout.LabelRole, self.GroupILP_Iteration_LineEdit)
         self.gridLayout_2.addLayout(self.formLayout_20, 0, 1, 1, 1)
-        self.formLayout_21 = QtWidgets.QFormLayout()
+        self.formLayout_21 = QFormLayout()
         self.formLayout_21.setObjectName("formLayout_21")
-        self.GroupILP_Margin_Label = QtWidgets.QLabel(self.Group_ILP)
-        font = QtGui.QFont()
+        self.GroupILP_Margin_Label = QLabel(self.Group_ILP)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -447,10 +445,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.GroupILP_Margin_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_Margin_Label.setAlignment(Qt.AlignCenter)
         self.GroupILP_Margin_Label.setObjectName("GroupILP_Margin_Label")
-        self.formLayout_21.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.GroupILP_Margin_Label)
-        self.GroupILP_Margin_LineEdit = QtWidgets.QLineEdit(self.Group_ILP)
+        self.formLayout_21.setWidget(0, QFormLayout.LabelRole, self.GroupILP_Margin_Label)
+        self.GroupILP_Margin_LineEdit = QLineEdit(self.Group_ILP)
         self.GroupILP_Margin_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -458,15 +456,15 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.GroupILP_Margin_LineEdit.setText("")
-        self.GroupILP_Margin_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_Margin_LineEdit.setAlignment(Qt.AlignCenter)
         self.GroupILP_Margin_LineEdit.setClearButtonEnabled(True)
         self.GroupILP_Margin_LineEdit.setObjectName("GroupILP_Margin_LineEdit")
-        self.formLayout_21.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.GroupILP_Margin_LineEdit)
+        self.formLayout_21.setWidget(1, QFormLayout.LabelRole, self.GroupILP_Margin_LineEdit)
         self.gridLayout_2.addLayout(self.formLayout_21, 1, 0, 1, 1)
-        self.formLayout_22 = QtWidgets.QFormLayout()
+        self.formLayout_22 = QFormLayout()
         self.formLayout_22.setObjectName("formLayout_22")
-        self.GroupILP_Processors_Label = QtWidgets.QLabel(self.Group_ILP)
-        font = QtGui.QFont()
+        self.GroupILP_Processors_Label = QLabel(self.Group_ILP)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -483,10 +481,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.GroupILP_Processors_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_Processors_Label.setAlignment(Qt.AlignCenter)
         self.GroupILP_Processors_Label.setObjectName("GroupILP_Processors_Label")
-        self.formLayout_22.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.GroupILP_Processors_Label)
-        self.GroupILP_Processors_LineEdit = QtWidgets.QLineEdit(self.Group_ILP)
+        self.formLayout_22.setWidget(0, QFormLayout.LabelRole, self.GroupILP_Processors_Label)
+        self.GroupILP_Processors_LineEdit = QLineEdit(self.Group_ILP)
         self.GroupILP_Processors_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -494,15 +492,15 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.GroupILP_Processors_LineEdit.setText("")
-        self.GroupILP_Processors_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_Processors_LineEdit.setAlignment(Qt.AlignCenter)
         self.GroupILP_Processors_LineEdit.setClearButtonEnabled(True)
         self.GroupILP_Processors_LineEdit.setObjectName("GroupILP_Processors_LineEdit")
-        self.formLayout_22.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.GroupILP_Processors_LineEdit)
+        self.formLayout_22.setWidget(1, QFormLayout.LabelRole, self.GroupILP_Processors_LineEdit)
         self.gridLayout_2.addLayout(self.formLayout_22, 1, 1, 1, 1)
-        self.formLayout_23 = QtWidgets.QFormLayout()
+        self.formLayout_23 = QFormLayout()
         self.formLayout_23.setObjectName("formLayout_23")
-        self.GroupILP_K_Label = QtWidgets.QLabel(self.Group_ILP)
-        font = QtGui.QFont()
+        self.GroupILP_K_Label = QLabel(self.Group_ILP)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -519,10 +517,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.GroupILP_K_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_K_Label.setAlignment(Qt.AlignCenter)
         self.GroupILP_K_Label.setObjectName("GroupILP_K_Label")
-        self.formLayout_23.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.GroupILP_K_Label)
-        self.GroupILP_K_LineEdit = QtWidgets.QLineEdit(self.Group_ILP)
+        self.formLayout_23.setWidget(0, QFormLayout.LabelRole, self.GroupILP_K_Label)
+        self.GroupILP_K_LineEdit = QLineEdit(self.Group_ILP)
         self.GroupILP_K_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -530,15 +528,15 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.GroupILP_K_LineEdit.setText("")
-        self.GroupILP_K_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_K_LineEdit.setAlignment(Qt.AlignCenter)
         self.GroupILP_K_LineEdit.setClearButtonEnabled(True)
         self.GroupILP_K_LineEdit.setObjectName("GroupILP_K_LineEdit")
-        self.formLayout_23.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.GroupILP_K_LineEdit)
+        self.formLayout_23.setWidget(1, QFormLayout.LabelRole, self.GroupILP_K_LineEdit)
         self.gridLayout_2.addLayout(self.formLayout_23, 2, 0, 1, 1)
-        self.formLayout_24 = QtWidgets.QFormLayout()
+        self.formLayout_24 = QFormLayout()
         self.formLayout_24.setObjectName("formLayout_24")
-        self.GroupILP_MaxNW_Label = QtWidgets.QLabel(self.Group_ILP)
-        font = QtGui.QFont()
+        self.GroupILP_MaxNW_Label = QLabel(self.Group_ILP)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -555,10 +553,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.GroupILP_MaxNW_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_MaxNW_Label.setAlignment(Qt.AlignCenter)
         self.GroupILP_MaxNW_Label.setObjectName("GroupILP_MaxNW_Label")
-        self.formLayout_24.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.GroupILP_MaxNW_Label)
-        self.GroupILP_MaxNW_LineEdit = QtWidgets.QLineEdit(self.Group_ILP)
+        self.formLayout_24.setWidget(0, QFormLayout.LabelRole, self.GroupILP_MaxNW_Label)
+        self.GroupILP_MaxNW_LineEdit = QLineEdit(self.Group_ILP)
         self.GroupILP_MaxNW_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -566,15 +564,15 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.GroupILP_MaxNW_LineEdit.setText("")
-        self.GroupILP_MaxNW_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_MaxNW_LineEdit.setAlignment(Qt.AlignCenter)
         self.GroupILP_MaxNW_LineEdit.setClearButtonEnabled(True)
         self.GroupILP_MaxNW_LineEdit.setObjectName("GroupILP_MaxNW_LineEdit")
-        self.formLayout_24.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.GroupILP_MaxNW_LineEdit)
+        self.formLayout_24.setWidget(1, QFormLayout.LabelRole, self.GroupILP_MaxNW_LineEdit)
         self.gridLayout_2.addLayout(self.formLayout_24, 2, 1, 1, 1)
-        self.formLayout_25 = QtWidgets.QFormLayout()
+        self.formLayout_25 = QFormLayout()
         self.formLayout_25.setObjectName("formLayout_25")
-        self.GroupILP_Groupsize_Label = QtWidgets.QLabel(self.Group_ILP)
-        font = QtGui.QFont()
+        self.GroupILP_Groupsize_Label = QLabel(self.Group_ILP)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -591,10 +589,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.GroupILP_Groupsize_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_Groupsize_Label.setAlignment(Qt.AlignCenter)
         self.GroupILP_Groupsize_Label.setObjectName("GroupILP_Groupsize_Label")
-        self.formLayout_25.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.GroupILP_Groupsize_Label)
-        self.GroupILP_Groupsize_LineEdit = QtWidgets.QLineEdit(self.Group_ILP)
+        self.formLayout_25.setWidget(0, QFormLayout.LabelRole, self.GroupILP_Groupsize_Label)
+        self.GroupILP_Groupsize_LineEdit = QLineEdit(self.Group_ILP)
         self.GroupILP_Groupsize_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -602,14 +600,14 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.GroupILP_Groupsize_LineEdit.setText("")
-        self.GroupILP_Groupsize_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_Groupsize_LineEdit.setAlignment(Qt.AlignCenter)
         self.GroupILP_Groupsize_LineEdit.setClearButtonEnabled(True)
         self.GroupILP_Groupsize_LineEdit.setObjectName("GroupILP_Groupsize_LineEdit")
-        self.formLayout_25.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.GroupILP_Groupsize_LineEdit)
+        self.formLayout_25.setWidget(1, QFormLayout.LabelRole, self.GroupILP_Groupsize_LineEdit)
         self.gridLayout_2.addLayout(self.formLayout_25, 3, 0, 1, 1)
-        self.formLayout_26 = QtWidgets.QFormLayout()
+        self.formLayout_26 = QFormLayout()
         self.formLayout_26.setObjectName("formLayout_26")
-        self.GroupILP_History_LineEdit = QtWidgets.QLineEdit(self.Group_ILP)
+        self.GroupILP_History_LineEdit = QLineEdit(self.Group_ILP)
         self.GroupILP_History_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -617,12 +615,12 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.GroupILP_History_LineEdit.setText("")
-        self.GroupILP_History_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_History_LineEdit.setAlignment(Qt.AlignCenter)
         self.GroupILP_History_LineEdit.setClearButtonEnabled(True)
         self.GroupILP_History_LineEdit.setObjectName("GroupILP_History_LineEdit")
-        self.formLayout_26.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.GroupILP_History_LineEdit)
-        self.GroupILP_History_Label = QtWidgets.QLabel(self.Group_ILP)
-        font = QtGui.QFont()
+        self.formLayout_26.setWidget(1, QFormLayout.LabelRole, self.GroupILP_History_LineEdit)
+        self.GroupILP_History_Label = QLabel(self.Group_ILP)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -639,20 +637,20 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.GroupILP_History_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.GroupILP_History_Label.setAlignment(Qt.AlignCenter)
         self.GroupILP_History_Label.setObjectName("GroupILP_History_Label")
-        self.formLayout_26.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.GroupILP_History_Label)
+        self.formLayout_26.setWidget(0, QFormLayout.LabelRole, self.GroupILP_History_Label)
         self.gridLayout_2.addLayout(self.formLayout_26, 3, 1, 1, 1)
         self.RW_toolBox.addItem(self.Group_ILP, "")
-        self.ILP = QtWidgets.QWidget()
-        self.ILP.setGeometry(QtCore.QRect(0, 0, 475, 321))
+        self.ILP = QWidget()
+        self.ILP.setGeometry(QRect(0, 0, 475, 321))
         self.ILP.setObjectName("ILP")
-        self.formLayout = QtWidgets.QFormLayout(self.ILP)
+        self.formLayout = QFormLayout(self.ILP)
         self.formLayout.setObjectName("formLayout")
-        self.formLayout_28 = QtWidgets.QFormLayout()
+        self.formLayout_28 = QFormLayout()
         self.formLayout_28.setObjectName("formLayout_28")
-        self.ILP_Margin_Label = QtWidgets.QLabel(self.ILP)
-        font = QtGui.QFont()
+        self.ILP_Margin_Label = QLabel(self.ILP)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -669,10 +667,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.ILP_Margin_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.ILP_Margin_Label.setAlignment(Qt.AlignCenter)
         self.ILP_Margin_Label.setObjectName("ILP_Margin_Label")
-        self.formLayout_28.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.ILP_Margin_Label)
-        self.ILP_Margin_LineEdit = QtWidgets.QLineEdit(self.ILP)
+        self.formLayout_28.setWidget(0, QFormLayout.LabelRole, self.ILP_Margin_Label)
+        self.ILP_Margin_LineEdit = QLineEdit(self.ILP)
         self.ILP_Margin_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -680,15 +678,15 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.ILP_Margin_LineEdit.setText("")
-        self.ILP_Margin_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.ILP_Margin_LineEdit.setAlignment(Qt.AlignCenter)
         self.ILP_Margin_LineEdit.setClearButtonEnabled(True)
         self.ILP_Margin_LineEdit.setObjectName("ILP_Margin_LineEdit")
-        self.formLayout_28.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.ILP_Margin_LineEdit)
-        self.formLayout.setLayout(0, QtWidgets.QFormLayout.LabelRole, self.formLayout_28)
-        self.formLayout_29 = QtWidgets.QFormLayout()
+        self.formLayout_28.setWidget(1, QFormLayout.LabelRole, self.ILP_Margin_LineEdit)
+        self.formLayout.setLayout(0, QFormLayout.LabelRole, self.formLayout_28)
+        self.formLayout_29 = QFormLayout()
         self.formLayout_29.setObjectName("formLayout_29")
-        self.ILP_Processors_Label = QtWidgets.QLabel(self.ILP)
-        font = QtGui.QFont()
+        self.ILP_Processors_Label = QLabel(self.ILP)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -705,10 +703,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.ILP_Processors_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.ILP_Processors_Label.setAlignment(Qt.AlignCenter)
         self.ILP_Processors_Label.setObjectName("ILP_Processors_Label")
-        self.formLayout_29.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.ILP_Processors_Label)
-        self.ILP_Processors_LineEdit = QtWidgets.QLineEdit(self.ILP)
+        self.formLayout_29.setWidget(0, QFormLayout.LabelRole, self.ILP_Processors_Label)
+        self.ILP_Processors_LineEdit = QLineEdit(self.ILP)
         self.ILP_Processors_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -716,15 +714,15 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.ILP_Processors_LineEdit.setText("")
-        self.ILP_Processors_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.ILP_Processors_LineEdit.setAlignment(Qt.AlignCenter)
         self.ILP_Processors_LineEdit.setClearButtonEnabled(True)
         self.ILP_Processors_LineEdit.setObjectName("ILP_Processors_LineEdit")
-        self.formLayout_29.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.ILP_Processors_LineEdit)
-        self.formLayout.setLayout(0, QtWidgets.QFormLayout.FieldRole, self.formLayout_29)
-        self.formLayout_30 = QtWidgets.QFormLayout()
+        self.formLayout_29.setWidget(1, QFormLayout.LabelRole, self.ILP_Processors_LineEdit)
+        self.formLayout.setLayout(0, QFormLayout.FieldRole, self.formLayout_29)
+        self.formLayout_30 = QFormLayout()
         self.formLayout_30.setObjectName("formLayout_30")
-        self.ILP_K_Label = QtWidgets.QLabel(self.ILP)
-        font = QtGui.QFont()
+        self.ILP_K_Label = QLabel(self.ILP)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -741,10 +739,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.ILP_K_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.ILP_K_Label.setAlignment(Qt.AlignCenter)
         self.ILP_K_Label.setObjectName("ILP_K_Label")
-        self.formLayout_30.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.ILP_K_Label)
-        self.ILP_K_LineEdit = QtWidgets.QLineEdit(self.ILP)
+        self.formLayout_30.setWidget(0, QFormLayout.LabelRole, self.ILP_K_Label)
+        self.ILP_K_LineEdit = QLineEdit(self.ILP)
         self.ILP_K_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -752,15 +750,15 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.ILP_K_LineEdit.setText("")
-        self.ILP_K_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.ILP_K_LineEdit.setAlignment(Qt.AlignCenter)
         self.ILP_K_LineEdit.setClearButtonEnabled(True)
         self.ILP_K_LineEdit.setObjectName("ILP_K_LineEdit")
-        self.formLayout_30.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.ILP_K_LineEdit)
-        self.formLayout.setLayout(1, QtWidgets.QFormLayout.LabelRole, self.formLayout_30)
-        self.formLayout_31 = QtWidgets.QFormLayout()
+        self.formLayout_30.setWidget(1, QFormLayout.LabelRole, self.ILP_K_LineEdit)
+        self.formLayout.setLayout(1, QFormLayout.LabelRole, self.formLayout_30)
+        self.formLayout_31 = QFormLayout()
         self.formLayout_31.setObjectName("formLayout_31")
-        self.ILP_MaxNW_Label = QtWidgets.QLabel(self.ILP)
-        font = QtGui.QFont()
+        self.ILP_MaxNW_Label = QLabel(self.ILP)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(9)
         font.setBold(False)
@@ -777,10 +775,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.ILP_MaxNW_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.ILP_MaxNW_Label.setAlignment(Qt.AlignCenter)
         self.ILP_MaxNW_Label.setObjectName("ILP_MaxNW_Label")
-        self.formLayout_31.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.ILP_MaxNW_Label)
-        self.ILP_MaxNW_LineEdit = QtWidgets.QLineEdit(self.ILP)
+        self.formLayout_31.setWidget(0, QFormLayout.LabelRole, self.ILP_MaxNW_Label)
+        self.ILP_MaxNW_LineEdit = QLineEdit(self.ILP)
         self.ILP_MaxNW_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -788,15 +786,15 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.ILP_MaxNW_LineEdit.setText("")
-        self.ILP_MaxNW_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.ILP_MaxNW_LineEdit.setAlignment(Qt.AlignCenter)
         self.ILP_MaxNW_LineEdit.setClearButtonEnabled(True)
         self.ILP_MaxNW_LineEdit.setObjectName("ILP_MaxNW_LineEdit")
-        self.formLayout_31.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.ILP_MaxNW_LineEdit)
-        self.formLayout.setLayout(1, QtWidgets.QFormLayout.FieldRole, self.formLayout_31)
-        self.formLayout_27 = QtWidgets.QFormLayout()
+        self.formLayout_31.setWidget(1, QFormLayout.LabelRole, self.ILP_MaxNW_LineEdit)
+        self.formLayout.setLayout(1, QFormLayout.FieldRole, self.formLayout_31)
+        self.formLayout_27 = QFormLayout()
         self.formLayout_27.setObjectName("formLayout_27")
-        self.ILP_Alpha_Label = QtWidgets.QLabel(self.ILP)
-        font = QtGui.QFont()
+        self.ILP_Alpha_Label = QLabel(self.ILP)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -813,10 +811,10 @@ class Ui_RWA_Window(object):
 "    border: 2px solid #8f8f91; min-width: 80px;\n"
 "    border-color: #4072B3; \n"
 "}")
-        self.ILP_Alpha_Label.setAlignment(QtCore.Qt.AlignCenter)
+        self.ILP_Alpha_Label.setAlignment(Qt.AlignCenter)
         self.ILP_Alpha_Label.setObjectName("ILP_Alpha_Label")
-        self.formLayout_27.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.ILP_Alpha_Label)
-        self.ILP_Alpha_LineEdit = QtWidgets.QLineEdit(self.ILP)
+        self.formLayout_27.setWidget(0, QFormLayout.LabelRole, self.ILP_Alpha_Label)
+        self.ILP_Alpha_LineEdit = QLineEdit(self.ILP)
         self.ILP_Alpha_LineEdit.setStyleSheet(" QLineEdit {\n"
 "    border: 2px solid gray;\n"
 "    border-radius: 10px;\n"
@@ -824,23 +822,23 @@ class Ui_RWA_Window(object):
 "    selection-background-color: darkgray;\n"
 "}")
         self.ILP_Alpha_LineEdit.setText("")
-        self.ILP_Alpha_LineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.ILP_Alpha_LineEdit.setAlignment(Qt.AlignCenter)
         self.ILP_Alpha_LineEdit.setClearButtonEnabled(True)
         self.ILP_Alpha_LineEdit.setObjectName("ILP_Alpha_LineEdit")
-        self.formLayout_27.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.ILP_Alpha_LineEdit)
-        self.formLayout.setLayout(2, QtWidgets.QFormLayout.LabelRole, self.formLayout_27)
-        self.gridLayout_5 = QtWidgets.QGridLayout()
+        self.formLayout_27.setWidget(1, QFormLayout.LabelRole, self.ILP_Alpha_LineEdit)
+        self.formLayout.setLayout(2, QFormLayout.LabelRole, self.formLayout_27)
+        self.gridLayout_5 = QGridLayout()
         self.gridLayout_5.setObjectName("gridLayout_5")
-        self.label = QtWidgets.QLabel(self.ILP)
+        self.label = QLabel(self.ILP)
         self.label.setText("")
         self.label.setObjectName("label")
         self.gridLayout_5.addWidget(self.label, 0, 0, 1, 1)
-        self.formLayout.setLayout(2, QtWidgets.QFormLayout.FieldRole, self.gridLayout_5)
+        self.formLayout.setLayout(2, QFormLayout.FieldRole, self.gridLayout_5)
         self.RW_toolBox.addItem(self.ILP, "")
         self.gridLayout.addWidget(self.RW_toolBox, 0, 0, 1, 1)
-        self.gridLayout_3 = QtWidgets.QGridLayout()
+        self.gridLayout_3 = QGridLayout()
         self.gridLayout_3.setObjectName("gridLayout_3")
-        self.ok_pushbutton = QtWidgets.QPushButton(RWA_Window)
+        self.ok_pushbutton = QPushButton(RWA_Window)
         self.ok_pushbutton.setStyleSheet("QPushButton {\n"
 "    \n"
 "    \n"
@@ -869,7 +867,7 @@ class Ui_RWA_Window(object):
         self.ok_pushbutton.setAutoDefault(False)
         self.ok_pushbutton.setObjectName("ok_pushbutton")
         self.gridLayout_3.addWidget(self.ok_pushbutton, 0, 2, 1, 1)
-        self.cancel_pushbutton = QtWidgets.QPushButton(RWA_Window)
+        self.cancel_pushbutton = QPushButton(RWA_Window)
         self.cancel_pushbutton.setStyleSheet("QPushButton {\n"
 "    \n"
 "    \n"
@@ -897,20 +895,20 @@ class Ui_RWA_Window(object):
 "}")
         self.cancel_pushbutton.setObjectName("cancel_pushbutton")
         self.gridLayout_3.addWidget(self.cancel_pushbutton, 0, 1, 1, 1)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.gridLayout_3.addItem(spacerItem, 0, 0, 1, 1)
         self.gridLayout.addLayout(self.gridLayout_3, 1, 0, 1, 1)
 
         self.retranslateUi(RWA_Window)
         self.RW_toolBox.setCurrentIndex(0)
-        QtCore.QMetaObject.connectSlotsByName(RWA_Window)
+        QMetaObject.connectSlotsByName(RWA_Window)
 
         # NOTE: added 
         self.cancel_pushbutton.clicked.connect(RWA_Window.close)
         self.ok_pushbutton.clicked.connect(self.ok_button_fun)
 
     def retranslateUi(self, RWA_Window):
-        _translate = QtCore.QCoreApplication.translate
+        _translate = QCoreApplication.translate
         RWA_Window.setWindowTitle(_translate("RWA_Window", "RWA_Window"))
         self.Greedy_Alpha_Label.setText(_translate("RWA_Window", "      Alpha  "))
         self.Greedy_Alpha_LineEdit.setPlaceholderText(_translate("RWA_Window", "0.2"))
@@ -1036,8 +1034,8 @@ class Ui_RWA_Window(object):
 
 if __name__ == "__main__":
     import sys
-    app = QtWidgets.QApplication(sys.argv)
-    RWA_Window = QtWidgets.QWidget()
+    app = QApplication(sys.argv)
+    RWA_Window = QWidget()
     ui = Ui_RWA_Window()
     ui.setupUi(RWA_Window)
     RWA_Window.show()

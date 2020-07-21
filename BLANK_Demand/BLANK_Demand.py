@@ -1,7 +1,11 @@
-from PySide2 import QtWidgets, QtCore, QtGui
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-from PySide2.QtGui import *
+from PySide2.QtWidgets import (QApplication, QTableWidget, QTableWidgetItem, QFileDialog, QMdiSubWindow, QWidget, QLabel, QAbstractItemView, QListWidgetItem, QMenu, QFontComboBox,
+                                QStyledItemDelegate, QGridLayout, QTabWidget, QGroupBox, QSpacerItem, QSizePolicy, QCheckBox, QRadioButton,
+                                QPushButton, QComboBox, QHBoxLayout, QSplitter, QFrame, QListWidget, QFormLayout, QDialog, QLineEdit)
+
+from PySide2.QtCore import (Signal, QObject, Slot, QRunnable, QThreadPool, SIGNAL, Qt, QSize, QUrl, QModelIndex, QRect, QCoreApplication,
+                            QMetaObject)
+
+from PySide2.QtGui import QPixmap, QBrush, QColor, QFont, QPalette, QStandardItemModel, QLinearGradient, QGradient, QCursor, QIcon
 import sys
 import os
 
@@ -14,7 +18,7 @@ from TP1H_Demand.TP1H_L_Demand import TP1H_L_Demand
 from TP1H_Demand.TP1H_R_Demand import TP1H_R_Demand
 from BLANK_Demand import BLANK_SOURCE
 
-class BLANK_Demand(QtWidgets.QWidget):
+class BLANK_Demand(QWidget):
 
     def __init__(self, Panel_ID, nodename, Destination):
         super(BLANK_Demand, self).__init__()
@@ -28,10 +32,10 @@ class BLANK_Demand(QtWidgets.QWidget):
         self.uppernum = str(int(self.id) + 1)
 
         self.setStyleSheet("background-color: rgb(0, 0, 0);")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self)
+        self.horizontalLayout = QHBoxLayout(self)
         self.horizontalLayout.setContentsMargins(4, 4, 4, 4)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.BLANK_Demand_1 = QtWidgets.QLabel(self)
+        self.BLANK_Demand_1 = QLabel(self)
         self.BLANK_Demand_1.setStyleSheet(" QLabel{border-image: url(:/BLANK_DEMAND_SOURCE/BLANK.png);} ")
         self.horizontalLayout.addWidget(self.BLANK_Demand_1)
         self.BLANK_Demand_1.setText("")
@@ -183,7 +187,7 @@ class BLANK_Demand(QtWidgets.QWidget):
 
 if __name__ == "__main__":
 
-    app = QtWidgets.QApplication([])
+    app = QApplication([])
     window = BLANK_Demand(1,2,3)
     window.show()
     sys.exit(app.exec_())

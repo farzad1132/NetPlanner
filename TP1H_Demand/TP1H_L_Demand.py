@@ -1,7 +1,12 @@
-from PySide2 import QtWidgets, QtCore, QtGui
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-from PySide2.QtGui import *
+from PySide2.QtWidgets import (QApplication, QTableWidget, QTableWidgetItem, QFileDialog, QMdiSubWindow, QWidget, QLabel, QAbstractItemView, QListWidgetItem, QMenu, QFontComboBox,
+                                QStyledItemDelegate, QGridLayout, QTabWidget, QGroupBox, QSpacerItem, QSizePolicy, QCheckBox, QRadioButton,
+                                QPushButton, QComboBox, QHBoxLayout, QSplitter, QFrame, QListWidget, QFormLayout, QDialog, QLineEdit)
+
+from PySide2.QtCore import (Signal, QObject, Slot, QRunnable, QThreadPool, SIGNAL, Qt, QSize, QUrl, QModelIndex, QRect, QCoreApplication,
+                            QMetaObject)
+
+from PySide2.QtGui import QPixmap, QBrush, QColor, QFont, QPalette, QStandardItemModel, QLinearGradient, QGradient, QCursor, QIcon
+
 import sys
 import os
 
@@ -23,7 +28,7 @@ from TP1H_Demand import Border_L
 # USE THIS CODE TO CHANGE THE LINE TO SELECTED LINE:
 # self.Line.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
 
-class TP1H_L_Demand(QtWidgets.QWidget):
+class TP1H_L_Demand(QWidget):
 
     def __init__(self, Panel_ID, nodename, Destination, DualPanelsId):
         super(TP1H_L_Demand, self).__init__()
@@ -38,46 +43,46 @@ class TP1H_L_Demand(QtWidgets.QWidget):
 
         self.DualPanelsId = DualPanelsId
 
-        grid=QtWidgets.QGridLayout(self)
-        widget=QtWidgets.QWidget(self)
+        grid=QGridLayout(self)
+        widget=QWidget(self)
         widget.setStyleSheet("border-image:url(:/Border_L_Source/Border_L.png); ")
         grid.setMargin(0)
         grid.addWidget(widget)
-        self.gridLayout = QtWidgets.QGridLayout(self)
+        self.gridLayout = QGridLayout(self)
         self.gridLayout.setContentsMargins(5, 5, 5, 5)
         self.gridLayout.setObjectName("gridLayout")
-        self.Line = QtWidgets.QLabel(self)
-        self.Line.setMinimumSize(QtCore.QSize(0, 25))
-        self.Line.setMaximumSize(QtCore.QSize(100, 200))
+        self.Line = QLabel(self)
+        self.Line.setMinimumSize(QSize(0, 25))
+        self.Line.setMaximumSize(QSize(100, 200))
         self.Line.setStyleSheet("QLabel{ image: url(:/Line/tp1h_line.png); }")
         self.Line.setText("")
-        self.Line.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.Line.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
         self.Line.setObjectName("Line")
         self.gridLayout.addWidget(self.Line, 1, 0, 3, 1)
-        self.Socket_Top = QtWidgets.QLabel(self)
+        self.Socket_Top = QLabel(self)
         self.Socket_Top.setStyleSheet("QLabel{ image: url(:/Socket/socket1.png); }")
         self.Socket_Top.setText("")
         self.Socket_Top.setObjectName("Socket_Top")
         self.gridLayout.addWidget(self.Socket_Top, 0, 0, 1, 1)
-        self.Socket_Bottom = QtWidgets.QLabel(self)
+        self.Socket_Bottom = QLabel(self)
         self.Socket_Bottom.setStyleSheet("QLabel{ image: url(:/Socket_bottom/socket2.png); }")
         self.Socket_Bottom.setText("")
         self.Socket_Bottom.setObjectName("Socket_Bottom")
         self.gridLayout.addWidget(self.Socket_Bottom, 7, 0, 1, 1)
         self.Client = customlabel(self, self.nodename, self.Destination, self.id, self.Line, DualPanelsId= DualPanelsId)
-        self.Client.setMinimumSize(QtCore.QSize(0, 25))
+        self.Client.setMinimumSize(QSize(0, 25))
         self.Client.setStyleSheet("QLabel{ image:  url(:/Client/TP1H_CLIENT.png); }")
         self.Client.setText("")
         self.Client.setObjectName("Client")
         self.gridLayout.addWidget(self.Client, 5, 0, 2, 1)
-        self.Line_Title = QtWidgets.QLabel(self)
+        self.Line_Title = QLabel(self)
         self.Line_Title.setObjectName("Line_Title")
         self.gridLayout.addWidget(self.Line_Title, 2, 2, 1, 1)
-        self.Client_Title = QtWidgets.QLabel(self)
+        self.Client_Title = QLabel(self)
         self.Client_Title.setObjectName("Client_Title")
         self.gridLayout.addWidget(self.Client_Title, 5, 2, 2, 1)
-        self.TP1H_Title = QtWidgets.QLabel(self)
-        self.TP1H_Title.setMaximumSize(QtCore.QSize(35, 16777215))
+        self.TP1H_Title = QLabel(self)
+        self.TP1H_Title.setMaximumSize(QSize(35, 16777215))
         self.TP1H_Title.setStyleSheet("QLabel{ image: url(:/title/title.png); }")
         self.TP1H_Title.setText("")
         self.TP1H_Title.setObjectName("TP1H_Title")
@@ -518,7 +523,7 @@ class customlabel(QLabel):
 
 if __name__ == "__main__":
 
-    app = QtWidgets.QApplication([])
+    app = QApplication([])
     window = TP1H_L_Demand(1,2,3)
     window.show()
     sys.exit(app.exec_())

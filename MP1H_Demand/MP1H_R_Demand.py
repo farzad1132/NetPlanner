@@ -1,7 +1,12 @@
-from PySide2 import QtWidgets, QtCore, QtGui
-from PySide2.QtWidgets import *
-from PySide2.QtCore import *
-from PySide2.QtGui import *
+from PySide2.QtWidgets import (QApplication, QTableWidget, QTableWidgetItem, QFileDialog, QMdiSubWindow, QWidget, QLabel, QAbstractItemView, QListWidgetItem, QMenu, QFontComboBox,
+                                QStyledItemDelegate, QGridLayout, QTabWidget, QGroupBox, QSpacerItem, QSizePolicy, QCheckBox, QRadioButton,
+                                QPushButton, QComboBox, QHBoxLayout, QSplitter, QFrame, QListWidget, QFormLayout, QDialog, QLineEdit)
+
+from PySide2.QtCore import (Signal, QObject, Slot, QRunnable, QThreadPool, SIGNAL, Qt, QSize, QUrl, QModelIndex, QRect, QCoreApplication,
+                            QMetaObject)
+
+from PySide2.QtGui import QPixmap, QBrush, QColor, QFont, QPalette, QStandardItemModel, QLinearGradient, QGradient, QCursor, QIcon
+
 import sys
 import os
 
@@ -9,7 +14,7 @@ from data import *
 from MP1H_Demand import MP1H_R_SOURCE
 from MP1H_Demand import Border_R
 
-class MP1H_R_Demand(QtWidgets.QWidget):
+class MP1H_R_Demand(QWidget):
 
     def __init__(self, Panel_ID, nodename, Destination, DualPanelsId):
         super(MP1H_R_Demand, self).__init__()
@@ -24,15 +29,15 @@ class MP1H_R_Demand(QtWidgets.QWidget):
 
         self.DualPanelsId = DualPanelsId
 
-        grid=QtWidgets.QGridLayout(self)
-        widget=QtWidgets.QWidget(self)
+        grid=QGridLayout(self)
+        widget=QWidget(self)
         widget.setStyleSheet("border-image:url(:/Border_R_SOURCE/Border_R.png); ")
         grid.setMargin(0)
         grid.addWidget(widget)
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self)
+        self.horizontalLayout = QHBoxLayout(self)
         self.horizontalLayout.setContentsMargins(5, 5, 5, 5)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.MP1H_R_D = QtWidgets.QLabel(self)
+        self.MP1H_R_D = QLabel(self)
         self.MP1H_R_D.setStyleSheet("QLabel{ image: url(:/MP1H_R_SOURCE/MP1H_R_Demand.png); }")
         self.MP1H_R_D.setText("")
         self.MP1H_R_D.setObjectName("MP1H_R_D")
@@ -41,7 +46,7 @@ class MP1H_R_Demand(QtWidgets.QWidget):
 
 if __name__ == "__main__":
 
-    app = QtWidgets.QApplication([])
+    app = QApplication([])
     window = MP1H_R_Demand(1,2,3)
     window.show()
     sys.exit(app.exec_())

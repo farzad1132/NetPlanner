@@ -1,10 +1,11 @@
-from PySide2.QtCore import (QCoreApplication, QMetaObject, QObject, QPoint,
-    QRect, QSize, QUrl, Qt, SignalInstance, Slot, )
-from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QFont,
-    QFontDatabase, QIcon, QLinearGradient, QPalette, QPainter, QPixmap,
-    QRadialGradient)
-from PySide2.QtWidgets import *
-from PySide2 import QtWidgets,QtCore, QtGui
+from PySide2.QtWidgets import (QApplication, QTableWidget, QTableWidgetItem, QFileDialog, QMdiSubWindow, QWidget, QLabel, QAbstractItemView, QListWidgetItem, QMenu, QFontComboBox,
+                                QStyledItemDelegate, QGridLayout, QTabWidget, QGroupBox, QSpacerItem, QSizePolicy, QCheckBox, QRadioButton,
+                                QPushButton, QComboBox, QHBoxLayout, QSplitter, QFrame, QListWidget, QFormLayout, QDialog, QLineEdit)
+
+from PySide2.QtCore import (Signal, QObject, Slot, QRunnable, QThreadPool, SIGNAL, Qt, QSize, QUrl, QModelIndex, QRect, QCoreApplication,
+                            QMetaObject)
+
+from PySide2.QtGui import QPixmap, QBrush, QColor, QFont, QPalette, QStandardItemModel, QLinearGradient, QGradient, QCursor, QIcon
 
 from data import Data
 
@@ -19,14 +20,14 @@ class Ui_grooming_window(object):
         bus["grooming_window"] = grooming_window
         grooming_window.setObjectName("grooming_window")
         grooming_window.resize(603, 235)
-        self.layoutWidget = QtWidgets.QWidget(grooming_window)
-        self.layoutWidget.setGeometry(QtCore.QRect(20, 30, 251, 31))
+        self.layoutWidget = QWidget(grooming_window)
+        self.layoutWidget.setGeometry(QRect(20, 30, 251, 31))
         self.layoutWidget.setObjectName("layoutWidget")
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.layoutWidget)
+        self.horizontalLayout_2 = QHBoxLayout(self.layoutWidget)
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.MP1HThreshold_label = QtWidgets.QLabel(self.layoutWidget)
-        font = QtGui.QFont()
+        self.MP1HThreshold_label = QLabel(self.layoutWidget)
+        font = QFont()
         font.setFamily("Bahnschrift Condensed")
         font.setPointSize(10)
         font.setBold(False)
@@ -46,9 +47,9 @@ class Ui_grooming_window(object):
 "}")
         self.MP1HThreshold_label.setObjectName("MP1HThreshold_label")
         self.horizontalLayout_2.addWidget(self.MP1HThreshold_label)
-        self.MP1H_Threshold_combobox = QtWidgets.QComboBox(self.layoutWidget)
-        self.MP1H_Threshold_combobox.setMinimumSize(QtCore.QSize(121, 0))
-        font = QtGui.QFont()
+        self.MP1H_Threshold_combobox = QComboBox(self.layoutWidget)
+        self.MP1H_Threshold_combobox.setMinimumSize(QSize(121, 0))
+        font = QFont()
         font.setFamily("IRANSans")
         font.setBold(True)
         font.setWeight(75)
@@ -123,14 +124,14 @@ class Ui_grooming_window(object):
         self.MP1H_Threshold_combobox.addItem("")
         self.MP1H_Threshold_combobox.addItem("")
         self.horizontalLayout_2.addWidget(self.MP1H_Threshold_combobox)
-        self.layoutWidget1 = QtWidgets.QWidget(grooming_window)
-        self.layoutWidget1.setGeometry(QtCore.QRect(195, 185, 391, 41))
+        self.layoutWidget1 = QWidget(grooming_window)
+        self.layoutWidget1.setGeometry(QRect(195, 185, 391, 41))
         self.layoutWidget1.setObjectName("layoutWidget1")
-        self.gridLayout = QtWidgets.QGridLayout(self.layoutWidget1)
+        self.gridLayout = QGridLayout(self.layoutWidget1)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
-        self.Start_Grooming_button = QtWidgets.QPushButton(self.layoutWidget1)
-        self.Start_Grooming_button.setMaximumSize(QtCore.QSize(200, 16777215))
+        self.Start_Grooming_button = QPushButton(self.layoutWidget1)
+        self.Start_Grooming_button.setMaximumSize(QSize(200, 16777215))
         self.Start_Grooming_button.setStyleSheet("QPushButton {\n"
 "    \n"
 "    \n"
@@ -158,14 +159,14 @@ class Ui_grooming_window(object):
 "}")
         self.Start_Grooming_button.setObjectName("Start_Grooming_button")
         self.gridLayout.addWidget(self.Start_Grooming_button, 0, 0, 1, 1)
-        self.Cancel_button = QtWidgets.QPushButton(self.layoutWidget1)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        self.Cancel_button = QPushButton(self.layoutWidget1)
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.Cancel_button.sizePolicy().hasHeightForWidth())
         self.Cancel_button.setSizePolicy(sizePolicy)
-        self.Cancel_button.setMinimumSize(QtCore.QSize(84, 0))
-        self.Cancel_button.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.Cancel_button.setMinimumSize(QSize(84, 0))
+        self.Cancel_button.setMaximumSize(QSize(100, 16777215))
         self.Cancel_button.setStyleSheet("QPushButton {\n"
 "    \n"
 "    \n"
@@ -196,14 +197,14 @@ class Ui_grooming_window(object):
 
         self.retranslateUi(grooming_window)
         self.MP1H_Threshold_combobox.setCurrentIndex(0)
-        QtCore.QMetaObject.connectSlotsByName(grooming_window)
+        QMetaObject.connectSlotsByName(grooming_window)
 
         # NOTE: added 
         self.Cancel_button.clicked.connect(grooming_window.close)
         self.Start_Grooming_button.clicked.connect(self.start_grooming_fun)
 
     def retranslateUi(self, grooming_window):
-        _translate = QtCore.QCoreApplication.translate
+        _translate = QCoreApplication.translate
         grooming_window.setWindowTitle(_translate("grooming_window", "Grooming Window"))
         self.MP1HThreshold_label.setText(_translate("grooming_window", "MP1H Threshold"))
         self.MP1H_Threshold_combobox.setCurrentText(_translate("grooming_window", "0"))
@@ -230,8 +231,8 @@ class Ui_grooming_window(object):
 
 if __name__ == "__main__":
     import sys
-    app = QtWidgets.QApplication(sys.argv)
-    grooming_window = QtWidgets.QWidget()
+    app = QApplication(sys.argv)
+    grooming_window = QWidget()
     ui = Ui_grooming_window()
     ui.setupUi(grooming_window)
     grooming_window.show()
