@@ -2221,12 +2221,12 @@ class Ui_MainWindow(object):
         GroomingTabDataBase["LinkState"].clear()
         GroomingTabDataBase["NodeState"].clear()
     
-        self.tabWidget.setTabEnabled(1, False)
-        self.tabWidget.setTabEnabled(2, False)
+        self.tabWidget.setTabEnabled(1, True)
+        self.tabWidget.setTabEnabled(2, True)
 
         self.ViewGroupbox.setEnabled(False)
 
-        self.Grouping_groupbox.setEnabled(False)
+        self.Grouping_groupbox.setEnabled(True)
 
         self.Demand_Source_combobox.clear()
         self.Demand_Destination_combobox.clear()
