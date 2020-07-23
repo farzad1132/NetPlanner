@@ -1,4 +1,4 @@
-import pkg_resources.py2_warn
+#import pkg_resources.py2_warn
 from PySide2 import QtCore, QtGui, QtWidgets
 from PySide2.QtWidgets import QApplication,QTableWidget,QTableWidgetItem,QFileDialog,QMdiSubWindow,QWidget,QLabel,QAbstractItemView,QListWidgetItem,QMenu,QFontComboBox
 from PySide2.QtCore import Signal,QObject,Slot, QRunnable, QThreadPool, SIGNAL
@@ -5363,8 +5363,13 @@ class Ui_MainWindow(object):
         print('Transmitting data to server to solve RWA planning.') 
         # Run the RWA planner on the server
 
+        with open('setting.json', 'r') as handle:
+            setting = json.load(handle)
+            handle.close()
+
+        ip = setting["IP_Address_list"][setting["Selected_IP"]]
         try:
-            res = requests.get('http://localhost:5000/RWA/', json = data)
+            res = requests.get(ip, json = data)
             # res = requests.get('http://192.168.7.20:5000/RWA/', json = data)
             connected_to_server = True
         except:
