@@ -1,6 +1,12 @@
 var MapVar = L.map(
     "MapVar",
     {
+        contextmenu:true,
+        contextmenuWidth: 140,
+        contextmenuItems: [{
+            text: 'Show coordinates',
+            callback: showCoordinates
+        }],
         center: [35.6892, 51.389],
         crs: L.CRS.EPSG3857,
         zoom: 6,
@@ -9,8 +15,26 @@ var MapVar = L.map(
     }
 );
 
+function showCoordinates(e){
+    alert(e.latlng);
+}
 
+function get_name(layer){
+    var x = layer["_tooltip"]["_content"];
+    var doc = new DOMParser().parseFromString(x, "text/xml");
+    var z = doc.documentElement.textContent;
+    NodeName = z.replace(/\s/g, '');
 
+    return NodeName;
+}
+
+function delete_node(layer){
+    var latlng = layer.getLatLng();
+        
+    myFeatureGroup.removeLayer(layer);
+    MapVar.removeLayer(layer);
+    layer.remove();
+}
 
 
 var tile_layer_3c8d85307f1e400db7a61053d3bf00e6 = L.tileLayer(
@@ -69,21 +93,19 @@ function change_failed_nodes_icon(){
     
     // loop on nodes group feature and notify their icon
     myFeatureGroup.eachLayer(function (layer) {
-        var x = layer["_tooltip"]["_content"];
-        var doc = new DOMParser().parseFromString(x, "text/xml");
-        var z = doc.documentElement.textContent;
-        NodeName = z.replace(/\s/g, '');
+        NodeName = get_name(layer);
+
         if (failed_nodes_list.includes(NodeName)){
             value = failed_nodes[NodeName]
             Color = value["Color"]
             SubNode = value["SubNode"]
             index = failed_nodes_list.indexOf(NodeName);
             failed_nodes_list.splice(index, 1);
+
+            var latlng = layer.getLatLng();
             
-            myFeatureGroup.removeLayer(layer);
-            latlng = layer.getLatLng()
-            MapVar.removeLayer(layer);
-            layer.remove();
+            delete_node(layer);
+
             if (SubNode == 0){
                 change_icon(NodeName, latlng, Color, 1, "notified")
             } else{
@@ -100,23 +122,20 @@ function set_failed_node_default(Source){
     var flag = 0;
     
     myFeatureGroup.eachLayer(function (layer) {
-        var x = layer["_tooltip"]["_content"];
-        var doc = new DOMParser().parseFromString(x, "text/xml");
-        var z = doc.documentElement.textContent;
-        NodeName = z.replace(/\s/g, '');
+        NodeName = get_name(layer);
         if (NodeName == Source){
             if (flag == 0){
-            var latlng = layer.getLatLng()
-            
-            MapVar.removeLayer(layer);
-            layer.remove();
-            if (subnode == 0){
                 
-                change_icon(NodeName, latlng, color, 1, "normal")
-            } else{
-                ("yes sub node is 1")
-                change_icon(NodeName, latlng, color, 0.6, "normal")
-            }
+                var latlng = layer.getLatLng();
+                delete_node(layer);
+
+                if (subnode == 0){
+                    
+                    change_icon(NodeName, latlng, color, 1, "normal")
+                } else{
+                    ("yes sub node is 1")
+                    change_icon(NodeName, latlng, color, 0.6, "normal")
+                }
         }
         flag = 1;
         }
@@ -126,16 +145,11 @@ function set_failed_node_default(Source){
 function cancel_clustering(nodename){
     myFeatureGroup.eachLayer(function (layer) {
 
-        var x = layer["_tooltip"]["_content"];
-        var doc = new DOMParser().parseFromString(x, "text/xml");
-        var z = doc.documentElement.textContent;
-        NodeName = z.replace(/\s/g, '');
+        NodeName = get_name(layer);
 
         if ( NodeName == nodename ){
-            var latlng = layer.getLatLng()
-
-            MapVar.removeLayer(layer);
-            layer.remove();
+            var latlng = layer.getLatLng();
+            delete_node(layer);
 
             change_icon(NodeName, latlng, "blue", 1, "normal")
 
@@ -150,10 +164,8 @@ function update_cluster_info(nodename, color, subnode_state){
 
 function hide_subnodes(){
     myFeatureGroup.eachLayer(function (layer) {
-        var x = layer["_tooltip"]["_content"];
-        var doc = new DOMParser().parseFromString(x, "text/xml");
-        var z = doc.documentElement.textContent;
-        NodeName = z.replace(/\s/g, '');
+        
+        NodeName = get_name(layer);
 
         if (clusters_info_list.includes(NodeName)){
             SubNode_state = clusters_info[NodeName]["SubNode"];
@@ -167,10 +179,8 @@ function hide_subnodes(){
 
 function show_subnodes(){
     myFeatureGroup.eachLayer(function (layer) {
-        var x = layer["_tooltip"]["_content"];
-        var doc = new DOMParser().parseFromString(x, "text/xml");
-        var z = doc.documentElement.textContent;
-        NodeName = z.replace(/\s/g, '');
+        
+        NodeName = get_name(layer);
 
         if ( clusters_info_list.includes(NodeName) ){
             SubNode_state = clusters_info[NodeName]["SubNode"];
@@ -187,10 +197,8 @@ function receive_lambdas(Source, Destination, value){
 }
 
 function links_click_event(event){
-    var x = event.layer["_tooltip"]["_content"];
-    var doc = new DOMParser().parseFromString(x, "text/xml");
-    var z = doc.documentElement.textContent;
-    link_key = z.replace(/\s/g, '');
+    
+    link_key = get_name(event.layer);
     link_key = link_key.split("-");
 
 
@@ -205,10 +213,7 @@ function links_click_event(event){
 
 function groupClick(event) {
     
-    var x = event.layer["_tooltip"]["_content"];
-    var doc = new DOMParser().parseFromString(x, "text/xml");
-    var z = doc.documentElement.textContent;
-    degreename = z.replace(/\s/g, '');
+    degreename = get_name(event.layer);
 
     //alert(groupcolor)
     
@@ -216,12 +221,8 @@ function groupClick(event) {
     if (SetNodeGateWay_flag == "True") {
 
         backend_map.Create_DataBase(degreename)
-
         var latlng = event.layer.getLatLng();
-        
-        myFeatureGroup.removeLayer(event.layer);
-        MapVar.removeLayer(event.layer);
-        event.layer.remove();
+        delete_node(event.layer);
         
         
         change_icon(degreename, latlng, groupcolor, 1, "normal");
@@ -235,9 +236,7 @@ function groupClick(event) {
 
         var latlng = event.layer.getLatLng();
         
-        myFeatureGroup.removeLayer(event.layer);
-        MapVar.removeLayer(event.layer);
-        event.layer.remove();
+        delete_node(event.layer);
         
         change_icon(degreename, latlng, groupcolor, 0.6, "normal");
 
@@ -261,20 +260,7 @@ function just_for_test(){
 function add_node(NodeName, latlng){
     latlng = JSON.parse(latlng)
     //alert("start of add_node", NodeName, latlng);
-    var myIcon = L.icon({
-        iconUrl: "Icons/blue/server_blue.png",
-        iconSize: [30, 30],
-        iconAnchor: [20, 30],
-    });
-    var mark = L.marker(latlng,{ "opacity" :1}).setIcon(myIcon).addTo(MapVar);
-
-    mark.bindTooltip(
-    `<div>
-    <h2>${NodeName}</h2>
-    </div>`,
-    {"sticky": true}
-    );
-    mark.addTo(myFeatureGroup);
+    change_icon(NodeName, latlng, "blue", 1, "normal");
 }
 
 function add_link(Source_loc, Destination_loc, source_name, destination_name){
@@ -294,10 +280,7 @@ function add_link(Source_loc, Destination_loc, source_name, destination_name){
 
 function google_map_view_set(green, yellow, orange){
     links_groupfeature.eachLayer(function (layer){
-        var x = layer["_tooltip"]["_content"];
-        var doc = new DOMParser().parseFromString(x, "text/xml");
-        var z = doc.documentElement.textContent;
-        link_key = z.replace(/\s/g, '');
+        link_key = get_name(event.layer);
         link_key = link_key.split("-");
         lambda_list = lambdas[link_key];
         Len = lambda_list.length;
@@ -431,7 +414,18 @@ function change_icon(NodeName, latlng, Color, Opacity, mode){
                                 iconSize: [30, 30],
                                 iconAnchor: [20, 30],
                             });
-        var mark = L.marker(latlng,{ "opacity" :Opacity}).setIcon(myIcon).addTo(MapVar);
+        var mark = L.marker(latlng,{"opacity" :Opacity,
+                                    contextmenu: true,
+                                    contextmenuItems: [{
+                                        text: 'Delete Cluster',
+                                        index: 0,
+                                        callback: function(){
+                                            Delete_Cluster(mark);
+                                        }
+                                    }, {
+                                        separator: true,
+                                        index: 1
+                                    }]}).setIcon(myIcon).addTo(MapVar);
         //var pop = L.popup({"maxWidth": "100%%"});
         //var htm = $(`<div id="htm" style="width: 100.0%%; height: 100.0%%;"><h2>${NodeName}</h2></div>`)[0];
         //pop.setContent(htm);
@@ -444,8 +438,38 @@ function change_icon(NodeName, latlng, Color, Opacity, mode){
         mark.addTo(myFeatureGroup);
 }
 
+// this function asking GUI to return list of subnodes name and start deleting procedure
+function Delete_Cluster(layer){
 
+    NodeName = get_name(layer);
+    if(clusters_info_list.includes(NodeName)){
+        backend_map.fill_subnodes_list(NodeName);
+        var latlng = layer.getLatLng();
+        delete_node(layer);
+        change_icon(NodeName, latlng, "blue", 1, "normal");
+    }
+    else{
+        alert('Selected Node is not Gateway!');
+    }
+    
+}
 
+// this method is for deleting cluster
+function Delete_Cluster_procedure(subnodes){
+    subnodes_list = JSON.parse(subnodes);
+    //alert(subnodes_list);
+
+    myFeatureGroup.eachLayer(function (layer) {
+        
+        Name = get_name(layer);
+        //alert(Name);
+        if ( subnodes_list.includes(Name) ){
+            var latlng = layer.getLatLng();
+            delete_node(layer);
+            change_icon(Name, latlng, "blue", 1, "normal");
+        }
+    });
+}
 
 
 var tempMarkerlist = [];

@@ -174,6 +174,10 @@ class Backend_map(QObject):
     def receive_DrawMode_data(self, data, deletedOldLayers):
         Data["ui"].receive_DrawMode_data(data, deletedOldLayers)
 
+    @Slot(str)
+    def fill_subnodes_list(self, gateway):
+        Data["ui"].Delete_Cluster_procedure(gateway)
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -1891,11 +1895,11 @@ class Ui_MainWindow(object):
 
         # NOTE: uncomment bellow if you want use console.log
 
-        """ class WebEnginePage(QWebEnginePage):
+        class WebEnginePage(QWebEnginePage):
             def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
                 print("javaScriptConsoleMessage: ", level, message, lineNumber, sourceID)
 
-        self.webengine.setPage(WebEnginePage(self.webengine)) """
+        self.webengine.setPage(WebEnginePage(self.webengine))
         backend_map = Backend_map(MainWindow)
         self.backend_map = backend_map
         channel = QWebChannel(MainWindow)
@@ -2504,6 +2508,17 @@ class Ui_MainWindow(object):
 
     def ColorTo_javascript(self,text):
         self.webengine.page().runJavaScript('setcolor(\'%s\')' %text)
+
+    def Delete_Cluster_procedure(self, gateway):
+        subnodes_list = Data["Clustering"][gateway]["SubNodes"]
+
+        gateway_id = self.NodeIdMap[gateway]
+        for cluster_id , Obj in self.network.PhysicalTopology.ClusterDict.items():
+            if Obj.GatewayId == gateway_id:
+                self.network.PhysicalTopology.ClusterDict.pop(cluster_id)
+                break
+        #self.network.PhysicalTopology.del_cluster(self.NodeIdMap[gateway])
+        self.webengine.page().runJavaScript('Delete_Cluster_procedure(\'%s\')' %json.dumps(subnodes_list))
 
 
     def SelectSubNode_button_fun(self):
