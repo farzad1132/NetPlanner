@@ -454,7 +454,7 @@ function Delete_Cluster(layer){
     
 }
 
-// this method is for deleting cluster
+// this function is for deleting cluster
 function Delete_Cluster_procedure(subnodes){
     subnodes_list = JSON.parse(subnodes);
     //alert(subnodes_list);
@@ -487,6 +487,9 @@ function topologyMenuHandler() {
     links = [];
     globalVar = [];
 
+    // disabling nodes context menu
+    MapVar.contextmenu = false;
+
     var oldMarkers = [];
     var oldLinks = [];
 
@@ -494,7 +497,7 @@ function topologyMenuHandler() {
     featureGroup.addTo(mymap);
     featureGroup.on("click", handleMarkerOnClick);
 
-    //turn perivious methods off
+    //turn pervious methods off
     markersGroup.off("click", groupClick);
     linksGroup.off("click", links_click_event);
 
