@@ -625,6 +625,15 @@ class Network:
             def GenerateId(self):
                 Network.Traffic.Demand.ServiceReferencedId += 1
                 return ( Network.Traffic.Demand.ServiceReferencedId - 1 )
+
+            def add_mandatory_node(self, ServiceIdList, MandatoryNodesIdList):
+                for id in ServiceIdList:
+                    if id not in self.Mid_Grooming_ServiceIds and id in self.ServiceDict:
+                        self.Mid_Grooming_ServiceIds.append(id)
+                        self.ServiceDict[id].MandatoryNodesIdList = list(MandatoryNodesIdList)
+                    else:
+                        print(f"service with id= {id} does not exist in demand with id= {self.Id} !")
+
             
             def add_service(self, ServiceId, ServiceType, Sla, IgnoringNodes = None, WaveLength = None, Granularity = None, Granularity_vc12 = None,
             Granularity_vc4 = None, LightPathId = None, ServiceIdList = None, Capacity = None, MandatoryNodesIdList = None, OriginalSource = None, OriginalDestination = None, GroomOutId = None):
@@ -911,8 +920,7 @@ if __name__ == "__main__":
     #       id in multiple demands
 
     ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2,
-                                                    MandatoryNodesIdList= [2, 5])
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2,)
 
     n.TrafficMatrix.add_demand("Tehran", "Shiraz", "")
     LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
@@ -922,21 +930,17 @@ if __name__ == "__main__":
     ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
     n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2, 
                                                     OriginalSource = "T",
-                                                    OriginalDestination = "H",
-                                                    MandatoryNodesIdList= [2, 5])
+                                                    OriginalDestination = "H")
 
     ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "10GE", 2,
-                                                    MandatoryNodesIdList= [2, 5])
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "10GE", 2)
 
     ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
     n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "1GE", 2,
-                                                    GroomOutId= 1,
-                                                    MandatoryNodesIdList= [2, 5])
+                                                    GroomOutId= 1)
 
     ServiceId = n.TrafficMatrix.DemandDict[0].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "STM_64", 2,
-                                                    MandatoryNodesIdList= [2, 5])
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "STM_64", 2)
 
     # deleting service from demand
     n.TrafficMatrix.DemandDict[LastId].ServiceDict.pop(ServiceId)
@@ -994,7 +998,12 @@ if __name__ == "__main__":
                                     LightPathId= 4)
 
     n.PhysicalTopology.add_cluster_demand(GatewayId= 2,
-                                          Demands_list= [1, 4, 5])
+                                          Demands_list= [1, 5])
+
+
+    # adding mandatory node id list
+    n.TrafficMatrix.DemandDict[LastId].add_mandatory_node(ServiceIdList= [1, 5],
+                                                            MandatoryNodesIdList=[5])
 
     # getting service and demand ids for mid grooming in dict format
     # format:
