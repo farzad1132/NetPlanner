@@ -135,7 +135,6 @@ class Network:
             # finding containing cluster
             clusters = list(self.ClusterDict.items())
             ContainingCluster = list(filter(lambda x :  NodeId in x[1].SubNodesId , clusters))
-            print(self.ClusterDict[ContainingCluster[0][0]].SubNodesId)
             if ContainingCluster != []:
 
                 IndexOfNode = self.ClusterDict[ContainingCluster[0][0]].SubNodesId.index(NodeId)
@@ -165,30 +164,21 @@ class Network:
         
         def del_cluster(self, GatewayId):
 
-            Clusters = list(self.ClusterDict.items())
-            cluster = list(filter(lambda x : x[1].GatewayId == GatewayId, Clusters))
-
-            id = cluster[0]
-
-            # deleting cluster object from memory 
-            del self.ClusterDict[id]
-
-            # deleting cluster from ClusterDict 
-            self.ClusterDict.pop(id)
-
-            # correcting Cluster ReferenceId 
-            Network.Topology.Cluster.ReferenceId -= 1
-
-            UpperClusters = list(filter(lambda x : x[0] > id, Clusters))
-            UpperClusters = list(map(lambda x : x[0] , UpperClusters))
-            UpperClusters.sort()
-
-            # correcting other Clusters Id
-            for id in UpperClusters:
-                self.ClusterDict[id - 1] = self.ClusterDict.pop(id)
+            for cluster_id , Obj in self.ClusterDict.items():
+                if Obj.GatewayId == GatewayId:
+                    self.ClusterDict.pop(cluster_id)
+                    break
             
-
-        
+        def add_cluster_demand(self, GatewayId, Demands_list):
+            id = None
+            for cluster_id , Obj in self.ClusterDict.items():
+                if Obj.GatewayId == GatewayId:
+                    id = cluster_id
+                    break
+            if id is None:
+                print("There is no cluster with given gateway id")
+            else:
+                self.ClusterDict[id].Demands = Demands_list
 
 
         class Node:
@@ -304,12 +294,12 @@ class Network:
                 return instance
 
             ReferenceId = 1
-            def __init__(self, GatewayId, SubNodesId, Color):
+            def __init__(self, GatewayId, SubNodesId, Color, Demands = None):
                 self.Id = Network.Topology.Cluster.ReferenceId
                 Network.Topology.Cluster.ReferenceId += 1
 
                 self.GatewayId = GatewayId 
-
+                self.Demands = Demands
                 # SubNodesId is a list of Ids
                 self.SubNodesId = SubNodesId
                 self.Color = Color
@@ -320,10 +310,21 @@ class Network:
         def __init__(self):
             self.DemandDict = {}    # in { id : DemandObj } format
             self.GroomOut10Dict = {}            # format: { id: GroomOut10 object }
+            
         
         def add_demand(self, Source, Destination, Type):
             Id = self.GenerateDemandId()
             self.DemandDict[Id] = self.Demand(Id, Source, Destination, Type)
+
+        def get_mid_grooming_serviceids(self):
+            result = {}
+            for DemandId, obj in self.DemandDict.items():
+                Service_list = obj.Mid_Grooming_ServiceIds
+                if Service_list:
+                    result[DemandId] = Service_list
+            
+            return result
+        
 
         def Generate_GroomOutId(self):
             self.Demand.ServiceReferencedId += 1
@@ -400,12 +401,13 @@ class Network:
                 self.Destination = Destination
                 self.Type = Type            # Type must be a string
                 self.ServiceDict = {}
-            
+                self.Mid_Grooming_ServiceIds = []
             
             
             class G_100:
                 BW = 100
-                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None):
+                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None,
+                             LightPathId = None, OriginalSource = None, OriginalDestination = None, MandatoryNodesIdList = None):
                     self.Id = Id
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
@@ -414,13 +416,15 @@ class Network:
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
 
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
             
             class G_40:
                 BW = 40
-                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None):
+                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None,
+                             LightPathId = None, OriginalSource = None, OriginalDestination = None, MandatoryNodesIdList = None):
                     self.Id = Id
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
@@ -429,6 +433,7 @@ class Network:
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
 
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
@@ -436,7 +441,8 @@ class Network:
             
             class G_10:
                 BW = 10
-                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None):
+                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None,
+                             OriginalSource = None, OriginalDestination = None, MandatoryNodesIdList = None):
                     self.Id = Id
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
@@ -445,6 +451,7 @@ class Network:
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
 
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
@@ -453,7 +460,8 @@ class Network:
             class G_1:
                 BW = 1.244
 
-                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None, GroomOutId = None):
+                def __init__(self, Id, Granularity, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None,
+                             OriginalSource = None, OriginalDestination = None, GroomOutId = None, MandatoryNodesIdList = None):
                     self.Id = Id
                     self.Granularity = Granularity
                     self.WaveLength = WaveLength
@@ -463,6 +471,7 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
                     self.GroomOutId = GroomOutId
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
 
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
@@ -471,7 +480,8 @@ class Network:
             class FE:
                 BW = 0.1
 
-                def __init__(self, Id, Granularity_vc12 ,Granularity_vc4, Sla,DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None, GroomOutId = None):
+                def __init__(self, Id, Granularity_vc12 ,Granularity_vc4, Sla,DemandId, IgnoringNodes, WaveLength = None,
+                             LightPathId = None, OriginalSource = None, OriginalDestination = None, GroomOutId = None, MandatoryNodesIdList = None):
                     self.Id = Id
                     self.Granularity_vc12 = Granularity_vc12
                     self.Granularity_vc4 = Granularity_vc4
@@ -482,6 +492,7 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
                     self.GroomOutId = GroomOutId
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
 
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
@@ -491,7 +502,8 @@ class Network:
             class STM_64:
                 BW = 10
 
-                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None):
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None,
+                             OriginalSource = None, OriginalDestination = None, MandatoryNodesIdList = None):
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
@@ -499,6 +511,7 @@ class Network:
                     self.DemandId = DemandId
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
 
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
@@ -507,7 +520,8 @@ class Network:
             class STM_16:
                 BW = 2.49
 
-                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None, GroomOutId = None):
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None,
+                             OriginalSource = None, OriginalDestination = None, GroomOutId = None, MandatoryNodesIdList = None):
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
@@ -516,6 +530,7 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
                     self.GroomOutId = GroomOutId
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
 
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
@@ -527,7 +542,8 @@ class Network:
                 # BW : Band Width
                 BW = 622.08 / 1024
 
-                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None, GroomOutId = None):
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None,
+                             OriginalSource = None, OriginalDestination = None, GroomOutId = None, MandatoryNodesIdList = None):
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
@@ -536,6 +552,7 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
                     self.GroomOutId = GroomOutId
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
 
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
@@ -545,7 +562,8 @@ class Network:
                 # BW : Band Width in Gb/s
                 BW = 155.52 / 1024
 
-                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None, OriginalSource = None, OriginalDestination = None, GroomOutId = None):
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, WaveLength = None, LightPathId = None,
+                             OriginalSource = None, OriginalDestination = None, GroomOutId = None, MandatoryNodesIdList = None):
                     self.Id = Id
                     self.WaveLength = WaveLength
                     self.Sla = Sla
@@ -554,6 +572,7 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
                     self.GroomOutId = GroomOutId
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
 
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
@@ -564,7 +583,8 @@ class Network:
                 # BW = Band Width in Gb/s
                 BW = 155.52 / 1024
 
-                def __init__(self, Id, Sla, DemandId, IgnoringNodes, LightPathId = None, OriginalSource = None, OriginalDestination = None, GroomOutId = None):
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, LightPathId = None, OriginalSource = None,
+                             OriginalDestination = None, GroomOutId = None, MandatoryNodesIdList = None):
                     self.Id = Id
                     self.Sla = Sla
                     self.Type = "STM_1_Electrical"
@@ -572,6 +592,7 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
                     self.GroomOutId = GroomOutId
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
 
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
@@ -583,7 +604,8 @@ class Network:
                 # BW : Band Width in Gb/s
                 BW = 58.84 / 1024
 
-                def __init__(self, Id, Sla, DemandId, IgnoringNodes, LightPathId = None, OriginalSource = None, OriginalDestination = None, GroomOutId = None):
+                def __init__(self, Id, Sla, DemandId, IgnoringNodes, LightPathId = None, OriginalSource = None,
+                             OriginalDestination = None, GroomOutId = None, MandatoryNodesIdList = None):
                     self.Id = Id
                     self.Sla = Sla
                     self.Type = "E1"
@@ -591,6 +613,7 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
                     self.GroomOutId = GroomOutId
+                    self.MandatoryNodesIdList = MandatoryNodesIdList
 
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
@@ -606,67 +629,83 @@ class Network:
             def add_service(self, ServiceId, ServiceType, Sla, IgnoringNodes = None, WaveLength = None, Granularity = None, Granularity_vc12 = None,
             Granularity_vc4 = None, LightPathId = None, ServiceIdList = None, Capacity = None, MandatoryNodesIdList = None, OriginalSource = None, OriginalDestination = None, GroomOutId = None):
 
+                if MandatoryNodesIdList is not None:
+                    for id in MandatoryNodesIdList:
+                        if id not in self.Mid_Grooming_ServiceIds:
+                            self.Mid_Grooming_ServiceIds.append(id)
+
                 if ServiceType == "E1":
                     self.ServiceDict[ServiceId] = self.E1(ServiceId, Sla, self.Id, IgnoringNodes, LightPathId,
                     OriginalSource= OriginalSource,
                     OriginalDestination= OriginalDestination,
-                    GroomOutId= GroomOutId)
+                    GroomOutId= GroomOutId,
+                    MandatoryNodesIdList= MandatoryNodesIdList)
 
                 elif ServiceType == "STM_1_Electrical":
                     self.ServiceDict[ServiceId] = self.STM_1_Electrical(ServiceId, Sla, self.Id, IgnoringNodes, LightPathId,
                     OriginalSource= OriginalSource,
                     OriginalDestination= OriginalDestination,
-                    GroomOutId= GroomOutId)
+                    GroomOutId= GroomOutId,
+                    MandatoryNodesIdList= MandatoryNodesIdList)
 
                 elif ServiceType == "STM_1_Optical":
                     self.ServiceDict[ServiceId] = self.STM_1_Optical(ServiceId, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
                     OriginalSource= OriginalSource,
                     OriginalDestination= OriginalDestination,
-                    GroomOutId= GroomOutId)
+                    GroomOutId= GroomOutId,
+                    MandatoryNodesIdList= MandatoryNodesIdList)
 
                 elif ServiceType == "STM_4":
                     self.ServiceDict[ServiceId] = self.STM_4(ServiceId, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
                     OriginalSource= OriginalSource,
                     OriginalDestination= OriginalDestination,
-                    GroomOutId= GroomOutId)
+                    GroomOutId= GroomOutId,
+                    MandatoryNodesIdList= MandatoryNodesIdList)
 
                 elif ServiceType == "STM_16":
                     self.ServiceDict[ServiceId] = self.STM_16(ServiceId, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
                     OriginalSource= OriginalSource,
                     OriginalDestination= OriginalDestination,
-                    GroomOutId= GroomOutId)
+                    GroomOutId= GroomOutId,
+                    MandatoryNodesIdList= MandatoryNodesIdList)
 
                 elif ServiceType == "STM_64":
                     self.ServiceDict[ServiceId] = self.STM_64(ServiceId, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
                     OriginalSource= OriginalSource,
-                    OriginalDestination= OriginalDestination)
+                    OriginalDestination= OriginalDestination,
+                    MandatoryNodesIdList= MandatoryNodesIdList)
 
                 elif ServiceType == "FE":
                     self.ServiceDict[ServiceId] = self.FE(ServiceId, Granularity_vc12, Granularity_vc4, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
                     OriginalSource= OriginalSource,
                     OriginalDestination= OriginalDestination,
-                    GroomOutId= GroomOutId)
+                    GroomOutId= GroomOutId,
+                    MandatoryNodesIdList= MandatoryNodesIdList)
 
                 elif ServiceType == "1GE":
                     self.ServiceDict[ServiceId] = self.G_1(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
                     OriginalSource= OriginalSource,
                     OriginalDestination= OriginalDestination,
-                    GroomOutId= GroomOutId)
+                    GroomOutId= GroomOutId,
+                    MandatoryNodesIdList= MandatoryNodesIdList)
 
                 elif ServiceType == "10GE":
                     self.ServiceDict[ServiceId] = self.G_10(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
                     OriginalSource= OriginalSource,
-                    OriginalDestination= OriginalDestination)
+                    OriginalDestination= OriginalDestination,
+                    MandatoryNodesIdList= MandatoryNodesIdList)
 
                 elif ServiceType == "40GE":
                     self.ServiceDict[ServiceId] = self.G_40(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
                     OriginalSource= OriginalSource,
-                    OriginalDestination= OriginalDestination)
+                    OriginalDestination= OriginalDestination,
+                    MandatoryNodesIdList= MandatoryNodesIdList)
 
                 elif ServiceType == "100GE":
                     self.ServiceDict[ServiceId] = self.G_100(ServiceId, Granularity, Sla, self.Id, IgnoringNodes, WaveLength, LightPathId,
                     OriginalSource= OriginalSource,
-                    OriginalDestination= OriginalDestination)
+                    OriginalDestination= OriginalDestination,
+                    MandatoryNodesIdList= MandatoryNodesIdList)
                 
         
             
@@ -856,6 +895,8 @@ if __name__ == "__main__":
     n.PhysicalTopology.add_link(0,1,4)
     n.PhysicalTopology.add_link(1,2,1)
     n.PhysicalTopology.add_cluster(1,[2,0],"blue")
+    n.PhysicalTopology.add_cluster(2,[4,3],"red")
+    n.PhysicalTopology.del_cluster(1)
     print(n.PhysicalTopology.NodeDict[1].Neighbors)
     print("LinkDict: ",n.PhysicalTopology.LinkDict)
     print("NodeDict: ",n.PhysicalTopology.NodeDict)
@@ -870,7 +911,8 @@ if __name__ == "__main__":
     #       id in multiple demands
 
     ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2,
+                                                    MandatoryNodesIdList= [2, 5])
 
     n.TrafficMatrix.add_demand("Tehran", "Shiraz", "")
     LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
@@ -880,17 +922,21 @@ if __name__ == "__main__":
     ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
     n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2, 
                                                     OriginalSource = "T",
-                                                    OriginalDestination = "H")
+                                                    OriginalDestination = "H",
+                                                    MandatoryNodesIdList= [2, 5])
 
     ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "10GE", 2)
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "10GE", 2,
+                                                    MandatoryNodesIdList= [2, 5])
 
     ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
     n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "1GE", 2,
-                                                    GroomOutId= 1)
+                                                    GroomOutId= 1,
+                                                    MandatoryNodesIdList= [2, 5])
 
     ServiceId = n.TrafficMatrix.DemandDict[0].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "STM_64", 2)
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "STM_64", 2,
+                                                    MandatoryNodesIdList= [2, 5])
 
     # deleting service from demand
     n.TrafficMatrix.DemandDict[LastId].ServiceDict.pop(ServiceId)
@@ -946,6 +992,14 @@ if __name__ == "__main__":
                                     Capacity= 9.6,
                                     ServiceIdList= [1,5,9,4,2],
                                     LightPathId= 4)
+
+    n.PhysicalTopology.add_cluster_demand(GatewayId= 2,
+                                          Demands_list= [1, 4, 5])
+
+    # getting service and demand ids for mid grooming in dict format
+    # format:
+    #        { <DemandId> : <List of Service Ids>}
+    print(n.TrafficMatrix.get_mid_grooming_serviceids())
 
     # NOTE: Grooming Algorithm must return a Dictionary of paired GroomOut10's that belong to same MP2X in format bellow:
     # { <DemandId> : ( <GroomOut10Id_1>, <GroomOut10Id_2> ) }

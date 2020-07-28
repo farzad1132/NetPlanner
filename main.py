@@ -2513,10 +2513,7 @@ class Ui_MainWindow(object):
         subnodes_list = Data["Clustering"][gateway]["SubNodes"]
 
         gateway_id = self.NodeIdMap[gateway]
-        for cluster_id , Obj in self.network.PhysicalTopology.ClusterDict.items():
-            if Obj.GatewayId == gateway_id:
-                self.network.PhysicalTopology.ClusterDict.pop(cluster_id)
-                break
+        self.network.PhysicalTopology.del_cluster(gateway_id)
         #self.network.PhysicalTopology.del_cluster(self.NodeIdMap[gateway])
         self.webengine.page().runJavaScript('Delete_Cluster_procedure(\'%s\')' %json.dumps(subnodes_list))
 
