@@ -49,7 +49,7 @@ class MP1H_L_Demand(QtWidgets.QWidget):
         widget.setStyleSheet("border-image:url(:/Border_L_Source/Border_L.png); ")
         grid.setMargin(0)
         grid.addWidget(widget)
-        self.Line = QtWidgets.QLabel(self)
+        self.Line = line_class(self, Destination)
         self.Line.setMinimumSize(QtCore.QSize(0, 125))
         self.Line.setStyleSheet("QLabel{ image: url(:/line/line.png); }")
         self.Line.setText("")
@@ -313,7 +313,18 @@ class MP1H_L_Demand(QtWidgets.QWidget):
 
             
         Data["ui"].UpdateDemand_ServiceList()
+
+
+class line_class(QLabel):
+    def __init__(self, parent, Destination):
+        super().__init__(parent)
+        self.Destination = Destination
+    
+    def mousePressEvent(self, event):
         
+        if event.buttons() == QtCore.Qt.LeftButton:
+
+            Data["ui"].Demand_Destination_combobox.setCurrentText(self.Destination)
 
 class customlabel(QLabel):
     def __init__(self, parent, nodename, Destination, ID, ClientNum, LineVar, tooltip = None, DualPanelsId = None):

@@ -59,12 +59,12 @@ class MP2X_L_Demand(QtWidgets.QWidget):
         self.gridLayout = QtWidgets.QGridLayout(self)
         self.gridLayout.setContentsMargins(5, 9, 5, 5)
         self.gridLayout.setObjectName("gridLayout")
-        self.LINE1 = QtWidgets.QLabel(self)
+        self.LINE1 = line_class(self, Destination)
         self.LINE1.setStyleSheet("QLabel{ image: url(:/Line_L_SOURCE/LINE_L.png); }")
         self.LINE1.setText("")
         self.LINE1.setObjectName("LINE1")
         self.gridLayout.addWidget(self.LINE1, 2, 0, 1, 1)
-        self.LINE2 = QtWidgets.QLabel(self)
+        self.LINE2 = line_class(self, Destination)
         self.LINE2.setMinimumSize(QtCore.QSize(0, 0))
         self.LINE2.setStyleSheet("QLabel{ image: url(:/Line_R_SOURCE/LINE_R.png); }")
         self.LINE2.setText("")
@@ -365,6 +365,18 @@ class MP2X_L_Demand(QtWidgets.QWidget):
 
  
         Data["ui"].update_Demand_groomout10_list()
+
+
+class line_class(QLabel):
+    def __init__(self, parent, Destination):
+        super().__init__(parent)
+        self.Destination = Destination
+    
+    def mousePressEvent(self, event):
+        
+        if event.buttons() == QtCore.Qt.LeftButton:
+
+            Data["ui"].Demand_Destination_combobox.setCurrentText(self.Destination)
 
 
 class customlabel(QLabel):

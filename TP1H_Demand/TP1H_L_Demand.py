@@ -46,7 +46,7 @@ class TP1H_L_Demand(QtWidgets.QWidget):
         self.gridLayout = QtWidgets.QGridLayout(self)
         self.gridLayout.setContentsMargins(5, 5, 5, 5)
         self.gridLayout.setObjectName("gridLayout")
-        self.Line = QtWidgets.QLabel(self)
+        self.Line = line_class(self, Destination)
         self.Line.setMinimumSize(QtCore.QSize(0, 25))
         self.Line.setMaximumSize(QtCore.QSize(100, 200))
         self.Line.setStyleSheet("QLabel{ image: url(:/Line/tp1h_line.png); }")
@@ -238,7 +238,18 @@ class TP1H_L_Demand(QtWidgets.QWidget):
                 DemandTabDataBase["Failed_Demands"][destination].append(source)
             
         Data["ui"].UpdateDemand_ServiceList()
+
+
+class line_class(QLabel):
+    def __init__(self, parent, Destination):
+        super().__init__(parent)
+        self.Destination = Destination
+    
+    def mousePressEvent(self, event):
         
+        if event.buttons() == QtCore.Qt.LeftButton:
+
+            Data["ui"].Demand_Destination_combobox.setCurrentText(self.Destination)
 
 class customlabel(QLabel):
     def __init__(self, parent, nodename, Destination, ID, LineVar, tooltip = None, DualPanelsId = None):
