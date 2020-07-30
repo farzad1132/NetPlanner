@@ -3951,9 +3951,15 @@ class Ui_MainWindow(object):
 
         self.Traffic_matrix.blockSignals(True)
         if value == "":
+            item.setBackground(Qt.white)
+            self.add_delete_error_in_TM(key, mode = "delete")
+            Data["error_in_TM"].pop(key)
             if (str(row) in Data[header]["DataSection"][column_name]):
                 Data[header]["DataSection"][column_name].pop(str(row))
-
+                #item.setBackground(Qt.white)
+                #self.add_delete_error_in_TM(key, mode = "delete")
+                #Data["error_in_TM"].pop(key)
+                
 
         else:
             if column_name=='Quantity':
@@ -3971,6 +3977,8 @@ class Ui_MainWindow(object):
                     item.setBackground(Qt.red)
                     list_item = self.add_delete_error_in_TM(key, mode = "add")     
                     Data["error_in_TM"][key] = list_item
+
+        self.Traffic_matrix.blockSignals(False)
 
 
     def GTM_CellChange_fun(self):
@@ -3993,6 +4001,9 @@ class Ui_MainWindow(object):
         if value == "":
             if (row in Data["General"]["DataSection"][str(column)]):
                 Data["General"]["DataSection"][str(column)].pop(row)
+                item.setBackground(Qt.red)
+                list_item = self.add_delete_error_in_TM(key, mode = "add")     
+                Data["error_in_TM"][key] = list_item
 
         
         else:
@@ -4117,7 +4128,7 @@ class Ui_MainWindow(object):
             else:
                 column_name = column
 
-            text = f"row: {row}, Column: {column_name}"
+            text = f"row: {row + 1}, Column: {column_name}"
             item = QListWidgetItem(text, self.Errors_listwidget)
             item.setData(Qt.UserRole, key)
             self.Errors_listwidget.addItem(item)
