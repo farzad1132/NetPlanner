@@ -214,6 +214,171 @@ GroomingTabDataBase["NodeState"] = {}
 
 
 
+from BLANK_Demand.BLANK_Demand import BLANK_Demand
+from MP2X_Demand.MP2X_L_Demand import MP2X_L_Demand
+from MP2X_Demand.MP2X_R_Demand import MP2X_R_Demand
+from MP1H_Demand.MP1H_L_Demand import MP1H_L_Demand
+from MP1H_Demand.MP1H_R_Demand import MP1H_R_Demand
+from TP1H_Demand.TP1H_L_Demand import TP1H_L_Demand
+from TP1H_Demand.TP1H_R_Demand import TP1H_R_Demand
+
+
+class Panels:
+    def __init__(self, NodesList, Shelf_Count_backref):
+
+        self.PanelsHolderDict = {}  # this contains holders ( layouts )
+        self.PanelsObjectDict = {}  # this contains Panels Data
+        self.PanelsWidgetDict = {}  # this contains panels Widget
+        self.Shelf_Count = Shelf_Count_backref
+
+        for Node in NodesList:
+            self.PanelsObjectDict[Node] = {}
+            self.PanelsWidgetDict[Node] = {}
+        # TODO: initialize PanelsHolderDict with 14 or more blank panel widget
+
+    def calculate_dual_num(self, Destination):
+
+        IdList = list(self.PanelsObjectDict[Destination].keys())
+            
+        # if shelf is empty this method must return 1 in ## string ##
+        if not IdList:
+            return ("1", "2")
+        IdList = list(map(lambda x : int(x), IdList))
+
+        MaxId = max(IdList)
+
+        if ((MaxId + 1) // 14) + 1 > self.Shelf_Count[Destination]:
+                self.Shelf_Count[Destination] = ((MaxId + 1) // 14) + 1
+
+        for i in range(1, +1):
+            if i not in IdList and (i+1) not in IdList:
+                return (str(i), str(i+1))
+        
+        return (str(MaxId + 1), str(MaxId + 2))
+    
+
+    # NOTE: this method adds a panel object to PanelsObjectDict (database)
+    def add_panel_data(self, Id, Source, Destination, data_class_l, data_class_r = None):
+
+        DualPanelsNum = self.calculate_dual_num(Destination)
+        uppernum = self.get_uppernum(Id)
+
+        if data_class_l is self.BLANK:
+            self.PanelsObjectDict[Source][Id] = self.BLANK(Id = Id,
+                                                            Source= Source,
+                                                            Destination= Destination)
+        
+        else:
+
+            self.PanelsObjectDict[Source][Id] = data_class_l(Destination= Destination,
+                                                        DualPanelsId= DualPanelsNum)
+            
+            # dual
+            self.PanelsObjectDict[Destination][DualPanelsNum[0]] = data_class_l(Destination= Source,
+                                                            DualPanelsId= (Id, uppernum))
+        
+        
+
+        if data_class_r is not None:
+            self.PanelsObjectDict[Source][uppernum] = data_class_r(Destination= Destination,
+                                                        DualPanelsId= DualPanelsNum)
+            
+            # dual
+            self.PanelsObjectDict[Destination][DualPanelsNum[1]] = data_class_r(Destination= Source,
+                                                            DualPanelsId= (Id, uppernum))
+        
+        
+        
+        
+    # NOTE: this method switches panels widget at single or double slot
+    def remove_panel_widget(self, Id, Source):
+        data_class_l, widget_class_l = self.get_panels_class("BLANK")
+
+        uppernum = self.get_uppernum(Id)
+
+        # deleting left and right widget from holder
+        self.del_old_widget(Id)
+        self.del_old_widget(uppernum)
+
+        Destination = self.PanelsObjectDict[Source][Id].Destination
+
+        # deleting left and right data object
+        del self.PanelsObjectDict[Source][Id]
+        del self.PanelsObjectDict[Source][uppernum]
+
+        self.add_panel_data(Id, Source, Destination, data_class_l, data_class_l)
+
+        self.PanelsWidgetDict[Id].addWidget(BLANK_Demand(Id, Source, Destination))
+        self.PanelsWidgetDict[uppernum].addWidget(BLANK_Demand(uppernum, Source, Destination))
+    
+    def del_old_widget(self, Id):
+
+        panel_widget = self.PanelsHolderDict[Id].takeAt(0).widget()
+        self.PanelsHolderDict[Id].removeWidget(panel_widget)
+        panel_widget.deleteLater()
+
+    def add_widget_holder(self, Id, holder, Name):
+        self.PanelsHolderDict[Id] = holder
+
+        if Name == "BLANK":
+            data_class_r, _ = self.get_panels_class("BLANK")
+            self.add_panel_data(Id, Source, Destination, data_class_l)
+            self.PanelsWidgetDict[Source][Id] = BLANK_Demand(str(Id), Source, Destination)
+            self.PanelsHolderDict[Id].addWidget(self.PanelsWidgetDict[Source][Id])
+
+    def get_panels_class(self, Name):
+        if Name == "BLANK":
+            return self.BLANK, BLANK_Demand
+        
+        elif Name == "MP1H":
+            return self.MP1H_L, self.MP1H_R, MP1H_L_Demand, MP1H_R_Demand
+    
+    def get_uppernum(self, Id):
+        return str(int(Id) + 1)
+
+
+
+    # NOTE: Start of Class Definitions      
+
+    class BLANK:
+        def __init__(self, Id, Source, Destination):
+            self.Id = Id
+            self.Source = Source
+            self.Destination = Destination      
+
+    class MP1H_L:
+
+        def __init__(self, ClientsCapacity = None, LineCapacity = 0, ServiceIdList = None, 
+        DemandIdList = None, LightPathId = None, LightPath_flag = 0, Destination = None, DualPanelsId = None):
+
+            if ClientsCapacity is None:
+                self.ClientsCapacity = [0 for i in range(10)]
+            else:
+                self.ClientsCapacity = ClientsCapacity
+            
+            if ServiceIdList is None:
+                self.ServiceIdList = [None for i in range(10)]
+            else:
+                self.ServiceIdList = ServiceIdList
+            
+            if DemandIdList is None:
+                self.DemandIdList = [None for i in range(10)]
+            else:
+                self.DemandIdList = DemandIdList
+            
+            self.Destination = Destination
+            self.LightPath_flag = LightPath_flag
+            self.LightPathId = LightPathId
+            self.LineCapacity = LineCapacity
+            self.DualPanelsId = DualPanelsId
+
+    class MP1H_R:
+        def __init__(self, LeftId, Destination, DualPanelsId):
+            self.Destination = Destination
+            self.LeftId = LeftId
+            self.DualPanelsId = DualPanelsId
+
+
 
 class MP2D_L:
     def __init__(self, ClientsCapacity = [0, 0], LineCapacity = 0, LineType = "200GE"):
@@ -284,41 +449,11 @@ class MP2X_R:
         self.Destination = Destination
         self.DualPanelsId = DualPanelsId
 
-class MP1H_L:
 
-    
-
-    def __init__(self, ClientsCapacity = None, LineCapacity = 0, ServiceIdList = None, 
-    DemandIdList = None, LightPathId = None, LightPath_flag = 0, Destination = None, DualPanelsId = None):
-
-        if ClientsCapacity is None:
-            self.ClientsCapacity = [0 for i in range(10)]
-        else:
-            self.ClientsCapacity = ClientsCapacity
-        
-        if ServiceIdList is None:
-            self.ServiceIdList = [None for i in range(10)]
-        else:
-            self.ServiceIdList = ServiceIdList
-        
-        if DemandIdList is None:
-            self.DemandIdList = [None for i in range(10)]
-        else:
-            self.DemandIdList = DemandIdList
-        
-        self.Destination = Destination
-        self.LightPath_flag = LightPath_flag
-        self.LightPathId = LightPathId
-        self.LineCapacity = LineCapacity
-        self.DualPanelsId = DualPanelsId
     
     
 
-class MP1H_R:
-    def __init__(self, LeftId, Destination, DualPanelsId):
-        self.Destination = Destination
-        self.LeftId = LeftId
-        self.DualPanelsId = DualPanelsId
+
 
 class TP1H_L:
     def __init__(self, DemandId = None, ServiceId = None, Line = 0, LightPathId = None, Destination = None, DualPanelsId = None):

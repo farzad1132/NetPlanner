@@ -186,7 +186,7 @@ class MP2X_L_Demand(QtWidgets.QWidget):
             panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
             Data["DemandPanel_" + str(self.uppernum)].removeWidget(panel_widget)
             panel_widget.deleteLater()
-            Data["DemandPanel_" + self.uppernum].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
+            Data["DemandPanel_" + self.uppernum].addWidget(BLANK_Demand(self.uppernum ,  self.nodename, self.Destination))
 
             # undoing every service or lightpath that is created in this panel
             if DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity != [0, 0]:
