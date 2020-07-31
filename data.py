@@ -308,8 +308,38 @@ class Panels:
 
         self.add_panel_data(Id, Source, Destination, data_class_l, data_class_l)
 
-        self.PanelsWidgetDict[Id].addWidget(BLANK_Demand(Id, Source, Destination))
-        self.PanelsWidgetDict[uppernum].addWidget(BLANK_Demand(uppernum, Source, Destination))
+        self.PanelsWidgetDict[Id].addWidget(widget_class_l(Id, Source, Destination))
+        self.PanelsWidgetDict[uppernum].addWidget(widget_class_l(uppernum, Source, Destination))
+    
+    def switch_widget(self, Id, Source, Local_Destination):
+
+        uppernum = self.get_uppernum(Id)
+
+        self.del_old_widget(Id)
+        self.del_old_widget(uppernum)
+
+        if Id  not in self.PanelsWidgetDict[Source]:
+            self.PanelsWidgetDict[Source][Id] = BLANK_Demand(Id, Source, Local_Destination)
+
+        self.PanelsHolderDict[Id].addWidget(self.PanelsWidgetDict[Source][Id])
+
+        if uppernum not in self.PanelsWidgetDict[Source]:
+            self.PanelsWidgetDict[Source][uppernum] = BLANK_Demand(uppernum, Source, Local_Destination)
+        
+        self.PanelsHolderDict[uppernum].addWidget(self.PanelsWidgetDict[Source][uppernum])
+
+    
+    def add_widget(self, Id, Source, Destination, Name):
+        data_class_l, data_class_r, widget_class_l, widget_class_r = self.get_panels_class(Name)
+
+        self.add_panel_data(Id, Source, Destination, data_class_l, data_class_r)
+
+        uppernum = self.get_uppernum(Id)
+
+        self.PanelsWidgetDict[Source][Id] = widget_class_l(Id, Source, Destination)
+        self.PanelsWidgetDict[Source][uppernum] = widget_class_r(uppernum, Source, Destination)
+            
+
     
     def del_old_widget(self, Id):
 
@@ -317,11 +347,11 @@ class Panels:
         self.PanelsHolderDict[Id].removeWidget(panel_widget)
         panel_widget.deleteLater()
 
-    def add_widget_holder(self, Id, holder, Name):
+    def add_widget_holder(self, Id, holder, Source, Destination, Name):
         self.PanelsHolderDict[Id] = holder
 
         if Name == "BLANK":
-            data_class_r, _ = self.get_panels_class("BLANK")
+            data_class_l, _ = self.get_panels_class("BLANK")
             self.add_panel_data(Id, Source, Destination, data_class_l)
             self.PanelsWidgetDict[Source][Id] = BLANK_Demand(str(Id), Source, Destination)
             self.PanelsHolderDict[Id].addWidget(self.PanelsWidgetDict[Source][Id])

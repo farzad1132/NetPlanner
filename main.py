@@ -32,13 +32,6 @@ from grooming_algorithm import grooming_fun
 
 from ExportPhysicalTopology import Ui_Export_PT
 
-from BLANK_Demand.BLANK_Demand import BLANK_Demand
-from MP2X_Demand.MP2X_L_Demand import MP2X_L_Demand
-from MP2X_Demand.MP2X_R_Demand import MP2X_R_Demand
-from MP1H_Demand.MP1H_L_Demand import MP1H_L_Demand
-from MP1H_Demand.MP1H_R_Demand import MP1H_R_Demand
-from TP1H_Demand.TP1H_L_Demand import TP1H_L_Demand
-from TP1H_Demand.TP1H_R_Demand import TP1H_R_Demand
 
 from TrafficMatrixError.Source_type_error import Ui_Source_type_error
 from TrafficMatrixError.ID_type_error import Ui_ID_type_error
@@ -2028,6 +2021,7 @@ class Ui_MainWindow(object):
 
         self.newfile_pushbutton.clicked.connect(self.new_button_fun)
 
+
         self.Demand_Shelf_set()
 
         self.threadpool = QThreadPool()
@@ -2554,138 +2548,10 @@ class Ui_MainWindow(object):
         Source = self.Demand_Source_combobox.currentText()
         Local_Destination = self.Demand_Destination_combobox.currentText()
         for i in range(1, (((self.New_Demand_Shelf_Num - 2) * 14) + 15)):
+
             # removing old panel
-            panel_widget = Data["DemandPanel_" + str(i)].takeAt(0).widget()
-            Data["DemandPanel_" + str(i)].removeWidget(panel_widget)
-            panel_widget.deleteLater()
-
-            #print(f"count: {Data['DemandPanel_' + str(i)].count()}")
+            self.Panels.switch_widget(str(i), Source, Local_Destination)
             
-            if str(i) in DemandTabDataBase["Panels"][Source]:
-                panel = DemandTabDataBase["Panels"][Source][str(i)]
-                
-                Destination = panel.Destination
-
-                DualPanelsId = panel.DualPanelsId
-
-                if isinstance(panel , MP2X_L):
-                    Data["DemandPanel_" + str(i)].addWidget(MP2X_L_Demand(str(i), Source, Destination, DualPanelsId))
-
-                    GroomOutId_1, GroomOutId_2 = panel.LineIdList
-                    
-
-                    # finding panel widget
-                    widget = Data["DemandPanel_" + str(i)].itemAt(0).widget()
-
-                    for i in range(len(panel.ClientsCapacity)):
-                        if panel.ClientsCapacity[i] != 0:
-
-                            # finding object of client customlabel
-                            text = "CLIENT" + str( i + 1 )
-                            clientvar = getattr(widget, text)
-
-                            if clientvar.ClientNum % 2 == 0:
-                                clientvar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
-                            else:
-                                clientvar.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
-                            
-                            clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])].toolTip())
-
-                            clientvar.servicetype = panel.ClientsCapacity[i]
-                            clientvar.nodename = Source
-                            clientvar.Destination = Destination
-                            clientvar.ids = [panel.DemandIdList[i], panel.ServiceIdList[i]]
-                            clientvar.setAcceptDrops(False)
-
-                            # adding tooltip to line port
-                            linevar_1 = getattr(widget, "LINE1")
-                            linevar_1.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][GroomOutId_1].toolTip())
-
-                            linevar_1.setStyleSheet("QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); }")
-
-                            if GroomOutId_2 is not None:
-                                linevar_2 = getattr(widget, "LINE2")
-                                linevar_2.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][GroomOutId_2].toolTip())
-
-                                linevar_2.setStyleSheet("QLabel{ image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); }")
-                            
-                elif isinstance(panel, MP2X_R):
-                    Data["DemandPanel_" + str(i)].addWidget(MP2X_R_Demand(str(i), Source, Destination, DualPanelsId))
-                
-                elif isinstance(panel, MP1H_L):
-                    LightPathId = panel.LightPathId
-                    Data["DemandPanel_" + str(i)].addWidget(MP1H_L_Demand(str(i), Source, Destination, DualPanelsId))
-
-                    # finding panel widget
-                    widget = Data["DemandPanel_" + str(i)].itemAt(0).widget()
-                        
-                    for i in range(len(panel.ClientsCapacity)):
-                        if panel.ClientsCapacity[i] != 0:
-
-                            # finding object of client customlabel
-                            text = "Client" + str( i + 1 )
-                            clientvar = getattr(widget, text)
-
-                            if clientvar.ClientNum % 2 == 0:
-                                clientvar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
-                            else:
-                                clientvar.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
-                            # checking its GroomOut10 or not
-                            if (panel.DemandIdList[i],panel.ServiceIdList[i]) in DemandTabDataBase["Services_static"][Source]:
-                                clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])].toolTip())
-                            else:
-                                clientvar.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][panel.ServiceIdList[i]].toolTip())
-                            clientvar.servicetype = panel.ClientsCapacity[i]
-                            clientvar.nodename = Source
-                            clientvar.Destination = Destination
-                            clientvar.ids = [panel.DemandIdList[i], panel.ServiceIdList[i]]
-
-                            if panel.ClientsCapacity[i] == "GroomOut10":
-                                UserData = DemandTabDataBase["GroomOut10"][(Source, Destination)][panel.ServiceIdList[i]].data(Qt.UserRole)
-                                clientvar.GroomOut_Capacity = UserData["Capacity"]
-
-                            clientvar.setAcceptDrops(False)
-
-                            # adding tooltip to line port
-                            linevar = getattr(widget, "Line")
-                            linevar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
-
-                            linevar.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
-
-                elif isinstance(panel, MP1H_R):
-                    Data["DemandPanel_" + str(i)].addWidget(MP1H_R_Demand(str(i), Source, Destination, DualPanelsId))
-                
-                elif isinstance(panel, TP1H_L):
-                    LightPathId = panel.LightPathId
-                    Data["DemandPanel_" + str(i)].addWidget(TP1H_L_Demand(str(i), Source, Destination, DualPanelsId))
-
-                    # finding panel widget
-                    widget = Data["DemandPanel_" + str(i)].itemAt(0).widget()
-
-                    if panel.Line == "100GE":
-
-                        # finding object of client customlabel
-                        clientvar = getattr(widget, "Client")
-
-                        # filling customlabel attributes 
-                        clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandId, panel.ServiceId)].toolTip())
-                        clientvar.servicetype = "100GE"
-                        clientvar.nodename = Source
-                        clientvar.Destination = Destination
-                        clientvar.ids = [panel.DemandId, panel.ServiceId]
-                        clientvar.setAcceptDrops(False)
-
-                        clientvar.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
-
-                        LineVar = getattr(widget, "Line")
-                        LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
-
-                        LineVar.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
-                elif isinstance(panel, TP1H_R):
-                    Data["DemandPanel_" + str(i)].addWidget(TP1H_R_Demand(str(i), Source, Destination, DualPanelsId))
-            
-            else:
-                Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Local_Destination))
         
         if self.pre_source != Source:
             self.pre_source = Source
@@ -4196,6 +4062,9 @@ class Ui_MainWindow(object):
         self.Fill_Demand_SourceandDestination_combobox()
         #self.update_cells()
 
+        # NOTE: setting up panels object
+        self.Panels = Panels(Data["Nodes"].keys(), DemandTabDataBase["Shelf_Count"])
+
         self.tabWidget.setTabEnabled(1, True)
         self.tabWidget.setTabEnabled(2, True)
 
@@ -4234,20 +4103,15 @@ class Ui_MainWindow(object):
     
     def Demand_Shelf_set(self):
         # TODO: add this method to Demand tab initializer
-        #if self.Demand_shelf_init_flag is False: 
+        
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
         for i in range(1,15):
-            Data["DemandPanel_" + str(i)] = QtWidgets.QGridLayout(getattr(self, "DemandPanel_" + str(i)))
-            #setattr(self, "DemandPanel_" + str(i),QMdiSubWindow())
-            #Data["DemandPanel_" + str(i)] = getattr(ui, "DemandPanel_" + str(i))
-            #Data["DemandPanel_" + str(i)].setWindowFlag(Qt.FramelessWindowHint)
-            Data["DemandPanel_" + str(i)].setMargin(0)
-            Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Destination))
+            widget_holder = QtWidgets.QGridLayout(getattr(self, "DemandPanel_" + str(i)))
+            widget_holder.setMargin(0)
 
-            #self.Demand_mdi.addSubWindow(Data["DemandPanel_" + str(i)])
-            #Data["DemandPanel_" + str(i)].show()
-            #self.Demand_shelf_init_flag = True
+            self.Panels.add_widget_holder(str(i), widget_holder, Source, Destination, "BLANK")
+
     
     def add_demand_shelf(self):
 
@@ -4263,9 +4127,10 @@ class Ui_MainWindow(object):
         for i in range(((self.New_Demand_Shelf_Num - 1) * 14) + 1, ((self.New_Demand_Shelf_Num - 1) * 14) + 15):
             setattr(self, "DemandPanel_" + str(i), QWidget(getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num))))
             getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num) + "_layout").addWidget(getattr(self, "DemandPanel_" + str(i)))
-            Data["DemandPanel_" + str(i)] = QtWidgets.QGridLayout(getattr(self, "DemandPanel_" + str(i)))
-            Data["DemandPanel_" + str(i)].setMargin(0)
-            Data["DemandPanel_" + str(i)].addWidget(BLANK_Demand(str(i), Source, Destination))
+            widget_holder = QtWidgets.QGridLayout(getattr(self, "DemandPanel_" + str(i)))
+            widget_holder.setMargin(0)
+
+            self.Panels.add_widget_holder(str(i), widget_holder, Source, Destination, "BLANK")
         
         self.Demand_tab.addTab(getattr(self, "shelf_" + str(self.New_Demand_Shelf_Num)), "Shelf " + str(self.New_Demand_Shelf_Num))
         
