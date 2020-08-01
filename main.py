@@ -3117,7 +3117,7 @@ class Ui_MainWindow(object):
                 DemandId = UserData["DemandId"]
                 widget = Data["DemandPanel_" + str(PanelId)].itemAt(0).widget()
 
-                index = DemandTabDataBase["Panels"][Source][PanelId].LineIdList.index(GroomOut10Id)
+                index = self.Panels.PanelsObjectDict[Source][PanelId].LineIdList.index(GroomOut10Id)
 
                 if index == 0:
                     widget.LINE1.setStyleSheet(" QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); border: 5px solid red; }")
@@ -3148,7 +3148,7 @@ class Ui_MainWindow(object):
                     PanelId = UserData["PanelId"]
                     widget = Data["DemandPanel_" + str(PanelId)].itemAt(0).widget()
 
-                    index = DemandTabDataBase["Panels"][Source][PanelId].LineIdList.index(GroomOut10Id)
+                    index = self.Panels.PanelsObjectDict[Source][PanelId].LineIdList.index(GroomOut10Id)
 
                     if index == 0:
                         widget.LINE1.setStyleSheet(" QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); }")
@@ -4437,7 +4437,7 @@ class Ui_MainWindow(object):
                     MP1H_data = DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId_1].data(Qt.UserRole)
                     MP1H_Id = MP1H_data["PanelId"]
 
-                    index = DemandTabDataBase["Panels"][Source][MP1H_Id].ServiceIdList.index(Servicetuple[0])
+                    index = self.Panels.PanelsObjectDict[Source][MP1H_Id].ServiceIdList.index(Servicetuple[0])
                     UserData_1["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
 
                     DemandTabDataBase["GroomOut10_status"][(Source, Destination)][Servicetuple[0]] = 1
@@ -4446,7 +4446,7 @@ class Ui_MainWindow(object):
                     MP1H_data = DemandTabDataBase["Lightpathes"][(Destination, Source)][LightPathId_1].data(Qt.UserRole)
                     MP1H_Id = MP1H_data["PanelId"]
 
-                    index = DemandTabDataBase["Panels"][Destination][MP1H_Id].ServiceIdList.index(Servicetuple[0])
+                    index = self.Panels.PanelsObjectDict[Destination][MP1H_Id].ServiceIdList.index(Servicetuple[0])
                     UserData_1_d["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
 
                     DemandTabDataBase["GroomOut10_status"][(Destination, Source)][Servicetuple[0]] = 1
@@ -4492,7 +4492,7 @@ class Ui_MainWindow(object):
                     MP1H_data = DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId_2].data(Qt.UserRole)
                     MP1H_Id = MP1H_data["PanelId"]
 
-                    index = DemandTabDataBase["Panels"][Source][MP1H_Id].ServiceIdList.index(Servicetuple[1])
+                    index = self.Panels.PanelsObjectDict[Source][MP1H_Id].ServiceIdList.index(Servicetuple[1])
                     UserData_2["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
 
                     DemandTabDataBase["GroomOut10_status"][(Source, Destination)][Servicetuple[1]] = 1
@@ -4501,7 +4501,7 @@ class Ui_MainWindow(object):
                     MP1H_data = DemandTabDataBase["Lightpathes"][(Destination, Source)][LightPathId_2].data(Qt.UserRole)
                     MP1H_Id = MP1H_data["PanelId"]
 
-                    index = DemandTabDataBase["Panels"][Destination][MP1H_Id].ServiceIdList.index(Servicetuple[1])
+                    index = self.Panels.PanelsObjectDict[Destination][MP1H_Id].ServiceIdList.index(Servicetuple[1])
                     UserData_2_d["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
 
                     DemandTabDataBase["GroomOut10_status"][(Destination, Source)][Servicetuple[1]] = 1
@@ -4601,7 +4601,7 @@ class Ui_MainWindow(object):
                     MP1H_data = DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].data(Qt.UserRole)
                     MP1H_Id = MP1H_data["PanelId"]
 
-                    index = DemandTabDataBase["Panels"][Source][MP1H_Id].ServiceIdList.index(GroomOutId)
+                    index = self.Panels.PanelsObjectDict[Source][MP1H_Id].ServiceIdList.index(GroomOutId)
                     UserData["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
 
                     DemandTabDataBase["GroomOut10_status"][(Source, Destination)][GroomOutId] = 1
@@ -4610,7 +4610,7 @@ class Ui_MainWindow(object):
                     MP1H_data = DemandTabDataBase["Lightpathes"][(Destination, Source)][LightPathId].data(Qt.UserRole)
                     MP1H_Id = MP1H_data["PanelId"]
 
-                    index = DemandTabDataBase["Panels"][Destination][MP1H_Id].ServiceIdList.index(GroomOutId)
+                    index = self.Panels.PanelsObjectDict[Destination][MP1H_Id].ServiceIdList.index(GroomOutId)
                     UserData["MP1H_Client_Id"] = (MP1H_Id, str(index + 1))
 
                     DemandTabDataBase["GroomOut10_status"][(Destination, Source)][GroomOutId] = 1

@@ -16,7 +16,7 @@ from BLANK_Demand import BLANK_SOURCE
 
 class BLANK_Demand(QtWidgets.QWidget):
 
-    def __init__(self, Panel_ID, nodename, Destination):
+    def __init__(self, Panel_ID, nodename, Destination, Panels):
         super(BLANK_Demand, self).__init__()
 
         #self.resize(159, 639)
@@ -26,6 +26,7 @@ class BLANK_Demand(QtWidgets.QWidget):
         self.nodename = nodename
         self.Destination = Destination
         self.uppernum = str(int(self.id) + 1)
+        self.Panels = Panels
 
         self.setStyleSheet("background-color: rgb(0, 0, 0);")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self)
@@ -73,18 +74,11 @@ class BLANK_Demand(QtWidgets.QWidget):
         text = model.item(0,0).text()
         #self.label.setText(text)
 
-        # TODO: Take Care of this very soon
 
-        # removing old panel ( left only )
-        panel_widget = Data["DemandPanel_" + str(self.id)].takeAt(0).widget()
-        Data["DemandPanel_" + str(self.id)].removeWidget(panel_widget)
-        panel_widget.deleteLater()
-
-        # getting dual panels id
-        DualPanelsId = self.generate_dual_panel_num(self.Destination)
+        self.Panels.add_widget(self.id, self.nodename, self.Destination, text)
 
 
-        if text == "SC":
+        """ if text == "SC":
             #Data["DemandPanel_" + str(self.id)].addWidget(SC_Demand(self.id, self.nodename))
             DemandTabDataBase["Panels"][self.nodename][self.id] = SC()
         elif text == "MP2X":
@@ -143,12 +137,12 @@ class BLANK_Demand(QtWidgets.QWidget):
 
             # ** Dual **
             #Data["DemandPanel_" + DualPanelsId[1]].addWidget(TP1H_R_Demand(DualPanelsId[1], self.Destination, self.nodename))
-            DemandTabDataBase["Panels"][self.Destination][DualPanelsId[1]] = TP1H_R(DualPanelsId[1], self.nodename, DualPanelsId)
+            DemandTabDataBase["Panels"][self.Destination][DualPanelsId[1]] = TP1H_R(DualPanelsId[1], self.nodename, DualPanelsId) """
         
         super(BLANK_Demand, self).dropEvent(event)
 
     
-    def generate_dual_panel_num(self, Destination):
+    """ def generate_dual_panel_num(self, Destination):
 
         IdList = list(DemandTabDataBase["Panels"][Destination].keys())
             
@@ -166,18 +160,7 @@ class BLANK_Demand(QtWidgets.QWidget):
             if i not in IdList and (i+1) not in IdList:
                 return (str(i), str(i+1))
         
-        return (str(MaxId + 1), str(MaxId + 2))
-
-        """ if len(IdList) == max(IdList):
-            MaxId = max(IdList)
-
-            if ((MaxId + 1) // 15) + 1 > DemandTabDataBase["Shelf_Count"][Destination]:
-                DemandTabDataBase["Shelf_Count"][Destination] = ((MaxId + 1) // 15) + 1
-            return (str(MaxId + 1), str(MaxId + 2))
-        else:
-            for i in range(1,max(IdList), 2):
-                if ( i in IdList ) is False:
-                    return (str(i), str(i+1)) """
+        return (str(MaxId + 1), str(MaxId + 2)) """
 
 
 

@@ -290,7 +290,7 @@ class Panels:
         
         
         
-    # NOTE: this method switches panels widget at single or double slot
+    # NOTE: 
     def remove_panel_widget(self, Id, Source):
         data_class_l, widget_class_l = self.get_panels_class("BLANK")
 
@@ -301,15 +301,19 @@ class Panels:
         self.del_old_widget(uppernum)
 
         Destination = self.PanelsObjectDict[Source][Id].Destination
+        DualPanelsId = self.PanelsObjectDict[Source][Id].DualPanelsId
 
         # deleting left and right data object
         del self.PanelsObjectDict[Source][Id]
         del self.PanelsObjectDict[Source][uppernum]
 
+        del self.PanelsObjectDict[Destination][DualPanelsId[0]]
+        del self.PanelsObjectDict[Destination][DualPanelsId[1]]
+
         self.add_panel_data(Id, Source, Destination, data_class_l, data_class_l)
 
-        self.PanelsWidgetDict[Id].addWidget(widget_class_l(Id, Source, Destination))
-        self.PanelsWidgetDict[uppernum].addWidget(widget_class_l(uppernum, Source, Destination))
+        self.PanelsWidgetDict[Id].addWidget(widget_class_l(Id, Source, Destination, self))
+        self.PanelsWidgetDict[uppernum].addWidget(widget_class_l(uppernum, Source, Destination, self))
     
     def switch_widget(self, Id, Source, Local_Destination):
 
@@ -319,12 +323,12 @@ class Panels:
         self.del_old_widget(uppernum)
 
         if Id  not in self.PanelsWidgetDict[Source]:
-            self.PanelsWidgetDict[Source][Id] = BLANK_Demand(Id, Source, Local_Destination)
+            self.PanelsWidgetDict[Source][Id] = BLANK_Demand(Id, Source, Local_Destination, self)
 
         self.PanelsHolderDict[Id].addWidget(self.PanelsWidgetDict[Source][Id])
 
         if uppernum not in self.PanelsWidgetDict[Source]:
-            self.PanelsWidgetDict[Source][uppernum] = BLANK_Demand(uppernum, Source, Local_Destination)
+            self.PanelsWidgetDict[Source][uppernum] = BLANK_Demand(uppernum, Source, Local_Destination, self)
         
         self.PanelsHolderDict[uppernum].addWidget(self.PanelsWidgetDict[Source][uppernum])
 
@@ -336,9 +340,14 @@ class Panels:
 
         uppernum = self.get_uppernum(Id)
 
-        self.PanelsWidgetDict[Source][Id] = widget_class_l(Id, Source, Destination)
+        self.del_old_widget(Id)
+        self.del_old_widget(uppernum)
+
+        self.PanelsWidgetDict[Source][Id] = widget_class_l(Id, Source, Destination, self)
         self.PanelsWidgetDict[Source][uppernum] = widget_class_r(uppernum, Source, Destination)
-            
+
+        self.PanelsHolderDict[Id].addWidget(self.PanelsWidgetDict[Source][Id])
+        self.PanelsHolderDict[uppernum].addWidget(self.PanelsWidgetDict[Source][uppernum])    
 
     
     def del_old_widget(self, Id):
@@ -353,7 +362,7 @@ class Panels:
         if Name == "BLANK":
             data_class_l, _ = self.get_panels_class("BLANK")
             self.add_panel_data(Id, Source, Destination, data_class_l)
-            self.PanelsWidgetDict[Source][Id] = BLANK_Demand(str(Id), Source, Destination)
+            self.PanelsWidgetDict[Source][Id] = BLANK_Demand(str(Id), Source, Destination, self)
             self.PanelsHolderDict[Id].addWidget(self.PanelsWidgetDict[Source][Id])
 
     def get_panels_class(self, Name):
@@ -365,6 +374,9 @@ class Panels:
     
     def get_uppernum(self, Id):
         return str(int(Id) + 1)
+    
+    def get_data_object(self, Id, Source):
+        return self.PanelsObjectDict[Source][Id]
 
 
 
