@@ -1,3 +1,4 @@
+from PySide2.QtCore import Qt
 from collections import OrderedDict
 Data = {}
 Data["E1"]  = {}
@@ -234,6 +235,7 @@ class Panels:
         for Node in NodesList:
             self.PanelsObjectDict[Node] = {}
             self.PanelsWidgetDict[Node] = {}
+            self.Shelf_Count[Node] = 1
         # TODO: initialize PanelsHolderDict with 14 or more blank panel widget
 
     def calculate_dual_num(self, Destination):
@@ -317,22 +319,16 @@ class Panels:
     
     def switch_widget(self, Id, Source, Local_Destination):
 
-        uppernum = self.get_uppernum(Id)
-
         self.del_old_widget(Id)
-        self.del_old_widget(uppernum)
 
-        if Id  not in self.PanelsWidgetDict[Source]:
+        if Id not in self.PanelsWidgetDict[Source]:
+            
             self.PanelsWidgetDict[Source][Id] = BLANK_Demand(Id, Source, Local_Destination, self)
 
         self.PanelsHolderDict[Id].addWidget(self.PanelsWidgetDict[Source][Id])
 
-        if uppernum not in self.PanelsWidgetDict[Source]:
-            self.PanelsWidgetDict[Source][uppernum] = BLANK_Demand(uppernum, Source, Local_Destination, self)
-        
-        self.PanelsHolderDict[uppernum].addWidget(self.PanelsWidgetDict[Source][uppernum])
 
-    
+    # NOTE: this method usage is in blank panel 
     def add_widget(self, Id, Source, Destination, Name):
         data_class_l, data_class_r, widget_class_l, widget_class_r = self.get_panels_class(Name)
 
@@ -351,19 +347,20 @@ class Panels:
 
     
     def del_old_widget(self, Id):
-
-        panel_widget = self.PanelsHolderDict[Id].takeAt(0).widget()
-        self.PanelsHolderDict[Id].removeWidget(panel_widget)
-        panel_widget.deleteLater()
+        x = self.PanelsHolderDict[Id].takeAt(0)
+        if x is not None:
+            panel_widget = x.widget()
+            self.PanelsHolderDict[Id].removeWidget(panel_widget)
+            panel_widget.deleteLater()
 
     def add_widget_holder(self, Id, holder, Source, Destination, Name):
         self.PanelsHolderDict[Id] = holder
 
-        if Name == "BLANK":
+        """ if Name == "BLANK":
             data_class_l, _ = self.get_panels_class("BLANK")
             self.add_panel_data(Id, Source, Destination, data_class_l)
             self.PanelsWidgetDict[Source][Id] = BLANK_Demand(str(Id), Source, Destination, self)
-            self.PanelsHolderDict[Id].addWidget(self.PanelsWidgetDict[Source][Id])
+            self.PanelsHolderDict[Id].addWidget(self.PanelsWidgetDict[Source][Id]) """
 
     def get_panels_class(self, Name):
         if Name == "BLANK":
@@ -377,6 +374,110 @@ class Panels:
     
     def get_data_object(self, Id, Source):
         return self.PanelsObjectDict[Source][Id]
+    
+    def clear_panels(self, Source= None, Destination=None):
+
+        if Source is None and Destination is None:
+        
+            for key in self.Shelf_Count.keys():
+                self.Shelf_Count[key] = 1
+                self.PanelsWidgetDict[key].clear()
+                self.PanelsObjectDict[key].clear()
+        else:
+            self.PanelsWidgetDict[Source].clear()
+            self.PanelsWidgetDict[Destination].clear()
+
+            self.PanelsObjectDict[Source].clear()
+            self.PanelsObjectDict[Destination].clear()
+
+            self.Shelf_Count[Source] = 1
+            self.Shelf_Count[Destination] = 1
+    
+    def add_mp1h_widget(self, Id, Source, ClientsCapacity, LineCapacity, ServiceIdList, DemandIdList, LightPathId, LightPath_flag, Destination):
+        uppernum = self.get_uppernum(Id)
+        DualPanelsId = self.calculate_dual_num(Destination)
+        self.PanelsObjectDict[Source][Id] = self.MP1H_L(  ClientsCapacity= ClientsCapacity,
+                                                            LineCapacity= LineCapacity,
+                                                            ServiceIdList= ServiceIdList,
+                                                            DemandIdList= DemandIdList,
+                                                            LightPathId= LightPathId,
+                                                            LightPath_flag= LightPath_flag,
+                                                            Destination= Destination,
+                                                            DualPanelsId= DualPanelsId)
+
+        self.PanelsObjectDict[Destination][DualPanelsId[0]] = self.MP1H_L(  ClientsCapacity= ClientsCapacity,
+                                                            LineCapacity= LineCapacity,
+                                                            ServiceIdList= ServiceIdList,
+                                                            DemandIdList= DemandIdList,
+                                                            LightPathId= LightPathId,
+                                                            LightPath_flag= LightPath_flag,
+                                                            Destination= Source,
+                                                            DualPanelsId= (Id, uppernum))
+        
+        self.PanelsObjectDict[Source][uppernum] = self.MP1H_R(    LeftId= Id,
+                                                                    Destination= Destination,
+                                                                    DualPanelsId= DualPanelsId)
+        
+        self.PanelsObjectDict[Destination][DualPanelsId[1]] = self.MP1H_R(    LeftId= DualPanelsId[0],
+                                                                    Destination= Source,
+                                                                    DualPanelsId= (Id, uppernum))
+        
+        self.PanelsWidgetDict[Source][Id] = MP1H_L_Demand(Id, Source, Destination, DualPanelsId, self)
+        self.PanelsWidgetDict[Destination][DualPanelsId[0]] = MP1H_L_Demand(DualPanelsId[0], Destination, Source, (Id, uppernum), self)
+
+        self.PanelsWidgetDict[Source][uppernum] = MP1H_R_Demand(uppernum, Source, Destination, DualPanelsId)
+        self.PanelsWidgetDict[Destination][DualPanelsId[1]] = MP1H_R_Demand(DualPanelsId[1], Destination, Source, (Id, uppernum))
+
+        panel = self.PanelsObjectDict[Source][Id]
+        for i in range(len(self.PanelsObjectDict[Source][Id].ClientsCapacity)):
+            
+            if self.PanelsObjectDict[Source][Id].ClientsCapacity[i] != 0:
+                # finding object of client customlabel
+                text = "Client" + str( i + 1 )
+                clientvar = getattr(self.PanelsWidgetDict[Source][Id], text)
+                clientvar_dual = getattr(self.PanelsWidgetDict[Destination][DualPanelsId[0]], text)
+
+                if clientvar.ClientNum % 2 == 0:
+                    clientvar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                    clientvar_dual.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                else:
+                    clientvar.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
+                    clientvar_dual.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
+                # checking its GroomOut10 or not
+                if (panel.DemandIdList[i],panel.ServiceIdList[i]) in DemandTabDataBase["Services_static"][Source]:
+                    clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])].toolTip())
+                    clientvar_dual.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])].toolTip())
+                else:
+                    clientvar.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][panel.ServiceIdList[i]].toolTip())
+                    clientvar_dual.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][panel.ServiceIdList[i]].toolTip())
+
+                clientvar.servicetype = panel.ClientsCapacity[i]
+                clientvar.nodename = Source
+                clientvar.Destination = Destination
+                clientvar.ids = [panel.DemandIdList[i], panel.ServiceIdList[i]]
+
+                clientvar_dual.servicetype = panel.ClientsCapacity[i]
+                clientvar_dual.nodename = Source
+                clientvar_dual.Destination = Destination
+                clientvar_dual.ids = [panel.DemandIdList[i], panel.ServiceIdList[i]]
+
+                if panel.ClientsCapacity[i] == "GroomOut10":
+                    UserData = DemandTabDataBase["GroomOut10"][(Source, Destination)][panel.ServiceIdList[i]].data(Qt.UserRole)
+                    clientvar.GroomOut_Capacity = UserData["Capacity"]
+                    clientvar_dual.GroomOut_Capacity = UserData["Capacity"]
+
+                clientvar.setAcceptDrops(False)
+                clientvar_dual.setAcceptDrops(False)
+
+                # adding tooltip to line port
+                linevar = getattr(self.PanelsWidgetDict[Source][Id], "Line")
+                linevar_dual = getattr(self.PanelsWidgetDict[Destination][DualPanelsId[0]], "Line")
+
+                linevar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
+                linevar_dual.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
+
+                linevar.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
+                linevar_dual.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
 
 
 
@@ -420,6 +521,69 @@ class Panels:
             self.LeftId = LeftId
             self.DualPanelsId = DualPanelsId
 
+    class MP2X_L:
+        def __init__(self, ClientsCapacity = None, LinesCapacity = None, ServiceIdList = None, DemandIdList = None
+                        , LineIdList = None, Line_1_ServiceIdList = None, Line_2_ServiceIdList = None, Destination = None, DualPanelsId = None):
+
+            if ClientsCapacity is None:
+                self.ClientsCapacity = [0 for i in range(16)]
+            else:
+                self.ClientsCapacity = ClientsCapacity
+
+            if LinesCapacity is None:
+                self.LinesCapacity = [0, 0]
+            else:
+                self.LinesCapacity = LinesCapacity
+        
+            if ServiceIdList is None:
+                self.ServiceIdList = [None for i in range(16)]
+            else:
+                self.ServiceIdList = ServiceIdList
+            
+            if DemandIdList is None:
+                self.DemandIdList = [None for i in range(16)]
+            else:
+                self.DemandIdList = DemandIdList
+            
+            if LineIdList is None:
+                self.LineIdList = [None for i in range(2)]
+            else:
+                self.LineIdList = LineIdList
+            
+            if Line_1_ServiceIdList is None:
+                self.Line_1_ServiceIdList = []
+            else:
+                self.Line_1_ServiceIdList = Line_1_ServiceIdList
+
+            if Line_2_ServiceIdList is None:
+                self.Line_2_ServiceIdList = []
+            else:
+                self.Line_2_ServiceIdList = Line_2_ServiceIdList
+            
+            self.Destination = Destination
+            self.DualPanelsId = DualPanelsId
+
+    class MP2X_R:
+        def __init__(self, LeftId, Destination, DualPanelsId):
+            self.LeftId = LeftId
+            self.Destination = Destination
+            self.DualPanelsId = DualPanelsId
+
+    class TP1H_L:
+        def __init__(self, DemandId = None, ServiceId = None, Line = 0, LightPathId = None, Destination = None, DualPanelsId = None):
+            self.Destination = Destination
+            self.LightPathId = LightPathId
+            self.DemandId = DemandId
+            self.ServiceId = ServiceId
+            self.Line = Line
+            self.DualPanelsId = DualPanelsId
+
+    class TP1H_R:
+        def __init__(self, LeftId, Destination, DualPanelsId):
+            self.Destination = Destination
+            self.LeftId = LeftId
+            self.DualPanelsId = DualPanelsId
+
 
 
 class MP2D_L:
@@ -443,53 +607,7 @@ class MP2D_R:
     def __init__(self, LeftId):
         self.LeftId = LeftId
 
-class MP2X_L:
-    def __init__(self, ClientsCapacity = None, LinesCapacity = None, ServiceIdList = None, DemandIdList = None
-                    , LineIdList = None, Line_1_ServiceIdList = None, Line_2_ServiceIdList = None, Destination = None, DualPanelsId = None):
 
-        if ClientsCapacity is None:
-            self.ClientsCapacity = [0 for i in range(16)]
-        else:
-            self.ClientsCapacity = ClientsCapacity
-
-        if LinesCapacity is None:
-            self.LinesCapacity = [0, 0]
-        else:
-            self.LinesCapacity = LinesCapacity
-    
-        if ServiceIdList is None:
-            self.ServiceIdList = [None for i in range(16)]
-        else:
-            self.ServiceIdList = ServiceIdList
-        
-        if DemandIdList is None:
-            self.DemandIdList = [None for i in range(16)]
-        else:
-            self.DemandIdList = DemandIdList
-        
-        if LineIdList is None:
-            self.LineIdList = [None for i in range(2)]
-        else:
-            self.LineIdList = LineIdList
-        
-        if Line_1_ServiceIdList is None:
-            self.Line_1_ServiceIdList = []
-        else:
-            self.Line_1_ServiceIdList = Line_1_ServiceIdList
-
-        if Line_2_ServiceIdList is None:
-            self.Line_2_ServiceIdList = []
-        else:
-            self.Line_2_ServiceIdList = Line_2_ServiceIdList
-        
-        self.Destination = Destination
-        self.DualPanelsId = DualPanelsId
-
-class MP2X_R:
-    def __init__(self, LeftId, Destination, DualPanelsId):
-        self.LeftId = LeftId
-        self.Destination = Destination
-        self.DualPanelsId = DualPanelsId
 
 
     
@@ -497,20 +615,7 @@ class MP2X_R:
 
 
 
-class TP1H_L:
-    def __init__(self, DemandId = None, ServiceId = None, Line = 0, LightPathId = None, Destination = None, DualPanelsId = None):
-        self.Destination = Destination
-        self.LightPathId = LightPathId
-        self.DemandId = DemandId
-        self.ServiceId = ServiceId
-        self.Line = Line
-        self.DualPanelsId = DualPanelsId
 
-class TP1H_R:
-    def __init__(self, LeftId, Destination, DualPanelsId):
-        self.Destination = Destination
-        self.LeftId = LeftId
-        self.DualPanelsId = DualPanelsId
 
 class SC:
     def __init__(self):

@@ -151,9 +151,9 @@ class Backend_map(QObject):
 
             if degreename in DemandTabDataBase["Source_Destination"]:
                 Data["ui"].clicked_Node_flag = True
-                Data["ui"].update_Demand_lightpath_list_flag = False
+                Data["ui"].Demand_LineList.blockSignals(True)
                 Data["TabWidget"].setCurrentIndex(2)
-                Data["ui"].update_Demand_lightpath_list_flag = True
+                Data["ui"].Demand_LineList.blockSignals(False)
                 
                 
                 rep_source = DemandTabDataBase["Source_Destination"][degreename]["Source"]
@@ -2022,7 +2022,7 @@ class Ui_MainWindow(object):
         self.newfile_pushbutton.clicked.connect(self.new_button_fun)
 
 
-        self.Demand_Shelf_set()
+        
 
         self.threadpool = QThreadPool()
 
@@ -3027,8 +3027,6 @@ class Ui_MainWindow(object):
                 if self.clicked_Node_flag == False:
                     self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
                 Data["DemandTab_firststart_flag"] = True
-            if self.update_demand_service_flag is True:
-                self.UpdateDemand_ServiceList()
             
 
             # TODO: run shelf set function for Demand Tab and turn its relevant flag on
@@ -3058,52 +3056,53 @@ class Ui_MainWindow(object):
                 self.Traffic_matrix.setItem(int(row), i, QTableWidgetItem(cell_data))
     
     def Demand_LineList_fun(self, CurItem, PreItem):
-        if self.update_Demand_lightpath_list_flag is True:
-            if CurItem is not None:
-                UserData = CurItem.data(Qt.UserRole)
-                Source = UserData["Source"]
-                Destination = UserData["Destination"]
-                LightpathId = UserData["LightPathId"]
+        if CurItem is not None:
+            UserData = CurItem.data(Qt.UserRole)
+            Source = UserData["Source"]
+            Destination = UserData["Destination"]
+            LightpathId = UserData["LightPathId"]
 
-                # adding border to current panel
-                LeftPanelId = UserData["PanelId"]
-                left_widget = Data["DemandPanel_" + str(LeftPanelId)].itemAt(0).widget()
-                linevar = left_widget.Line
+            # adding border to current panel
+            LeftPanelId = UserData["PanelId"]
+            #left_widget = Data["DemandPanel_" + str(LeftPanelId)].itemAt(0).widget()
+            left_widget = self.Panels.PanelsWidgetDict[Source][LeftPanelId]
+            linevar = left_widget.Line
 
-                if isinstance(left_widget, MP1H_L_Demand):
-                    linevar.setStyleSheet(" QLabel{ image: url(:/line/line.png); border: 5px solid blue; }")
+            if isinstance(left_widget, MP1H_L_Demand):
+                linevar.setStyleSheet(" QLabel{ image: url(:/line/line.png); border: 5px solid blue; }")
+            
+            elif isinstance(left_widget, TP1H_L_Demand):
+                linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); border: 5px solid blue;}")
+            
+            if PreItem is not None:
+                pre_UserData = PreItem.data(Qt.UserRole)
+                pre_LeftPanelId = pre_UserData["PanelId"]
+                #pre_left_widget = Data["DemandPanel_" + str(pre_LeftPanelId)].itemAt(0).widget()
+                pre_left_widget = self.Panels.PanelsWidgetDict[Source][pre_LeftPanelId]
+                pre_linevar = pre_left_widget.Line
+
+                if isinstance(pre_left_widget, MP1H_L_Demand):
+                    pre_linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
                 
-                elif isinstance(left_widget, TP1H_L_Demand):
-                    linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); border: 5px solid blue;}")
-                
-                if PreItem is not None:
-                    pre_UserData = PreItem.data(Qt.UserRole)
-                    pre_LeftPanelId = pre_UserData["PanelId"]
-                    pre_left_widget = Data["DemandPanel_" + str(pre_LeftPanelId)].itemAt(0).widget()
-                    pre_linevar = pre_left_widget.Line
+                elif isinstance(pre_left_widget, TP1H_L_Demand):
+                    pre_linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
 
-                    if isinstance(pre_left_widget, MP1H_L_Demand):
-                        pre_linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
-                    
-                    elif isinstance(pre_left_widget, TP1H_L_Demand):
-                        pre_linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
+            if self.RWA_Success is True:
 
-                if self.RWA_Success is True:
+                WorkingPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Working"]
+                ProtectionPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Protection"]
+                RG_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_w"]
+                RG_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_p"]
+                SNR_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_w"]
+                SNR_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_p"]
+                WorkingLambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["WorkingLambdaList"]
+                ProtectionLambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["ProtectionLambdaList"]
+                #print(f"here for calling demand change function <before> ")
 
-                    WorkingPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Working"]
-                    ProtectionPath = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["Protection"]
-                    RG_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_w"]
-                    RG_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["RG_p"]
-                    SNR_w = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_w"]
-                    SNR_p = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["SNR_p"]
-                    WorkingLambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["WorkingLambdaList"]
-                    ProtectionLambdaList = GroomingTabDataBase["LightPathes"][(Source, Destination)][LightpathId]["ProtectionLambdaList"]
-                    #print(f"here for calling demand change function <before> ")
-
-                    # calling Demand map change function
-                    self.DemandMap_Change(WorkingPath, ProtectionPath, WorkingRegeneratorsList = RG_w, ProtectionRegenaratorsList = RG_p
-                                            ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p, WorkingLambdaList= WorkingLambdaList,
-                                            ProtectionLambdaList= ProtectionLambdaList)
+                # calling Demand map change function
+                self.DemandMap_Change(WorkingPath, ProtectionPath, WorkingRegeneratorsList = RG_w, ProtectionRegenaratorsList = RG_p
+                                        ,WorkingSNR = SNR_w , ProtectionSNR = SNR_p, WorkingLambdaList= WorkingLambdaList,
+                                        ProtectionLambdaList= ProtectionLambdaList)
     
     def groomout10_list_fun(self, CurItem, PreItem):
         if self.change_in_groomoutlist_flag is False:
@@ -3115,7 +3114,8 @@ class Ui_MainWindow(object):
 
                 PanelId = UserData["PanelId"]
                 DemandId = UserData["DemandId"]
-                widget = Data["DemandPanel_" + str(PanelId)].itemAt(0).widget()
+                #widget = Data["DemandPanel_" + str(PanelId)].itemAt(0).widget()
+                widget = self.Panels.PanelsWidgetDict[Source][PanelId]
 
                 index = self.Panels.PanelsObjectDict[Source][PanelId].LineIdList.index(GroomOut10Id)
 
@@ -3128,7 +3128,8 @@ class Ui_MainWindow(object):
                 
                 if "MP1H_Client_Id" in UserData:
                     MP1H_Id , Client_Id = UserData["MP1H_Client_Id"]
-                    MP1H_widget = Data["DemandPanel_" + str(MP1H_Id)].itemAt(0).widget()
+                    #MP1H_widget = Data["DemandPanel_" + str(MP1H_Id)].itemAt(0).widget()
+                    MP1H_widget = self.Panels.PanelsWidgetDict[Source][MP1H_Id]
 
                     clientvar = getattr(MP1H_widget, "Client" + Client_Id )
 
@@ -3146,7 +3147,8 @@ class Ui_MainWindow(object):
                     GroomOut10Id = UserData["GroomOut10Id"]
 
                     PanelId = UserData["PanelId"]
-                    widget = Data["DemandPanel_" + str(PanelId)].itemAt(0).widget()
+                    #widget = Data["DemandPanel_" + str(PanelId)].itemAt(0).widget()
+                    widget = self.Panels.PanelsWidgetDict[Source][PanelId]
 
                     index = self.Panels.PanelsObjectDict[Source][PanelId].LineIdList.index(GroomOut10Id)
 
@@ -3159,7 +3161,8 @@ class Ui_MainWindow(object):
                     
                     if "MP1H_Client_Id" in UserData:
                         MP1H_Id , Client_Id = UserData["MP1H_Client_Id"]
-                        MP1H_widget = Data["DemandPanel_" + str(MP1H_Id)].itemAt(0).widget()
+                        #MP1H_widget = Data["DemandPanel_" + str(MP1H_Id)].itemAt(0).widget()
+                        MP1H_widget = self.Panels.PanelsWidgetDict[Source][MP1H_Id]
 
                         clientvar = getattr(MP1H_widget, "Client" + Client_Id )
 
@@ -3483,18 +3486,10 @@ class Ui_MainWindow(object):
         DemandTabDataBase["GroomOut10_status"][(Source, Destination)] = {}
         DemandTabDataBase["GroomOut10_status"][(Destination, Source)] = {}
 
-        DemandTabDataBase["Panels"][Source] = {}
-        DemandTabDataBase["Panels"][Destination] = {}
-
-        DemandTabDataBase["Shelf_Count"][Source] = 1
-        DemandTabDataBase["Shelf_Count"][Destination] = 1
 
     def initialize_GroomingTabDataBase(self, Source, Destination):
         GroomingTabDataBase["LightPathes"][(Source, Destination)] = {}
         GroomingTabDataBase["LightPathes"][(Destination, Source)] = {}
-
-        GroomingTabDataBase["Panels"][Source] = {}
-        GroomingTabDataBase["Panels"][Destination] = {}
         
         #GroomingTabDataBase["LinkState"][(Source, Destination)] = []
         
@@ -3618,42 +3613,31 @@ class Ui_MainWindow(object):
             
             else:
                 self.Demand_ServiceList.insertItem(0, item)
-                
-        self.update_demand_service_flag = False
     
     def Demand_Source_combobox_Change(self):
         Source = self.Demand_Source_combobox.currentText()
-        if self.Demand_Source_flag is True:
             
-            self.from_Source_to_Destination_flag = True
 
-            if Source != '':                
+        if Source != '':                
+            self.Demand_Destination_combobox.blockSignals(True)
+            self.Demand_Destination_combobox.clear()
+            
+            
+            if self.clicked_Node_flag is True:
                 
-                self.Demand_Destination_combobox.clear()
-                
-                
-                if self.clicked_Node_flag is True:
-                    
-                    if Source != Data["Clicked_Node"]:
-                        self.update_demand_service_flag = False
-                        self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
-                        self.update_demand_service_flag = True
-                        self.Demand_Destination_combobox.setCurrentText(Data["Clicked_Node"])
-                        if self.update_demand_service_flag is True:
-                            self.Demand_Destination_combobox_change()
-                    else:
-                        self.update_demand_service_flag = True
-                        self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
-                        
-                        
-                else:
-                    self.update_demand_service_flag = True
+                if Source != Data["Clicked_Node"]:
                     self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
-        else:
-            #self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
-            self.Demand_Source_flag = True
+                    self.Demand_Destination_combobox.setCurrentText(Data["Clicked_Node"])
+ 
+                else:
+                    self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
+                       
+            else:
+                self.Demand_Destination_combobox.addItems(list(set(DemandTabDataBase["Source_Destination"][Source]["DestinationList"])))
             
-
+            self.set_demand_panels()
+            self.Demand_Destination_combobox.blockSignals(False)
+            self.Demand_Destination_combobox_change()
         
     
     def Demand_Destination_combobox_change(self):
@@ -3661,7 +3645,7 @@ class Ui_MainWindow(object):
         Destination = self.Demand_Destination_combobox.currentText()
 
 
-        if self.update_demand_service_flag is True and Destination != '':
+        if  Destination != '':
 
             if self.Failed_Nodes_flag is True:
                 self.Demand_combobox_highlight_on_off(Source= Source,
@@ -3670,28 +3654,12 @@ class Ui_MainWindow(object):
             if self.clicked_Node_flag is True:
                 self.clicked_Node_flag = False
             
-            if self.from_Source_to_Destination_flag is True:
-                self.from_Source_to_Destination_flag = False
-
 
             self.UpdateDemand_ServiceList()
             self.update_Demand_lightpath_list()
-            self.update_Demand_groomout10_list()
-            self.set_demand_panels()        
+            self.update_Demand_groomout10_list()      
             self.DemandMap_Change()
-        
-        elif self.from_Source_to_Destination_flag is False and Destination != '':
-            
-            if self.Failed_Nodes_flag is True:
-                self.Demand_combobox_highlight_on_off(Source= Source,
-                                                mode= "on")
-
-
-            self.UpdateDemand_ServiceList()
-            self.update_Demand_lightpath_list()
-            self.update_Demand_groomout10_list()
-            self.set_demand_panels()        
-            self.DemandMap_Change()
+    
     
     def Demand_combobox_highlight_on_off(self, Source, mode = "on", Target = None):
         self.Demand_Destination_combobox.blockSignals(True)
@@ -3765,17 +3733,15 @@ class Ui_MainWindow(object):
         Source = self.Demand_Source_combobox.currentText()
         Destination = self.Demand_Destination_combobox.currentText()
         #lightpath_list = list(DemandTabDataBase["Lightpathes"][(Source, Destination)].values())
-        """ for i in range(self.Demand_LineList.count()):
-            self.Demand_LineList.takeItem(i) """
-        self.update_Demand_lightpath_list_flag = False
+        
+        self.Demand_LineList.blockSignals(True)
 
         while self.Demand_LineList.count() > 0:
             self.Demand_LineList.takeItem(0)
         for value in DemandTabDataBase["Lightpathes"][(Source, Destination)].values():
             self.Demand_LineList.addItem(value)
 
-        self.update_Demand_lightpath_list_flag = True
-
+        self.Demand_LineList.blockSignals(False)
     
     def update_Demand_groomout10_list(self):
 
@@ -4059,26 +4025,29 @@ class Ui_MainWindow(object):
         self.TrafficMatrixToObject()
         self.DemandTabDataBase_Setup()
         #self.Demand_Shelf_set()
-        self.Fill_Demand_SourceandDestination_combobox()
-        #self.update_cells()
 
         # NOTE: setting up panels object
         self.Panels = Panels(Data["Nodes"].keys(), DemandTabDataBase["Shelf_Count"])
+
+        self.Demand_Shelf_set()
+
+        self.Fill_Demand_SourceandDestination_combobox()
+        #self.update_cells()
+
+        
+
+        
 
         self.tabWidget.setTabEnabled(1, True)
         self.tabWidget.setTabEnabled(2, True)
 
     def set_flags(self):
-        self.from_Source_to_Destination_flag = False
         self.clicked_Node_flag = False
-        self.Demand_Source_flag = False
-        self.update_demand_service_flag = False
         self.Demand_first_run = False
         Data["DemandTab_firststart_flag"] = False
         Data["demand_first_run_flag"] = False
         Data["first_run_flag"] = False
         self.Data_file_Flag = False
-        self.update_Demand_lightpath_list_flag = True
         #self.Demand_shelf_init_flag = False
         self.Failed_Nodes_flag = False
         self.pre_source = ""
@@ -4092,8 +4061,6 @@ class Ui_MainWindow(object):
         self.G = nx.Graph()
 
         for nodename in Data["Nodes"].keys():
-            DemandTabDataBase["Panels"][nodename] = {}
-
             # adding nodes to graph
             self.G.add_node(nodename)
         
@@ -4151,7 +4118,7 @@ class Ui_MainWindow(object):
 
 
     def get_panel_num(self, Source):
-            IdList = list(DemandTabDataBase["Panels"][Source].keys())
+            IdList = list(self.Panels.PanelsObjectDict[Source].keys())
             
             # if shelf is empty this method must return 1 in ## string ##
             if not IdList:
@@ -4232,89 +4199,7 @@ class Ui_MainWindow(object):
 
             DualPanelsId = self.generate_dual_panel_num(Destination)
 
-            
-            # checking wheather lightpath is created by tp1h or not
-            if lightpath.Capacity == 100 and first_service_type == "100GE":
-                
-                #DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
-                DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(  DemandId= DemandId,
-                                                                        ServiceId= lightpath.ServiceIdList[0],
-                                                                        Line= "100GE",
-                                                                        LightPathId= id,
-                                                                        Destination= Destination,
-                                                                        DualPanelsId= DualPanelsId)
 
-                # ** Dual **
-                DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = TP1H_L(  DemandId= DemandId,
-                                                                        ServiceId= lightpath.ServiceIdList[0],
-                                                                        Line= "100GE",
-                                                                        LightPathId= id,
-                                                                        Destination= Source,
-                                                                        DualPanelsId= (panelid, (str(int(panelid) + 1))))
-
-                """ ## debug section
-                print(DemandTabDataBase["Panels"][Source][panelid].__dict__)
-
-                ## end of debug section """
-                DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = TP1H_R(    LeftId= panelid,
-                                                                                        Destination= Destination,
-                                                                                        DualPanelsId= DualPanelsId)
-
-                # ** Dual **
-                DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = TP1H_R(    LeftId= DualPanelsId[0],
-                                                                                        Destination= Source,
-                                                                                        DualPanelsId = (panelid, (str(int(panelid) + 1))))
-
-
-            else:
-                ClientCapacity, LineCapacity = self.create_ClientsCapacityList(DemandId, lightpath.ServiceIdList, netobj)
-                #LineCapacity = len(ClientCapacity) * 10
-                
-                ClientLen = len(ClientCapacity) 
-                if ClientLen != 10:
-                    for i in range(10 - ClientLen):
-                        ClientCapacity.append(0)
-                
-                
-                #DemandTabDataBase["Panels"][Source][panelid] = MP1H_L(ClientCapacity, LineCapacity, lightpath.ServiceIdList, [DemandId for i in range(10)], id, LightPath_flag= 1)
-                DemandTabDataBase["Panels"][Source][panelid] = MP1H_L(  ClientsCapacity= ClientCapacity,
-                                                                        LineCapacity= LineCapacity,
-                                                                        ServiceIdList= list(lightpath.ServiceIdList),
-                                                                        DemandIdList= [DemandId for i in range(10)],
-                                                                        LightPathId= id,
-                                                                        LightPath_flag= 1,
-                                                                        Destination= Destination,
-                                                                        DualPanelsId= DualPanelsId)
-
-                # ** Dual **
-                DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = MP1H_L(  ClientsCapacity= ClientCapacity,
-                                                                        LineCapacity= LineCapacity,
-                                                                        ServiceIdList= list(lightpath.ServiceIdList),
-                                                                        DemandIdList= [DemandId for i in range(10)],
-                                                                        LightPathId= id,
-                                                                        LightPath_flag= 1,
-                                                                        Destination= Source,
-                                                                        DualPanelsId= (panelid, (str(int(panelid) + 1))))
-
-
-                """ ## debug section
-                print(DemandTabDataBase["Panels"][Source][panelid].__dict__)
-
-                ## end of debug section """
-                DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = MP1H_R(    LeftId= panelid,
-                                                                                        Destination= Destination,
-                                                                                        DualPanelsId= DualPanelsId)
-
-                # ** Dual **
-                DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = MP1H_R(    LeftId= DualPanelsId[0],
-                                                                                        Destination= Source,
-                                                                                        DualPanelsId= (panelid, (str(int(panelid) + 1))))
-
-
-                #print(f"panels part--> Source:{Source} panels:{DemandTabDataBase['Panels'][Source]}")
-                #print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-            
-            # lightPath part ( part 2 )
             setattr(self, "LightPath_item_" + str(Data["LightPath_item_num"]), QListWidgetItem("100GE", self.Demand_LineList))
             item = getattr(self, "LightPath_item_" + str(Data["LightPath_item_num"]))
             Data["LightPath_item_num"] += 1
@@ -4336,6 +4221,66 @@ class Ui_MainWindow(object):
             item.setTextAlignment(Qt.AlignCenter)
 
             DemandTabDataBase["Lightpathes"][(Destination, Source)][id] = item
+
+            
+            # checking wheather lightpath is created by tp1h or not
+            if lightpath.Capacity == 100 and first_service_type == "100GE":
+                
+                #DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
+                DemandTabDataBase["Panels"][Source][panelid] = Panels.TP1H_L(  DemandId= DemandId,
+                                                                        ServiceId= lightpath.ServiceIdList[0],
+                                                                        Line= "100GE",
+                                                                        LightPathId= id,
+                                                                        Destination= Destination,
+                                                                        DualPanelsId= DualPanelsId)
+
+                # ** Dual **
+                DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = Panels.TP1H_L(  DemandId= DemandId,
+                                                                        ServiceId= lightpath.ServiceIdList[0],
+                                                                        Line= "100GE",
+                                                                        LightPathId= id,
+                                                                        Destination= Source,
+                                                                        DualPanelsId= (panelid, (str(int(panelid) + 1))))
+
+                """ ## debug section
+                print(DemandTabDataBase["Panels"][Source][panelid].__dict__)
+
+                ## end of debug section """
+                DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = Panels.TP1H_R(    LeftId= panelid,
+                                                                                        Destination= Destination,
+                                                                                        DualPanelsId= DualPanelsId)
+
+                # ** Dual **
+                DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = Panels.TP1H_R(    LeftId= DualPanelsId[0],
+                                                                                        Destination= Source,
+                                                                                        DualPanelsId = (panelid, (str(int(panelid) + 1))))
+
+
+            else:
+                ClientCapacity, LineCapacity = self.create_ClientsCapacityList(DemandId, lightpath.ServiceIdList, netobj)
+                #LineCapacity = len(ClientCapacity) * 10
+                
+                ClientLen = len(ClientCapacity) 
+                if ClientLen != 10:
+                    for i in range(10 - ClientLen):
+                        ClientCapacity.append(0)
+                
+                
+                self.Panels.add_mp1h_widget(    Id = panelid,
+                                                Source= Source,
+                                                ClientsCapacity= ClientCapacity,
+                                                LineCapacity= LineCapacity,
+                                                ServiceIdList= list(lightpath.ServiceIdList),
+                                                DemandIdList= [DemandId for i in range(10)],
+                                                LightPathId= id,
+                                                LightPath_flag= 1,
+                                                Destination= Destination)
+
+                #print(f"panels part--> Source:{Source} panels:{DemandTabDataBase['Panels'][Source]}")
+                #print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+            
+            # lightPath part ( part 2 )
+            
 
 
 
@@ -4375,7 +4320,7 @@ class Ui_MainWindow(object):
                         ClientsCapacity.append(0)
 
                 # creating left panel of MP2X
-                DemandTabDataBase["Panels"][Source][PanelId] = MP2X_L(  ClientsCapacity= ClientsCapacity,
+                DemandTabDataBase["Panels"][Source][PanelId] = Panels.MP2X_L(  ClientsCapacity= ClientsCapacity,
                                                                         LinesCapacity= [LineCapacity_1, LineCapacity_2],
                                                                         ServiceIdList= ServiceIdList,
                                                                         DemandIdList= [DemandId for _ in range(16)],
@@ -4386,7 +4331,7 @@ class Ui_MainWindow(object):
                                                                         DualPanelsId= DualPanelsId)
 
                 # ** Dual **
-                DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = MP2X_L(  ClientsCapacity= ClientsCapacity,
+                DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = Panels.MP2X_L(  ClientsCapacity= ClientsCapacity,
                                                                         LinesCapacity= [LineCapacity_1, LineCapacity_2],
                                                                         ServiceIdList= ServiceIdList,
                                                                         DemandIdList= [DemandId for _ in range(16)],
@@ -4397,12 +4342,12 @@ class Ui_MainWindow(object):
                                                                         DualPanelsId= (PanelId, (str(int(PanelId) + 1))))
                 
                 # Creating Right Panel of MP2X
-                DemandTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = MP2X_R(LeftId= PanelId,
+                DemandTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = Panels.MP2X_R(LeftId= PanelId,
                                                                                     Destination= Destination,
                                                                                     DualPanelsId= DualPanelsId)
 
                 # ** Dual **
-                DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = MP2X_R(LeftId= DualPanelsId[0],
+                DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = Panels.MP2X_R(LeftId= DualPanelsId[0],
                                                                                     Destination= Source,
                                                                                     DualPanelsId= (PanelId, (str(int(PanelId) + 1))))
 
@@ -4541,7 +4486,7 @@ class Ui_MainWindow(object):
                         ClientsCapacity.append(0)
                 
                 # creating left panel of MP2X
-                DemandTabDataBase["Panels"][Source][PanelId] = MP2X_L(  ClientsCapacity= list(ClientsCapacity),
+                DemandTabDataBase["Panels"][Source][PanelId] = Panels.MP2X_L(  ClientsCapacity= list(ClientsCapacity),
                                                                         LinesCapacity= [LineCapacity, 0],
                                                                         ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
                                                                         DemandIdList= [DemandId for _ in range(16)],
@@ -4551,7 +4496,7 @@ class Ui_MainWindow(object):
                                                                         DualPanelsId= DualPanelsId)
 
                 # ** Dual **
-                DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = MP2X_L(  ClientsCapacity= list(ClientsCapacity),
+                DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = Panels.MP2X_L(  ClientsCapacity= list(ClientsCapacity),
                                                                         LinesCapacity= [LineCapacity, 0],
                                                                         ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
                                                                         DemandIdList= [DemandId for _ in range(16)],
@@ -4561,12 +4506,12 @@ class Ui_MainWindow(object):
                                                                         DualPanelsId= (PanelId, (str(int(PanelId) + 1))))
                 
                 # Creating Right Panel of MP2X
-                DemandTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = MP2X_R(LeftId= PanelId,
+                DemandTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = Panels.MP2X_R(LeftId= PanelId,
                                                                                     Destination= Destination,
                                                                                     DualPanelsId= DualPanelsId)
 
                 # ** Dual **
-                DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = MP2X_R(LeftId= DualPanelsId[0],
+                DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = Panels.MP2X_R(LeftId= DualPanelsId[0],
                                                                                     Destination= Source,
                                                                                     DualPanelsId = (PanelId, (str(int(PanelId) + 1))) )
 
@@ -4628,7 +4573,7 @@ class Ui_MainWindow(object):
     
     def generate_dual_panel_num(self, Destination):
 
-        IdList = list(DemandTabDataBase["Panels"][Destination].keys())
+        IdList = list(self.Panels.PanelsObjectDict[Destination].keys())
             
         # if shelf is empty this method must return 1 in ## string ##
         if not IdList:
@@ -4886,7 +4831,7 @@ class Ui_MainWindow(object):
         DemandTabDataBase["Source_Destination"].clear()
         DemandTabDataBase["Services"].clear()
         DemandTabDataBase["Services_static"].clear()
-        DemandTabDataBase["Panels"].clear()
+        self.Panels.clear_panels()
         DemandTabDataBase["GroomOut10"].clear()
         DemandTabDataBase["GroomOut10_status"].clear()
         DemandTabDataBase["Lightpathes"].clear()
@@ -4904,8 +4849,7 @@ class Ui_MainWindow(object):
             Source = self.IdNodeMap[value.Source]
             Destination = self.IdNodeMap[value.Destination]
 
-            DemandTabDataBase["Panels"][Source] = {}
-            DemandTabDataBase["Panels"][Destination] = {}
+            self.Panels.clear_panels(Source, Destination)
 
             DemandTabDataBase["GroomOut10"][(Source, Destination)] = {}
             DemandTabDataBase["GroomOut10"][(Destination, Source)] = {}
@@ -4915,9 +4859,6 @@ class Ui_MainWindow(object):
 
             DemandTabDataBase["Lightpathes"][(Source, Destination)] = {}
             DemandTabDataBase["Lightpathes"][(Destination, Source)] = {}
-
-            DemandTabDataBase["Shelf_Count"][Source] = 1
-            DemandTabDataBase["Shelf_Count"][Destination] = 1
 
             if not ((Source, Destination) in GroomingTabDataBase["LightPathes"]):
                 GroomingTabDataBase["LightPathes"][(Source, Destination)] = {}

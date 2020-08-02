@@ -625,7 +625,6 @@ class customlabel(QLabel):
                 self.modify_ServiceList(ids= self.ids,
                                         source= self.nodename,
                                         destination= self.Destination,
-                                        Panels= self.Panels
                                         mode= "add",
                                         type= self.servicetype)
 
@@ -633,7 +632,6 @@ class customlabel(QLabel):
                 self.modify_ServiceList(ids= self.ids,
                                         source= self.Destination,
                                         destination= self.nodename,
-                                        Panels= self.Panels
                                         mode= "add",
                                         type= self.servicetype)
 
@@ -727,7 +725,6 @@ class customlabel(QLabel):
             self.modify_ServiceList(ids= self.ids,
                                     source= self.nodename,
                                     destination= self.Destination,
-                                    Panels= self.Panels
                                     mode= "add",
                                     type= self.servicetype)
 
@@ -735,7 +732,6 @@ class customlabel(QLabel):
             self.modify_ServiceList(ids= self.ids,
                                     source= self.Destination,
                                     destination= self.nodename,
-                                    Panels= self.Panels
                                     mode= "add",
                                     type= self.servicetype)
 
