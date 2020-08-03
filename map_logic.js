@@ -1393,8 +1393,98 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
 
 
 
+////// interactive tables codes
+
+//dummy data
+var dummyClustersData = [
+    {
+        id: 1,
+        demands: [
+            {
+                id: 1,
+                src: "x",
+                dest: "y",
+                services: [
+                    {
+                        id: 87,
+                        type: "100GE"
+                    },
+                    {
+                        id: 221,
+                        type: "100GE"
+                    },
+                    {
+                        id: 345,
+                        type: "100GE"
+                    }
+                ]
+            },
+            {
+                id: 2,
+                src: "m",
+                dest: "y",
+                services: [
+                    {
+                        id: 66,
+                        type: "100GE"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        id: 2,
+        demands: [
+            {
+                id: 5,
+                src: "u",
+                dest: "i",
+                services: [
+                    {
+                        id: 1,
+                        type: "10GE"
+                    },
+                    {
+                        id: 2,
+                        type: "100GE"
+                    },
+                    {
+                        id: 3,
+                        type: "100GE"
+                    }
+                ]
+            },
+            {
+                id: 7,
+                src: "m",
+                dest: "l",
+                services: [
+                    {
+                        id: 5,
+                        type: "500GE"
+                    }
+                ]
+            }
+        ]
+    }
+];
+
+// btn is directly loaded in map
+var tablesBtn = document.createElement("button");
+tablesBtn.innerHTML = "Load Tables"
+var menu = L.control({ position: 'topright' });
+
+
+// a dummy instance of data is given to to the function - needs to be changed
+tablesBtn.addEventListener("click", e => generateUIPanels(dummyClustersData))
+
+menu.onAdd = function (map) {
+    return tablesBtn;
+};
+menu.addTo(MapVar);
+
 /* 
-main function of interactive cluster/demands/services tables - call this function inside the main body 
+main function of interactive cluster/demands/services tables 
 takes an array of clusters as input
 */ 
 
