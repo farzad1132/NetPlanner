@@ -1389,3 +1389,117 @@ var backend_map = null;
 new QWebChannel(qt.webChannelTransport, function (channel) {
     backend_map = channel.objects.backend_map;
 });
+
+
+
+
+/* 
+main function of interactive cluster/demands/services tables - call this function inside the main body 
+takes an array of clusters as input
+*/ 
+
+function generateUIPanels(clustersData) {
+
+    
+
+    var div = document.createElement("div");
+    div.setAttribute("id", "cluster-panel");
+    
+    var clusterTable = document.createElement('table');
+    var demandTable = document.createElement('table');
+    var serviceTable = document.createElement('table');
+    // clusterTable.rows[1].style.backgroundColor = "white";
+
+    clusterTable = createClustersTable(clustersData);
+    updateDemandsTable(1, clustersData, demandTable, serviceTable);
+    updateServicesTable(1, clustersData[0].demands, serviceTable);   
+    
+    for(var i = 0, row; row = clusterTable.rows[i]; i++){
+        row.addEventListener("click", (e) => 
+        updateDemandsTable(e.target.id, clustersData, demandTable, serviceTable ));
+    }
+
+    var allDemands = [];
+    clustersData.forEach(cluster => {
+        allDemands = allDemands.concat(cluster.demands);
+    });
+
+    console.log(allDemands)
+    
+    for(var i = 0, row; row = demandTable.rows[i]; i++){
+        row.addEventListener("click", (e) => {
+            console.log("id = "+e.target.id)
+            updateServicesTable(e.target.id, allDemands, serviceTable);
+        });
+        
+    }
+
+    var menu = L.control({ position: 'bottomleft' });
+
+    menu.onAdd = function (map) {
+
+        div.appendChild(clusterTable);
+        div.appendChild(demandTable);
+        div.appendChild(serviceTable);
+
+        return div;
+    };
+
+    menu.addTo(MapVar);
+
+    //returns updated clusterData
+
+}
+
+function createClustersTable(clusters) {
+
+    tbl = document.createElement("table");
+    tbl.setAttribute('border', '1');
+    var tbdy = document.createElement('tbody');
+    var tr  =  tbdy.insertRow();
+    tr.innerHTML = "clusters";
+    for (var i = 0; i < clusters.length; i++) {
+        var tr  =  tbdy.insertRow();
+        tr.innerHTML = clusters[i].id;
+        tr.setAttribute("id", clusters[i].id);
+    }
+    tbl.appendChild(tbdy);
+    return tbl;
+}
+
+function updateDemandsTable(clusterID, array , demandTable, serviceTable){
+
+    demands = array.find(x => x.id  === parseInt(clusterID)).demands;
+    console.log(clusterID);
+
+    demandTable.innerHTML = "";
+
+    demandTable.setAttribute('border', '1');
+    var tbdy = document.createElement('tbody');
+    var tr  =  tbdy.insertRow();
+    tr.innerHTML = "demands";
+    for (var i = 0; i < demands.length; i++) {
+        var tr  =  tbdy.insertRow();
+        tr.setAttribute("id", demands[i].id);
+        tr.innerHTML = demands[i].src + ", " + demands[i].dest;
+    }
+    demandTable.appendChild(tbdy);
+
+    updateServicesTable(demands[0].id, demands, serviceTable);
+}
+
+function updateServicesTable(demandID, array , serviceTable){
+    services = array.find(x => x.id  === parseInt(demandID)).services;
+    console.log(services);
+    serviceTable.innerHTML = "";
+
+    serviceTable.setAttribute('border', '1');
+    var tbdy = document.createElement('tbody');
+    var tr  =  tbdy.insertRow();
+    tr.innerHTML = "sevices";
+    for (var i = 0; i < services.length; i++) {
+        var tr  =  tbdy.insertRow();
+        tr.innerHTML = services[i].type;
+    }
+    serviceTable.appendChild(tbdy);
+}
