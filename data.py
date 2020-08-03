@@ -393,9 +393,8 @@ class Panels:
             self.Shelf_Count[Source] = 1
             self.Shelf_Count[Destination] = 1
     
-    def add_mp1h_widget(self, Id, Source, ClientsCapacity, LineCapacity, ServiceIdList, DemandIdList, LightPathId, LightPath_flag, Destination):
+    def add_mp1h_widget(self, Id, Source, ClientsCapacity, LineCapacity, ServiceIdList, DemandIdList, LightPathId, LightPath_flag, Destination, DualPanelsId):
         uppernum = self.get_uppernum(Id)
-        DualPanelsId = self.calculate_dual_num(Destination)
         self.PanelsObjectDict[Source][Id] = self.MP1H_L(  ClientsCapacity= ClientsCapacity,
                                                             LineCapacity= LineCapacity,
                                                             ServiceIdList= ServiceIdList,
@@ -446,10 +445,10 @@ class Panels:
                 # checking its GroomOut10 or not
                 if (panel.DemandIdList[i],panel.ServiceIdList[i]) in DemandTabDataBase["Services_static"][Source]:
                     clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])].toolTip())
-                    clientvar_dual.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])].toolTip())
+                    clientvar_dual.setToolTip(DemandTabDataBase["Services_static"][Destination][(panel.DemandIdList[i],panel.ServiceIdList[i])].toolTip())
                 else:
                     clientvar.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][panel.ServiceIdList[i]].toolTip())
-                    clientvar_dual.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][panel.ServiceIdList[i]].toolTip())
+                    clientvar_dual.setToolTip(DemandTabDataBase["GroomOut10"][(Destination, Source)][panel.ServiceIdList[i]].toolTip())
 
                 clientvar.servicetype = panel.ClientsCapacity[i]
                 clientvar.nodename = Source
@@ -457,8 +456,8 @@ class Panels:
                 clientvar.ids = [panel.DemandIdList[i], panel.ServiceIdList[i]]
 
                 clientvar_dual.servicetype = panel.ClientsCapacity[i]
-                clientvar_dual.nodename = Source
-                clientvar_dual.Destination = Destination
+                clientvar_dual.nodename = Destination
+                clientvar_dual.Destination = Source
                 clientvar_dual.ids = [panel.DemandIdList[i], panel.ServiceIdList[i]]
 
                 if panel.ClientsCapacity[i] == "GroomOut10":
@@ -474,10 +473,83 @@ class Panels:
                 linevar_dual = getattr(self.PanelsWidgetDict[Destination][DualPanelsId[0]], "Line")
 
                 linevar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
-                linevar_dual.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
+                linevar_dual.setToolTip(DemandTabDataBase["Lightpathes"][(Destination, Source)][LightPathId].toolTip())
 
                 linevar.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
                 linevar_dual.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
+    
+    def add_tp1h_widget(self, Id, Source, DemandId, ServiceId, Line, LightPathId, Destination, DualPanelsId):
+        uppernum = self.get_uppernum(Id)
+
+        self.PanelsObjectDict[Source][Id] =  self.TP1H_L(   DemandId= DemandId,
+                                                            ServiceId= ServiceId,
+                                                            Line= Line,
+                                                            LightPathId= LightPathId,
+                                                            Destination= Destination,
+                                                            DualPanelsId= DualPanelsId)
+        
+        self.PanelsObjectDict[Destination][DualPanelsId[0]] =  self.TP1H_L( DemandId= DemandId,
+                                                                            ServiceId= ServiceId,
+                                                                            Line= Line,
+                                                                            LightPathId= LightPathId,
+                                                                            Destination= Source,
+                                                                            DualPanelsId= (Id, uppernum))
+        
+        self.PanelsObjectDict[Source][uppernum] = self.TP1H_R(LeftId= Id,
+                                                                Destination= Destination,
+                                                                DualPanelsId= DualPanelsId)
+        
+        self.PanelsObjectDict[Destination][DualPanelsId[1]] = self.TP1H_R(LeftId= DualPanelsId[0],
+                                                                Destination= Source,
+                                                                DualPanelsId= (Id, uppernum))
+
+        self.PanelsWidgetDict[Source][Id] = TP1H_L_Demand(Id, Source, Destination, DualPanelsId, self)
+        self.PanelsWidgetDict[Destination][DualPanelsId[0]] = TP1H_L_Demand(DualPanelsId[0], Destination, Source, (Id, uppernum), self)
+
+        self.PanelsWidgetDict[Source][uppernum] = TP1H_R_Demand(uppernum, Source, Destination, DualPanelsId)
+        self.PanelsWidgetDict[Destination][DualPanelsId[1]] = TP1H_R_Demand(DualPanelsId[1], Destination, Source, (Id, uppernum))
+
+        # finding panel widget
+        widget = self.PanelsWidgetDict[Source][Id]
+        widget_dual = self.PanelsWidgetDict[Destination][DualPanelsId[0]]
+
+        panel = self.PanelsObjectDict[Source][Id]
+
+        if panel.Line == "100GE":
+
+            # finding object of client customlabel
+            clientvar = getattr(widget, "Client")
+            clientvar_dual = getattr(widget_dual, "Client")
+
+            # filling customlabel attributes 
+            clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandId, panel.ServiceId)].toolTip())
+            clientvar.servicetype = "100GE"
+            clientvar.nodename = Source
+            clientvar.Destination = Destination
+            clientvar.ids = [panel.DemandId, panel.ServiceId]
+            clientvar.setAcceptDrops(False)
+
+            clientvar_dual.setToolTip(DemandTabDataBase["Services_static"][Destination][(panel.DemandId, panel.ServiceId)].toolTip())
+            clientvar_dual.servicetype = "100GE"
+            clientvar_dual.nodename = Destination
+            clientvar_dual.Destination = Source
+            clientvar_dual.ids = [panel.DemandId, panel.ServiceId]
+            clientvar_dual.setAcceptDrops(False)
+
+            clientvar.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
+            clientvar_dual.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
+
+
+            LineVar = getattr(widget, "Line")
+            LineVar_dual = getattr(widget_dual, "Line")
+
+            LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
+
+            LineVar.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
+
+            LineVar_dual.setToolTip(DemandTabDataBase["Lightpathes"][(Destination, Source)][LightPathId].toolTip())
+
+            LineVar_dual.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
 
 
 

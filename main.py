@@ -4170,25 +4170,13 @@ class Ui_MainWindow(object):
         # lightpath and panel part ( part 1 )
         for id, lightpath in netobj.LightPathDict.items():
             
-            
             Source = self.IdNodeMap[lightpath.Source]
             Destination = self.IdNodeMap[lightpath.Destination]
-
-            
 
             type = lightpath.Type
             DemandId = lightpath.DemandId
             Capacity = lightpath.Capacity
             
-            
-
-            """ ## debug section
-            print("Source: ", Source)
-            print("Destination:" , Destination)
-            print("DemandId :", DemandId)
-            print("serviceIdList :", lightpath.ServiceIdList)
-
-            ## end of debug section """
             first_service_object = netobj.TrafficMatrix.DemandDict[DemandId].ServiceDict.get(lightpath.ServiceIdList[0])
             if first_service_object != None:
                 first_service_type = first_service_object.Type
@@ -4226,39 +4214,19 @@ class Ui_MainWindow(object):
             # checking wheather lightpath is created by tp1h or not
             if lightpath.Capacity == 100 and first_service_type == "100GE":
                 
-                #DemandTabDataBase["Panels"][Source][panelid] = TP1H_L(DemandId, lightpath.ServiceIdList[0], "100GE", id)
-                DemandTabDataBase["Panels"][Source][panelid] = Panels.TP1H_L(  DemandId= DemandId,
-                                                                        ServiceId= lightpath.ServiceIdList[0],
-                                                                        Line= "100GE",
-                                                                        LightPathId= id,
-                                                                        Destination= Destination,
-                                                                        DualPanelsId= DualPanelsId)
+                self.Panels.add_tp1h_widget(    Id= panelid,
+                                                Source= Source,
+                                                DemandId= DemandId,
+                                                ServiceId= lightpath.ServiceIdList[0],
+                                                Line= "100GE",
+                                                LightPathId= id,
+                                                Destination= Destination,
+                                                DualPanelsId= DualPanelsId)
 
-                # ** Dual **
-                DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = Panels.TP1H_L(  DemandId= DemandId,
-                                                                        ServiceId= lightpath.ServiceIdList[0],
-                                                                        Line= "100GE",
-                                                                        LightPathId= id,
-                                                                        Destination= Source,
-                                                                        DualPanelsId= (panelid, (str(int(panelid) + 1))))
-
-                """ ## debug section
-                print(DemandTabDataBase["Panels"][Source][panelid].__dict__)
-
-                ## end of debug section """
-                DemandTabDataBase["Panels"][Source][str(int(panelid) + 1)] = Panels.TP1H_R(    LeftId= panelid,
-                                                                                        Destination= Destination,
-                                                                                        DualPanelsId= DualPanelsId)
-
-                # ** Dual **
-                DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = Panels.TP1H_R(    LeftId= DualPanelsId[0],
-                                                                                        Destination= Source,
-                                                                                        DualPanelsId = (panelid, (str(int(panelid) + 1))))
 
 
             else:
                 ClientCapacity, LineCapacity = self.create_ClientsCapacityList(DemandId, lightpath.ServiceIdList, netobj)
-                #LineCapacity = len(ClientCapacity) * 10
                 
                 ClientLen = len(ClientCapacity) 
                 if ClientLen != 10:
@@ -4274,15 +4242,8 @@ class Ui_MainWindow(object):
                                                 DemandIdList= [DemandId for i in range(10)],
                                                 LightPathId= id,
                                                 LightPath_flag= 1,
-                                                Destination= Destination)
-
-                #print(f"panels part--> Source:{Source} panels:{DemandTabDataBase['Panels'][Source]}")
-                #print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-            
-            # lightPath part ( part 2 )
-            
-
-
+                                                Destination= Destination,
+                                                DualPanelsId= DualPanelsId)
 
 
     def fill_DemandTabDataBase_MP2X(self, full_MP2X_Dict, half_MP2X_Dict, netobj):

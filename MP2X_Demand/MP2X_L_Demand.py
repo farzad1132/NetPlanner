@@ -38,7 +38,7 @@ from MP2X_Demand import Border_L
 
 class MP2X_L_Demand(QtWidgets.QWidget):
 
-    def __init__(self, Panel_ID, nodename, Destination, DualPanelsId):
+    def __init__(self, Panel_ID, nodename, Destination, DualPanelsId, Panels):
         super(MP2X_L_Demand, self).__init__()
 
         self.resize(106, 694)
@@ -50,6 +50,7 @@ class MP2X_L_Demand(QtWidgets.QWidget):
         self.uppernum = str(int(self.id) + 1)
 
         self.DualPanelsId = DualPanelsId
+        self.Panels = Panels
 
         grid=QtWidgets.QGridLayout(self)
         widget=QtWidgets.QWidget(self)
@@ -176,25 +177,15 @@ class MP2X_L_Demand(QtWidgets.QWidget):
 
         if action == CloseAction:
 
-            # removing old left panel
-            panel_widget = Data["DemandPanel_" + str(self.id)].takeAt(0).widget()
-            Data["DemandPanel_" + str(self.id)].removeWidget(panel_widget)
-            panel_widget.deleteLater()
-            Data["DemandPanel_" + self.id].addWidget(BLANK_Demand(self.id ,  self.nodename, self.Destination))
-
-            # removing old right panel
-            panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
-            Data["DemandPanel_" + str(self.uppernum)].removeWidget(panel_widget)
-            panel_widget.deleteLater()
-            Data["DemandPanel_" + self.uppernum].addWidget(BLANK_Demand(self.uppernum ,  self.nodename, self.Destination))
 
             # undoing every service or lightpath that is created in this panel
-            if DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity != [0, 0]:
+            data_object = self.Panels.get_data_object(self.id, self.nodename)
+            if data_object.LinesCapacity != [0, 0]:
 
-                for i in range(len(DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity)):
-                    if DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[i] != 0:
-                        ids = [DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[i], DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[i]]
-                        type = DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[i]
+                for i in range(len(data_object.ClientsCapacity)):
+                    if data_object.ClientsCapacity[i] != 0:
+                        ids = [data_object.DemandIdList[i], data_object.ServiceIdList[i]]
+                        type = data_object.ClientsCapacity[i]
 
                         self.modify_ServiceList(ids= ids,
                                                 source= self.nodename,
@@ -209,8 +200,8 @@ class MP2X_L_Demand(QtWidgets.QWidget):
                                                 mode= "add",
                                                 type= type)
 
-                GroomOut_1_Id = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0]
-                GroomOut_2_Id = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1]
+                GroomOut_1_Id = data_object.LineIdList[0]
+                GroomOut_2_Id = data_object.LineIdList[1]
 
                 self.Update_MP1H_Port(Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOut_1_Id],
                                         Source= self.nodename,
@@ -260,12 +251,7 @@ class MP2X_L_Demand(QtWidgets.QWidget):
 
                     
 
-            DemandTabDataBase["Panels"][self.nodename].pop(self.id)
-            DemandTabDataBase["Panels"][self.nodename].pop(self.uppernum)
-
-            # ** Dual **
-            DemandTabDataBase["Panels"][self.Destination].pop(self.DualPanelsId[0])
-            DemandTabDataBase["Panels"][self.Destination].pop(self.DualPanelsId[1])
+            self.Panels.remove_panel_widget(self.id, self.nodename)
 
     
     def Update_MP1H_Port(self, Item, Source, Destination, Capacity):
@@ -381,7 +367,7 @@ class line_class(QLabel):
 
 class customlabel(QLabel):
     Stateflag = 0           # this flag shows that this panel is on or off
-    def __init__(self, parent, nodename, Destination, ID, ClientNum , LineVar_1, LineVar_2, DualPanelsId = None):
+    def __init__(self, parent, nodename, Destination, ID, ClientNum , LineVar_1, LineVar_2, Panels, DualPanelsId = None):
         super().__init__(parent)
         self.nodename = nodename
         self.id = ID
@@ -394,6 +380,7 @@ class customlabel(QLabel):
         self.BWDict = {"E1": 58.84 / 1024, "STM_1_Electrical": 155.52 / 1024, "STM_1_Optical": 155.52 / 1024, "STM_4": 622.08 / 1024, "STM_16": 2.49, "FE": 0.1, "1GE": 1.244}
     
         self.DualPanelsId = DualPanelsId
+        self.Panels = Panels
 
     def dragEnterEvent(self, event):
         e = event.mimeData()
@@ -410,8 +397,8 @@ class customlabel(QLabel):
             if DemandTabDataBase["Services"][(self.nodename, self.Destination)].get((UserData["DemandId"], UserData["ServiceId"])) == 0:
 
                 ids = [UserData["DemandId"], UserData["ServiceId"]]
-                Line_1_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0]
-                Line_2_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1]
+                Line_1_old_capacity = self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[0]
+                Line_2_old_capacity = self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1]
                 DropCapacity = self.BWDict[servicetype]
 
                 # checking weather lines have enough capacity or not
@@ -464,31 +451,31 @@ class customlabel(QLabel):
             
             self.setToolTip(DemandTabDataBase["Services_static"][self.nodename][self.ids].toolTip())
 
-            # DemandTabDataBase["Panels"][self.nodename][self.id].add_client(self.ClientNum, servicetype)
-            Line_1_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0]
-            Line_2_old_capacity = DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1]
+            # self.Panels.PanelsObjectDict[self.nodename][self.id].add_client(self.ClientNum, servicetype)
+            Line_1_old_capacity = self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[0]
+            Line_2_old_capacity = self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1]
 
             # updating ClientsCapacity in panel object
-            DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = servicetype
+            self.Panels.PanelsObjectDict[self.nodename][self.id].ClientsCapacity[self.ClientNum] = servicetype
 
             # ** Dual **
-            DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].ClientsCapacity[self.ClientNum] = servicetype
+            self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].ClientsCapacity[self.ClientNum] = servicetype
 
-            ServiceListLen = len(DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList)
+            ServiceListLen = len(self.Panels.PanelsObjectDict[self.nodename][self.id].ServiceIdList)
             if self.ClientNum >= ServiceListLen:
                 for i in range(ServiceListLen - self.ClientNum + 1):
-                    DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList.append(None)
+                    self.Panels.PanelsObjectDict[self.nodename][self.id].ServiceIdList.append(None)
 
                     # ** Dual **
-                    DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].ServiceIdList.append(None)
+                    self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].ServiceIdList.append(None)
 
             # updating service id and demand id in panel object 
-            DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = self.ids[1]
-            DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = self.ids[0]
+            self.Panels.PanelsObjectDict[self.nodename][self.id].ServiceIdList[self.ClientNum] = self.ids[1]
+            self.Panels.PanelsObjectDict[self.nodename][self.id].DemandIdList[self.ClientNum] = self.ids[0]
 
             # ** Dual **
-            DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].ServiceIdList[self.ClientNum] = self.ids[1]
-            DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].DemandIdList[self.ClientNum] = self.ids[0]
+            self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].ServiceIdList[self.ClientNum] = self.ids[1]
+            self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].DemandIdList[self.ClientNum] = self.ids[0]
 
 
             
@@ -510,16 +497,16 @@ class customlabel(QLabel):
             if Line_1_old_capacity < 0.001:
 
                 # updating line 1 capacity
-                DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] += DropCapacity
+                self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[0] += DropCapacity
 
                 # ** Dual **
-                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LinesCapacity[0] += DropCapacity
+                self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].LinesCapacity[0] += DropCapacity
 
                 # updating Line_1_ServiceIdList
-                DemandTabDataBase["Panels"][self.nodename][self.id].Line_1_ServiceIdList.append(self.ids[1])
+                self.Panels.PanelsObjectDict[self.nodename][self.id].Line_1_ServiceIdList.append(self.ids[1])
 
                 # ** Dual ** 
-                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line_1_ServiceIdList.append(self.ids[1])
+                self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].Line_1_ServiceIdList.append(self.ids[1])
                 
                 # creating new groom out 10
                 GroomOutId = Data["NetworkObj"].TrafficMatrix.Generate_GroomOutId()
@@ -531,15 +518,15 @@ class customlabel(QLabel):
                                                     ServiceIdList= [self.ids[1]])
 
                 # updating LineIdList in panel object
-                DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0] = GroomOutId
+                self.Panels.PanelsObjectDict[self.nodename][self.id].LineIdList[0] = GroomOutId
 
                 # ** Dual ** 
-                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LineIdList[0] = GroomOutId
+                self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].LineIdList[0] = GroomOutId
 
                 self.modify_GroomOut10List(id= GroomOutId,
                                             Source= self.nodename,
                                             Destination= self.Destination,
-                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0],
+                                            Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[0],
                                             mode= "add",
                                             type= "GroomOut10",
                                             PanelId= self.id,
@@ -549,7 +536,7 @@ class customlabel(QLabel):
                 self.modify_GroomOut10List(id= GroomOutId,
                                             Source= self.Destination,
                                             Destination= self.nodename,
-                                            Capacity= DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LinesCapacity[0],
+                                            Capacity= self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].LinesCapacity[0],
                                             mode= "add",
                                             type= "GroomOut10",
                                             PanelId= self.DualPanelsId[0],
@@ -564,34 +551,34 @@ class customlabel(QLabel):
             elif Line_1_old_capacity + DropCapacity < 10 :
                 
                 # updating line 1 capacity
-                DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] += DropCapacity
+                self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[0] += DropCapacity
 
                 # ** Dual **
-                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LinesCapacity[0] += DropCapacity
+                self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].LinesCapacity[0] += DropCapacity
 
                 # updating Line_1_ServiceIdList
-                DemandTabDataBase["Panels"][self.nodename][self.id].Line_1_ServiceIdList.append(self.ids[1])
+                self.Panels.PanelsObjectDict[self.nodename][self.id].Line_1_ServiceIdList.append(self.ids[1])
 
                 # ** Dual ** 
-                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line_1_ServiceIdList.append(self.ids[1])
+                self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].Line_1_ServiceIdList.append(self.ids[1])
 
-                GroomOutId = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0]
+                GroomOutId = self.Panels.PanelsObjectDict[self.nodename][self.id].LineIdList[0]
 
                 ServiceIdList = [self.ids[1]]
                 Data["NetworkObj"].TrafficMatrix.GroomOut10Dict[(self.ids[0],GroomOutId)].ServiceIdList.extend(ServiceIdList)
 
                 # updating LightPath ListWidgetItem Capacity
                 self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
-                                                        Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
+                                                        Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[0])
 
                 # ** Dual **
                 self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][GroomOutId],
-                                                        Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
+                                                        Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[0])
                 
                 self.Update_MP1H_Port(Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
                                             Source= self.nodename,
                                             Destination= self.Destination,
-                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
+                                            Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[0])
 
                 # setting line port tooltip                                        
                 self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
@@ -602,16 +589,16 @@ class customlabel(QLabel):
             elif Line_2_old_capacity < 0.001:
 
                 # updating line 2 capacity
-                DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] += DropCapacity
+                self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1] += DropCapacity
 
                 # ** Dual **
-                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LinesCapacity[1] += DropCapacity
+                self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].LinesCapacity[1] += DropCapacity
 
                 # updating Line_2_ServiceIdList
-                DemandTabDataBase["Panels"][self.nodename][self.id].Line_2_ServiceIdList.append(self.ids[1])
+                self.Panels.PanelsObjectDict[self.nodename][self.id].Line_2_ServiceIdList.append(self.ids[1])
 
                 # ** Dual **
-                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line_2_ServiceIdList.append(self.ids[1])
+                self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].Line_2_ServiceIdList.append(self.ids[1])
 
                 # creating new groom out 10
                 GroomOutId = Data["NetworkObj"].TrafficMatrix.Generate_GroomOutId()
@@ -624,15 +611,15 @@ class customlabel(QLabel):
                 
 
                 # updating LineIdList in panel object
-                DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1] = GroomOutId
+                self.Panels.PanelsObjectDict[self.nodename][self.id].LineIdList[1] = GroomOutId
 
                 # ** Dual **
-                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LineIdList[1] = GroomOutId
+                self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].LineIdList[1] = GroomOutId
 
                 self.modify_GroomOut10List(id= GroomOutId,
                                             Source= self.nodename,
                                             Destination= self.Destination,
-                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1],
+                                            Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1],
                                             mode= "add",
                                             type= "GroomOut10",
                                             PanelId= self.id,
@@ -642,7 +629,7 @@ class customlabel(QLabel):
                 self.modify_GroomOut10List(id= GroomOutId,
                                             Source= self.Destination,
                                             Destination= self.nodename,
-                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1],
+                                            Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1],
                                             mode= "add",
                                             type= "GroomOut10",
                                             PanelId= self.DualPanelsId,
@@ -657,18 +644,18 @@ class customlabel(QLabel):
             else:
 
                 # updating line 2 capacity
-                DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] += DropCapacity
+                self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1] += DropCapacity
 
                 # ** Dual **
-                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LinesCapacity[1] += DropCapacity
+                self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].LinesCapacity[1] += DropCapacity
 
                 # updating Line_2_ServiceIdList
-                DemandTabDataBase["Panels"][self.nodename][self.id].Line_2_ServiceIdList.append(self.ids[1])
+                self.Panels.PanelsObjectDict[self.nodename][self.id].Line_2_ServiceIdList.append(self.ids[1])
 
                 # ** Dual **
-                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line_2_ServiceIdList.append(self.ids[1])
+                self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].Line_2_ServiceIdList.append(self.ids[1])
 
-                GroomOutId = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1]
+                GroomOutId = self.Panels.PanelsObjectDict[self.nodename][self.id].LineIdList[1]
 
                 ServiceIdList = [self.ids[1]]
                 Data["NetworkObj"].TrafficMatrix.GroomOut10Dict[(self.ids[0], GroomOutId)].ServiceIdList.extend(ServiceIdList)
@@ -676,17 +663,17 @@ class customlabel(QLabel):
 
                 # updating LightPath ListWidgetItem Capacity
                 self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
-                                                        Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
+                                                        Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1])
 
                 # ** Dual **
                 self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][GroomOutId],
-                                                        Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
+                                                        Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1])
 
                 
                 self.Update_MP1H_Port(Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId],
                                             Source= self.nodename,
                                             Destination= self.Destination,
-                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
+                                            Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1])
 
                 # setting line port tooltip                                        
                 self.LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
@@ -706,92 +693,92 @@ class customlabel(QLabel):
         action = ContextMenu.exec_(self.mapToGlobal(event.pos()))
 
         if action == ClearAction:
-            if DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] != 0:
+            if self.Panels.PanelsObjectDict[self.nodename][self.id].ClientsCapacity[self.ClientNum] != 0:
                 self.setToolTip("")
 
-                ServiceId = DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum]
+                ServiceId = self.Panels.PanelsObjectDict[self.nodename][self.id].ServiceIdList[self.ClientNum]
 
-                GroomOutId_1 = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0]
-                GroomOutId_2 = DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1]
+                GroomOutId_1 = self.Panels.PanelsObjectDict[self.nodename][self.id].LineIdList[0]
+                GroomOutId_2 = self.Panels.PanelsObjectDict[self.nodename][self.id].LineIdList[1]
 
                 # updating linescapacity part on panel object
-                if ServiceId in DemandTabDataBase["Panels"][self.nodename][self.id].Line_1_ServiceIdList:
+                if ServiceId in self.Panels.PanelsObjectDict[self.nodename][self.id].Line_1_ServiceIdList:
                     # updating line 1 capacity
-                    DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] -= self.BWDict[DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum]]
+                    self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[0] -= self.BWDict[self.Panels.PanelsObjectDict[self.nodename][self.id].ClientsCapacity[self.ClientNum]]
 
                     # ** Dual **
-                    DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LinesCapacity[0] -= self.BWDict[DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum]]
+                    self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].LinesCapacity[0] -= self.BWDict[self.Panels.PanelsObjectDict[self.nodename][self.id].ClientsCapacity[self.ClientNum]]
 
                     # updating line 1 id service id list
-                    DemandTabDataBase["Panels"][self.nodename][self.id].Line_1_ServiceIdList.remove(ServiceId)
+                    self.Panels.PanelsObjectDict[self.nodename][self.id].Line_1_ServiceIdList.remove(ServiceId)
 
                     # ** Dual **
-                    DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line_1_ServiceIdList.remove(ServiceId)
+                    self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].Line_1_ServiceIdList.remove(ServiceId)
 
                     
 
                     # updating LightPath ListWidgetItem Capacity
                     self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_1],
-                                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
+                                                            Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[0])
 
                     # ** Dual **
                     self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][GroomOutId_1],
-                                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
+                                                            Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[0])
                     
                     self.Update_MP1H_Port(Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_1],
                                             Source= self.nodename,
                                             Destination= self.Destination,
-                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0])
+                                            Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[0])
 
                     # setting line port tooltip                                        
                     self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_1].toolTip())
 
                 else:
                     # updating line 2 capacity
-                    DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] -= self.BWDict[DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum]]
+                    self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1] -= self.BWDict[self.Panels.PanelsObjectDict[self.nodename][self.id].ClientsCapacity[self.ClientNum]]
 
                     # ** Dual **
-                    DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LinesCapacity[1] -= self.BWDict[DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum]]
+                    self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].LinesCapacity[1] -= self.BWDict[self.Panels.PanelsObjectDict[self.nodename][self.id].ClientsCapacity[self.ClientNum]]
 
                     # updating line 2 id service id list
-                    DemandTabDataBase["Panels"][self.nodename][self.id].Line_2_ServiceIdList.remove(ServiceId)
+                    self.Panels.PanelsObjectDict[self.nodename][self.id].Line_2_ServiceIdList.remove(ServiceId)
 
                     # ** Dual **
-                    DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].Line_2_ServiceIdList.remove(ServiceId)
+                    self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].Line_2_ServiceIdList.remove(ServiceId)
 
                     # updating LightPath ListWidgetItem Capacity
                     self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_2],
-                                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
+                                                            Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1])
 
                     # ** Dual **
                     self.Update_LineListWidgetItem_Tooltip( Item= DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][GroomOutId_2],
-                                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
+                                                            Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1])
 
                     self.Update_MP1H_Port(Item= DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_2],
                                             Source= self.nodename,
                                             Destination= self.Destination,
-                                            Capacity= DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1])
+                                            Capacity= self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1])
 
                     # setting line port tooltip                                        
                     self.LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_2].toolTip())
 
                 # updating client capacity part of panel object
-                DemandTabDataBase["Panels"][self.nodename][self.id].ClientsCapacity[self.ClientNum] = 0
+                self.Panels.PanelsObjectDict[self.nodename][self.id].ClientsCapacity[self.ClientNum] = 0
 
                 # ** Dual **
-                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].ClientsCapacity[self.ClientNum] = 0
+                self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].ClientsCapacity[self.ClientNum] = 0
                 
                 # update ServiceIdList part of panel object
-                DemandTabDataBase["Panels"][self.nodename][self.id].ServiceIdList[self.ClientNum] = None
+                self.Panels.PanelsObjectDict[self.nodename][self.id].ServiceIdList[self.ClientNum] = None
 
                 # ** Dual **
-                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].ServiceIdList[self.ClientNum] = None
+                self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].ServiceIdList[self.ClientNum] = None
 
                 # updating DemandIdList part in panel object
-                DemandTabDataBase["Panels"][self.nodename][self.id].DemandIdList[self.ClientNum] = None
+                self.Panels.PanelsObjectDict[self.nodename][self.id].DemandIdList[self.ClientNum] = None
 
                 # ** Dual **
-                DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].DemandIdList[self.ClientNum] = None
+                self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].DemandIdList[self.ClientNum] = None
 
                 self.setAcceptDrops(True)
 
@@ -813,13 +800,13 @@ class customlabel(QLabel):
                                         mode= "add",
                                         type= self.servicetype)
 
-                if DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[0] < 0.001:
+                if self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[0] < 0.001:
 
                     # updating LineIdList part of panel object
-                    DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[0] = None
+                    self.Panels.PanelsObjectDict[self.nodename][self.id].LineIdList[0] = None
 
                     # ** Dual **
-                    DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LineIdList[0] = None
+                    self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].LineIdList[0] = None
 
                     self.modify_GroomOut10List(id= GroomOutId_1,
                                                 Source= self.nodename,
@@ -839,13 +826,13 @@ class customlabel(QLabel):
 
                     self.LineVar_1.setStyleSheet("QLabel{ image: url(:/Line_L_SOURCE/LINE_L.png); }")
 
-                elif DemandTabDataBase["Panels"][self.nodename][self.id].LinesCapacity[1] < 0.001 and GroomOutId_2 is not None:
+                elif self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1] < 0.001 and GroomOutId_2 is not None:
 
                     # updating LineIdList part of panel object
-                    DemandTabDataBase["Panels"][self.nodename][self.id].LineIdList[1] = None
+                    self.Panels.PanelsObjectDict[self.nodename][self.id].LineIdList[1] = None
 
                     # ** Dual **
-                    DemandTabDataBase["Panels"][self.Destination][self.DualPanelsId[0]].LineIdList[1] = None
+                    self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].LineIdList[1] = None
 
                     self.modify_GroomOut10List(id= GroomOutId_2,
                                                 Source= self.nodename,
