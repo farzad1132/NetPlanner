@@ -1488,41 +1488,37 @@ main function of interactive cluster/demands/services tables
 takes an array of clusters as input
 */ 
 
+var nodeSelctMode = false;
 function generateUIPanels(clustersData) {
 
-    
+
 
     var div = document.createElement("div");
     div.setAttribute("id", "cluster-panel");
-    
+
     var clusterTable = document.createElement('table');
     var demandTable = document.createElement('table');
     var serviceTable = document.createElement('table');
-    // clusterTable.rows[1].style.backgroundColor = "white";
 
-    clusterTable = createClustersTable(clustersData);
-    updateDemandsTable(1, clustersData, demandTable, serviceTable);
-    updateServicesTable(1, clustersData[0].demands, serviceTable);   
-    
-    for(var i = 0, row; row = clusterTable.rows[i]; i++){
-        row.addEventListener("click", (e) => 
-        updateDemandsTable(e.target.id, clustersData, demandTable, serviceTable ));
+    var selectNodeBtn = document.createElement("button");
+    selectNodeBtn.innerHTML = "Select Node";
+    selectNodeBtn.addEventListener("click", e => 
+        handleSelectNodeBtn(getSelectedServices(serviceTable, dummyClustersData))
+    );
+    var selectNodeOffBtn = document.createElement("button");
+    selectNodeOffBtn.innerHTML = "Cancel Select Node";
+    selectNodeOffBtn.addEventListener("click", e => {
+        myFeatureGroup.off();
+        myFeatureGroup.on("click", groupClick);
+        nodeSelctMode = false;
     }
+    );
 
-    var allDemands = [];
-    clustersData.forEach(cluster => {
-        allDemands = allDemands.concat(cluster.demands);
-    });
 
-    console.log(allDemands)
-    
-    for(var i = 0, row; row = demandTable.rows[i]; i++){
-        row.addEventListener("click", (e) => {
-            console.log("id = "+e.target.id)
-            updateServicesTable(e.target.id, allDemands, serviceTable);
-        });
-        
-    }
+    generateClustersTable(dummyClustersData, clusterTable, demandTable, serviceTable );
+    generateDemandsTable(1, dummyClustersData, demandTable, serviceTable);
+    generateServicesTable(1, 1, dummyClustersData, serviceTable);
+
 
     var menu = L.control({ position: 'bottomleft' });
 
@@ -1531,6 +1527,8 @@ function generateUIPanels(clustersData) {
         div.appendChild(clusterTable);
         div.appendChild(demandTable);
         div.appendChild(serviceTable);
+        div.appendChild(selectNodeBtn);
+        div.appendChild(selectNodeOffBtn);
 
         return div;
     };
@@ -1541,55 +1539,127 @@ function generateUIPanels(clustersData) {
 
 }
 
-function createClustersTable(clusters) {
 
-    tbl = document.createElement("table");
-    tbl.setAttribute('border', '1');
+function generateClustersTable(data, table, demandTable, serviceTable ) {
+    table.innerHTML = "";
+
+    table.setAttribute('border', '1');
     var tbdy = document.createElement('tbody');
-    var tr  =  tbdy.insertRow();
-    tr.innerHTML = "clusters";
-    for (var i = 0; i < clusters.length; i++) {
-        var tr  =  tbdy.insertRow();
-        tr.innerHTML = clusters[i].id;
-        tr.setAttribute("id", clusters[i].id);
+    var tr = tbdy.insertRow();
+    tr.innerHTML = "clusteers";
+    for (var i = 0; i < data.length; i++) {
+        var tr = tbdy.insertRow();
+        td = tr.insertCell();
+        tr.innerHTML = data[i].id;
+        tr.setAttribute("data-clusterID", data[i].id);
     }
-    tbl.appendChild(tbdy);
-    return tbl;
+    table.appendChild(tbdy);
+
+    for (var i = 0, row; row = table.rows[i]; i++) {
+        row.addEventListener("click", (e) => {
+            var clusterID = e.target.getAttribute("data-clusterid");
+            var demandID = data.find(c => c.id === parseInt(clusterID)).demands[0].id;
+            generateDemandsTable(clusterID, data, demandTable, serviceTable);
+            generateServicesTable(
+                clusterID,
+                demandID,
+                data, serviceTable);
+        });
+    }
 }
 
-function updateDemandsTable(clusterID, array , demandTable, serviceTable){
+function generateDemandsTable(clusterID, data, table, serviceTable) {
+    demands = data.find(c => c.id === parseInt(clusterID)).demands;
+    console.log("c ", clusterID);
+    table.innerHTML = "";
 
-    demands = array.find(x => x.id  === parseInt(clusterID)).demands;
-    console.log(clusterID);
-
-    demandTable.innerHTML = "";
-
-    demandTable.setAttribute('border', '1');
+    table.setAttribute('border', '1');
     var tbdy = document.createElement('tbody');
-    var tr  =  tbdy.insertRow();
+    var tr = tbdy.insertRow();
     tr.innerHTML = "demands";
     for (var i = 0; i < demands.length; i++) {
-        var tr  =  tbdy.insertRow();
-        tr.setAttribute("id", demands[i].id);
-        tr.innerHTML = demands[i].src + ", " + demands[i].dest;
-    }
-    demandTable.appendChild(tbdy);
+        var tr = tbdy.insertRow();
+        // tr.innerHTML = demands[i].src;
+        var tdData = tr.insertCell();
+        var tdRadioBtn = tr.insertCell();
+        tdData.innerHTML = demands[i].src;
+        tdRadioBtn.innerHTML = '<input type="radio" name="demand">';
+        tdData.setAttribute("data-clusterID", clusterID);
+        tdData.setAttribute("data-demandID", demands[i].id);
+        tdRadioBtn.firstChild.setAttribute("data-clusterID", clusterID);
+        tdRadioBtn.firstChild.setAttribute("data-demandID", demands[i].id);
+        tdData.addEventListener("click", (e) => console.log("fdfd"));
 
-    updateServicesTable(demands[0].id, demands, serviceTable);
+    }
+    table.appendChild(tbdy);
+
+    for (var i = 0, row; row = table.rows[i]; i++) {
+        row.addEventListener("click", (e) => {
+            var clusterID = e.target.getAttribute("data-clusterid");
+            var demandID = e.target.getAttribute("data-demandid");
+            generateServicesTable(
+                clusterID,
+                demandID,
+                data, serviceTable);
+        });
+    }
 }
 
-function updateServicesTable(demandID, array , serviceTable){
-    services = array.find(x => x.id  === parseInt(demandID)).services;
-    console.log(services);
-    serviceTable.innerHTML = "";
+function generateServicesTable(clusterID, demandID, data, table) {
+    demands = data.find(c => c.id === parseInt(clusterID)).demands;
+    services = demands.find(d => d.id === parseInt(demandID)).services;
+    console.log("c ", clusterID, "d", demandID);
+    table.innerHTML = "";
 
-    serviceTable.setAttribute('border', '1');
+    table.setAttribute('border', '1');
     var tbdy = document.createElement('tbody');
-    var tr  =  tbdy.insertRow();
+    var tr = tbdy.insertRow();
     tr.innerHTML = "sevices";
     for (var i = 0; i < services.length; i++) {
-        var tr  =  tbdy.insertRow();
-        tr.innerHTML = services[i].type;
+        var tr = tbdy.insertRow();
+        // tr.innerHTML = ;
+        tdData = tr.insertCell();
+        tdCheck = tr.insertCell();
+        tdData.innerHTML = services[i].type;
+        tdCheck.innerHTML = '<input type="checkbox" class="service-checkbox">';
+        tr.setAttribute("data-clusterID", clusterID);
+        tr.setAttribute("data-demandID", demandID);
+        tr.setAttribute("data-serviceID", services[i].id);
     }
-    serviceTable.appendChild(tbdy);
+    table.appendChild(tbdy);
+}
+
+function getSelectedServices(serviceTable, data){
+    checkedServices = [];
+    console.log("fefw");
+    serviceChecks = serviceTable.getElementsByClassName("service-checkbox");
+    for (var i=0; i<serviceChecks.length; i++){
+        if(serviceChecks[i].checked == true){
+            checkedServices += {
+                demandId: serviceTable.rows[i].getAttribute("data-demandID"),
+                serviceId: serviceTable.rows[i].getAttribute("data-serviceID")
+            }
+        }
+    }
+
+    return checkedServices;
+}
+
+
+// handling function for SelectNode button 
+function handleSelectNodeBtn(checkedServices){
+
+    myFeatureGroup.off();
+    nodeSelctMode = true;
+    
+    myFeatureGroup.on("click", e => handleSelectedNode(e, checkedServices))
+}
+
+
+// TODO
+// params:
+// e is the selected node
+// checked services is a json array of checked services 
+function handleSelectedNode(e, checkedServices){
+    console.log("dummy handling function");
 }
