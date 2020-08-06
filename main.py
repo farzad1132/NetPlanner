@@ -3066,26 +3066,26 @@ class Ui_MainWindow(object):
             LeftPanelId = UserData["PanelId"]
             #left_widget = Data["DemandPanel_" + str(LeftPanelId)].itemAt(0).widget()
             left_widget = self.Panels.PanelsWidgetDict[Source][LeftPanelId]
-            linevar = left_widget.Line
+            self.linevar = left_widget.Line
 
             if isinstance(left_widget, MP1H_L_Demand):
-                linevar.setStyleSheet(" QLabel{ image: url(:/line/line.png); border: 5px solid blue; }")
+                self.linevar.setStyleSheet(" QLabel{ image: url(:/line/line.png); border: 5px solid blue; }")
             
             elif isinstance(left_widget, TP1H_L_Demand):
-                linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); border: 5px solid blue;}")
+                self.linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); border: 5px solid blue;}")
             
             if PreItem is not None:
                 pre_UserData = PreItem.data(Qt.UserRole)
                 pre_LeftPanelId = pre_UserData["PanelId"]
                 #pre_left_widget = Data["DemandPanel_" + str(pre_LeftPanelId)].itemAt(0).widget()
                 pre_left_widget = self.Panels.PanelsWidgetDict[Source][pre_LeftPanelId]
-                pre_linevar = pre_left_widget.Line
+                self.pre_linevar = pre_left_widget.Line
 
                 if isinstance(pre_left_widget, MP1H_L_Demand):
-                    pre_linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
+                    self.pre_linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
                 
                 elif isinstance(pre_left_widget, TP1H_L_Demand):
-                    pre_linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
+                    self.pre_linevar.setStyleSheet(" QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
 
             if self.RWA_Success is True:
 
@@ -4280,39 +4280,7 @@ class Ui_MainWindow(object):
                     for i in range(16 - ClientLen):
                         ClientsCapacity.append(0)
 
-                # creating left panel of MP2X
-                DemandTabDataBase["Panels"][Source][PanelId] = Panels.MP2X_L(  ClientsCapacity= ClientsCapacity,
-                                                                        LinesCapacity= [LineCapacity_1, LineCapacity_2],
-                                                                        ServiceIdList= ServiceIdList,
-                                                                        DemandIdList= [DemandId for _ in range(16)],
-                                                                        LineIdList= list(Servicetuple),
-                                                                        Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].ServiceIdList),
-                                                                        Line_2_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].ServiceIdList),
-                                                                        Destination= Destination,
-                                                                        DualPanelsId= DualPanelsId)
-
-                # ** Dual **
-                DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = Panels.MP2X_L(  ClientsCapacity= ClientsCapacity,
-                                                                        LinesCapacity= [LineCapacity_1, LineCapacity_2],
-                                                                        ServiceIdList= ServiceIdList,
-                                                                        DemandIdList= [DemandId for _ in range(16)],
-                                                                        LineIdList= list(Servicetuple),
-                                                                        Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].ServiceIdList),
-                                                                        Line_2_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].ServiceIdList),
-                                                                        Destination= Source,
-                                                                        DualPanelsId= (PanelId, (str(int(PanelId) + 1))))
                 
-                # Creating Right Panel of MP2X
-                DemandTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = Panels.MP2X_R(LeftId= PanelId,
-                                                                                    Destination= Destination,
-                                                                                    DualPanelsId= DualPanelsId)
-
-                # ** Dual **
-                DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = Panels.MP2X_R(LeftId= DualPanelsId[0],
-                                                                                    Destination= Source,
-                                                                                    DualPanelsId= (PanelId, (str(int(PanelId) + 1))))
-
-
                 # creating Qlistwidgetitem item part
                 item_1 = QListWidgetItem("GroomOut10", self.groomout10_list)
                 UserData_1 = {"GroomOut10Id":Servicetuple[0], "Source":Source, "Destination":Destination, "Capacity":LineCapacity_1, "Type": "GroomOut10", "PanelId": PanelId, "DemandId": DemandId}
@@ -4422,6 +4390,22 @@ class Ui_MainWindow(object):
 
                 # ** Dual **
                 DemandTabDataBase["GroomOut10"][(Destination, Source)][Servicetuple[1]] = item_2_d
+
+                # creating left panel of MP2X
+                self.Panels.add_mp2x_widget(Id = PanelId,
+                                            Source= Source,
+                                            ClientsCapacity= ClientsCapacity,
+                                            LinesCapacity= [LineCapacity_1, LineCapacity_2],
+                                            ServiceIdList= ServiceIdList,
+                                            DemandIdList= [DemandId for _ in range(16)],
+                                            LineIdList= list(Servicetuple),
+                                            Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[0])].ServiceIdList),
+                                            Line_2_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, Servicetuple[1])].ServiceIdList),
+                                            Destination= Destination,
+                                            DualPanelsId= DualPanelsId)
+
+
+                
                 
         
         # Half MP2X Part
@@ -4445,36 +4429,7 @@ class Ui_MainWindow(object):
                 if ClientLen != 16:
                     for i in range(16 - ClientLen):
                         ClientsCapacity.append(0)
-                
-                # creating left panel of MP2X
-                DemandTabDataBase["Panels"][Source][PanelId] = Panels.MP2X_L(  ClientsCapacity= list(ClientsCapacity),
-                                                                        LinesCapacity= [LineCapacity, 0],
-                                                                        ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
-                                                                        DemandIdList= [DemandId for _ in range(16)],
-                                                                        LineIdList= [GroomOutId, None],
-                                                                        Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
-                                                                        Destination= Destination,
-                                                                        DualPanelsId= DualPanelsId)
 
-                # ** Dual **
-                DemandTabDataBase["Panels"][Destination][DualPanelsId[0]] = Panels.MP2X_L(  ClientsCapacity= list(ClientsCapacity),
-                                                                        LinesCapacity= [LineCapacity, 0],
-                                                                        ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
-                                                                        DemandIdList= [DemandId for _ in range(16)],
-                                                                        LineIdList= [GroomOutId, None],
-                                                                        Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
-                                                                        Destination= Source,
-                                                                        DualPanelsId= (PanelId, (str(int(PanelId) + 1))))
-                
-                # Creating Right Panel of MP2X
-                DemandTabDataBase["Panels"][Source][str(int(PanelId) + 1)] = Panels.MP2X_R(LeftId= PanelId,
-                                                                                    Destination= Destination,
-                                                                                    DualPanelsId= DualPanelsId)
-
-                # ** Dual **
-                DemandTabDataBase["Panels"][Destination][DualPanelsId[1]] = Panels.MP2X_R(LeftId= DualPanelsId[0],
-                                                                                    Destination= Source,
-                                                                                    DualPanelsId = (PanelId, (str(int(PanelId) + 1))) )
 
                 # creating Qlistwidgetitem item part
                 item = QListWidgetItem("GroomOut10", self.groomout10_list)
@@ -4530,6 +4485,22 @@ class Ui_MainWindow(object):
 
                 # ** Dual **
                 DemandTabDataBase["GroomOut10"][(Destination, Source)][GroomOutId] = item_d
+                
+                # creating left panel of MP2X
+                self.Panels.add_mp2x_widget(Id=PanelId,
+                                            Source= Source,
+                                            ClientsCapacity= list(ClientsCapacity),
+                                            LinesCapacity= [LineCapacity, 0],
+                                            ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
+                                            DemandIdList= [DemandId for _ in range(16)],
+                                            LineIdList= [GroomOutId, None],
+                                            Line_1_ServiceIdList= list(netobj.TrafficMatrix.GroomOut10Dict[(DemandId, GroomOutId)].ServiceIdList),
+                                            Line_2_ServiceIdList= None,
+                                            Destination= Destination,
+                                            DualPanelsId= DualPanelsId)
+
+
+                
 
     
     def generate_dual_panel_num(self, Destination):
@@ -4551,17 +4522,6 @@ class Ui_MainWindow(object):
                 return (str(i), str(i+1))
         
         return (str(MaxId + 1), str(MaxId + 2))
-
-        """ if len(IdList) == max(IdList):
-            MaxId = max(IdList)
-
-            if ((MaxId + 1) // 15) + 1 > DemandTabDataBase["Shelf_Count"][Destination]:
-                DemandTabDataBase["Shelf_Count"][Destination] = ((MaxId + 1) // 15) + 1
-            return (str(MaxId + 1), str(MaxId + 2))
-        else:
-            for i in range(1,max(IdList), 2):
-                if ( i in IdList ) is False:
-                    return (str(i), str(i+1)) """
 
     
     def fill_GroomingTabDataBase(self, netobj, RWA_Runtime):
@@ -4738,16 +4698,17 @@ class Ui_MainWindow(object):
 
         # creating new 
         self.create_new_demand_services(self.network)
-        
-        
+
         # filling Demand DataBase 
         self.fill_DemandTabDataBase(self.network)
-
+        
         # fill MP2X DataBase
         self.fill_DemandTabDataBase_MP2X(full_MP2X_Dict= full_mp2x_lines,
                                             half_MP2X_Dict= half_mp2x_lines,
                                             netobj= self.network)
-
+        
+        self.Panels.complete_all(["MP1H", "TP1H", "MP2X"])
+        
         """ # NOTE: start debugging
         print(f"Panels part of DemandTabDataBase: {DemandTabDataBase['Panels']}")
         # NOTE: end of debugging """

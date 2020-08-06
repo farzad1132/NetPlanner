@@ -325,7 +325,12 @@ class Panels:
             
             self.PanelsWidgetDict[Source][Id] = BLANK_Demand(Id, Source, Local_Destination, self)
 
+        
+
         self.PanelsHolderDict[Id].addWidget(self.PanelsWidgetDict[Source][Id])
+
+        if self.PanelsWidgetDict[Source][Id].isVisible() is False:
+            self.PanelsWidgetDict[Source][Id].setVisible(True)
 
 
     # NOTE: this method usage is in blank panel 
@@ -350,8 +355,12 @@ class Panels:
         x = self.PanelsHolderDict[Id].takeAt(0)
         if x is not None:
             panel_widget = x.widget()
+            #panel_widget.hide()
+            
             self.PanelsHolderDict[Id].removeWidget(panel_widget)
-            panel_widget.deleteLater()
+            #panel_widget.deleteLater()
+
+            panel_widget.hide()
 
     def add_widget_holder(self, Id, holder, Source, Destination, Name):
         self.PanelsHolderDict[Id] = holder
@@ -427,14 +436,15 @@ class Panels:
         self.PanelsWidgetDict[Source][uppernum] = MP1H_R_Demand(uppernum, Source, Destination, DualPanelsId)
         self.PanelsWidgetDict[Destination][DualPanelsId[1]] = MP1H_R_Demand(DualPanelsId[1], Destination, Source, (Id, uppernum))
 
-        panel = self.PanelsObjectDict[Source][Id]
-        for i in range(len(self.PanelsObjectDict[Source][Id].ClientsCapacity)):
+    def complete_MP1H(self, panel, widget, widget_dual, Source, Destination):
+        LightPathId = panel.LightPathId
+        for i in range(len(panel.ClientsCapacity)):
             
-            if self.PanelsObjectDict[Source][Id].ClientsCapacity[i] != 0:
+            if panel.ClientsCapacity[i] != 0:
                 # finding object of client customlabel
                 text = "Client" + str( i + 1 )
-                clientvar = getattr(self.PanelsWidgetDict[Source][Id], text)
-                clientvar_dual = getattr(self.PanelsWidgetDict[Destination][DualPanelsId[0]], text)
+                clientvar = getattr(widget, text)
+                clientvar_dual = getattr(widget_dual, text)
 
                 if clientvar.ClientNum % 2 == 0:
                     clientvar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
@@ -469,14 +479,36 @@ class Panels:
                 clientvar_dual.setAcceptDrops(False)
 
                 # adding tooltip to line port
-                linevar = getattr(self.PanelsWidgetDict[Source][Id], "Line")
-                linevar_dual = getattr(self.PanelsWidgetDict[Destination][DualPanelsId[0]], "Line")
+                linevar = getattr(widget, "Line")
+                linevar_dual = getattr(widget_dual, "Line")
 
                 linevar.setToolTip(DemandTabDataBase["Lightpathes"][(Source, Destination)][LightPathId].toolTip())
                 linevar_dual.setToolTip(DemandTabDataBase["Lightpathes"][(Destination, Source)][LightPathId].toolTip())
 
                 linevar.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
                 linevar_dual.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
+    
+    def complete_all(self, Name):
+        for name in Name:
+            if name == "MP1H":
+                cls = self.MP1H_L
+            elif name == "TP1H":
+                cls = self.TP1H_L
+            elif name == "MP2X":
+                cls = self.MP2X_L
+
+
+            for Source, obj in self.PanelsObjectDict.items():
+                for Id, panel in obj.items():
+                    if isinstance(panel, cls):
+                        Destination = panel.Destination
+                        DualId = panel.DualPanelsId[0]
+                        fun = getattr(self, 'complete_' + name)
+                        fun(panel= panel,
+                            widget= self.PanelsWidgetDict[Source][Id],
+                            widget_dual= self.PanelsWidgetDict[Destination][DualId],
+                            Source= Source,
+                            Destination= Destination)
     
     def add_tp1h_widget(self, Id, Source, DemandId, ServiceId, Line, LightPathId, Destination, DualPanelsId):
         uppernum = self.get_uppernum(Id)
@@ -509,11 +541,10 @@ class Panels:
         self.PanelsWidgetDict[Source][uppernum] = TP1H_R_Demand(uppernum, Source, Destination, DualPanelsId)
         self.PanelsWidgetDict[Destination][DualPanelsId[1]] = TP1H_R_Demand(DualPanelsId[1], Destination, Source, (Id, uppernum))
 
-        # finding panel widget
-        widget = self.PanelsWidgetDict[Source][Id]
-        widget_dual = self.PanelsWidgetDict[Destination][DualPanelsId[0]]
-
-        panel = self.PanelsObjectDict[Source][Id]
+        
+    
+    def complete_TP1H(self, panel, widget, widget_dual, Source, Destination):
+        LightPathId = panel.LightPathId
 
         if panel.Line == "100GE":
 
@@ -551,6 +582,99 @@ class Panels:
 
             LineVar_dual.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
 
+    def add_mp2x_widget(self, Id, Source, ClientsCapacity, LinesCapacity, ServiceIdList, DemandIdList, LineIdList, Line_1_ServiceIdList, Destination, DualPanelsId, Line_2_ServiceIdList= None):
+        uppernum = self.get_uppernum(Id)
+
+        self.PanelsObjectDict[Source][Id] = self.MP2X_L(ClientsCapacity= ClientsCapacity,
+                                                        LinesCapacity= LinesCapacity,
+                                                        ServiceIdList= ServiceIdList,
+                                                        DemandIdList= DemandIdList,
+                                                        LineIdList= LineIdList,
+                                                        Line_1_ServiceIdList= Line_1_ServiceIdList,
+                                                        Line_2_ServiceIdList= Line_2_ServiceIdList,
+                                                        Destination= Destination,
+                                                        DualPanelsId= DualPanelsId)
+        
+
+        self.PanelsObjectDict[Destination][DualPanelsId[0]] = self.MP2X_L(  ClientsCapacity= ClientsCapacity,
+                                                                            LinesCapacity= LinesCapacity,
+                                                                            ServiceIdList= ServiceIdList,
+                                                                            DemandIdList= DemandIdList,
+                                                                            LineIdList= LineIdList,
+                                                                            Line_1_ServiceIdList= Line_1_ServiceIdList,
+                                                                            Line_2_ServiceIdList= Line_2_ServiceIdList,
+                                                                            Destination= Source,
+                                                                            DualPanelsId= (Id, uppernum))
+        
+        self.PanelsObjectDict[Source][uppernum] = self.MP2X_R(LeftId= Id,
+                                                        Destination= Destination,
+                                                        DualPanelsId= DualPanelsId)
+
+        self.PanelsObjectDict[Destination][DualPanelsId[1]] = self.MP2X_R(  LeftId= DualPanelsId[0],
+                                                                            Destination= Source,
+                                                                            DualPanelsId= (Id, uppernum))
+
+        
+        self.PanelsWidgetDict[Source][Id] = MP2X_L_Demand(Id, Source, Destination, DualPanelsId, self)
+        self.PanelsWidgetDict[Destination][DualPanelsId[0]] = MP2X_L_Demand(DualPanelsId[0], Destination, Source, (Id, uppernum), self)
+
+        self.PanelsWidgetDict[Source][uppernum] = MP2X_R_Demand(uppernum, Source, Destination, DualPanelsId)
+        self.PanelsWidgetDict[Destination][DualPanelsId[1]] = MP2X_R_Demand(DualPanelsId[1], Destination, Source, (Id, uppernum))
+
+    def complete_MP2X(self, panel, widget, widget_dual, Source, Destination):
+
+        GroomOutId_1, GroomOutId_2 = panel.LineIdList
+
+        for i in range(len(panel.ClientsCapacity)):
+            if panel.ClientsCapacity[i] != 0:
+
+                # finding object of client customlabel
+                text = "CLIENT" + str( i + 1 )
+                clientvar = getattr(widget, text)
+                clientvar_dual = getattr(widget_dual, text)
+
+                if clientvar.ClientNum % 2 == 0:
+                    clientvar.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                    clientvar_dual.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                else:
+                    clientvar.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
+                    clientvar_dual.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
+                
+                clientvar.setToolTip(DemandTabDataBase["Services_static"][Source][(panel.DemandIdList[i],panel.ServiceIdList[i])].toolTip())
+                clientvar_dual.setToolTip(DemandTabDataBase["Services_static"][Destination][(panel.DemandIdList[i],panel.ServiceIdList[i])].toolTip())
+
+                clientvar.servicetype = panel.ClientsCapacity[i]
+                clientvar.nodename = Source
+                clientvar.Destination = Destination
+                clientvar.ids = [panel.DemandIdList[i], panel.ServiceIdList[i]]
+                clientvar.setAcceptDrops(False)
+
+                clientvar_dual.servicetype = panel.ClientsCapacity[i]
+                clientvar_dual.nodename = Destination
+                clientvar_dual.Destination = Source
+                clientvar_dual.ids = [panel.DemandIdList[i], panel.ServiceIdList[i]]
+                clientvar_dual.setAcceptDrops(False)
+
+                # adding tooltip to line port
+                linevar_1 = getattr(widget, "LINE1")
+                linevar_1_dual = getattr(widget_dual, "LINE1")
+
+                linevar_1.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][GroomOutId_1].toolTip())
+                linevar_1_dual.setToolTip(DemandTabDataBase["GroomOut10"][(Destination, Source)][GroomOutId_1].toolTip())
+
+                linevar_1.setStyleSheet("QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); }")
+                linevar_1_dual.setStyleSheet("QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); }")
+
+                if GroomOutId_2 is not None:
+                    linevar_2 = getattr(widget, "LINE2")
+                    linevar_2.setToolTip(DemandTabDataBase["GroomOut10"][(Source, Destination)][GroomOutId_2].toolTip())
+
+                    linevar_2.setStyleSheet("QLabel{ image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); }")
+
+                    linevar_2_dual = getattr(widget_dual, "LINE2")
+                    linevar_2_dual.setToolTip(DemandTabDataBase["GroomOut10"][(Destination, Source)][GroomOutId_2].toolTip())
+
+                    linevar_2_dual.setStyleSheet("QLabel{ image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); }")
 
 
     # NOTE: Start of Class Definitions      
