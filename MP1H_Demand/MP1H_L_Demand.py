@@ -35,6 +35,7 @@ class MP1H_L_Demand(QtWidgets.QWidget):
         super(MP1H_L_Demand, self).__init__()
 
         #self.resize(118, 633)
+        self.setMinimumSize(116,200)
 
         self.id = str(Panel_ID)
         # nodename == Source in Demand Tab

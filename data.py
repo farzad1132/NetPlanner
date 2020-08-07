@@ -167,7 +167,7 @@ DemandTabDataBase["Lightpathes"] = {}
 #   QlistWidgetItem:
 #   text: LightPath Type
 #   data: { "LightPathId": <LightPathId>, "Capacity": <Capacity> , "Type": <Type>, "Source": <SourceName>, "Destination": <DestinationName>, "PanelId": <PanelId>}
-DemandTabDataBase["Panels"] = {}
+#DemandTabDataBase["Panels"] = {}
 # format:
 #       { Tehran:{1: MP2X, 2: MP1H, ..} , Karaj:{}, ...}
 
@@ -282,12 +282,14 @@ class Panels:
         
 
         if data_class_r is not None:
-            self.PanelsObjectDict[Source][uppernum] = data_class_r(Destination= Destination,
-                                                        DualPanelsId= DualPanelsNum)
+            self.PanelsObjectDict[Source][uppernum] = data_class_r( LeftId= Id,
+                                                                    Destination= Destination,
+                                                                    DualPanelsId= DualPanelsNum)
             
             # dual
-            self.PanelsObjectDict[Destination][DualPanelsNum[1]] = data_class_r(Destination= Source,
-                                                            DualPanelsId= (Id, uppernum))
+            self.PanelsObjectDict[Destination][DualPanelsNum[1]] = data_class_r(LeftId= DualPanelsNum[0],
+                                                                                Destination= Source,
+                                                                                DualPanelsId= (Id, uppernum))
         
         
         
@@ -312,10 +314,17 @@ class Panels:
         del self.PanelsObjectDict[Destination][DualPanelsId[0]]
         del self.PanelsObjectDict[Destination][DualPanelsId[1]]
 
-        self.add_panel_data(Id, Source, Destination, data_class_l, data_class_l)
+        del self.PanelsWidgetDict[Source][Id]
+        del self.PanelsWidgetDict[Source][uppernum]
 
-        self.PanelsWidgetDict[Id].addWidget(widget_class_l(Id, Source, Destination, self))
-        self.PanelsWidgetDict[uppernum].addWidget(widget_class_l(uppernum, Source, Destination, self))
+        del self.PanelsWidgetDict[Destination][DualPanelsId[0]]
+        del self.PanelsWidgetDict[Destination][DualPanelsId[1]]
+
+
+        self.add_panel_data(Id, Source, Destination, data_class_l)
+
+        self.PanelsHolderDict[Id].addWidget(widget_class_l(Id, Source, Destination, self))
+        self.PanelsHolderDict[uppernum].addWidget(widget_class_l(uppernum, Source, Destination, self))
     
     def switch_widget(self, Id, Source, Local_Destination):
 
@@ -339,18 +348,23 @@ class Panels:
 
         self.add_panel_data(Id, Source, Destination, data_class_l, data_class_r)
 
+        DualPanelsId = self.PanelsObjectDict[Source][Id].DualPanelsId
+
         uppernum = self.get_uppernum(Id)
 
         self.del_old_widget(Id)
         self.del_old_widget(uppernum)
 
-        self.PanelsWidgetDict[Source][Id] = widget_class_l(Id, Source, Destination, self)
-        self.PanelsWidgetDict[Source][uppernum] = widget_class_r(uppernum, Source, Destination)
+        self.PanelsWidgetDict[Source][Id] = widget_class_l(Id, Source, Destination, DualPanelsId, self)
+        self.PanelsWidgetDict[Source][uppernum] = widget_class_r(uppernum, Source, Destination, DualPanelsId)
+
+        self.PanelsWidgetDict[Destination][DualPanelsId[0]] = widget_class_l(DualPanelsId[0], Destination, Source, (Id, uppernum), self)
+        self.PanelsWidgetDict[Destination][DualPanelsId[1]] = widget_class_r(DualPanelsId[1], Destination, Source, (Id, uppernum))
+
 
         self.PanelsHolderDict[Id].addWidget(self.PanelsWidgetDict[Source][Id])
-        self.PanelsHolderDict[uppernum].addWidget(self.PanelsWidgetDict[Source][uppernum])    
+        self.PanelsHolderDict[uppernum].addWidget(self.PanelsWidgetDict[Source][uppernum])   
 
-    
     def del_old_widget(self, Id):
         x = self.PanelsHolderDict[Id].takeAt(0)
         if x is not None:
@@ -377,6 +391,12 @@ class Panels:
         
         elif Name == "MP1H":
             return self.MP1H_L, self.MP1H_R, MP1H_L_Demand, MP1H_R_Demand
+        
+        elif Name == "MP2X":
+            return self.MP2X_L, self.MP2X_R, MP2X_L_Demand, MP2X_R_Demand
+        
+        elif Name == "TP1H":
+            return self.TP1H_L, self.TP1H_R, TP1H_L_Demand, TP1H_R_Demand
     
     def get_uppernum(self, Id):
         return str(int(Id) + 1)

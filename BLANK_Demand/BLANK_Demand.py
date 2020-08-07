@@ -14,7 +14,7 @@ from TP1H_Demand.TP1H_L_Demand import TP1H_L_Demand
 from TP1H_Demand.TP1H_R_Demand import TP1H_R_Demand
 from BLANK_Demand import BLANK_SOURCE
 
-class BLANK_Demand(QtWidgets.QWidget):
+class BLANK_Demand(QtWidgets.QMainWindow):
 
     def __init__(self, Panel_ID, nodename, Destination, Panels):
         super(BLANK_Demand, self).__init__()
@@ -28,15 +28,31 @@ class BLANK_Demand(QtWidgets.QWidget):
         self.uppernum = str(int(self.id) + 1)
         self.Panels = Panels
 
-        self.setStyleSheet("background-color: rgb(0, 0, 0);")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self)
-        self.horizontalLayout.setContentsMargins(4, 4, 4, 4)
+        #self.setEnabled(False)
+        #self.resize(178, 705)
+        self.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.setIconSize(QtCore.QSize(0, 0))
+        self.setAnimated(False)
+        self.centralwidget = QtWidgets.QWidget(self)
+        self.centralwidget.setObjectName("centralwidget")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.BLANK_Demand_1 = QtWidgets.QLabel(self)
-        self.BLANK_Demand_1.setStyleSheet(" QLabel{border-image: url(:/BLANK_DEMAND_SOURCE/BLANK.png);} ")
-        self.horizontalLayout.addWidget(self.BLANK_Demand_1)
-        self.BLANK_Demand_1.setText("")
-        self.BLANK_Demand_1.setObjectName("BLANK_Demand_1")
+        self.widget = QtWidgets.QWidget(self.centralwidget)
+        self.widget.setStyleSheet("border: 2px solid black;\n" 
+"")
+        self.horizontalLayout.addWidget(self.widget)
+        self.widget.setObjectName("widget")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.widget)
+        self.horizontalLayout_2.setContentsMargins(4, 4, 4, 4)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.label = QtWidgets.QLabel(self.widget)
+        self.label.setStyleSheet("border-image: url(:/BLANK_DEMAND_SOURCE/BLANK.png);")
+        self.label.setText("")
+        self.label.setObjectName("label")
+        self.horizontalLayout_2.addWidget(self.label)
+        self.horizontalLayout.addWidget(self.widget)
+        self.setCentralWidget(self.centralwidget)
 
         self.setAcceptDrops(True)
 
@@ -53,9 +69,10 @@ class BLANK_Demand(QtWidgets.QWidget):
 
         if text in AcceptedPanels:
 
-            if DoublePanels.count(text) != 0:
-                #if Data["Nodes"][self.nodename]["Panels"].get(uppernum,0) == 0:
-                if DemandTabDataBase["Panels"][self.nodename].get(self.uppernum, 0) == 0:
+            # checking if next (right) slot if free or not
+            if text in DoublePanels:
+                panel = self.Panels.PanelsObjectDict.get(self.uppernum)
+                if isinstance(panel, self.Panels.BLANK) or panel is None:
                     event.accept()
             else:
                 event.accept()
@@ -76,97 +93,14 @@ class BLANK_Demand(QtWidgets.QWidget):
 
 
         self.Panels.add_widget(self.id, self.nodename, self.Destination, text)
-
-
-        """ if text == "SC":
-            #Data["DemandPanel_" + str(self.id)].addWidget(SC_Demand(self.id, self.nodename))
-            DemandTabDataBase["Panels"][self.nodename][self.id] = SC()
-        elif text == "MP2X":
-            Data["DemandPanel_" + str(self.id)].addWidget(MP2X_L_Demand(self.id , self.nodename, self.Destination, DualPanelsId))
-            DemandTabDataBase["Panels"][self.nodename][self.id] = MP2X_L(Destination= self.Destination, DualPanelsId= DualPanelsId)
-
-            # ** Dual **
-            DemandTabDataBase["Panels"][self.Destination][DualPanelsId[0]] = MP2X_L(Destination= self.nodename, DualPanelsId= (self.id, self.uppernum))
-
-            # removing old right panel
-            panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
-            Data["DemandPanel_" + str(self.uppernum)].removeWidget(panel_widget)
-            panel_widget.deleteLater()
-
-            Data["DemandPanel_" + self.uppernum].addWidget(MP2X_R_Demand(self.id, self.nodename, self.Destination, DualPanelsId))
-            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP2X_R(self.uppernum, self.Destination, DualPanelsId)
-
-            # ** Dual **
-            DemandTabDataBase["Panels"][self.Destination][DualPanelsId[1]] = MP2X_R(DualPanelsId[1], self.nodename, DualPanelsId= (self.id, self.uppernum))
-
-
-        elif text == "MP1H":
-            Data["DemandPanel_" + str(self.id)].addWidget(MP1H_L_Demand(self.id , self.nodename, self.Destination, DualPanelsId))
-            DemandTabDataBase["Panels"][self.nodename][self.id] = MP1H_L(Destination= self.Destination, DualPanelsId= DualPanelsId)
-
-            # ** Dual **
-            DemandTabDataBase["Panels"][self.Destination][DualPanelsId[0]] = MP1H_L(Destination= self.nodename, DualPanelsId= (self.id, self.uppernum))
-
-            # removing old right panel
-            panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
-            Data["DemandPanel_" + str(self.uppernum)].removeWidget(panel_widget)
-            panel_widget.deleteLater()
-
-            Data["DemandPanel_" + self.uppernum].addWidget(MP1H_R_Demand(self.id, self.nodename, self.Destination, DualPanelsId))
-            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = MP1H_R(self.uppernum, self.Destination, DualPanelsId)
-
-            # ** Dual **
-            DemandTabDataBase["Panels"][self.Destination][DualPanelsId[1]] = MP1H_R(DualPanelsId[1], self.nodename, (self.id, self.uppernum))
-        
-        elif text == "TP1H":
-            Data["DemandPanel_" + str(self.id)].addWidget(TP1H_L_Demand(self.id , self.nodename, self.Destination, DualPanelsId))
-            DemandTabDataBase["Panels"][self.nodename][self.id] = TP1H_L(Destination= self.Destination, DualPanelsId= DualPanelsId)
-
-            # ** Dual **
-            #Data["DemandPanel_" + DualPanelsId[0]].addWidget(TP1H_L_Demand(DualPanelsId[0] , self.Destination, self.nodename, (self.id, self.uppernum)))
-            DemandTabDataBase["Panels"][self.Destination][DualPanelsId[0]] = TP1H_L(Destination= self.nodename, DualPanelsId= (self.id, self.uppernum))
-
-            # removing old right panel
-            panel_widget = Data["DemandPanel_" + str(self.uppernum)].takeAt(0).widget()
-            Data["DemandPanel_" + str(self.uppernum)].removeWidget(panel_widget)
-            panel_widget.deleteLater()
-
-
-            Data["DemandPanel_" + self.uppernum].addWidget(TP1H_R_Demand(self.id, self.nodename, self.Destination, DualPanelsId))
-            DemandTabDataBase["Panels"][self.nodename][self.uppernum] = TP1H_R(self.uppernum, self.Destination, DualPanelsId)
-
-            # ** Dual **
-            #Data["DemandPanel_" + DualPanelsId[1]].addWidget(TP1H_R_Demand(DualPanelsId[1], self.Destination, self.nodename))
-            DemandTabDataBase["Panels"][self.Destination][DualPanelsId[1]] = TP1H_R(DualPanelsId[1], self.nodename, DualPanelsId) """
         
         super(BLANK_Demand, self).dropEvent(event)
-
-    
-    """ def generate_dual_panel_num(self, Destination):
-
-        IdList = list(DemandTabDataBase["Panels"][Destination].keys())
-            
-        # if shelf is empty this method must return 1 in ## string ##
-        if not IdList:
-            return ("1", "2")
-        IdList = list(map(lambda x : int(x), IdList))
-
-        MaxId = max(IdList)
-
-        if ((MaxId + 1) // 14) + 1 > DemandTabDataBase["Shelf_Count"][Destination]:
-                DemandTabDataBase["Shelf_Count"][Destination] = ((MaxId + 1) // 14) + 1
-
-        for i in range(1, +1):
-            if i not in IdList and (i+1) not in IdList:
-                return (str(i), str(i+1))
-        
-        return (str(MaxId + 1), str(MaxId + 2)) """
 
 
 
 if __name__ == "__main__":
 
     app = QtWidgets.QApplication([])
-    window = BLANK_Demand(1,2,3)
+    window = BLANK_Demand(1,2,3,4)
     window.show()
     sys.exit(app.exec_())

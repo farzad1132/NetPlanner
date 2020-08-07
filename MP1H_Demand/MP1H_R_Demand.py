@@ -14,7 +14,8 @@ class MP1H_R_Demand(QtWidgets.QWidget):
     def __init__(self, Panel_ID, nodename, Destination, DualPanelsId):
         super(MP1H_R_Demand, self).__init__()
 
-        self.resize(94, 455)
+        #self.resize(94, 455)
+        self.setMinimumSize(116,200)
 
         self.id = str(Panel_ID)
         # nodename == Source in Demand Tab
