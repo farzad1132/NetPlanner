@@ -10,7 +10,7 @@ var MapVar = L.map(
         center: [35.6892, 51.389],
         crs: L.CRS.EPSG3857,
         zoom: 6,
-        zoomControl: true,
+        zoomControl: false,
         preferCanvas: false,
     }
 );
