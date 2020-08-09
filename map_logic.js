@@ -1469,6 +1469,53 @@ var dummyClustersData = [
     }
 ];
 
+// Structure:
+/* 
+
+dummy = {<Cluster Id>: { <Demand Id> : {
+                                        Source: <Source Name>,
+                                        Destination: <Destination Name>,
+                                        Services: {
+                                            <Service Id>: <Type>
+                                            ...
+                                            ...
+                                        }
+                        ...
+}}}
+
+An Example with above Structure:
+c_<int>: cluster id
+d_<int>: demand id
+s_<int>: service id
+
+NOTE: id's in below json is not real ( it's just for showing structure )
+*/
+var mid_grooming_dummy_data_2 = {c_1: {d_1:{
+                                            Source: "Tehran",
+                                            Destination: "Qom",
+                                            Services: {
+                                                s_1: "100GE",
+                                                s_2: "STM_64",
+                                                s_3: "FE"
+                                            }
+                                            },
+                                        d_2: {
+                                            Source: "Demavend",
+                                            Destination: "Shiraz",
+                                            Services: {
+                                                s_4: "10GE"
+                                            }
+                                            }
+                                        },
+                                c_2: {d_3:  {
+                                            Source: "Tehran",
+                                            Destination: "Shiraz",
+                                            Services: {
+                                                s_5: "10GE"
+                                                    }
+                                            }  
+                                }};        
+
 // btn is directly loaded in map
 var tablesBtn = document.createElement("button");
 tablesBtn.innerHTML = "Load Tables"
