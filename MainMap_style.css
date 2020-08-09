@@ -128,3 +128,24 @@ map util styles
     display: inline-block;
     margin-left: 10px;
 }
+
+
+/* clusters panel styles */
+
+.ui-table{
+    background-color: white;
+    float:left;
+    margin-left: 4px;
+    border: 1px solid;
+}
+
+.wrap {
+    display: table;
+    width: 100%;
+    height: 100%; /* need to set height for this to work in Chrome */
+  }
+.cell-wrap {
+    display: table-cell;
+    vertical-align: top;
+    height: 100%;
+}

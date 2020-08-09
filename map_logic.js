@@ -1491,21 +1491,34 @@ takes an array of clusters as input
 var nodeSelctMode = false;
 function generateUIPanels(clustersData) {
 
-
-
     var div = document.createElement("div");
     div.setAttribute("id", "cluster-panel");
+    
+    var tableWrapper = document.createElement("table");
+    tableWrapper.setAttribute("class", "wrap");
+
+    var clusterDiv = document.createElement("div");
+    clusterDiv.setAttribute("id", "cluster-panel");
 
     var clusterTable = document.createElement('table');
     var demandTable = document.createElement('table');
     var serviceTable = document.createElement('table');
 
+    tableWrapper.appendChild(demandTable);
+    tableWrapper.appendChild(serviceTable);
+
+    clusterTable.setAttribute("class", "ui-table");
+    demandTable.setAttribute("class", "ui-table  cell-wrap");
+    serviceTable.setAttribute("class", "ui-table  cell-wrap");
+
     var selectNodeBtn = document.createElement("button");
+    selectNodeBtn.setAttribute("class", "mainmap-util-btn")
     selectNodeBtn.innerHTML = "Select Node";
     selectNodeBtn.addEventListener("click", e => 
         handleSelectNodeBtn(getSelectedServices(serviceTable, dummyClustersData))
     );
     var selectNodeOffBtn = document.createElement("button");
+    selectNodeOffBtn.setAttribute("class", "mainmap-util-btn")
     selectNodeOffBtn.innerHTML = "Cancel Select Node";
     selectNodeOffBtn.addEventListener("click", e => {
         myFeatureGroup.off();
@@ -1521,12 +1534,17 @@ function generateUIPanels(clustersData) {
 
 
     var menu = L.control({ position: 'bottomleft' });
+    var clusterMenu = L.control({position: 'topleft'});
+
+    clusterMenu.onAdd = function (map) {
+        clusterDiv.appendChild(clusterTable);
+        return clusterDiv;
+    };
 
     menu.onAdd = function (map) {
 
-        div.appendChild(clusterTable);
-        div.appendChild(demandTable);
-        div.appendChild(serviceTable);
+        
+        div.appendChild(tableWrapper);
         div.appendChild(selectNodeBtn);
         div.appendChild(selectNodeOffBtn);
 
@@ -1534,6 +1552,7 @@ function generateUIPanels(clustersData) {
     };
 
     menu.addTo(MapVar);
+    clusterMenu.addTo(MapVar);
 
     //returns updated clusterData
 
@@ -1543,10 +1562,9 @@ function generateUIPanels(clustersData) {
 function generateClustersTable(data, table, demandTable, serviceTable ) {
     table.innerHTML = "";
 
-    table.setAttribute('border', '1');
     var tbdy = document.createElement('tbody');
     var tr = tbdy.insertRow();
-    tr.innerHTML = "clusteers";
+    tr.innerHTML = "Clusters";
     for (var i = 0; i < data.length; i++) {
         var tr = tbdy.insertRow();
         td = tr.insertCell();
@@ -1570,16 +1588,13 @@ function generateClustersTable(data, table, demandTable, serviceTable ) {
 
 function generateDemandsTable(clusterID, data, table, serviceTable) {
     demands = data.find(c => c.id === parseInt(clusterID)).demands;
-    console.log("c ", clusterID);
     table.innerHTML = "";
 
-    table.setAttribute('border', '1');
     var tbdy = document.createElement('tbody');
     var tr = tbdy.insertRow();
-    tr.innerHTML = "demands";
+    tr.innerHTML = "Demands";
     for (var i = 0; i < demands.length; i++) {
         var tr = tbdy.insertRow();
-        // tr.innerHTML = demands[i].src;
         var tdData = tr.insertCell();
         var tdRadioBtn = tr.insertCell();
         tdData.innerHTML = demands[i].src;
@@ -1608,13 +1623,11 @@ function generateDemandsTable(clusterID, data, table, serviceTable) {
 function generateServicesTable(clusterID, demandID, data, table) {
     demands = data.find(c => c.id === parseInt(clusterID)).demands;
     services = demands.find(d => d.id === parseInt(demandID)).services;
-    console.log("c ", clusterID, "d", demandID);
     table.innerHTML = "";
 
-    table.setAttribute('border', '1');
     var tbdy = document.createElement('tbody');
     var tr = tbdy.insertRow();
-    tr.innerHTML = "sevices";
+    tr.innerHTML = "Services";
     for (var i = 0; i < services.length; i++) {
         var tr = tbdy.insertRow();
         // tr.innerHTML = ;
@@ -1631,7 +1644,6 @@ function generateServicesTable(clusterID, demandID, data, table) {
 
 function getSelectedServices(serviceTable, data){
     checkedServices = [];
-    console.log("fefw");
     serviceChecks = serviceTable.getElementsByClassName("service-checkbox");
     for (var i=0; i<serviceChecks.length; i++){
         if(serviceChecks[i].checked == true){
