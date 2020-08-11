@@ -60,6 +60,8 @@ class BLANK_Demand(QtWidgets.QMainWindow):
         AcceptedPanels = ["MP2X", "MP1H", "TP1H"]
 
         
+
+        
         #TODO: update this
         DoublePanels = ["MP2D","MP2X","TPAX","MPBD","MPAD","RG1H", "MP1H", "TP1H"]
 
@@ -68,6 +70,8 @@ class BLANK_Demand(QtWidgets.QMainWindow):
         text = model.item(0,0).text()
 
         if text in AcceptedPanels:
+            # updateing Destination
+            self.Destination = Data["ui"].Demand_Destination_combobox.currentText()
 
             # checking if next (right) slot if free or not
             if text in DoublePanels:
