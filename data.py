@@ -260,7 +260,7 @@ class Panels:
     
 
     # NOTE: this method adds a panel object to PanelsObjectDict (database)
-    def add_panel_data(self, Id, Source, Destination, data_class_l, data_class_r = None):
+    def add_panel_data(self, Id, Source, Destination, data_class_l, data_class_r = None, dual= True):
 
         DualPanelsNum = self.calculate_dual_num(Destination)
         uppernum = self.get_uppernum(Id)
@@ -275,9 +275,10 @@ class Panels:
             self.PanelsObjectDict[Source][Id] = data_class_l(Destination= Destination,
                                                         DualPanelsId= DualPanelsNum)
             
-            # dual
-            self.PanelsObjectDict[Destination][DualPanelsNum[0]] = data_class_l(Destination= Source,
-                                                            DualPanelsId= (Id, uppernum))
+            if dual is True:
+                # dual
+                self.PanelsObjectDict[Destination][DualPanelsNum[0]] = data_class_l(Destination= Source,
+                                                                DualPanelsId= (Id, uppernum))
         
         
 
@@ -286,10 +287,11 @@ class Panels:
                                                                     Destination= Destination,
                                                                     DualPanelsId= DualPanelsNum)
             
-            # dual
-            self.PanelsObjectDict[Destination][DualPanelsNum[1]] = data_class_r(LeftId= DualPanelsNum[0],
-                                                                                Destination= Source,
-                                                                                DualPanelsId= (Id, uppernum))
+            if dual is True:
+                # dual
+                self.PanelsObjectDict[Destination][DualPanelsNum[1]] = data_class_r(LeftId= DualPanelsNum[0],
+                                                                                    Destination= Source,
+                                                                                    DualPanelsId= (Id, uppernum))
         
         
         
@@ -363,7 +365,18 @@ class Panels:
 
 
         self.PanelsHolderDict[Id].addWidget(self.PanelsWidgetDict[Source][Id])
-        self.PanelsHolderDict[uppernum].addWidget(self.PanelsWidgetDict[Source][uppernum])   
+        self.PanelsHolderDict[uppernum].addWidget(self.PanelsWidgetDict[Source][uppernum])
+
+    def add_dual_widget(self, Id, Source, Destination, DualPanelsId, Name):
+
+        data_class_l, data_class_r, widget_class_l, widget_class_r = self.get_panels_class(Name)
+        self.add_panel_data(Id, Source, Destination, data_class_l, data_class_r, dual=False)
+    
+        uppernum = self.get_uppernum(Id)
+
+        self.PanelsWidgetDict[Source][Id] = widget_class_l(Id, Source, Destination, DualPanelsId, self)
+        self.PanelsWidgetDict[Source][uppernum] = widget_class_r(uppernum, Source, Destination, DualPanelsId)
+
 
     def del_old_widget(self, Id):
         x = self.PanelsHolderDict[Id].takeAt(0)
@@ -379,11 +392,6 @@ class Panels:
     def add_widget_holder(self, Id, holder, Source, Destination, Name):
         self.PanelsHolderDict[Id] = holder
 
-        """ if Name == "BLANK":
-            data_class_l, _ = self.get_panels_class("BLANK")
-            self.add_panel_data(Id, Source, Destination, data_class_l)
-            self.PanelsWidgetDict[Source][Id] = BLANK_Demand(str(Id), Source, Destination, self)
-            self.PanelsHolderDict[Id].addWidget(self.PanelsWidgetDict[Source][Id]) """
 
     def get_panels_class(self, Name):
         if Name == "BLANK":

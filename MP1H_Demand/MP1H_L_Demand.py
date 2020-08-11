@@ -360,6 +360,13 @@ class customlabel(QLabel):
                     self.Destination = self.parent.Destination
 
                 # NOTE: in __init__ dual panel does not exist so we have to put it here
+                if self.DualPanelsId[0] not in self.Panels.PanelsWidgetDict[self.Destination]:
+                    self.Panels.add_dual_widget(Id= self.DualPanelsId[0],
+                                                Source= self.Destination,
+                                                Destination= self.nodename,
+                                                DualPanelsId= (self.id, self.parent.uppernum),
+                                                Name= "MP1H")
+
                 self.DualClient = getattr(self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]], "Client" + str(int(self.ClientNum) + 1))
 
                 if servicetype == "GroomOut10":

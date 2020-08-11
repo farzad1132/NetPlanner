@@ -3337,7 +3337,7 @@ class Ui_MainWindow(object):
                 for PropNum in range(0,len(SubHeaders[i])):
                     Prop = SubHeaders[i][PropNum]
                     if PropNum == 0:
-                        ServiceCount += int(Data[service]["DataSection"][Prop].get(Row, 0))
+                        ServiceCount += int(float(Data[service]["DataSection"][Prop].get(Row, 0)))
                         PropertyDict[Prop] = ServiceCount
                     else:
                         PropertyDict[Prop] = Data[service]["DataSection"][Prop].get(Row, None)

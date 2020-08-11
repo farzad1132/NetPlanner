@@ -28,7 +28,7 @@ class TP1H_L_Demand(QtWidgets.QWidget):
     def __init__(self, Panel_ID, nodename, Destination, DualPanelsId, Panels):
         super(TP1H_L_Demand, self).__init__()
 
-        #self.resize(94, 511)
+        self.setMinimumSize(116,200)
 
         self.id = str(Panel_ID)
         # nodename == Source in Demand Tab
@@ -254,6 +254,7 @@ class customlabel(QLabel):
 
         self.DualPanelsId = DualPanelsId
         self.Panels = Panels
+        self.parent = parent
     
     def dragEnterEvent(self, event):
         e = event.mimeData()
@@ -268,9 +269,23 @@ class customlabel(QLabel):
         servicetype = dragtext.strip()
 
         if servicetype in self.allowedservices:
+
+            # updating Destination is socket is active( this method gets executed only when drop is enabled )
+            self.Destination = Data["ui"].Demand_Destination_combobox.currentText()
+
+            if self.DualPanelsId[0] not in self.Panels.PanelsWidgetDict[self.Destination]:
+                self.Panels.add_dual_widget(Id= self.DualPanelsId[0],
+                                            Source= self.Destination,
+                                            Destination= self.nodename,
+                                            DualPanelsId= (self.id, self.uppernum),
+                                            Name= "TP1H")
+
+            self.DualClient = getattr(self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]], "Client")
+
             if DemandTabDataBase["Services"][(self.nodename, self.Destination)].get((UserData["DemandId"], UserData["ServiceId"])) == 0:
             
                 self.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
+                self.DualClient.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
                 event.accept()
 
         super(customlabel,self).dragEnterEvent(event)
@@ -278,6 +293,7 @@ class customlabel(QLabel):
 
     def dragLeaveEvent(self, event):
         self.setStyleSheet("image:  url(:/Client/TP1H_CLIENT.png);")
+        self.DualClient.setStyleSheet("image:  url(:/Client/TP1H_CLIENT.png);")
 
     def dropEvent(self, event):
         event.accept()
@@ -287,12 +303,6 @@ class customlabel(QLabel):
         dragtext = model.item(0,0).text()
         UserData = model.item(0).data(Qt.UserRole)
 
-        """ text = dragtext
-        text = text.split("#")
-        n_key = "".join(text[0].split())
-        ids = n_key[1:-1].split(',')
-        ids = list(map(lambda x : int(x), ids))          # [ Demand Number, Service Number ]
-        servicetype = text[1].strip()   # service type = 100Ge , 10GE , .... """
         servicetype = dragtext.strip()
 
 
@@ -301,6 +311,10 @@ class customlabel(QLabel):
             self.servicetype = servicetype
             self.ids = (UserData["DemandId"], UserData["ServiceId"])
             self.setToolTip(DemandTabDataBase["Services_static"][self.nodename][self.ids].toolTip())
+
+            self.DualClient.servicetype = servicetype
+            self.DualClient.ids = (UserData["DemandId"], UserData["ServiceId"])
+            self.DualClient.setToolTip(DemandTabDataBase["Services_static"][self.Destination][self.ids].toolTip())
             
 
             self.Panels.PanelsObjectDict[self.nodename][self.id].Line = "100GE"
@@ -315,7 +329,7 @@ class customlabel(QLabel):
             self.modify_ServiceList(self.ids, self.Destination, self.nodename)
 
             self.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
-            # self.LightPathId = Network.Lightpath.get_id()
+            self.DualClient.setStyleSheet("image: url(:/TP1H_CLIENT_Selected_SOURCE/TP1H_CLIENT_Selected.png);")
 
             # adding lightpath to network obj
 
@@ -336,6 +350,7 @@ class customlabel(QLabel):
 
             Data["NetworkObj"].add_lightpath(Data["NodeIdMap"][self.nodename], Data["NodeIdMap"][self.Destination], 100, [self.ids[1]], "100GE", self.ids[0])
             self.LightPathId = max(Data["NetworkObj"].LightPathDict.keys())
+            self.DualClient.LightPathId = max(Data["NetworkObj"].LightPathDict.keys())
 
             # adding lightpath to internal database
             self.Panels.PanelsObjectDict[self.nodename][self.id].LightPathId = self.LightPathId
@@ -363,14 +378,18 @@ class customlabel(QLabel):
 
             # setting line port tooltip                                        
             self.LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(self.nodename, self.Destination)][self.LightPathId].toolTip())
+            self.DualClient.LineVar.setToolTip(DemandTabDataBase["Lightpathes"][(self.Destination, self.nodename)][self.LightPathId].toolTip())
 
             self.LineVar.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
+            self.DualClient.LineVar.setStyleSheet("QLabel{ image: url(:/Line_Selected_SOURCE/Line_Selected.png); }")
 
 
             # TODO: be Careful !!!!!
-            self.setAcceptDrops(False)  
+            self.setAcceptDrops(False)
+            self.DualClient.setAcceptDrops(False)  
         else:
             self.setStyleSheet("image:  url(:/Client/TP1H_CLIENT.png);")
+            self.Dualclient.setStyleSheet("image:  url(:/Client/TP1H_CLIENT.png);")
 
     def contextMenuEvent(self, event):
         ContextMenu = QMenu(self)
@@ -381,6 +400,7 @@ class customlabel(QLabel):
         if action == ClearAction:
             if self.Panels.PanelsObjectDict[self.nodename][self.id].Line == "100GE":
                 self.setToolTip("")
+                self.DualClient.setToolTip("")
 
                 # deleting lightpath from network object
                 
@@ -388,7 +408,10 @@ class customlabel(QLabel):
                 
                 self.setStyleSheet("image:  url(:/Client/TP1H_CLIENT.png);")
                 self.setAcceptDrops(True)
-                #self.modify_ServiceList(self.ids, self.nodename, self.Destination, mode = "add", type = "100GE")
+
+                self.DualClient.setStyleSheet("image:  url(:/Client/TP1H_CLIENT.png);")
+                self.DualClient.setAcceptDrops(True)
+
                 self.modify_ServiceList(ids= self.ids,
                                             source= self.nodename,
                                             destination= self.Destination,
