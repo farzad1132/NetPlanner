@@ -4066,6 +4066,34 @@ class Ui_MainWindow(object):
         column = key[1]
         table = key[2]
 
+        if mode == "add":
+            
+            if table == "GTM":
+                if column == "0":
+                    column_name = "ID"
+                elif column == "1":
+                    column_name = "Source"
+                elif column == "2":
+                    column_name = "Destination"
+            else:
+                column_name = column
+
+            text = f"row: {row + 1}, Column: {column_name}"
+            item = QListWidgetItem(text, self.Errors_listwidget)
+            item.setData(Qt.UserRole, key)
+            self.Errors_listwidget.addItem(item)
+
+            self.save_changes_botton_color()
+
+            return item
+        
+        elif mode == "delete":
+            list_item = Data["error_in_TM"][key]
+            index = self.Errors_listwidget.row(list_item)
+            self.Errors_listwidget.takeItem(index)
+            self.save_changes_botton_color()
+
+    def save_changes_botton_color(self):
         if self.Errors_listwidget.count() != 0:
             self.SaveChanges_PushButton.setEnabled(False)
             self.SaveChanges_PushButton.setStyleSheet("QPushButton {\n"
@@ -4116,29 +4144,6 @@ class Ui_MainWindow(object):
 "QPushButton:default {\n"
 "    border-color: navy; /* make the default button prominent */\n"
 "}")
-        if mode == "add":
-            
-            if table == "GTM":
-                if column == "0":
-                    column_name = "ID"
-                elif column == "1":
-                    column_name = "Source"
-                elif column == "2":
-                    column_name = "Destination"
-            else:
-                column_name = column
-
-            text = f"row: {row + 1}, Column: {column_name}"
-            item = QListWidgetItem(text, self.Errors_listwidget)
-            item.setData(Qt.UserRole, key)
-            self.Errors_listwidget.addItem(item)
-
-            return item
-        
-        elif mode == "delete":
-            list_item = Data["error_in_TM"][key]
-            index = self.Errors_listwidget.row(list_item)
-            self.Errors_listwidget.takeItem(index)
     
     def scroll_to_cell(self, item):
         index_map = {"E1": 0, "STM_1_Electrical": 1, "STM_1_Optical": 2, "STM_4": 3, "STM_16": 4, "STM_64": 5, "FE": 6, "1GE": 7, "10GE": 8, "40GE": 9, "100GE": 10}
