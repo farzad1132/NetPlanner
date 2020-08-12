@@ -1,7 +1,7 @@
 var MapVar = L.map(
     "MapVar",
     {
-        contextmenu:true,
+        contextmenu: true,
         contextmenuWidth: 140,
         contextmenuItems: [{
             text: 'Show coordinates',
@@ -15,11 +15,11 @@ var MapVar = L.map(
     }
 );
 
-function showCoordinates(e){
+function showCoordinates(e) {
     alert(e.latlng);
 }
 
-function get_name(layer){
+function get_name(layer) {
     var x = layer["_tooltip"]["_content"];
     var doc = new DOMParser().parseFromString(x, "text/xml");
     var z = doc.documentElement.textContent;
@@ -28,9 +28,9 @@ function get_name(layer){
     return NodeName;
 }
 
-function delete_node(layer){
+function delete_node(layer) {
     var latlng = layer.getLatLng();
-        
+
     myFeatureGroup.removeLayer(layer);
     MapVar.removeLayer(layer);
     layer.remove();
@@ -39,18 +39,18 @@ function delete_node(layer){
 
 var tile_layer_3c8d85307f1e400db7a61053d3bf00e6 = L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {"detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+    { "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false }
 ).addTo(MapVar);
 
 
-function send_DrawMode_data(){
+function send_DrawMode_data() {
     backend_map.receive_DrawMode_data(JSON.stringify(globalVar), JSON.stringify(deletedOldLayers));
 }
 
 // output globals 
 var globalVar;
 var deletedOldLayers = [];
-var  SetNodeGateWay_flag = null;
+var SetNodeGateWay_flag = null;
 var SelectSubNode_flag = null;
 var groupcolor = null;
 var marker_num = 0;
@@ -76,26 +76,26 @@ var Algorithm = null;
 var Worst_SNR = null;
 
 
-function setcolor(text){
+function setcolor(text) {
     groupcolor = text;
 }
-function SetNode_flag_fun(text){
+function SetNode_flag_fun(text) {
     SetNodeGateWay_flag = text;
 }
-function SelectSubNode_flag_fun(text){
+function SelectSubNode_flag_fun(text) {
     SelectSubNode_flag = text;
 }
-function receive_failed_nodes(NodeName, Color, SubNode){
-    failed_nodes[NodeName] = {"Color":Color, "SubNode":parseInt(SubNode)};
+function receive_failed_nodes(NodeName, Color, SubNode) {
+    failed_nodes[NodeName] = { "Color": Color, "SubNode": parseInt(SubNode) };
     failed_nodes_list.push(NodeName);
 }
-function change_failed_nodes_icon(){
-    
+function change_failed_nodes_icon() {
+
     // loop on nodes group feature and notify their icon
     myFeatureGroup.eachLayer(function (layer) {
         NodeName = get_name(layer);
 
-        if (failed_nodes_list.includes(NodeName)){
+        if (failed_nodes_list.includes(NodeName)) {
             value = failed_nodes[NodeName]
             Color = value["Color"]
             SubNode = value["SubNode"]
@@ -103,51 +103,51 @@ function change_failed_nodes_icon(){
             failed_nodes_list.splice(index, 1);
 
             var latlng = layer.getLatLng();
-            
+
             delete_node(layer);
 
-            if (SubNode == 0){
+            if (SubNode == 0) {
                 change_icon(NodeName, latlng, Color, 1, "notified")
-            } else{
+            } else {
                 change_icon(NodeName, latlng, Color, 0.6, "notified")
             }
-            
+
         }
-});
+    });
 }
-function set_failed_node_default(Source){
+function set_failed_node_default(Source) {
     var value = failed_nodes[Source];
     var color = value["Color"];
     var subnode = value["SubNode"];
     var flag = 0;
-    
+
     myFeatureGroup.eachLayer(function (layer) {
         NodeName = get_name(layer);
-        if (NodeName == Source){
-            if (flag == 0){
-                
+        if (NodeName == Source) {
+            if (flag == 0) {
+
                 var latlng = layer.getLatLng();
                 delete_node(layer);
 
-                if (subnode == 0){
-                    
+                if (subnode == 0) {
+
                     change_icon(NodeName, latlng, color, 1, "normal")
-                } else{
+                } else {
                     ("yes sub node is 1")
                     change_icon(NodeName, latlng, color, 0.6, "normal")
                 }
-        }
-        flag = 1;
+            }
+            flag = 1;
         }
     });
 }
 
-function cancel_clustering(nodename){
+function cancel_clustering(nodename) {
     myFeatureGroup.eachLayer(function (layer) {
 
         NodeName = get_name(layer);
 
-        if ( NodeName == nodename ){
+        if (NodeName == nodename) {
             var latlng = layer.getLatLng();
             delete_node(layer);
 
@@ -157,17 +157,17 @@ function cancel_clustering(nodename){
     });
 }
 
-function update_cluster_info(nodename, color, subnode_state){
-    clusters_info[nodename] = {"Color":color, "SubNode":parseInt(subnode_state)};
+function update_cluster_info(nodename, color, subnode_state) {
+    clusters_info[nodename] = { "Color": color, "SubNode": parseInt(subnode_state) };
     clusters_info_list.push(nodename);
 }
 
-function hide_subnodes(){
+function hide_subnodes() {
     myFeatureGroup.eachLayer(function (layer) {
-        
+
         NodeName = get_name(layer);
 
-        if (clusters_info_list.includes(NodeName)){
+        if (clusters_info_list.includes(NodeName)) {
             SubNode_state = clusters_info[NodeName]["SubNode"];
 
             if (SubNode_state == 1) {
@@ -177,12 +177,12 @@ function hide_subnodes(){
     });
 }
 
-function show_subnodes(){
+function show_subnodes() {
     myFeatureGroup.eachLayer(function (layer) {
-        
+
         NodeName = get_name(layer);
 
-        if ( clusters_info_list.includes(NodeName) ){
+        if (clusters_info_list.includes(NodeName)) {
             SubNode_state = clusters_info[NodeName]["SubNode"];
 
             if (SubNode_state == 1) {
@@ -191,84 +191,84 @@ function show_subnodes(){
         }
     });
 }
-function receive_lambdas(Source, Destination, value){
+function receive_lambdas(Source, Destination, value) {
     a_value = JSON.parse(value)
     lambdas[[Source, Destination]] = a_value
 }
 
-function links_click_event(event){
-    
+function links_click_event(event) {
+
     link_key = get_name(event.layer);
     link_key = link_key.split("-");
 
 
-    if (lambdas.hasOwnProperty(link_key)){
+    if (lambdas.hasOwnProperty(link_key)) {
         lambda_list = lambdas[link_key]
 
-        
+
         drawLines(event.layer, lambda_list, handleMouseOverLines);
     }
-    
+
 }
 
 function groupClick(event) {
-    
+
     degreename = get_name(event.layer);
 
     //alert(groupcolor)
-    
+
 
     if (SetNodeGateWay_flag == "True") {
 
         backend_map.Create_DataBase(degreename)
         var latlng = event.layer.getLatLng();
         delete_node(event.layer);
-        
-        
+
+
         change_icon(degreename, latlng, groupcolor, 1, "normal");
 
 
-        backend_map.SetNode_flag_fun("False",groupcolor)
+        backend_map.SetNode_flag_fun("False", groupcolor)
 
-    } else if ( SelectSubNode_flag == "True") {
+    } else if (SelectSubNode_flag == "True") {
 
         backend_map.AddNode_DataBase(degreename)
 
         var latlng = event.layer.getLatLng();
-        
+
         delete_node(event.layer);
-        
+
         change_icon(degreename, latlng, groupcolor, 0.6, "normal");
 
-        
 
 
-    } else{
+
+    } else {
         backend_map.change_tab_to4(degreename);
     }
 
-    
-    }
+
+}
 
 var links_groupfeature = L.featureGroup().addTo(MapVar).on("click", links_click_event);
 var myFeatureGroup = L.featureGroup().addTo(MapVar).on("click", groupClick);
 
-function just_for_test(){
+function just_for_test() {
     alert("just for test")
 }
 
-function add_node(NodeName, latlng){
+function add_node(NodeName, latlng) {
     latlng = JSON.parse(latlng)
     //alert("start of add_node", NodeName, latlng);
     change_icon(NodeName, latlng, "blue", 1, "normal");
 }
 
-function add_link(Source_loc, Destination_loc, source_name, destination_name){
+function add_link(Source_loc, Destination_loc, source_name, destination_name) {
     Source_loc = JSON.parse(Source_loc)
     Destination_loc = JSON.parse(Destination_loc)
     //alert("start of add_link", Source_loc, Destination_loc, source_name, destination_name)
     var link = L.polyline([Source_loc, Destination_loc],
-        {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+        { "bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "black", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.8, "smoothFactor": 1.0, "stroke": true, "weight": 3 }
     ).addTo(MapVar);
 
     linkName = source_name + "-" + destination_name;
@@ -278,33 +278,33 @@ function add_link(Source_loc, Destination_loc, source_name, destination_name){
 
 
 
-function google_map_view_set(green, yellow, orange){
-    links_groupfeature.eachLayer(function (layer){
+function google_map_view_set(green, yellow, orange) {
+    links_groupfeature.eachLayer(function (layer) {
         link_key = get_name(event.layer);
         link_key = link_key.split("-");
         lambda_list = lambdas[link_key];
         Len = lambda_list.length;
-        if ( Len <= green ){
+        if (Len <= green) {
             layer.setStyle({
                 color: 'green'
             });
-        } else if ( Len <= yellow ){
+        } else if (Len <= yellow) {
             layer.setStyle({
                 color: 'yellow'
             });
-        } else if ( Len <= orange ){
+        } else if (Len <= orange) {
             layer.setStyle({
                 color: 'orange'
             });
-        } else{
+        } else {
             layer.setStyle({
                 color: 'red'
             });
         }
     });
 }
-function google_map_view_reset(){
-    links_groupfeature.eachLayer(function(layer){
+function google_map_view_reset() {
+    links_groupfeature.eachLayer(function (layer) {
         layer.setStyle({
             color: 'black'
         });
@@ -319,7 +319,7 @@ function drawLines(layer, lambdaList, callback) {
         maxWidth: "auto"
     };
     layer.bindPopup(drawDetailBox(lambdaList), popupOptions)
-    
+
     callback(lambdaList)
 }
 function drawDetailBox(lambdaList) {
@@ -382,10 +382,10 @@ function showLineNumberInBox(e, lambdaList) {
 
 function unshowLineNumberInBox(lambdaList) {
     document.getElementById("displayArea").innerHTML = 'Wavelength Number: ' +
-    "\n                                Wavelength (total): " + (lambdaList.length - 1);
+        "\n                                Wavelength (total): " + (lambdaList.length - 1);
 }
 
-function createLegend(num_WL, num_RG, algorithm , worst_SNR, RWA_Runtime) {
+function createLegend(num_WL, num_RG, algorithm, worst_SNR, RWA_Runtime) {
     Num_WL = num_WL;
     Num_RG = num_RG;
     Algorithm = algorithm;
@@ -402,68 +402,70 @@ function createLegend(num_WL, num_RG, algorithm , worst_SNR, RWA_Runtime) {
     };
     legend.addTo(MapVar);
 }
-function change_icon(NodeName, latlng, Color, Opacity, mode){
-        if ( mode == "normal" ){
-            var url = "Icons/" + Color + "/server_" + Color + ".png"
-        } else {
-            var url = "Icons/" + Color + "/server_n" + Color + ".png"
-        }
-        //alert(url)
-        var myIcon = L.icon({
-                                iconUrl: url,
-                                iconSize: [30, 30],
-                                iconAnchor: [20, 30],
-                            });
-        var mark = L.marker(latlng,{"opacity" :Opacity,
-                                    contextmenu: true,
-                                    contextmenuItems: [{
-                                        text: 'Delete Cluster',
-                                        index: 0,
-                                        callback: function(){
-                                            Delete_Cluster(mark);
-                                        }
-                                    }, {
-                                        separator: true,
-                                        index: 1
-                                    }]}).setIcon(myIcon).addTo(MapVar);
-        //var pop = L.popup({"maxWidth": "100%%"});
-        //var htm = $(`<div id="htm" style="width: 100.0%%; height: 100.0%%;"><h2>${NodeName}</h2></div>`)[0];
-        //pop.setContent(htm);
-        mark.bindTooltip(
+function change_icon(NodeName, latlng, Color, Opacity, mode) {
+    if (mode == "normal") {
+        var url = "Icons/" + Color + "/server_" + Color + ".png"
+    } else {
+        var url = "Icons/" + Color + "/server_n" + Color + ".png"
+    }
+    //alert(url)
+    var myIcon = L.icon({
+        iconUrl: url,
+        iconSize: [30, 30],
+        iconAnchor: [20, 30],
+    });
+    var mark = L.marker(latlng, {
+        "opacity": Opacity,
+        contextmenu: true,
+        contextmenuItems: [{
+            text: 'Delete Cluster',
+            index: 0,
+            callback: function () {
+                Delete_Cluster(mark);
+            }
+        }, {
+            separator: true,
+            index: 1
+        }]
+    }).setIcon(myIcon).addTo(MapVar);
+    //var pop = L.popup({"maxWidth": "100%%"});
+    //var htm = $(`<div id="htm" style="width: 100.0%%; height: 100.0%%;"><h2>${NodeName}</h2></div>`)[0];
+    //pop.setContent(htm);
+    mark.bindTooltip(
         `<div>
              <h2>${NodeName}</h2>
          </div>`,
-        {"sticky": true}
+        { "sticky": true }
     );
-        mark.addTo(myFeatureGroup);
+    mark.addTo(myFeatureGroup);
 }
 
 // this function asking GUI to return list of subnodes name and start deleting procedure
-function Delete_Cluster(layer){
+function Delete_Cluster(layer) {
 
     NodeName = get_name(layer);
-    if(clusters_info_list.includes(NodeName)){
+    if (clusters_info_list.includes(NodeName)) {
         backend_map.fill_subnodes_list(NodeName);
         var latlng = layer.getLatLng();
         delete_node(layer);
         change_icon(NodeName, latlng, "blue", 1, "normal");
     }
-    else{
+    else {
         alert('Selected Node is not Gateway!');
     }
-    
+
 }
 
 // this function is for deleting cluster
-function Delete_Cluster_procedure(subnodes){
+function Delete_Cluster_procedure(subnodes) {
     subnodes_list = JSON.parse(subnodes);
     //alert(subnodes_list);
 
     myFeatureGroup.eachLayer(function (layer) {
-        
+
         Name = get_name(layer);
         //alert(Name);
-        if ( subnodes_list.includes(Name) ){
+        if (subnodes_list.includes(Name)) {
             var latlng = layer.getLatLng();
             delete_node(layer);
             change_icon(Name, latlng, "blue", 1, "normal");
@@ -524,7 +526,7 @@ function topologyMenuHandler() {
         oldLinks.push({
             "name": getLayerName(layer),
             "start": getMarkerNameByLatLng(layer.getLatLngs()[0], markersGroup),
-            "end":  getMarkerNameByLatLng(layer.getLatLngs()[1], markersGroup),
+            "end": getMarkerNameByLatLng(layer.getLatLngs()[1], markersGroup),
             "startLoc": layer.getLatLngs()[0],
             "endLoc": layer.getLatLngs()[1],
             "layer": layer,
@@ -1153,14 +1155,14 @@ function getConnectedLinks(marker, featureGroup, connectedLinks) {
 
     featureGroup.eachLayer(layer => {
         if (layer instanceof L.Polyline) {
-            if ( marker.getLatLng().lat == layer.getLatLngs()[0].lat && marker.getLatLng().lng == layer.getLatLngs()[0].lng) {
+            if (marker.getLatLng().lat == layer.getLatLngs()[0].lat && marker.getLatLng().lng == layer.getLatLngs()[0].lng) {
                 connectedLinks.push(layer)
                 //console.log("found");
             }
-            if ( marker.getLatLng().lat == layer.getLatLngs()[1].lat && marker.getLatLng().lng == layer.getLatLngs()[1].lng) {
+            if (marker.getLatLng().lat == layer.getLatLngs()[1].lat && marker.getLatLng().lng == layer.getLatLngs()[1].lng) {
                 connectedLinks.push(layer)
                 //console.log("found");
-            } 
+            }
         }
     });
 }
@@ -1372,11 +1374,11 @@ function saveChangedOldLinktoLink(oldLinks, links, deletedOldLayers) {
     });
 }
 
-function getMarkerNameByLatLng(latlng, featureGroup){
+function getMarkerNameByLatLng(latlng, featureGroup) {
     var name;
-    featureGroup.eachLayer( m => {
-        if(m instanceof L.Marker){
-            if(latlng === m.getLatLng()){
+    featureGroup.eachLayer(m => {
+        if (m instanceof L.Marker) {
+            if (latlng === m.getLatLng()) {
                 name = getLayerName(m);
                 return;
             }
@@ -1396,79 +1398,6 @@ new QWebChannel(qt.webChannelTransport, function (channel) {
 ////// interactive tables codes
 
 //dummy data
-var dummyClustersData = [
-    {
-        id: 1,
-        demands: [
-            {
-                id: 1,
-                src: "x",
-                dest: "y",
-                services: [
-                    {
-                        id: 87,
-                        type: "100GE"
-                    },
-                    {
-                        id: 221,
-                        type: "100GE"
-                    },
-                    {
-                        id: 345,
-                        type: "100GE"
-                    }
-                ]
-            },
-            {
-                id: 2,
-                src: "m",
-                dest: "y",
-                services: [
-                    {
-                        id: 66,
-                        type: "100GE"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        id: 2,
-        demands: [
-            {
-                id: 5,
-                src: "u",
-                dest: "i",
-                services: [
-                    {
-                        id: 1,
-                        type: "10GE"
-                    },
-                    {
-                        id: 2,
-                        type: "100GE"
-                    },
-                    {
-                        id: 3,
-                        type: "100GE"
-                    }
-                ]
-            },
-            {
-                id: 7,
-                src: "m",
-                dest: "l",
-                services: [
-                    {
-                        id: 5,
-                        type: "500GE"
-                    }
-                ]
-            }
-        ]
-    }
-];
-
 // Structure:
 /* 
 
@@ -1490,57 +1419,58 @@ s_<int>: service id
 
 NOTE: id's in below json is not real ( it's just for showing structure )
 */
-var mid_grooming_dummy_data_2 = {c_1: {d_1:{
-                                            Source: "Tehran",
-                                            Destination: "Qom",
-                                            Services: {
-                                                s_1: "100GE",
-                                                s_2: "STM_64",
-                                                s_3: "FE"
-                                            }
-                                            },
-                                        d_2: {
-                                            Source: "Demavend",
-                                            Destination: "Shiraz",
-                                            Services: {
-                                                s_4: "10GE"
-                                            }
-                                            }
-                                        },
-                                c_2: {d_3:  {
-                                            Source: "Tehran",
-                                            Destination: "Shiraz",
-                                            Services: {
-                                                s_5: "10GE"
-                                                    }
-                                            }  
-                                }};        
+var dummyClustersData = {
+    c_1: {
+        d_1: {
+            Source: "Tehran",
+            Destination: "Qom",
+            Services: {
+                s_1: "100GE",
+                s_2: "STM_64",
+                s_3: "FE"
+            }
+        },
+        d_2: {
+            Source: "Demavend",
+            Destination: "Shiraz",
+            Services: {
+                s_4: "10GE"
+            }
+        }
+    },
+    c_2: {
+        d_3: {
+            Source: "Tehran",
+            Destination: "Shiraz",
+            Services: {
+                s_5: "10GE"
+            }
+        }
+    }
+};
 
 // btn is directly loaded in map
 var tablesBtn = document.createElement("button");
 tablesBtn.innerHTML = "Load Tables"
 var menu = L.control({ position: 'topright' });
 
-
-// a dummy instance of data is given to to the function - needs to be changed
 tablesBtn.addEventListener("click", e => generateUIPanels(dummyClustersData))
 
 menu.onAdd = function (map) {
+
     return tablesBtn;
 };
+
 menu.addTo(MapVar);
 
-/* 
-main function of interactive cluster/demands/services tables 
-takes an array of clusters as input
-*/ 
 
 var nodeSelctMode = false;
 function generateUIPanels(clustersData) {
 
+
     var div = document.createElement("div");
     div.setAttribute("id", "cluster-panel");
-    
+
     var tableWrapper = document.createElement("table");
     tableWrapper.setAttribute("class", "wrap");
 
@@ -1561,7 +1491,7 @@ function generateUIPanels(clustersData) {
     var selectNodeBtn = document.createElement("button");
     selectNodeBtn.setAttribute("class", "mainmap-util-btn")
     selectNodeBtn.innerHTML = "Select Node";
-    selectNodeBtn.addEventListener("click", e => 
+    selectNodeBtn.addEventListener("click", e =>
         handleSelectNodeBtn(getSelectedServices(serviceTable, dummyClustersData))
     );
     var selectNodeOffBtn = document.createElement("button");
@@ -1574,14 +1504,16 @@ function generateUIPanels(clustersData) {
     }
     );
 
+    var firstClusterID = Object.keys(dummyClustersData)[0];
+    var firstDemandID = Object.keys(dummyClustersData[firstClusterID])[0];
+    generateClustersTable(dummyClustersData, clusterTable, demandTable, serviceTable);
+    generateDemandsTable(firstClusterID, dummyClustersData, demandTable, serviceTable);
 
-    generateClustersTable(dummyClustersData, clusterTable, demandTable, serviceTable );
-    generateDemandsTable(1, dummyClustersData, demandTable, serviceTable);
-    generateServicesTable(1, 1, dummyClustersData, serviceTable);
+    generateServicesTable(firstClusterID, firstDemandID, dummyClustersData, serviceTable);
 
 
     var menu = L.control({ position: 'bottomleft' });
-    var clusterMenu = L.control({position: 'topleft'});
+    var clusterMenu = L.control({ position: 'topleft' });
 
     clusterMenu.onAdd = function (map) {
         clusterDiv.appendChild(clusterTable);
@@ -1590,7 +1522,7 @@ function generateUIPanels(clustersData) {
 
     menu.onAdd = function (map) {
 
-        
+
         div.appendChild(tableWrapper);
         div.appendChild(selectNodeBtn);
         div.appendChild(selectNodeOffBtn);
@@ -1606,24 +1538,26 @@ function generateUIPanels(clustersData) {
 }
 
 
-function generateClustersTable(data, table, demandTable, serviceTable ) {
+function generateClustersTable(data, table, demandTable, serviceTable) {
     table.innerHTML = "";
 
     var tbdy = document.createElement('tbody');
     var tr = tbdy.insertRow();
     tr.innerHTML = "Clusters";
-    for (var i = 0; i < data.length; i++) {
+
+    Object.keys(data).forEach(key => {
         var tr = tbdy.insertRow();
         td = tr.insertCell();
-        tr.innerHTML = data[i].id;
-        tr.setAttribute("data-clusterID", data[i].id);
-    }
+        tr.innerHTML = key;
+        tr.setAttribute("data-clusterID", key);
+    });
+
     table.appendChild(tbdy);
 
     for (var i = 0, row; row = table.rows[i]; i++) {
         row.addEventListener("click", (e) => {
             var clusterID = e.target.getAttribute("data-clusterid");
-            var demandID = data.find(c => c.id === parseInt(clusterID)).demands[0].id;
+            var demandID = Object.keys(data[clusterID])[0];
             generateDemandsTable(clusterID, data, demandTable, serviceTable);
             generateServicesTable(
                 clusterID,
@@ -1634,25 +1568,27 @@ function generateClustersTable(data, table, demandTable, serviceTable ) {
 }
 
 function generateDemandsTable(clusterID, data, table, serviceTable) {
-    demands = data.find(c => c.id === parseInt(clusterID)).demands;
+    demands = data[clusterID];
     table.innerHTML = "";
 
     var tbdy = document.createElement('tbody');
     var tr = tbdy.insertRow();
     tr.innerHTML = "Demands";
-    for (var i = 0; i < demands.length; i++) {
+
+    Object.keys(demands).forEach(key => {
         var tr = tbdy.insertRow();
         var tdData = tr.insertCell();
         var tdRadioBtn = tr.insertCell();
-        tdData.innerHTML = demands[i].src;
+        tdData.innerHTML = demands[key].Source;
         tdRadioBtn.innerHTML = '<input type="radio" name="demand">';
         tdData.setAttribute("data-clusterID", clusterID);
-        tdData.setAttribute("data-demandID", demands[i].id);
+        tdData.setAttribute("data-demandID", key);
         tdRadioBtn.firstChild.setAttribute("data-clusterID", clusterID);
-        tdRadioBtn.firstChild.setAttribute("data-demandID", demands[i].id);
+        tdRadioBtn.firstChild.setAttribute("data-demandID", key);
         tdData.addEventListener("click", (e) => console.log("fdfd"));
 
-    }
+    });
+
     table.appendChild(tbdy);
 
     for (var i = 0, row; row = table.rows[i]; i++) {
@@ -1668,32 +1604,34 @@ function generateDemandsTable(clusterID, data, table, serviceTable) {
 }
 
 function generateServicesTable(clusterID, demandID, data, table) {
-    demands = data.find(c => c.id === parseInt(clusterID)).demands;
-    services = demands.find(d => d.id === parseInt(demandID)).services;
+    services = data[clusterID][demandID].Services;
+    console.log("c ", clusterID, "d", demandID);
     table.innerHTML = "";
 
     var tbdy = document.createElement('tbody');
     var tr = tbdy.insertRow();
     tr.innerHTML = "Services";
-    for (var i = 0; i < services.length; i++) {
+
+    Object.keys(services).forEach(key => {
         var tr = tbdy.insertRow();
         // tr.innerHTML = ;
         tdData = tr.insertCell();
         tdCheck = tr.insertCell();
-        tdData.innerHTML = services[i].type;
+        tdData.innerHTML = services[key];
         tdCheck.innerHTML = '<input type="checkbox" class="service-checkbox">';
         tr.setAttribute("data-clusterID", clusterID);
         tr.setAttribute("data-demandID", demandID);
-        tr.setAttribute("data-serviceID", services[i].id);
-    }
+        tr.setAttribute("data-serviceID", key);
+    });
+
     table.appendChild(tbdy);
 }
 
-function getSelectedServices(serviceTable, data){
+function getSelectedServices(serviceTable, data) {
     checkedServices = [];
     serviceChecks = serviceTable.getElementsByClassName("service-checkbox");
-    for (var i=0; i<serviceChecks.length; i++){
-        if(serviceChecks[i].checked == true){
+    for (var i = 0; i < serviceChecks.length; i++) {
+        if (serviceChecks[i].checked == true) {
             checkedServices += {
                 demandId: serviceTable.rows[i].getAttribute("data-demandID"),
                 serviceId: serviceTable.rows[i].getAttribute("data-serviceID")
@@ -1706,11 +1644,11 @@ function getSelectedServices(serviceTable, data){
 
 
 // handling function for SelectNode button 
-function handleSelectNodeBtn(checkedServices){
+function handleSelectNodeBtn(checkedServices) {
 
     myFeatureGroup.off();
     nodeSelctMode = true;
-    
+
     myFeatureGroup.on("click", e => handleSelectedNode(e, checkedServices))
 }
 
@@ -1719,6 +1657,6 @@ function handleSelectNodeBtn(checkedServices){
 // params:
 // e is the selected node
 // checked services is a json array of checked services 
-function handleSelectedNode(e, checkedServices){
+function handleSelectedNode(e, checkedServices) {
     console.log("dummy handling function");
 }
