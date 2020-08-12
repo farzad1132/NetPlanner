@@ -1933,8 +1933,8 @@ class Ui_MainWindow(object):
         self.TMSliderBar = self.Traffic_matrix.verticalScrollBar()
 		
         self.GMTSliderBar = self.General_TM.verticalScrollBar()
-        QObject.connect(self.TMSliderBar,SIGNAL("actionTriggered(int)"),self.SyncScroll_1)
-        QObject.connect(self.GMTSliderBar,SIGNAL("actionTriggered(int)"),self.SyncScroll_2)
+        QObject.connect(self.TMSliderBar,SIGNAL("valueChanged(int)"),self.SyncScroll_1)
+        QObject.connect(self.GMTSliderBar,SIGNAL("valueChanged(int)"),self.SyncScroll_2)
 
         self.export_result_button.clicked.connect(self.export_excel_fun)
 
@@ -3147,11 +3147,11 @@ class Ui_MainWindow(object):
 
     def SyncScroll_1(self):
         sliderValue = self.TMSliderBar.value()
-        self.GMTSliderBar.setValue(sliderValue - 3)
+        self.GMTSliderBar.setValue(sliderValue)
     
     def SyncScroll_2(self):
         sliderValue = self.GMTSliderBar.value()
-        self.TMSliderBar.setValue(sliderValue + 3)
+        self.TMSliderBar.setValue(sliderValue)
 
     def main_tab_clicked(self,index):
         if index == 2:
