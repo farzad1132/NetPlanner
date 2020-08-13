@@ -41,7 +41,7 @@ class MP2X_L_Demand(QtWidgets.QWidget):
     def __init__(self, Panel_ID, nodename, Destination, DualPanelsId, Panels):
         super(MP2X_L_Demand, self).__init__()
 
-        self.resize(106, 694)
+        self.setMinimumSize(116,200)
 
         self.id = str(Panel_ID)
         # nodename == Source in Demand Tab
@@ -51,6 +51,7 @@ class MP2X_L_Demand(QtWidgets.QWidget):
 
         self.DualPanelsId = DualPanelsId
         self.Panels = Panels
+        self.parent = parent
 
         grid=QtWidgets.QGridLayout(self)
         widget=QtWidgets.QWidget(self)

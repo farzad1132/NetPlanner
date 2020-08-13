@@ -15,7 +15,7 @@ class MP2X_R_Demand(QtWidgets.QWidget):
     def __init__(self, Panel_ID, nodename, Destination, DualPanelsId):
         super(MP2X_R_Demand, self).__init__()
 
-        self.resize(118, 633)
+        self.setMinimumSize(116,200)
 
         self.id = str(Panel_ID)
         # nodename == Source in Demand Tab
