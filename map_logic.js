@@ -1436,6 +1436,26 @@ var dummyClustersData = {
             Services: {
                 s_4: "10GE"
             }
+        },
+        d_3: {
+            Source: "Shiraz",
+            Destination: "Kerman",
+            Services: {
+                s_4: "100GE",
+                s_7: "100GE"
+            }
+        },
+        d_4: {
+            Source: "Kerman",
+            Destination: "Shiraz",
+            Services: {
+                s_4: "100GE",
+                s_7: "100GE",
+                s_66: "10GE",
+                s_44: "10GE",
+                s_41: "10GE",
+                s_42: "100GE"
+            }
         }
     },
     c_2: {
@@ -1448,6 +1468,7 @@ var dummyClustersData = {
         }
     }
 };
+
 
 // btn is directly loaded in map
 var tablesBtn = document.createElement("button");
@@ -1472,30 +1493,44 @@ function generateUIPanels(clustersData) {
     div.setAttribute("id", "cluster-panel");
 
     var tableWrapper = document.createElement("table");
-    tableWrapper.setAttribute("class", "wrap");
+    tableWrapper.setAttribute("class", "wrap d-flex flex-row");
 
     var clusterDiv = document.createElement("div");
-    clusterDiv.setAttribute("id", "cluster-panel");
+
+    var btnDiv = document.createElement("div");
+    btnDiv.setAttribute("class", "d-flex flex-column");
+
+    var clusterTableWrapper = document.createElement('div');
+    var demandTableWrapper = document.createElement('div');
+    var serviceTableWrapper = document.createElement('div');
+
+    clusterTableWrapper.setAttribute("class", "scroll-table ");
+    demandTableWrapper.setAttribute("class", "scroll-table m-2");
+    serviceTableWrapper.setAttribute("class", "scroll-table m-2");
 
     var clusterTable = document.createElement('table');
     var demandTable = document.createElement('table');
     var serviceTable = document.createElement('table');
+    
+    clusterTableWrapper.appendChild(clusterTable);
+    demandTableWrapper.appendChild(demandTable);
+    serviceTableWrapper.appendChild(serviceTable);
 
-    tableWrapper.appendChild(demandTable);
-    tableWrapper.appendChild(serviceTable);
+    tableWrapper.appendChild(demandTableWrapper);
+    tableWrapper.appendChild(serviceTableWrapper);
 
-    clusterTable.setAttribute("class", "ui-table");
-    demandTable.setAttribute("class", "ui-table  cell-wrap");
-    serviceTable.setAttribute("class", "ui-table  cell-wrap");
+    clusterTable.setAttribute("class", "table table-bordered table-dark");
+    demandTable.setAttribute("class", "table table-bordered table-dark");
+    serviceTable.setAttribute("class", "table table-bordered table-dark");
 
     var selectNodeBtn = document.createElement("button");
-    selectNodeBtn.setAttribute("class", "mainmap-util-btn")
+    selectNodeBtn.setAttribute("class", "btn btn-info btn-sm m-1")
     selectNodeBtn.innerHTML = "Select Node";
     selectNodeBtn.addEventListener("click", e =>
         handleSelectNodeBtn(getSelectedServices(serviceTable, dummyClustersData))
     );
     var selectNodeOffBtn = document.createElement("button");
-    selectNodeOffBtn.setAttribute("class", "mainmap-util-btn")
+    selectNodeOffBtn.setAttribute("class", "btn btn-info btn-sm m-1")
     selectNodeOffBtn.innerHTML = "Cancel Select Node";
     selectNodeOffBtn.addEventListener("click", e => {
         myFeatureGroup.off();
@@ -1514,24 +1549,28 @@ function generateUIPanels(clustersData) {
 
     var menu = L.control({ position: 'bottomleft' });
     var clusterMenu = L.control({ position: 'topleft' });
+    var btnMenu = L.control({ position: 'topright' });
 
     clusterMenu.onAdd = function (map) {
-        clusterDiv.appendChild(clusterTable);
+        clusterDiv.appendChild(clusterTableWrapper);
         return clusterDiv;
     };
 
     menu.onAdd = function (map) {
 
-
         div.appendChild(tableWrapper);
-        div.appendChild(selectNodeBtn);
-        div.appendChild(selectNodeOffBtn);
-
         return div;
     };
 
+    btnMenu.onAdd = function (map) {
+        btnDiv.appendChild(selectNodeBtn);
+        btnDiv.appendChild(selectNodeOffBtn);
+        return btnDiv;
+    }
+
     menu.addTo(MapVar);
     clusterMenu.addTo(MapVar);
+    btnMenu.addTo(MapVar);
 
     //returns updated clusterData
 
@@ -1543,13 +1582,17 @@ function generateClustersTable(data, table, demandTable, serviceTable) {
 
     var tbdy = document.createElement('tbody');
     var tr = tbdy.insertRow();
-    tr.innerHTML = "Clusters";
+    tr.setAttribute("class", "bg-info");
+    var tdData = tr.insertCell();
+    tdData.setAttribute("class", "p-1")
+    tdData.innerHTML = "Clusters";
 
     Object.keys(data).forEach(key => {
         var tr = tbdy.insertRow();
-        td = tr.insertCell();
-        tr.innerHTML = key;
-        tr.setAttribute("data-clusterID", key);
+        var tdData = tr.insertCell();
+        tdData.setAttribute("class", "p-1")
+        tdData.innerHTML = key;
+        tdData.setAttribute("data-clusterID", key);
     });
 
     table.appendChild(tbdy);
@@ -1573,20 +1616,18 @@ function generateDemandsTable(clusterID, data, table, serviceTable) {
 
     var tbdy = document.createElement('tbody');
     var tr = tbdy.insertRow();
-    tr.innerHTML = "Demands";
+    tr.setAttribute("class", "bg-info");
+    var tdData = tr.insertCell();
+    tdData.setAttribute("class", "p-1")
+    tdData.innerHTML = "Demands";
 
     Object.keys(demands).forEach(key => {
         var tr = tbdy.insertRow();
         var tdData = tr.insertCell();
-        var tdRadioBtn = tr.insertCell();
+        tdData.setAttribute("class", "p-1")
         tdData.innerHTML = demands[key].Source;
-        tdRadioBtn.innerHTML = '<input type="radio" name="demand">';
         tdData.setAttribute("data-clusterID", clusterID);
         tdData.setAttribute("data-demandID", key);
-        tdRadioBtn.firstChild.setAttribute("data-clusterID", clusterID);
-        tdRadioBtn.firstChild.setAttribute("data-demandID", key);
-        tdData.addEventListener("click", (e) => console.log("fdfd"));
-
     });
 
     table.appendChild(tbdy);
@@ -1610,7 +1651,13 @@ function generateServicesTable(clusterID, demandID, data, table) {
 
     var tbdy = document.createElement('tbody');
     var tr = tbdy.insertRow();
-    tr.innerHTML = "Services";
+    tr.setAttribute("class", "bg-info");
+    var tdData = tr.insertCell();
+    tdData.setAttribute("class", "p-1");
+    var tdCheck = tr.insertCell();
+    tdCheck.innerHTML = "Checked";
+    tdCheck.setAttribute("class", "p-1");
+    tdData.innerHTML = "Services";
 
     Object.keys(services).forEach(key => {
         var tr = tbdy.insertRow();
@@ -1618,7 +1665,9 @@ function generateServicesTable(clusterID, demandID, data, table) {
         tdData = tr.insertCell();
         tdCheck = tr.insertCell();
         tdData.innerHTML = services[key];
+        tdData.setAttribute("class", "p-1")
         tdCheck.innerHTML = '<input type="checkbox" class="service-checkbox">';
+        tdCheck.setAttribute("class", "p-1");
         tr.setAttribute("data-clusterID", clusterID);
         tr.setAttribute("data-demandID", demandID);
         tr.setAttribute("data-serviceID", key);
