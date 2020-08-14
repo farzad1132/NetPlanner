@@ -1937,11 +1937,6 @@ class Ui_MainWindow(object):
         QObject.connect(self.GMTSliderBar,SIGNAL("valueChanged(int)"),self.SyncScroll_2)
 
         self.export_result_button.clicked.connect(self.export_excel_fun)
-#######################
-        #self.General_TM
-        #delete_row_of_tables
-
-#######################
 
         #self.OpenTopology_button.clicked.connect(self.OpenTopology_fun)
 
@@ -3194,8 +3189,6 @@ class Ui_MainWindow(object):
                 self.Traffic_matrix.setCurrentCell(int(row),column)
                 #self.Traffic_matrix.setItem(int(row),i,QTableWidgetItem(cell_data))
                 #self.Traffic_matrix.item(int(row), i).setText(cell_data)
-                
-                #self.Traffic_matrix.setItem(int(row), column, QTableWidgetItem(cell_data))
 
                 self.Traffic_matrix.setItem(int(row), column, QTableWidgetItem(str(cell_data)))
     
@@ -3952,10 +3945,6 @@ class Ui_MainWindow(object):
         header = str(self.listWidget.currentItem().text())
         column_name = Data[header]["Headers"][column].strip()
 
-        ###########################
-        #print(header, column_name)
-        print()
-
         key = (row, header, "TM")
         if key in Data["error_in_TM"]:
             flag = 1
@@ -3972,10 +3961,6 @@ class Ui_MainWindow(object):
 
         else:
             if column_name=='Quantity':
-                #####################################
-                #print("entered quanitity")
-                #print(value)
-                #if str(value).isdigit():
                 Data[header]["DataSection"][column_name][int(row)] = value
             
                 state = value.isdigit()
@@ -4175,9 +4160,19 @@ class Ui_MainWindow(object):
 "    border-color: navy; /* make the default button prominent */\n"
 "}")
     
-    def delete_row_of_tables(self):
-        pass 
 
+    def contextMenuEvent(self, event):
+        gp = event.globalPos()
+        menu = QMenu(self)
+        delete_act = menu.addAction("delete")
+        action = menu.exec_(gp)
+        vp_pos = self.General_TM.viewport().mapFromGlobal(gp)
+        row = self.General_TM.rowAt(vp_pos.y())
+
+        if action == delete_act:
+            print(row)
+    
+  
     def scroll_to_cell(self, item):
         index_map = {"E1": 0, "STM_1_Electrical": 1, "STM_1_Optical": 2, "STM_4": 3, "STM_16": 4, "STM_64": 5, "FE": 6, "1GE": 7, "10GE": 8, "40GE": 9, "100GE": 10}
 
