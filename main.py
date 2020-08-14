@@ -4230,7 +4230,35 @@ class Ui_MainWindow(object):
         
         # adding links to graph
         self.G.add_edges_from(list(Data["Links"].keys()))
+
+    # this method prepares JSON input for midgrooming also in provides shortest path of demands in list format
+    def prepare_input_for_Midgrooming(self, Graph):
+        input_data = {}
+        for cluster_id, cluster_object in self.network.TrafficMatrix.ClusterDict.items():
+            input_data[cluster_id] = {}
+            input_data[cluster_id]["Gateway"] = self.IdNodeMap[cluster_object.GatewayId]
+            input_data[cluster_id]["SubNodesNameList"] = list(map(lambda x: self.IdNodeMap[x], cluster_object.SubNodesId))
+            input_data[cluster_id]["Demands"] = {}
+            for DemandId in  cluster_object.Demands:
+                Source = self.network.TrafficMatrix.DemandDict[DemandId].Source
+                Destination = self.network.TrafficMatrix.DemandDict[DemandId].Destination
+                Service_Dict = {}
+                for id, service_object in self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict.items():
+                    Service_Dict[id] = service_object.Type
+                
+                input_data[cluster_id]["Demands"][DemandId] = {}
+                input_data[cluster_id]["Demands"][DemandId]["Source"] = Source
+                input_data[cluster_id]["Demands"][DemandId]["Destination"] = Destination
+                input_data[cluster_id]["Demands"][DemandId]["Services"] = Service_Dict
+                input_data[cluster_id]["Demands"][DemandId]["ShortestPath"] = nx.dijkstra_path(Graph, Source, Destination)
+
+        self.send_input_for_MidGrooming(input_data)
+
         
+    def send_input_for_MidGrooming(self, input_data):
+        self.webengine.page().runJavaScript(f"start_MidGrooming('{json.dumps(input_data)}')")
+    
+
     
     def Demand_Shelf_set(self):
         # TODO: add this method to Demand tab initializer

@@ -1428,7 +1428,8 @@ var dummyClustersData = {
                 s_1: "100GE",
                 s_2: "STM_64",
                 s_3: "FE"
-            }
+            },
+            ShortestPath: ["Tehran", "x", "y", "Qom"]
         },
         d_2: {
             Source: "Demavend",
@@ -1484,6 +1485,10 @@ menu.onAdd = function (map) {
 
 menu.addTo(MapVar);
 
+var MidGrooming_Input = object();
+function start_MidGrooming(Input){
+    MidGrooming_Input = JSON.parse(Input);
+}
 
 var nodeSelctMode = false;
 function generateUIPanels(clustersData) {
@@ -1708,4 +1713,5 @@ function handleSelectNodeBtn(checkedServices) {
 // checked services is a json array of checked services 
 function handleSelectedNode(e, checkedServices) {
     console.log("dummy handling function");
+    console.log(checkedServices);
 }
