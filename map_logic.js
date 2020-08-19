@@ -10,7 +10,6 @@ var MapVar = L.map(
         center: [35.6892, 51.389],
         crs: L.CRS.EPSG3857,
         zoom: 6,
-        zoomControl: false,
         preferCanvas: false,
     }
 );
@@ -1421,50 +1420,62 @@ NOTE: id's in below json is not real ( it's just for showing structure )
 */
 var dummyClustersData = {
     c_1: {
-        d_1: {
-            Source: "Tehran",
-            Destination: "Qom",
-            Services: {
-                s_1: "100GE",
-                s_2: "STM_64",
-                s_3: "FE"
+        Gateway: "gt1",
+        SubNodeNameList: ["s1", "s2"],
+        Demands: {
+            d_1: {
+                Source: "Tehran",
+                Destination: "Qom",
+                Services: {
+                    s_1: "100GE",
+                    s_2: "STM_64",
+                    s_3: "FE"
+                },
+                ShortestPath: ["Tehran", "Yazd", "Esfahan", "Qom"]
             },
-            ShortestPath: ["Tehran", "x", "y", "Qom"]
-        },
-        d_2: {
-            Source: "Demavend",
-            Destination: "Shiraz",
-            Services: {
-                s_4: "10GE"
-            }
-        },
-        d_3: {
-            Source: "Shiraz",
-            Destination: "Kerman",
-            Services: {
-                s_4: "100GE",
-                s_7: "100GE"
-            }
-        },
-        d_4: {
-            Source: "Kerman",
-            Destination: "Shiraz",
-            Services: {
-                s_4: "100GE",
-                s_7: "100GE",
-                s_66: "10GE",
-                s_44: "10GE",
-                s_41: "10GE",
-                s_42: "100GE"
+            d_2: {
+                Source: "Demavend",
+                Destination: "Shiraz",
+                Services: {
+                    s_4: "10GE"
+                },
+                ShortestPath: ["Demavend", "Tehran", "Shiraz"]
+            },
+            d_3: {
+                Source: "Shiraz",
+                Destination: "Kerman",
+                Services: {
+                    s_4: "100GE",
+                    s_7: "100GE"
+                },
+                ShortestPath: ["Shiraz", "Kerman"]
+            },
+            d_4: {
+                Source: "Kerman",
+                Destination: "Shiraz",
+                Services: {
+                    s_4: "100GE",
+                    s_7: "100GE",
+                    s_66: "10GE",
+                    s_44: "10GE",
+                    s_41: "10GE",
+                    s_42: "100GE"
+                },
+                ShortestPath: ["Kerman", "Esfahan", "Shiraz"]
             }
         }
     },
     c_2: {
-        d_3: {
-            Source: "Tehran",
-            Destination: "Shiraz",
-            Services: {
-                s_5: "10GE"
+        Gateway: "gt2",
+        SubNodeNameList: ["s1", "s4"],
+        Demands: {
+            d_3: {
+                Source: "Tehran",
+                Destination: "Shiraz",
+                Services: {
+                    s_5: "10GE"
+                },
+                ShortestPath: ["Tehran", "Shiraz"]
             }
         }
     }
@@ -1486,7 +1497,7 @@ menu.onAdd = function (map) {
 menu.addTo(MapVar);
 
 var MidGrooming_Input = object();
-function start_MidGrooming(Input){
+function start_MidGrooming(Input) {
     MidGrooming_Input = JSON.parse(Input);
 }
 
@@ -1516,7 +1527,7 @@ function generateUIPanels(clustersData) {
     var clusterTable = document.createElement('table');
     var demandTable = document.createElement('table');
     var serviceTable = document.createElement('table');
-    
+
     clusterTableWrapper.appendChild(clusterTable);
     demandTableWrapper.appendChild(demandTable);
     serviceTableWrapper.appendChild(serviceTable);
@@ -1545,7 +1556,7 @@ function generateUIPanels(clustersData) {
     );
 
     var firstClusterID = Object.keys(dummyClustersData)[0];
-    var firstDemandID = Object.keys(dummyClustersData[firstClusterID])[0];
+    var firstDemandID = Object.keys(dummyClustersData[firstClusterID].Demands)[0];
     generateClustersTable(dummyClustersData, clusterTable, demandTable, serviceTable);
     generateDemandsTable(firstClusterID, dummyClustersData, demandTable, serviceTable);
 
@@ -1596,7 +1607,8 @@ function generateClustersTable(data, table, demandTable, serviceTable) {
         var tr = tbdy.insertRow();
         var tdData = tr.insertCell();
         tdData.setAttribute("class", "p-1")
-        tdData.innerHTML = key;
+        tdData.innerHTML = data[key].Gateway;
+        tdData.title = "Subnodes: " + data[key].SubNodeNameList;
         tdData.setAttribute("data-clusterID", key);
     });
 
@@ -1616,7 +1628,7 @@ function generateClustersTable(data, table, demandTable, serviceTable) {
 }
 
 function generateDemandsTable(clusterID, data, table, serviceTable) {
-    demands = data[clusterID];
+    demands = data[clusterID].Demands;
     table.innerHTML = "";
 
     var tbdy = document.createElement('tbody');
@@ -1626,11 +1638,25 @@ function generateDemandsTable(clusterID, data, table, serviceTable) {
     tdData.setAttribute("class", "p-1")
     tdData.innerHTML = "Demands";
 
+    var tr = tbdy.insertRow();
+    tr.setAttribute("class", "bg-info");
+    var tdData = tr.insertCell();
+    tdData.setAttribute("class", "p-1");
+    var tdCheck = tr.insertCell();
+    tdCheck.innerHTML = "Source";
+    tdCheck.setAttribute("class", "p-1");
+    tdData.innerHTML = "Destination";
+
     Object.keys(demands).forEach(key => {
         var tr = tbdy.insertRow();
         var tdData = tr.insertCell();
         tdData.setAttribute("class", "p-1")
         tdData.innerHTML = demands[key].Source;
+        tdData.setAttribute("data-clusterID", clusterID);
+        tdData.setAttribute("data-demandID", key);
+        var tdData = tr.insertCell();
+        tdData.setAttribute("class", "p-1")
+        tdData.innerHTML = demands[key].Destination;
         tdData.setAttribute("data-clusterID", clusterID);
         tdData.setAttribute("data-demandID", key);
     });
@@ -1639,8 +1665,10 @@ function generateDemandsTable(clusterID, data, table, serviceTable) {
 
     for (var i = 0, row; row = table.rows[i]; i++) {
         row.addEventListener("click", (e) => {
+
             var clusterID = e.target.getAttribute("data-clusterid");
             var demandID = e.target.getAttribute("data-demandid");
+            changeShortestPathColor(demands[demandID].ShortestPath);
             generateServicesTable(
                 clusterID,
                 demandID,
@@ -1650,7 +1678,7 @@ function generateDemandsTable(clusterID, data, table, serviceTable) {
 }
 
 function generateServicesTable(clusterID, demandID, data, table) {
-    services = data[clusterID][demandID].Services;
+    services = data[clusterID].Demands[demandID].Services;
     console.log("c ", clusterID, "d", demandID);
     table.innerHTML = "";
 
@@ -1704,6 +1732,24 @@ function handleSelectNodeBtn(checkedServices) {
     nodeSelctMode = true;
 
     myFeatureGroup.on("click", e => handleSelectedNode(e, checkedServices))
+}
+
+function changeShortestPathColor(shortestPath) {
+    var links = [];
+    links.push(shortestPath[0] + "-" + shortestPath[1]);
+    for (var i = 1; i < shortestPath.length; i++) {
+        links.push(shortestPath[i - 1] + "-" + shortestPath[i]);
+    }
+
+    links_groupfeature.eachLayer(layer => {
+        for (var i = 0; i < links.length; i++) {
+            if (get_name(layer) === links[i]) {
+                console.log("ff");
+                layer.setStyle({ color: "#669900" });
+            }
+        }
+    })
+
 }
 
 
