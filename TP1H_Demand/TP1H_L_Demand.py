@@ -48,7 +48,7 @@ class TP1H_L_Demand(QtWidgets.QWidget):
         self.gridLayout = QtWidgets.QGridLayout(self)
         self.gridLayout.setContentsMargins(5, 5, 5, 5)
         self.gridLayout.setObjectName("gridLayout")
-        self.Line = line_class(self, Destination)
+        self.Line = line_class(self)
         self.Line.setMinimumSize(QtCore.QSize(0, 25))
         self.Line.setMaximumSize(QtCore.QSize(100, 200))
         self.Line.setStyleSheet("QLabel{ image: url(:/Line/tp1h_line.png); }")
@@ -229,7 +229,7 @@ class TP1H_L_Demand(QtWidgets.QWidget):
 
 
 class line_class(QLabel):
-    def __init__(self, parent, Destination):
+    def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
     
