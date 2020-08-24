@@ -305,13 +305,13 @@ class MP1H_L_Demand(QtWidgets.QWidget):
 class line_class(QLabel):
     def __init__(self, parent, Destination):
         super().__init__(parent)
-        self.Destination = Destination
+        self.parent = parent
     
     def mousePressEvent(self, event):
         
         if event.buttons() == QtCore.Qt.LeftButton:
-
-            Data["ui"].Demand_Destination_combobox.setCurrentText(self.Destination)
+            Destination = self.parent.Destination
+            Data["ui"].Demand_Destination_combobox.setCurrentText(Destination)
 
 class customlabel(QLabel):
     def __init__(self, parent, nodename, Destination, ID, ClientNum, LineVar, Panels, tooltip = None, DualPanelsId = None):

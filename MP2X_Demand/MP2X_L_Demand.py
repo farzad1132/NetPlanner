@@ -355,15 +355,15 @@ class MP2X_L_Demand(QtWidgets.QWidget):
 
 
 class line_class(QLabel):
-    def __init__(self, parent, Destination):
+    def __init__(self, parent):
         super().__init__(parent)
-        self.Destination = Destination
+        self.Parent = parent
     
     def mousePressEvent(self, event):
         
         if event.buttons() == QtCore.Qt.LeftButton:
-
-            Data["ui"].Demand_Destination_combobox.setCurrentText(self.Destination)
+            Destination = self.Parent.Destination
+            Data["ui"].Demand_Destination_combobox.setCurrentText(Destination)
 
 
 class customlabel(QLabel):
@@ -382,6 +382,7 @@ class customlabel(QLabel):
     
         self.DualPanelsId = DualPanelsId
         self.Panels = Panels
+        self.parent = parent
 
     def dragEnterEvent(self, event):
         e = event.mimeData()
@@ -402,26 +403,41 @@ class customlabel(QLabel):
                 Line_2_old_capacity = self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1]
                 DropCapacity = self.BWDict[servicetype]
 
+                if Line_1_old_capacity < 0.001:
+
+                    self.Destination = Data["ui"].Demand_Destination_combobox.currentText()
+                    self.parent.Destination = self.Destination
+                else:
+                    self.Destination = self.parent.Destination
+
+                self.DualClient = getattr(self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]], "Client" + str(int(self.ClientNum) + 1))
+
                 # checking weather lines have enough capacity or not
                 if Line_1_old_capacity + DropCapacity < 10 or Line_2_old_capacity + DropCapacity < 10:
                     
                     if self.ClientNum % 2 == 0:
                         self.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
+                        self.DualClient.setStyleSheet("image: url(:/CLIENT_L_Selected_SOURCE/CLIENT_L_Selected.png);")
                     else:
                         self.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
+                        self.DualClient.setStyleSheet("image: url(:/CLIENT_R_Selected_SOURCE/CLIENT_R_Selected.png);")
                     event.accept()
                 
                 else:
                     if self.ClientNum % 2 == 0:
                         self.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
+                        self.DualClient.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
                     else:
                         self.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
+                        self.DualClient.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
 
             else:
                 if self.ClientNum % 2 == 0:
                     self.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
+                    self.DualClient.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
                 else:
                     self.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
+                    self.DualClient.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
         
 
         super(customlabel,self).dragEnterEvent(event)
@@ -430,8 +446,10 @@ class customlabel(QLabel):
     def dragLeaveEvent(self, event):
         if self.ClientNum % 2 == 0:
             self.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
+            self.DualClient.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
         else:
             self.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
+            self.DualClient.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
 
     def dropEvent(self, event):
         event.accept()
@@ -451,6 +469,10 @@ class customlabel(QLabel):
             self.ids = (UserData["DemandId"], UserData["ServiceId"])            # ids : [ serviceId, DemandId ]
             
             self.setToolTip(DemandTabDataBase["Services_static"][self.nodename][self.ids].toolTip())
+
+            self.DualClient.servicetype = servicetype
+            self.DualClient.ids = (UserData["DemandId"], UserData["ServiceId"])            # ids : [ serviceId, DemandId ]
+            self.DualClient.setToolTip(DemandTabDataBase["Services_static"][self.nodename][self.ids].toolTip())
 
             # self.Panels.PanelsObjectDict[self.nodename][self.id].add_client(self.ClientNum, servicetype)
             Line_1_old_capacity = self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[0]
@@ -545,9 +567,11 @@ class customlabel(QLabel):
                 
                 # setting line port tooltip                                        
                 self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
+                self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]].LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][GroomOutId].toolTip())
 
                 # setting line port stylesheet
                 self.LineVar_1.setStyleSheet("QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); }")
+                self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]].LineVar_1.setStyleSheet("QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); }")
 
             elif Line_1_old_capacity + DropCapacity < 10 :
                 
@@ -583,9 +607,11 @@ class customlabel(QLabel):
 
                 # setting line port tooltip                                        
                 self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
+                self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]].LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][GroomOutId].toolTip())
 
                 # setting line port stylesheet
                 self.LineVar_1.setStyleSheet("QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); }")
+                self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]].LineVar_1.setStyleSheet("QLabel{ image: url(:/Line_L_Selected_SOURCE/Line_L_Selected.png); }")
             
             elif Line_2_old_capacity < 0.001:
 
@@ -638,9 +664,11 @@ class customlabel(QLabel):
                 
                 # setting line port tooltip                                        
                 self.LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
+                self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]].LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][GroomOutId].toolTip())
 
                 # setting line port stylesheet
                 self.LineVar_2.setStyleSheet("QLabel{ image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); }")
+                self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]].LineVar_2.setStyleSheet("QLabel{ image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); }")
             
             else:
 
@@ -678,13 +706,16 @@ class customlabel(QLabel):
 
                 # setting line port tooltip                                        
                 self.LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
+                self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]].LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId].toolTip())
 
                 # setting line port stylesheet
                 self.LineVar_2.setStyleSheet("QLabel{ image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); }")
+                self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]].LineVar_2.setStyleSheet("QLabel{ image: url(:/Line_R_Selected_SOURCE/Line_R_Selected.png); }")
 
 
             # NOTE: be Careful !!!!!
-            self.setAcceptDrops(False)  
+            self.setAcceptDrops(False)
+            self.DualClient.setAcceptDrops(False) 
         
 
     def contextMenuEvent(self, event):
@@ -696,6 +727,7 @@ class customlabel(QLabel):
         if action == ClearAction:
             if self.Panels.PanelsObjectDict[self.nodename][self.id].ClientsCapacity[self.ClientNum] != 0:
                 self.setToolTip("")
+                self.DualClient.setToolTip("")
 
                 ServiceId = self.Panels.PanelsObjectDict[self.nodename][self.id].ServiceIdList[self.ClientNum]
 
@@ -733,6 +765,7 @@ class customlabel(QLabel):
 
                     # setting line port tooltip                                        
                     self.LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_1].toolTip())
+                    self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]].LineVar_1.setToolTip(DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][GroomOutId_1].toolTip())
 
                 else:
                     # updating line 2 capacity
@@ -762,6 +795,7 @@ class customlabel(QLabel):
 
                     # setting line port tooltip                                        
                     self.LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.nodename, self.Destination)][GroomOutId_2].toolTip())
+                    self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]].LineVar_2.setToolTip(DemandTabDataBase["GroomOut10"][(self.Destination, self.nodename)][GroomOutId_2].toolTip())
 
                 # updating client capacity part of panel object
                 self.Panels.PanelsObjectDict[self.nodename][self.id].ClientsCapacity[self.ClientNum] = 0
@@ -782,11 +816,14 @@ class customlabel(QLabel):
                 self.Panels.PanelsObjectDict[self.Destination][self.DualPanelsId[0]].DemandIdList[self.ClientNum] = None
 
                 self.setAcceptDrops(True)
+                self.DualClient.setAcceptDrops(True)
 
                 if self.ClientNum % 2 == 0:
                     self.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
+                    self.DualClient.setStyleSheet("image: url(:/Client_L_Source/CLIENT_L.png);")
                 else:
                     self.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
+                    self.DualClient.setStyleSheet("image: url(:/Client_R_Source/CLIENT_R.png);")
 
                 self.modify_ServiceList(ids= self.ids,
                                         source = self.nodename,
@@ -826,6 +863,7 @@ class customlabel(QLabel):
                     Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOutId_1, self.ids[0])
 
                     self.LineVar_1.setStyleSheet("QLabel{ image: url(:/Line_L_SOURCE/LINE_L.png); }")
+                    self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]].LineVar_1.setStyleSheet("QLabel{ image: url(:/Line_L_SOURCE/LINE_L.png); }")
 
                 elif self.Panels.PanelsObjectDict[self.nodename][self.id].LinesCapacity[1] < 0.001 and GroomOutId_2 is not None:
 
@@ -852,6 +890,7 @@ class customlabel(QLabel):
                     Data["NetworkObj"].TrafficMatrix.delete_groom_out_10(GroomOutId_2, self.ids[0])
 
                     self.LineVar_2.setStyleSheet("QLabel{ image: url(:/Line_R_SOURCE/LINE_R.png); }")
+                    self.Panels.PanelsWidgetDict[self.Destination][self.DualPanelsId[0]].LineVar_2.setStyleSheet("QLabel{ image: url(:/Line_R_SOURCE/LINE_R.png); }")
 
     def Update_MP1H_Port(self, Item, Source, Destination, Capacity):
         UserData = Item.data(Qt.UserRole)
