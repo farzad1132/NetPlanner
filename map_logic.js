@@ -1487,7 +1487,7 @@ var tablesBtn = document.createElement("button");
 tablesBtn.innerHTML = "Load Tables"
 var menu = L.control({ position: 'topright' });
 
-tablesBtn.addEventListener("click", e => generateUIPanels(dummyClustersData))
+tablesBtn.addEventListener("click", e => generateUIPanels(MidGrooming_Input))
 
 menu.onAdd = function (map) {
 
@@ -1499,6 +1499,7 @@ menu.addTo(MapVar);
 var MidGrooming_Input = object();
 function start_MidGrooming(Input) {
     MidGrooming_Input = JSON.parse(Input);
+    //console.log(MidGrooming_Input);
 }
 
 var nodeSelctMode = false;

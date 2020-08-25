@@ -4196,6 +4196,8 @@ class Ui_MainWindow(object):
         self.Fill_Demand_SourceandDestination_combobox()
         #self.update_cells()
 
+        self.prepare_input_for_Midgrooming(self.G)
+
         self.tabWidget.setTabEnabled(1, True)
         self.tabWidget.setTabEnabled(2, True)
 
@@ -4234,7 +4236,7 @@ class Ui_MainWindow(object):
     # this method prepares JSON input for midgrooming also in provides shortest path of demands in list format
     def prepare_input_for_Midgrooming(self, Graph):
         input_data = {}
-        for cluster_id, cluster_object in self.network.TrafficMatrix.ClusterDict.items():
+        for cluster_id, cluster_object in self.network.PhysicalTopology.ClusterDict.items():
             input_data[cluster_id] = {}
             input_data[cluster_id]["Gateway"] = self.IdNodeMap[cluster_object.GatewayId]
             input_data[cluster_id]["SubNodesNameList"] = list(map(lambda x: self.IdNodeMap[x], cluster_object.SubNodesId))
