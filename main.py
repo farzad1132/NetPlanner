@@ -4181,9 +4181,11 @@ class Ui_MainWindow(object):
         column = key[1]
 
         if table == "TM":
-            index = index_map[index]
-            self.listWidget.setCurrentIndex(index)
-        self.General_TM.scrollToItem(self.General_TM.item(key[0], int(key[1])))
+            #index = index_map[column]
+            #self.listWidget.setCurrentIndex(index)
+            self.Traffic_matrix.scrollToItem(self.Traffic_matrix.item(key[0], 0))
+        else:
+            self.General_TM.scrollToItem(self.General_TM.item(key[0], int(key[1])))
 
 
     def update_cells(self):
