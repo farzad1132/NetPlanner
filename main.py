@@ -1933,8 +1933,8 @@ class Ui_MainWindow(object):
         self.TMSliderBar = self.Traffic_matrix.verticalScrollBar()
 		
         self.GMTSliderBar = self.General_TM.verticalScrollBar()
-        QObject.connect(self.TMSliderBar,SIGNAL("actionTriggered(int)"),self.SyncScroll_1)
-        QObject.connect(self.GMTSliderBar,SIGNAL("actionTriggered(int)"),self.SyncScroll_2)
+        QObject.connect(self.TMSliderBar,SIGNAL("valueChanged(int)"),self.SyncScroll_1)
+        QObject.connect(self.GMTSliderBar,SIGNAL("valueChanged(int)"),self.SyncScroll_2)
 
         self.export_result_button.clicked.connect(self.export_excel_fun)
 
@@ -3147,11 +3147,11 @@ class Ui_MainWindow(object):
 
     def SyncScroll_1(self):
         sliderValue = self.TMSliderBar.value()
-        self.GMTSliderBar.setValue(sliderValue - 3)
+        self.GMTSliderBar.setValue(sliderValue)
     
     def SyncScroll_2(self):
         sliderValue = self.GMTSliderBar.value()
-        self.TMSliderBar.setValue(sliderValue + 3)
+        self.TMSliderBar.setValue(sliderValue)
 
     def main_tab_clicked(self,index):
         if index == 2:
@@ -3171,26 +3171,28 @@ class Ui_MainWindow(object):
     
     def list_click(self):
 
-
         self.Traffic_matrix.clear()
     
-        item = self.listWidget.currentItem()
-        item = str(item.text())
-    
-        self.Traffic_matrix.setColumnCount(Data[item]["ColumnCount"])
+        header = self.listWidget.currentItem()
+        header = str(header.text())
+
+        self.Traffic_matrix.setColumnCount(Data[header]["ColumnCount"])
         self.Traffic_matrix.setRowCount(Data["RowCount"])
-        self.Traffic_matrix.setHorizontalHeaderLabels(Data[item]["Headers"])
+        self.Traffic_matrix.setHorizontalHeaderLabels(Data[header]["Headers"])
     
-        for i in range(Data[item]["ColumnCount"]):
-            column_name = Data[item]["Headers"][i].strip()
-            keys = Data[item]["DataSection"][column_name].keys()
+        
+        for column in range(Data[header]["ColumnCount"]):
+            column_name = Data[header]["Headers"][column].strip()
+            keys = Data[header]["DataSection"][column_name].keys()
             for row in list(keys):
-                cell_data = Data[item]["DataSection"][column_name][row]
-                self.Traffic_matrix.setCurrentCell(int(row),i)
+                cell_data = Data[header]["DataSection"][column_name][row]
+                self.Traffic_matrix.setCurrentCell(int(row),column)
                 #self.Traffic_matrix.setItem(int(row),i,QTableWidgetItem(cell_data))
                 #self.Traffic_matrix.item(int(row), i).setText(cell_data)
-                self.Traffic_matrix.setItem(int(row), i, QTableWidgetItem(cell_data))
+
+                self.Traffic_matrix.setItem(int(row), column, QTableWidgetItem(str(cell_data)))
     
+
     def Demand_LineList_fun(self, CurItem, PreItem):
         if self.update_Demand_lightpath_list_flag is True:
             if CurItem is not None:
@@ -3951,14 +3953,15 @@ class Ui_MainWindow(object):
 
         self.Traffic_matrix.blockSignals(True)
         if value == "":
-            if (str(row) in Data[header]["DataSection"][column_name]):
-                Data[header]["DataSection"][column_name].pop(str(row))
-
+            item.setBackground(Qt.white)
+            self.add_delete_error_in_TM(key, mode = "delete")
+            Data["error_in_TM"].pop(key)
+            if (int(row) in Data[header]["DataSection"][column_name]):
+                Data[header]["DataSection"][column_name].pop(int(row))                
 
         else:
             if column_name=='Quantity':
-                if str(value).isdigit():
-                    Data[header]["DataSection"][column_name][str(row)] = value
+                Data[header]["DataSection"][column_name][int(row)] = value
             
                 state = value.isdigit()
 
@@ -3971,6 +3974,26 @@ class Ui_MainWindow(object):
                     item.setBackground(Qt.red)
                     list_item = self.add_delete_error_in_TM(key, mode = "add")     
                     Data["error_in_TM"][key] = list_item
+
+            elif column_name=='SLA':
+                Data[header]["DataSection"][column_name][int(row)] = value
+
+            elif column_name=='λ':
+                Data[header]["DataSection"][column_name][int(row)] = value
+
+            elif column_name=='concat.':
+                Data[header]["DataSection"][column_name][int(row)] = value
+
+            elif column_name=='Granularity':
+                Data[header]["DataSection"][column_name][int(row)] = value
+            
+            elif column_name=='Granularity_xVC12':
+                Data[header]["DataSection"][column_name][int(row)] = value
+
+            elif column_name=='Granularity_xVC4':
+                Data[header]["DataSection"][column_name][int(row)] = value
+
+        self.Traffic_matrix.blockSignals(False)
 
 
     def GTM_CellChange_fun(self):
@@ -3993,6 +4016,9 @@ class Ui_MainWindow(object):
         if value == "":
             if (row in Data["General"]["DataSection"][str(column)]):
                 Data["General"]["DataSection"][str(column)].pop(row)
+                item.setBackground(Qt.red)
+                list_item = self.add_delete_error_in_TM(key, mode = "add")     
+                Data["error_in_TM"][key] = list_item
 
         
         else:
@@ -4055,6 +4081,34 @@ class Ui_MainWindow(object):
         column = key[1]
         table = key[2]
 
+        if mode == "add":
+            
+            if table == "GTM":
+                if column == "0":
+                    column_name = "ID"
+                elif column == "1":
+                    column_name = "Source"
+                elif column == "2":
+                    column_name = "Destination"
+            else:
+                column_name = column
+
+            text = f"row: {row + 1}, Column: {column_name}"
+            item = QListWidgetItem(text, self.Errors_listwidget)
+            item.setData(Qt.UserRole, key)
+            self.Errors_listwidget.addItem(item)
+
+            self.save_changes_botton_color()
+
+            return item
+        
+        elif mode == "delete":
+            list_item = Data["error_in_TM"][key]
+            index = self.Errors_listwidget.row(list_item)
+            self.Errors_listwidget.takeItem(index)
+            self.save_changes_botton_color()
+
+    def save_changes_botton_color(self):
         if self.Errors_listwidget.count() != 0:
             self.SaveChanges_PushButton.setEnabled(False)
             self.SaveChanges_PushButton.setStyleSheet("QPushButton {\n"
@@ -4105,30 +4159,20 @@ class Ui_MainWindow(object):
 "QPushButton:default {\n"
 "    border-color: navy; /* make the default button prominent */\n"
 "}")
-        if mode == "add":
-            
-            if table == "GTM":
-                if column == "0":
-                    column_name = "ID"
-                elif column == "1":
-                    column_name = "Source"
-                elif column == "2":
-                    column_name = "Destination"
-            else:
-                column_name = column
-
-            text = f"row: {row}, Column: {column_name}"
-            item = QListWidgetItem(text, self.Errors_listwidget)
-            item.setData(Qt.UserRole, key)
-            self.Errors_listwidget.addItem(item)
-
-            return item
-        
-        elif mode == "delete":
-            list_item = Data["error_in_TM"][key]
-            index = self.Errors_listwidget.row(list_item)
-            self.Errors_listwidget.takeItem(index)
     
+
+    def contextMenuEvent(self, event):
+        gp = event.globalPos()
+        menu = QMenu(self)
+        delete_act = menu.addAction("delete")
+        action = menu.exec_(gp)
+        vp_pos = self.General_TM.viewport().mapFromGlobal(gp)
+        row = self.General_TM.rowAt(vp_pos.y())
+
+        if action == delete_act:
+            print(row)
+    
+  
     def scroll_to_cell(self, item):
         index_map = {"E1": 0, "STM_1_Electrical": 1, "STM_1_Optical": 2, "STM_4": 3, "STM_16": 4, "STM_64": 5, "FE": 6, "1GE": 7, "10GE": 8, "40GE": 9, "100GE": 10}
 
