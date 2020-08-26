@@ -177,6 +177,23 @@ class Backend_map(QObject):
     @Slot(str)
     def fill_subnodes_list(self, gateway):
         Data["ui"].Delete_Cluster_procedure(gateway)
+    
+    @Slot(str)
+    def start_mid_grooming_process(self, payload):
+        payload = json.loads(json.loads(payload))
+        NodeName = payload["NodeName"]
+        DemandId = payload["DemandId"]
+        ServiceIdList = payload["ServiceIdList"]
+
+        Data["network"].TrafficMatrix.DemandDict[DemandId].add_mandatory_node(  ServiceIdList= ServiceIdList,
+                                                                                MandatoryNodesIdList=[NodeName])
+        res = change_service_manually(Data["ui"].network, {int(DemandId): list(map(lambda x : int(x), ServiceIdList))})
+
+        print(res)
+
+        # NOTE: prepare updated data and then send it for js
+
+        #Data["ui"].webengine.page().runJavaScript(f"refresh_mid_grooming_view({json.dumps(res)})")
 
 
 class Ui_MainWindow(object):
@@ -2489,6 +2506,7 @@ class Ui_MainWindow(object):
 
             self.Grooming_pushbutton.setEnabled(True)
             Define_intra_cluster_demnad(self.network)
+            self.prepare_input_for_Midgrooming(self.G)
 
     #TODO: complete this method
     def working_view_fun(self):
@@ -4194,7 +4212,7 @@ class Ui_MainWindow(object):
         self.Fill_Demand_SourceandDestination_combobox()
         #self.update_cells()
 
-        self.prepare_input_for_Midgrooming(self.G)
+        
 
         self.tabWidget.setTabEnabled(1, True)
         self.tabWidget.setTabEnabled(2, True)
@@ -4240,8 +4258,8 @@ class Ui_MainWindow(object):
             input_data[cluster_id]["SubNodesNameList"] = list(map(lambda x: self.IdNodeMap[x], cluster_object.SubNodesId))
             input_data[cluster_id]["Demands"] = {}
             for DemandId in  cluster_object.Demands:
-                Source = self.network.TrafficMatrix.DemandDict[DemandId].Source
-                Destination = self.network.TrafficMatrix.DemandDict[DemandId].Destination
+                Source = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Source]
+                Destination = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Destination]
                 Service_Dict = {}
                 for id, service_object in self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict.items():
                     Service_Dict[id] = service_object.Type

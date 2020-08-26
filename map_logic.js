@@ -1496,7 +1496,7 @@ menu.onAdd = function (map) {
 
 menu.addTo(MapVar);
 
-var MidGrooming_Input = object();
+var MidGrooming_Input = Object();
 function start_MidGrooming(Input) {
     MidGrooming_Input = JSON.parse(Input);
     //console.log(MidGrooming_Input);
@@ -1544,7 +1544,7 @@ function generateUIPanels(clustersData) {
     selectNodeBtn.setAttribute("class", "btn btn-info btn-sm m-1")
     selectNodeBtn.innerHTML = "Select Node";
     selectNodeBtn.addEventListener("click", e =>
-        handleSelectNodeBtn(getSelectedServices(serviceTable, dummyClustersData))
+        handleSelectNodeBtn(getSelectedServices(serviceTable, MidGrooming_Input))
     );
     var selectNodeOffBtn = document.createElement("button");
     selectNodeOffBtn.setAttribute("class", "btn btn-info btn-sm m-1")
@@ -1556,12 +1556,12 @@ function generateUIPanels(clustersData) {
     }
     );
 
-    var firstClusterID = Object.keys(dummyClustersData)[0];
-    var firstDemandID = Object.keys(dummyClustersData[firstClusterID].Demands)[0];
-    generateClustersTable(dummyClustersData, clusterTable, demandTable, serviceTable);
-    generateDemandsTable(firstClusterID, dummyClustersData, demandTable, serviceTable);
+    var firstClusterID = Object.keys(MidGrooming_Input)[0];
+    var firstDemandID = Object.keys(MidGrooming_Input[firstClusterID].Demands)[0];
+    generateClustersTable(MidGrooming_Input, clusterTable, demandTable, serviceTable);
+    generateDemandsTable(firstClusterID, MidGrooming_Input, demandTable, serviceTable);
 
-    generateServicesTable(firstClusterID, firstDemandID, dummyClustersData, serviceTable);
+    generateServicesTable(firstClusterID, firstDemandID, MidGrooming_Input, serviceTable);
 
 
     var menu = L.control({ position: 'bottomleft' });
@@ -1679,8 +1679,8 @@ function generateDemandsTable(clusterID, data, table, serviceTable) {
 }
 
 function generateServicesTable(clusterID, demandID, data, table) {
-    services = data[clusterID].Demands[demandID].Services;
-    console.log("c ", clusterID, "d", demandID);
+    services = data[clusterID].Demands[demandID]["Services"];
+    //console.log("c ", clusterID, "d", demandID);
     table.innerHTML = "";
 
     var tbdy = document.createElement('tbody');
@@ -1717,7 +1717,8 @@ function getSelectedServices(serviceTable, data) {
         if (serviceChecks[i].checked == true) {
             checkedServices += {
                 demandId: serviceTable.rows[i].getAttribute("data-demandID"),
-                serviceId: serviceTable.rows[i].getAttribute("data-serviceID")
+                serviceId: serviceTable.rows[i].getAttribute("data-serviceID"),
+                clusterId: serviceTable.rows[i].getAttribute("data-clusterID")
             }
         }
     }
@@ -1745,7 +1746,7 @@ function changeShortestPathColor(shortestPath) {
     links_groupfeature.eachLayer(layer => {
         for (var i = 0; i < links.length; i++) {
             if (get_name(layer) === links[i]) {
-                console.log("ff");
+                //console.log("ff");
                 layer.setStyle({ color: "#669900" });
             }
         }
@@ -1758,7 +1759,30 @@ function changeShortestPathColor(shortestPath) {
 // params:
 // e is the selected node
 // checked services is a json array of checked services 
+var Current_ClusterId = null;
 function handleSelectedNode(e, checkedServices) {
-    console.log("dummy handling function");
-    console.log(checkedServices);
+    var NodeName = get_name(e.layer);
+    var ServiceIdList = [];
+    var DemandId = checkedServices[0].demandId;
+    Current_ClusterId = checkedServices[0].clusterId
+
+    /*checkedServices.forEach(function (item, index) {
+        ServiceIdList.push(item.serviceId)
+    });*/
+
+    var arrayLength = checkedServices.length;
+    for (var i = 0; i < arrayLength; i++) {
+        //console.log(myStringArray[i]);
+        ServiceIdList.push(checkedServices[i]["serviceId"])
+    }
+    
+    var payload = Object();
+    payload["NodeName"] = NodeName;
+    payload["DemandId"] = DemandId;
+    console.log(DemandId);
+    payload["ServiceIdList"] = ServiceIdList;
+    backend_map.start_mid_grooming_process(JSON.stringify(payload))
+    
+    //console.log("dummy handling function");
+    //console.log(checkedServices);
 }
