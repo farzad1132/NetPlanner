@@ -46,6 +46,8 @@ from TrafficMatrixError.Destination_type_error import Ui_Destination_type_error
 from TrafficMatrixError.Quantity_type_error import Ui_Quantity_type_error
 from TrafficMatrixError.SLA_type_error import Ui_SLA_type_error
 
+from models import Custom_table
+
 
 import networkx as nx
 from bokeh.plotting import from_networkx, figure
@@ -1094,7 +1096,7 @@ class Ui_MainWindow(object):
         self.splitter_2 = QtWidgets.QSplitter(self.TrafficMatrixTab)
         self.splitter_2.setOrientation(QtCore.Qt.Horizontal)
         self.splitter_2.setObjectName("splitter_2")
-        self.General_TM = QtWidgets.QTableWidget(self.splitter_2)
+        self.General_TM = Custom_table(self.splitter_2)
         self.General_TM.setStyleSheet("QTableWidget {\n"
 "    \n"
 "    \n"
@@ -1128,7 +1130,7 @@ class Ui_MainWindow(object):
         self.General_TM.setHorizontalHeaderItem(7, item)
         item = QtWidgets.QTableWidgetItem()
         self.General_TM.setHorizontalHeaderItem(8, item)
-        self.Traffic_matrix = QtWidgets.QTableWidget(self.splitter_2)
+        self.Traffic_matrix =Custom_table(self.splitter_2)
         self.Traffic_matrix.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.Traffic_matrix.setStyleSheet("QTableWidget {\n"
 "    \n"
@@ -4161,16 +4163,7 @@ class Ui_MainWindow(object):
 "}")
     
 
-    def contextMenuEvent(self, event):
-        gp = event.globalPos()
-        menu = QMenu(self)
-        delete_act = menu.addAction("delete")
-        action = menu.exec_(gp)
-        vp_pos = self.General_TM.viewport().mapFromGlobal(gp)
-        row = self.General_TM.rowAt(vp_pos.y())
-
-        if action == delete_act:
-            print(row)
+    
     
   
     def scroll_to_cell(self, item):
