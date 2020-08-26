@@ -61,13 +61,12 @@ def MP2X(Services_lower10):
     for j in range(1,max_number_device+1):
         prob +=lpSum(x[(i,j)] for i in range(1,NO_service_lower10+1) ) <=max_port,""
     
-            
+    
     import os
     cwd = os.getcwd()
-    solverdir = 'cbc-2.7.5-win64\\bin\\cbc.exe'  # extracted and renamed CBC solver binary
+    solverdir = 'cbc-2.7.5-win64\\bin\\cbc.exe'
     solverdir = os.path.join(cwd, solverdir)
     solver = COIN_CMD(path=solverdir)
-     
     #prob.writeLP("grooming.lp")
     prob.solve(solver)
     
@@ -130,7 +129,282 @@ def MP2X(Services_lower10):
 
 
 
-def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
+
+
+def PS6X(Services_lower10_i):
+    prob = LpProblem("grooming", LpMinimize )
+    B=10                    #u
+    max_port=16
+    y=[]
+    min_number_of_service=3
+    Services_lower10=[]  
+    no_fe=0
+        
+        #Services_lower10=[0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 2.5, 2.5, 0.62, 0.62, 0.62, 0.62, 0.62]
+        #Services_lower10=[2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,0.62]
+
+    
+    for i in range(0,len(Services_lower10_i)):
+        if(Services_lower10_i[i][1]==0.1):
+            Services_lower10.append(Services_lower10_i[i])
+            no_fe=no_fe+1
+    for i in range(0,len(Services_lower10_i)):
+        if(Services_lower10_i[i][1]==1):
+            Services_lower10.append(Services_lower10_i[i])
+    NO_service_lower10 = len(Services_lower10)
+    #print(sum([pair[1] for pair in Services_lower10]))
+    #print(math.ceil(sum([pair[1] for pair in Services_lower10])/20))
+    NO_Lineport=max(math.ceil(NO_service_lower10/10),math.ceil(sum([pair[1] for pair in Services_lower10])/10))    #number of line ports
+    max_number_device=math.ceil(NO_Lineport/2)
+    max_number_device=max_number_device*2
+#    max_number_device=NO_Lineport_MP2x
+#    if NO_service_lower10 ==81:
+#        print("max=",max_number_device)
+#        print("**",max_number_device)
+    for i in range(1,max_number_device+1):
+        #y[i]=LpVariable(name='y[i]', cat='Binary')
+        y.append(LpVariable(name='y%s'%i, cat='Binary'))
+    
+    x = {}
+    for j in range(1,max_number_device+1):
+        for i in range(1,NO_service_lower10+1):
+           #x ={ (i, j): LpVariable("x",  cat='Binary')}
+           x[(i,j)] = LpVariable("x%s_%s"%(i,j),  cat='Binary')
+    
+    
+    
+#    prob += lpSum([x[(i,j)] for j in range(1,NO_service_lower10+1) for i in range(1,max_number_device+1)])
+    prob += lpSum([y[i-1] for i in range(1,max_number_device+1)]) 
+#    prob += lpSum([y[i-1] for i in range(1,max_number_device+1)])
+#     for j in range(1,max_number_device+1):
+#        prob +=lpSum(Services_lower10[i-1][1]*x[(i,j)] for i in range(1,NO_service_lower10+1))
+    
+    
+    for i in range(1,NO_service_lower10+1):
+        prob +=lpSum(x[(i,j)] for j in range(1,max_number_device+1) ) ==1,""
+    
+    
+    for j in range(1,max_number_device+1):
+        prob +=lpSum(Services_lower10[i-1][1]*x[(i,j)] for i in range(1,NO_service_lower10+1)) <= B*y[j-1],""
+        
+    
+    for j in range(1,max_number_device+1):
+        for  i in range(1,NO_service_lower10+1):
+            prob +=lpSum(x[(i,j)]) <= y[j-1],""
+            
+    for j in range(1,max_number_device+1):
+        prob +=lpSum(x[(i,j)] for i in range(1,no_fe+1) ) <=14,""
+        
+    for j in range(1,max_number_device+1):
+        prob +=lpSum(x[(i,j)] for i in range(1,NO_service_lower10+1) ) <=16,""
+#    for j in range(1,max_number_device+1):
+#        prob +=lpSum((x[(i,j)] for i in range(no_fe+1,NO_service_lower10+1)) + (x[(k,j)] for k in range(1,no_fe+1)) ) <=16,""
+    
+            
+    
+     
+    #prob.writeLP("grooming.lp")
+    prob.solve()
+    
+    #print("Status:", LpStatus[prob.status])
+    
+    #for j in range(1,max_number_device+1):
+        
+    '''for v in prob.variables():
+        print (v.name, "=", v.varValue)
+    for j in range(1,max_number_device+1):
+        print("******   ",y[j-1],"=",y[j-1].value(),"     *********    ")
+        for i in range(1,NO_service_lower10+1):
+            print(x[(i,j)],"=",x.get(i,j))'''
+    ans = prob.variables()
+#    print(ans)
+    Result = {}
+    for j in range(max_number_device):
+        Result[ans[-1 - j].name] = {}
+    #    yy={}
+    for i in range( len(ans) - max_number_device ):
+        itemName = ans[i].name
+        itemValue = ans[i].varValue
+        
+        find_underscore = itemName.index("_")
+        ServiceNum = itemName[1:find_underscore]
+        PanelNum = itemName[(find_underscore+1):]
+    
+        key_panel = 'y' + PanelNum
+        Result[key_panel][itemName] = (itemValue * Services_lower10[int(ServiceNum) - 1][0],itemValue * Services_lower10[int(ServiceNum) - 1][1])
+    #print(Result)
+    
+    #for j in range(1,max_number_device+1):
+    #    if y[j-1].value()==1:
+    #        h=0
+    #        for i in range(1,NO_service_lower10+1):
+    ##            print('**',x[(i,j)].value())
+    #            if x[(i,j)].value()==1:
+    #                h=h+1
+    ##                print('h=',h)
+    #        if h>= min_number_of_service:
+    #            print(j,y[j-1])                        #????
+        
+    Output=[]
+    
+    for key, value in Result.items():
+        y=[]
+        for inner_key,inner_value in value.items():
+            if inner_value[1] != 0:
+                y.append((int (inner_value[0]),inner_value[1]))
+        if y:
+            Output.append(y)
+#    dele=[]    
+#    for i in range(0, len(Output)):
+#        if (len(Output[i])==0):
+#            dele.append(i)
+#            
+#    print('dsdsss')
+#    print(Output)
+#    print('dsdsss')
+#    print(Output)
+#    print(Services_lower10)
+    return Output
+
+
+
+
+
+#def PS6X(Services_lower10):
+#    prob = LpProblem("grooming", LpMinimize )
+#    B=10                    #u
+#    max_port=16
+#    y=[]
+#    min_number_of_service=3
+#        
+#        
+#        #Services_lower10=[0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 2.5, 2.5, 0.62, 0.62, 0.62, 0.62, 0.62]
+#        #Services_lower10=[2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,0.62]
+#
+#    NO_service_lower10 = len(Services_lower10)
+#    NO_service_lower10_fe=[]
+#    NO_service_lower10_ge=[]
+#    for i in range(0,len(NO_service_lower10)):
+#        if(NO_service_lower10[i][1]==0.1):
+#            NO_service_lower10_fe.append(NO_service_lower10[i])
+#        elif(NO_service_lower10[i][1]==1):
+#            NO_service_lower10_ge.append(NO_service_lower10[i])
+#    NO_service_fe=len(NO_service_lower10_fe)
+#    NO_service_ge=len(NO_service_lower10_ge)
+#    #print(sum([pair[1] for pair in Services_lower10]))
+#    #print(math.ceil(sum([pair[1] for pair in Services_lower10])/20))
+#    NO_Lineport=max(math.ceil(NO_service_lower10/10),math.ceil(sum([pair[1] for pair in Services_lower10])/10))    #number of line ports
+#    max_number_device=math.ceil(NO_Lineport/2)
+#    max_number_device=max_number_device*2
+##    max_number_device=NO_Lineport_MP2x
+##    if NO_service_lower10 ==81:
+##        print("max=",max_number_device)
+##        print("**",max_number_device)
+#    for i in range(1,max_number_device+1):
+#        #y[i]=LpVariable(name='y[i]', cat='Binary')
+#        y.append(LpVariable(name='y%s'%i, cat='Binary'))
+#    
+#    x = {}
+#    for j in range(1,max_number_device+1):
+#        for i in range(1,NO_service_fe+1):
+#            for k in range(1,NO_service_ge+1):
+#           #x ={ (i, j): LpVariable("x",  cat='Binary')}
+#               x[(i,k,j)] = LpVariable("x%s_%s"%(i,k,j),  cat='Binary')
+#    
+#    
+#    
+##    prob += lpSum([x[(i,j)] for j in range(1,NO_service_lower10+1) for i in range(1,max_number_device+1)])
+#    prob += lpSum([y[i-1] for i in range(1,max_number_device+1)]) 
+##    prob += lpSum([y[i-1] for i in range(1,max_number_device+1)])
+##     for j in range(1,max_number_device+1):
+##        prob +=lpSum(Services_lower10[i-1][1]*x[(i,j)] for i in range(1,NO_service_lower10+1))
+#    
+#    
+#    for i in range(1,NO_service_fe+1):
+#        prob +=lpSum(x[(i,k,j)] for j in range(1,max_number_device+1) ) ==1,""
+#        
+#    for k in range(1,NO_service_ge+1):
+#        prob +=lpSum(x[(i,k,j)] for j in range(1,max_number_device+1) ) ==1,""
+#        
+#    
+#    for j in range(1,max_number_device+1):
+#        prob +=lpSum(Services_lower10[i-1][1]*x[(i,j)] for i in range(1,NO_service_lower10+1)) <= B*y[j-1],""
+#        
+#    
+#    for j in range(1,max_number_device+1):
+#        for  i in range(1,NO_service_lower10+1):
+#            prob +=lpSum(x[(i,k,j)]) <= y[j-1],""
+#            
+#    for j in range(1,max_number_device+1):
+#        prob +=lpSum(x[(i,j)] for i in range(1,NO_service_lower10+1) ) <=max_port,""
+#    
+#            
+#    
+#     
+#    #prob.writeLP("grooming.lp")
+#    prob.solve()
+#    
+#    #print("Status:", LpStatus[prob.status])
+#    
+#    #for j in range(1,max_number_device+1):
+#        
+#    '''for v in prob.variables():
+#        print (v.name, "=", v.varValue)'''
+#    '''for j in range(1,max_number_device+1):
+#        print("******   ",y[j-1],"=",y[j-1].value(),"     *********    ")
+#        for i in range(1,NO_service_lower10+1):
+#            print(x[(i,j)],"=",x.get(i,j))'''
+#    ans = prob.variables()
+#    Result = {}
+#    for j in range(max_number_device):
+#        Result[ans[-1 - j].name] = {}
+#    #    yy={}
+#    for i in range( len(ans) - max_number_device ):
+#        itemName = ans[i].name
+#        itemValue = ans[i].varValue
+#        
+#        find_underscore = itemName.index("_")
+#        ServiceNum = itemName[1:find_underscore]
+#        PanelNum = itemName[(find_underscore+1):]
+#    
+#        key_panel = 'y' + PanelNum
+#        Result[key_panel][itemName] = (itemValue * Services_lower10[int(ServiceNum) - 1][0],itemValue * Services_lower10[int(ServiceNum) - 1][1])
+#    #print(Result)
+#    
+#    #for j in range(1,max_number_device+1):
+#    #    if y[j-1].value()==1:
+#    #        h=0
+#    #        for i in range(1,NO_service_lower10+1):
+#    ##            print('**',x[(i,j)].value())
+#    #            if x[(i,j)].value()==1:
+#    #                h=h+1
+#    ##                print('h=',h)
+#    #        if h>= min_number_of_service:
+#    #            print(j,y[j-1])                        #????
+#        
+#    Output=[]
+#    
+#    for key, value in Result.items():
+#        y=[]
+#        for inner_key,inner_value in value.items():
+#            if inner_value[1] != 0:
+#                y.append((int (inner_value[0]),inner_value[1]))
+#        if y:
+#            Output.append(y)
+##    dele=[]    
+##    for i in range(0, len(Output)):
+##        if (len(Output[i])==0):
+##            dele.append(i)
+##            
+##    print('dsdsss')
+##    print(Output)
+##    print('dsdsss')
+#    return Output
+
+
+
+
+def Change_TM_acoordingTo_Clusters( n, MP1H_Threshold, MP2X_Threshold=None):
 
         service_lower10_SDH=[]
         service_lower10_E=[]
@@ -955,8 +1229,30 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
                 n.del_lightpath(0) """
         for key in list(n.LightPathDict.keys()):
             n.del_lightpath(key)
+
+        for i in  list(n.TrafficMatrix.DemandDict.keys()):
+            if len(n.TrafficMatrix.DemandDict[i].ServiceDict)==0:  
+                n.TrafficMatrix.del_demand(i) 
+                
+
+            
+            
         
-        
+
+
+
+        #  remain_lower100            (the services which are not assigned to lightpath)  (DemandId,[ServiceId])
+        #  MP2x_list                  (MP2X with 2 output)                               (DemandId,[ServiceId(groomout10),ServiceId(groomout10)])
+        #  remaining_service_lower10  (MP2X with 1 output)                               (DemandId,ServiceId(groomout10))
+    
+   
+
+
+
+
+
+
+def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 
         service_lower10_SDH=[]
         service_lower10_E=[]
@@ -1093,21 +1389,6 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 
 
 
-
-        for i in  list(n.TrafficMatrix.DemandDict.keys()):
-            if len(n.TrafficMatrix.DemandDict[i].ServiceDict)==0:  
-                n.TrafficMatrix.del_demand(i)                
-
-
-
-
-
-
-
-
-
-
-
         return n, (remain_lower100_dict,MP2x_Dict,remaining_service_lower10_dict)
         #  remain_lower100            (the services which are not assigned to lightpath)  (DemandId,[ServiceId])
         #  MP2x_list                  (MP2X with 2 output)                               (DemandId,[ServiceId(groomout10),ServiceId(groomout10)])
@@ -1122,9 +1403,72 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
     
 
 
+def change_service_manually(n,dict1):
+#    dict1=n.TrafficMatrix.get_mid_grooming_serviceids()
+#    dict1={1:[6,7]}
+    listOFDemand=[]
+    for i in list(dict1.keys()):
+        for j in dict1[i]:
+            source1 = n.TrafficMatrix.DemandDict[i].Source
+            Destination1 = n.TrafficMatrix.DemandDict[i].ServiceDict[j].MandatoryNodesIdList[0]
+            Destination2 = n.TrafficMatrix.DemandDict[i].Destination
+            typee=n.TrafficMatrix.DemandDict[i].ServiceDict[j].Type
+            Sla = n.TrafficMatrix.DemandDict[i].ServiceDict[j].Sla
+            i1=0
+            i2=0
+            if n.TrafficMatrix.DemandDict[i].ServiceDict[j].OriginalSource:
+                orgsrc=n.TrafficMatrix.DemandDic[i].ServiceDict[j].OriginalSource
+            else:
+                orgsrc=source1
+            if n.TrafficMatrix.DemandDict[i].ServiceDict[j].OriginalDestination:
+                orgdes=n.TrafficMatrix.DemandDic[i].ServiceDict[j].OriginalDestination
+            else:
+                orgdes=Destination2
+            for Did in list(n.TrafficMatrix.DemandDict):
+                if source1 == n.TrafficMatrix.DemandDict[Did].Source and  Destination1 == n.TrafficMatrix.DemandDict[Did].Destination:
+                    listOFDemand.append(Did)
+                    n.TrafficMatrix.DemandDict[Did].add_service(ServiceId=j,ServiceType=typee,Sla=Sla,OriginalSource=orgsrc,OriginalDestination=orgdes) 
+                    i1=1
+                elif Destination1 == n.TrafficMatrix.DemandDict[Did].Source and  Destination2 == n.TrafficMatrix.DemandDict[Did].Destination:
+                   listOFDemand.append(Did)
+                   n.TrafficMatrix.DemandDict[Did].add_service(ServiceId=j,ServiceType=typee,Sla=Sla,OriginalSource=orgsrc,OriginalDestination=orgdes) 
+                   i2=1
+            if i1==0:
+                n.TrafficMatrix.add_demand(source1,Destination1,"X")
+                LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                listOFDemand.append(LastId)
+                n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId=j,ServiceType=typee,Sla=Sla,OriginalSource=orgsrc,OriginalDestination=orgdes) 
+            if i2==0:
+                n.TrafficMatrix.add_demand(Destination1,Destination2,"X")
+                LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
+                listOFDemand.append(LastId)
+                n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId=j,ServiceType=typee,Sla=Sla,OriginalSource=orgsrc,OriginalDestination=orgdes) 
+            
+            n.TrafficMatrix.DemandDict[i].ServiceDict.pop(j)
+        listOFDemand.append(i)
+               
+    for i in  list(n.TrafficMatrix.DemandDict.keys()):
+        if len(n.TrafficMatrix.DemandDict[i].ServiceDict)==0:  
+            n.TrafficMatrix.del_demand(i)   
+      
+    listOFDemand2=[]
+    for i in listOFDemand:
+        if i not in listOFDemand2:
+            listOFDemand2.append(i)
+    return listOFDemand2
 
 
-
+def Define_intra_cluster_demnad(n):
+    
+    for i in list(n.PhysicalTopology.ClusterDict.keys()):
+        cluster_nodes_id = n.PhysicalTopology.ClusterDict[i].SubNodesId
+        cluster_nodes_id.append(n.PhysicalTopology.ClusterDict[i].GatewayId)
+        Demands_id=[]
+        for j in list(n.TrafficMatrix.DemandDict.keys()):
+            if (n.TrafficMatrix.DemandDict[j].Source in cluster_nodes_id) and (n.TrafficMatrix.DemandDict[j].Destination in cluster_nodes_id):
+                Demands_id.append(j)
+#                print(j)
+        n.PhysicalTopology.add_cluster_demand(GatewayId= n.PhysicalTopology.ClusterDict[i].GatewayId, Demands_list= Demands_id)
 
 
 
@@ -1140,7 +1484,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
 
 if __name__ == "__main__":
 
-    with open('NetWorkObj.obj', 'rb') as handle:
+    with open('KermanObj.obj', 'rb') as handle:
         n = pickle.load(handle)                   
     handle.close()
 
@@ -1153,28 +1497,33 @@ if __name__ == "__main__":
     n.Traffic.Demand.ServiceIdReference = x
     n.Traffic.Demand.DemandReferenceId = x
 
-    with open('NetworkObj_2.obj', 'rb') as handle:
-        n2 = pickle.load(handle)                   
-    handle.close()
-
-    x = 0
-    for key, value in n2.TrafficMatrix.DemandDict.items():
-        for key1, value1 in value.ServiceDict.items():
-            if key1 > x :
-                x = key1
-
-    n2.Traffic.Demand.ServiceIdReference = x
-    n2.Traffic.Demand.DemandReferenceId = x
-
     
-    # to see bug 1 run code bellow
-    ans = grooming_fun(n,10)
+#     to see bug 1 run code bellow
+#    ans = grooming_fun(n,10)
 
-    # to see bug 2 run code bellow
+#     to see bug 2 run code bellow
 #    ans = grooming_fun(n2, 0)
     
-    #Clustering(n)
-    #n.add_groom_out_100(Source=1,Destination=2,Capacity=40,ServiceIdList=[1,2],Type=40,DemandId=3)
+#    Clustering(n)
+#    n.add_groom_out_100(Source=1,Destination=2,Capacity=40,ServiceIdList=[1,2],Type=40,DemandId=3)
+    
+#    xxxxxxxxxx=[(1,0.1),(2,0.1),(3,1),(4,1),(5,1),(6,1),(7,1),(8,1),(9,1),(10,1),(11,1),(12,1),(13,1),(14,0.1),(15,1),(16,1),(17,1)]
+#    
+#    ans=PS6X(xxxxxxxxxx)
+    
+    n.PhysicalTopology.add_cluster(0, [1, 2, 3],'Red')
+    Define_intra_cluster_demnad(n)            #intra cluster matrix traffic
+#    print(n.TrafficMatrix.get_mid_grooming_serviceids())
+    n.TrafficMatrix.DemandDict[0].add_mandatory_node(ServiceIdList= [0,1, 2], MandatoryNodesIdList=[1])
+    print(n.TrafficMatrix.get_mid_grooming_serviceids())
+    ans=change_service_manually(n,{0: [0, 1, 2]})                #middle grooming
+    Change_TM_acoordingTo_Clusters(n,10)         #clustering
+    grooming_fun(n,10)                           #final grooming
+#    n.PhysicalTopology.add_cluster_demand(GatewayId= 2, Demands_list= [1, 5])
+#    print(n.TrafficMatrix.get_mid_grooming_serviceids())
+#    change_service_manually(n)
+#    grooming_fun(n,10)
+#    Change_TM_acoordingTo_Clusters(n,10)
     print("successful")
     
 

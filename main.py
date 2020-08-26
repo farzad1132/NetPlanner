@@ -28,7 +28,7 @@ from RWA_window import Ui_RWA_Window
 from Ui_files.new_ui import iconresources
 
 from data import *
-from grooming_algorithm import grooming_fun
+from grooming_algorithm import grooming_fun, Define_intra_cluster_demnad, change_service_manually, Change_TM_acoordingTo_Clusters
 
 from ExportPhysicalTopology import Ui_Export_PT
 
@@ -2488,6 +2488,7 @@ class Ui_MainWindow(object):
             self.backend_map.LastGateWay = None
 
             self.Grooming_pushbutton.setEnabled(True)
+            Define_intra_cluster_demnad(self.network)
 
     #TODO: complete this method
     def working_view_fun(self):
@@ -2513,10 +2514,7 @@ class Ui_MainWindow(object):
         subnodes_list = Data["Clustering"][gateway]["SubNodes"]
 
         gateway_id = self.NodeIdMap[gateway]
-        for cluster_id , Obj in self.network.PhysicalTopology.ClusterDict.items():
-            if Obj.GatewayId == gateway_id:
-                self.network.PhysicalTopology.ClusterDict.pop(cluster_id)
-                break
+        self.network.PhysicalTopology.del_cluster(gateway_id)
         #self.network.PhysicalTopology.del_cluster(self.NodeIdMap[gateway])
         self.webengine.page().runJavaScript('Delete_Cluster_procedure(\'%s\')' %json.dumps(subnodes_list))
 
