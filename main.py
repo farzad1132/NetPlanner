@@ -28,7 +28,7 @@ from RWA_window import Ui_RWA_Window
 from Ui_files.new_ui import iconresources
 
 from data import *
-from grooming_algorithm import grooming_fun
+from grooming_algorithm import grooming_fun, Define_intra_cluster_demnad, change_service_manually, Change_TM_acoordingTo_Clusters
 
 from ExportPhysicalTopology import Ui_Export_PT
 
@@ -2488,6 +2488,7 @@ class Ui_MainWindow(object):
             self.backend_map.LastGateWay = None
 
             self.Grooming_pushbutton.setEnabled(True)
+            Define_intra_cluster_demnad(self.network)
 
     #TODO: complete this method
     def working_view_fun(self):
