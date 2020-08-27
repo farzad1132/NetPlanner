@@ -1557,7 +1557,7 @@ function generateUIPanels(clustersData) {
     );
 
     var firstClusterID = Object.keys(MidGrooming_Input)[0];
-    var firstDemandID = Object.keys(MidGrooming_Input[firstClusterID].Demands)[0];
+    var firstDemandID = Object.keys(MidGrooming_Input[firstClusterID]["Demands"])[0];
     generateClustersTable(MidGrooming_Input, clusterTable, demandTable, serviceTable);
     generateDemandsTable(firstClusterID, MidGrooming_Input, demandTable, serviceTable);
 
@@ -1617,7 +1617,7 @@ function generateClustersTable(data, table, demandTable, serviceTable) {
 
     for (var i = 0, row; row = table.rows[i]; i++) {
         row.addEventListener("click", (e) => {
-            var clusterID = e.target.getAttribute("data-clusterid");
+            var clusterID = e.target.getAttribute("data-clusterID");
             var demandID = Object.keys(data[clusterID])[0];
             generateDemandsTable(clusterID, data, demandTable, serviceTable);
             generateServicesTable(
@@ -1667,8 +1667,8 @@ function generateDemandsTable(clusterID, data, table, serviceTable) {
     for (var i = 0, row; row = table.rows[i]; i++) {
         row.addEventListener("click", (e) => {
 
-            var clusterID = e.target.getAttribute("data-clusterid");
-            var demandID = e.target.getAttribute("data-demandid");
+            var clusterID = e.target.getAttribute("data-clusterID");
+            var demandID = e.target.getAttribute("data-demandID");
             changeShortestPathColor(demands[demandID].ShortestPath);
             generateServicesTable(
                 clusterID,
@@ -1711,17 +1711,19 @@ function generateServicesTable(clusterID, demandID, data, table) {
 }
 
 function getSelectedServices(serviceTable, data) {
-    checkedServices = [];
+    var checkedServices = new Object();
+    var ServiceList = [];
+    var last_checked = null;
     serviceChecks = serviceTable.getElementsByClassName("service-checkbox");
     for (var i = 0; i < serviceChecks.length; i++) {
         if (serviceChecks[i].checked == true) {
-            checkedServices += {
-                demandId: serviceTable.rows[i].getAttribute("data-demandID"),
-                serviceId: serviceTable.rows[i].getAttribute("data-serviceID"),
-                clusterId: serviceTable.rows[i].getAttribute("data-clusterID")
-            }
+            last_checked = i;
+            ServiceList.push(serviceTable.rows[i].getAttribute("data-serviceID"))
         }
     }
+    checkedServices["DemandId"] = serviceTable.rows[last_checked].getAttribute("data-demandID")
+    checkedServices["ClusterId"] = serviceTable.rows[last_checked].getAttribute("data-clusterID")
+    checkedServices["ServiceIdList"] = ServiceList;
 
     return checkedServices;
 }
@@ -1759,30 +1761,11 @@ function changeShortestPathColor(shortestPath) {
 // params:
 // e is the selected node
 // checked services is a json array of checked services 
-var Current_ClusterId = null;
 function handleSelectedNode(e, checkedServices) {
+    
     var NodeName = get_name(e.layer);
-    var ServiceIdList = [];
-    var DemandId = checkedServices[0].demandId;
-    Current_ClusterId = checkedServices[0].clusterId
-
-    /*checkedServices.forEach(function (item, index) {
-        ServiceIdList.push(item.serviceId)
-    });*/
-
-    var arrayLength = checkedServices.length;
-    for (var i = 0; i < arrayLength; i++) {
-        //console.log(myStringArray[i]);
-        ServiceIdList.push(checkedServices[i]["serviceId"])
-    }
+    checkedServices["NodeName"] = NodeName;
+    //console.log(Object.entries(checkedServices));
     
-    var payload = Object();
-    payload["NodeName"] = NodeName;
-    payload["DemandId"] = DemandId;
-    console.log(DemandId);
-    payload["ServiceIdList"] = ServiceIdList;
-    backend_map.start_mid_grooming_process(JSON.stringify(payload))
-    
-    //console.log("dummy handling function");
-    //console.log(checkedServices);
+    backend_map.start_mid_grooming_process(JSON.stringify(checkedServices))
 }
