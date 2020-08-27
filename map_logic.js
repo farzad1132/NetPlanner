@@ -1629,7 +1629,7 @@ function generateClustersTable(data, table, demandTable, serviceTable) {
 }
 
 function generateDemandsTable(clusterID, data, table, serviceTable) {
-    demands = data[clusterID].Demands;
+    demands = data[clusterID]["Demands"];
     table.innerHTML = "";
 
     var tbdy = document.createElement('tbody');
@@ -1669,7 +1669,7 @@ function generateDemandsTable(clusterID, data, table, serviceTable) {
 
             var clusterID = e.target.getAttribute("data-clusterID");
             var demandID = e.target.getAttribute("data-demandID");
-            changeShortestPathColor(demands[demandID].ShortestPath);
+            changeShortestPathColor(demands[demandID]["ShortestPath"]);
             generateServicesTable(
                 clusterID,
                 demandID,
@@ -1715,6 +1715,8 @@ function getSelectedServices(serviceTable, data) {
     var ServiceList = [];
     var last_checked = null;
     serviceChecks = serviceTable.getElementsByClassName("service-checkbox");
+
+    // BUG: if first row ( i = 0 ) is checked then it's serviceId gets null
     for (var i = 0; i < serviceChecks.length; i++) {
         if (serviceChecks[i].checked == true) {
             last_checked = i;
@@ -1740,17 +1742,24 @@ function handleSelectNodeBtn(checkedServices) {
 
 function changeShortestPathColor(shortestPath) {
     var links = [];
-    links.push(shortestPath[0] + "-" + shortestPath[1]);
+    //links.push(shortestPath[0] + "-" + shortestPath[1]);
     for (var i = 1; i < shortestPath.length; i++) {
         links.push(shortestPath[i - 1] + "-" + shortestPath[i]);
+        links.push(shortestPath[i] + "-" + shortestPath[i-1])
     }
-
+    console.log(links);
     links_groupfeature.eachLayer(layer => {
-        for (var i = 0; i < links.length; i++) {
+        /*for (var i = 0; i < links.length; i++) {
             if (get_name(layer) === links[i]) {
                 //console.log("ff");
                 layer.setStyle({ color: "#669900" });
             }
+        }*/
+        if ( links.includes(get_name(layer)) ){
+            layer.setStyle({ color: "#669900", weight:  4});
+        }  
+        else{
+            layer.setStyle({ color: "black" , weight: 3});
         }
     })
 

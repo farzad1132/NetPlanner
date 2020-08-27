@@ -181,12 +181,12 @@ class Backend_map(QObject):
     @Slot(str)
     def start_mid_grooming_process(self, payload):
         payload = json.loads(payload)
-        NodeName = payload["NodeName"]
+        NodeId = Data["ui"].NodeIdMap[payload["NodeName"]]
         DemandId = int(payload["DemandId"])
         ServiceIdList = list(map(lambda x: int(x), payload["ServiceIdList"]))
 
         Data["ui"].network.TrafficMatrix.DemandDict[DemandId].add_mandatory_node(  ServiceIdList= ServiceIdList,
-                                                                                MandatoryNodesIdList=[NodeName])
+                                                                                MandatoryNodesIdList=[NodeId])
         res = change_service_manually(Data["ui"].network, {int(DemandId): list(map(lambda x : int(x), ServiceIdList))})
 
         print(res)
