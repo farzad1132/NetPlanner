@@ -1521,6 +1521,9 @@ function generateUIPanels(clustersData) {
     var btnDiv = document.createElement("div");
     btnDiv.setAttribute("class", "d-flex flex-column");
 
+    var closeBtnDiv = document.createElement("div");
+    closeBtnDiv.setAttribute("class", "");
+
     var clusterTableWrapper = document.createElement('div');
     var demandTableWrapper = document.createElement('div');
     var serviceTableWrapper = document.createElement('div');
@@ -1560,6 +1563,17 @@ function generateUIPanels(clustersData) {
     }
     );
 
+    var closePanelsBtn = document.createElement("button");
+    closePanelsBtn.setAttribute("class", "btn btn-info btn-sm m-1")
+    closePanelsBtn.innerHTML = "X";
+    closePanelsBtn.addEventListener("click", e => {
+        clusterDiv.remove();
+        btnDiv.remove();
+        div.remove();
+        closeBtnDiv.remove();
+    }
+    );
+
     var firstClusterID = Object.keys(MidGrooming_Input)[0];
     var firstDemandID = Object.keys(MidGrooming_Input[firstClusterID]["Demands"])[0];
     generateClustersTable(MidGrooming_Input, clusterTable, demandTable, serviceTable);
@@ -1571,6 +1585,7 @@ function generateUIPanels(clustersData) {
     var menu = L.control({ position: 'bottomleft' });
     var clusterMenu = L.control({ position: 'topleft' });
     var btnMenu = L.control({ position: 'topright' });
+    var closeBtnMenu = L.control({position: 'topright'});
 
     clusterMenu.onAdd = function (map) {
         clusterDiv.appendChild(clusterTableWrapper);
@@ -1584,11 +1599,18 @@ function generateUIPanels(clustersData) {
     };
 
     btnMenu.onAdd = function (map) {
+        // btnDiv.appendChild(closePanelsBtn);
         btnDiv.appendChild(selectNodeBtn);
         btnDiv.appendChild(selectNodeOffBtn);
+        
         return btnDiv;
     }
+    closeBtnMenu.onAdd = function (map) {
+        closeBtnDiv.appendChild(closePanelsBtn);
+        return closeBtnDiv;
+    }
 
+    closeBtnMenu.addTo(MapVar);
     menu.addTo(MapVar);
     clusterMenu.addTo(MapVar);
     btnMenu.addTo(MapVar);
