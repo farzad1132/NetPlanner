@@ -191,9 +191,8 @@ class Backend_map(QObject):
 
         print(res)
 
-        # NOTE: prepare updated data and then send it for js
-
-        #Data["ui"].webengine.page().runJavaScript(f"refresh_mid_grooming_view({json.dumps(res)})")
+        Demands = Data["ui"].prepare_input_for_Midgrooming(Data["ui"].G, res)
+        Data["ui"].webengine.page().runJavaScript(f"refresh_mid_grooming_process('{json.dumps(Demands)}')")
 
 
 class Ui_MainWindow(object):
@@ -2507,15 +2506,7 @@ class Ui_MainWindow(object):
             self.Grooming_pushbutton.setEnabled(True)
             Define_intra_cluster_demnad(self.network)
             self.prepare_input_for_Midgrooming(self.G)
-
-    #TODO: complete this method
-    def working_view_fun(self):
-        for key in Data["Links"].keys():
-            InNodeName = key[0]
-            OutNodeName = key[1]
-            InNodeId = self.NodeIdMap[key[0]]
-            OutNodeId = self.NodeIdMap[key[1]]
-            
+            self.webengine.page().runJavaScript("add_start_mid_grooming_button()")
 
     
     def SetNode_flag_javascript(self,text):
@@ -4250,27 +4241,45 @@ class Ui_MainWindow(object):
         self.G.add_edges_from(list(Data["Links"].keys()))
 
     # this method prepares JSON input for midgrooming also in provides shortest path of demands in list format
-    def prepare_input_for_Midgrooming(self, Graph):
-        input_data = {}
-        for cluster_id, cluster_object in self.network.PhysicalTopology.ClusterDict.items():
-            input_data[cluster_id] = {}
-            input_data[cluster_id]["Gateway"] = self.IdNodeMap[cluster_object.GatewayId]
-            input_data[cluster_id]["SubNodesNameList"] = list(map(lambda x: self.IdNodeMap[x], cluster_object.SubNodesId))
-            input_data[cluster_id]["Demands"] = {}
-            for DemandId in  cluster_object.Demands:
+    def prepare_input_for_Midgrooming(self, Graph, DemandIdList=None):
+        if DemandIdList is None:
+            input_data = {}
+            for cluster_id, cluster_object in self.network.PhysicalTopology.ClusterDict.items():
+                input_data[cluster_id] = {}
+                input_data[cluster_id]["Gateway"] = self.IdNodeMap[cluster_object.GatewayId]
+                input_data[cluster_id]["SubNodesNameList"] = list(map(lambda x: self.IdNodeMap[x], cluster_object.SubNodesId))
+                input_data[cluster_id]["Demands"] = {}
+                for DemandId in  cluster_object.Demands:
+                    Source = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Source]
+                    Destination = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Destination]
+                    Service_Dict = {}
+                    for id, service_object in self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict.items():
+                        Service_Dict[id] = service_object.Type
+                    
+                    input_data[cluster_id]["Demands"][DemandId] = {}
+                    input_data[cluster_id]["Demands"][DemandId]["Source"] = Source
+                    input_data[cluster_id]["Demands"][DemandId]["Destination"] = Destination
+                    input_data[cluster_id]["Demands"][DemandId]["Services"] = Service_Dict
+                    input_data[cluster_id]["Demands"][DemandId]["ShortestPath"] = nx.dijkstra_path(Graph, Source, Destination)
+
+            self.send_input_for_MidGrooming(input_data)
+        
+        else:
+            Demands = {}
+            for DemandId in DemandIdList:
                 Source = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Source]
                 Destination = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Destination]
                 Service_Dict = {}
                 for id, service_object in self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict.items():
                     Service_Dict[id] = service_object.Type
                 
-                input_data[cluster_id]["Demands"][DemandId] = {}
-                input_data[cluster_id]["Demands"][DemandId]["Source"] = Source
-                input_data[cluster_id]["Demands"][DemandId]["Destination"] = Destination
-                input_data[cluster_id]["Demands"][DemandId]["Services"] = Service_Dict
-                input_data[cluster_id]["Demands"][DemandId]["ShortestPath"] = nx.dijkstra_path(Graph, Source, Destination)
+                Demands[DemandId] = {}
+                Demands[DemandId]["Source"] = Source
+                Demands[DemandId]["Destination"] = Destination
+                Demands[DemandId]["Services"] = Service_Dict
+                Demands[DemandId]["ShortestPath"] = nx.dijkstra_path(Graph, Source, Destination)
 
-        self.send_input_for_MidGrooming(input_data)
+            return Demands
 
         
     def send_input_for_MidGrooming(self, input_data):

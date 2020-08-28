@@ -1483,18 +1483,22 @@ var dummyClustersData = {
 
 
 // btn is directly loaded in map
-var tablesBtn = document.createElement("button");
-tablesBtn.innerHTML = "Load Tables"
+var tablesBtn = null;
+function add_start_mid_grooming_button(){
+    tablesBtn = document.createElement("button");
+    tablesBtn.innerHTML = "Start Mid Grooming"
+    tablesBtn.addEventListener("click", e => generateUIPanels(MidGrooming_Input))
+
+    menu.onAdd = function (map) {
+
+        return tablesBtn;
+    };
+    
+    menu.addTo(MapVar);
+    }
+
 var menu = L.control({ position: 'topright' });
 
-tablesBtn.addEventListener("click", e => generateUIPanels(MidGrooming_Input))
-
-menu.onAdd = function (map) {
-
-    return tablesBtn;
-};
-
-menu.addTo(MapVar);
 
 var MidGrooming_Input = Object();
 function start_MidGrooming(Input) {
@@ -1747,7 +1751,7 @@ function changeShortestPathColor(shortestPath) {
         links.push(shortestPath[i - 1] + "-" + shortestPath[i]);
         links.push(shortestPath[i] + "-" + shortestPath[i-1])
     }
-    console.log(links);
+    //console.log(links);
     links_groupfeature.eachLayer(layer => {
         /*for (var i = 0; i < links.length; i++) {
             if (get_name(layer) === links[i]) {
@@ -1769,12 +1773,24 @@ function changeShortestPathColor(shortestPath) {
 // TODO
 // params:
 // e is the selected node
-// checked services is a json array of checked services 
+// checked services is a json array of checked services
+var ClusterId = null; 
 function handleSelectedNode(e, checkedServices) {
     
     var NodeName = get_name(e.layer);
     checkedServices["NodeName"] = NodeName;
-    //console.log(Object.entries(checkedServices));
+    ClusterId = checkedServices["ClusterId"];
+    console.log('putting cluster id', ClusterId);
     
     backend_map.start_mid_grooming_process(JSON.stringify(checkedServices))
+}
+
+function refresh_mid_grooming_process(payload){
+    console.log('getting ClusterId', ClusterId)
+    var payload = JSON.parse(payload)
+    for (let [DemandId, value] of Object.entries(payload)) {
+        console.log(DemandId);
+        MidGrooming_Input[ClusterId]["Demands"][DemandId] = value;
+    }
+    generateUIPanels(MidGrooming_Input)
 }
