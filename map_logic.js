@@ -1747,6 +1747,7 @@ function getSelectedServices(serviceTable, data) {
         if (serviceChecks[i].checked == true) {
             last_checked = i;
             ServiceList.push(serviceTable.rows[i].getAttribute("data-serviceID"))
+            console.log(serviceTable.rows[i].getAttribute("data-serviceID"));
         }
     }
     checkedServices["DemandId"] = serviceTable.rows[last_checked].getAttribute("data-demandID")
