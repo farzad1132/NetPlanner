@@ -1096,7 +1096,7 @@ class Ui_MainWindow(object):
         self.splitter_2 = QtWidgets.QSplitter(self.TrafficMatrixTab)
         self.splitter_2.setOrientation(QtCore.Qt.Horizontal)
         self.splitter_2.setObjectName("splitter_2")
-        self.General_TM = Custom_table(self.splitter_2)
+        self.General_TM = Custom_table(self.splitter_2, "GTM")
         self.General_TM.setStyleSheet("QTableWidget {\n"
 "    \n"
 "    \n"
@@ -1130,7 +1130,7 @@ class Ui_MainWindow(object):
         self.General_TM.setHorizontalHeaderItem(7, item)
         item = QtWidgets.QTableWidgetItem()
         self.General_TM.setHorizontalHeaderItem(8, item)
-        self.Traffic_matrix =Custom_table(self.splitter_2)
+        self.Traffic_matrix =Custom_table(self.splitter_2, "TM")
         self.Traffic_matrix.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.Traffic_matrix.setStyleSheet("QTableWidget {\n"
 "    \n"
