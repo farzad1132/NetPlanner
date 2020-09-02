@@ -128,3 +128,11 @@ map util styles
     display: inline-block;
     margin-left: 10px;
 }
+
+
+/* clusters panel styles */
+.scroll-table {  
+    height: 150px !important;
+    overflow-y: auto;
+    overflow-x: hidden;
+}

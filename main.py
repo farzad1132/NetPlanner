@@ -28,7 +28,7 @@ from RWA_window import Ui_RWA_Window
 from Ui_files.new_ui import iconresources
 
 from data import *
-from grooming_algorithm import grooming_fun
+from grooming_algorithm import grooming_fun, Define_intra_cluster_demnad, change_service_manually, Change_TM_acoordingTo_Clusters
 
 from ExportPhysicalTopology import Ui_Export_PT
 
@@ -179,6 +179,22 @@ class Backend_map(QObject):
     @Slot(str)
     def fill_subnodes_list(self, gateway):
         Data["ui"].Delete_Cluster_procedure(gateway)
+    
+    @Slot(str)
+    def start_mid_grooming_process(self, payload):
+        payload = json.loads(payload)
+        NodeId = Data["ui"].NodeIdMap[payload["NodeName"]]
+        DemandId = int(payload["DemandId"])
+        ServiceIdList = list(map(lambda x: int(x), payload["ServiceIdList"]))
+
+        Data["ui"].network.TrafficMatrix.DemandDict[DemandId].add_mandatory_node(  ServiceIdList= ServiceIdList,
+                                                                                MandatoryNodesIdList=[NodeId])
+        res = change_service_manually(Data["ui"].network, {int(DemandId): list(map(lambda x : int(x), ServiceIdList))})
+
+        print(res)
+
+        Demands = Data["ui"].prepare_input_for_Midgrooming(Data["ui"].G, res)
+        Data["ui"].webengine.page().runJavaScript(f"refresh_mid_grooming_process('{json.dumps(Demands)}')")
 
 
 class Ui_MainWindow(object):
@@ -1897,11 +1913,11 @@ class Ui_MainWindow(object):
 
         # NOTE: uncomment bellow if you want use console.log
 
-        """ class WebEnginePage(QWebEnginePage):
+        class WebEnginePage(QWebEnginePage):
             def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
                 print("javaScriptConsoleMessage: ", level, message, lineNumber, sourceID)
 
-        self.webengine.setPage(WebEnginePage(self.webengine)) """
+        self.webengine.setPage(WebEnginePage(self.webengine))
         backend_map = Backend_map(MainWindow)
         self.backend_map = backend_map
         channel = QWebChannel(MainWindow)
@@ -2490,15 +2506,9 @@ class Ui_MainWindow(object):
             self.backend_map.LastGateWay = None
 
             self.Grooming_pushbutton.setEnabled(True)
-
-    #TODO: complete this method
-    def working_view_fun(self):
-        for key in Data["Links"].keys():
-            InNodeName = key[0]
-            OutNodeName = key[1]
-            InNodeId = self.NodeIdMap[key[0]]
-            OutNodeId = self.NodeIdMap[key[1]]
-            
+            Define_intra_cluster_demnad(self.network)
+            self.prepare_input_for_Midgrooming(self.G)
+            self.webengine.page().runJavaScript("add_start_mid_grooming_button()")
 
     
     def SetNode_flag_javascript(self,text):
@@ -2515,10 +2525,7 @@ class Ui_MainWindow(object):
         subnodes_list = Data["Clustering"][gateway]["SubNodes"]
 
         gateway_id = self.NodeIdMap[gateway]
-        for cluster_id , Obj in self.network.PhysicalTopology.ClusterDict.items():
-            if Obj.GatewayId == gateway_id:
-                self.network.PhysicalTopology.ClusterDict.pop(cluster_id)
-                break
+        self.network.PhysicalTopology.del_cluster(gateway_id)
         #self.network.PhysicalTopology.del_cluster(self.NodeIdMap[gateway])
         self.webengine.page().runJavaScript('Delete_Cluster_procedure(\'%s\')' %json.dumps(subnodes_list))
 
@@ -4235,6 +4242,8 @@ class Ui_MainWindow(object):
         self.Fill_Demand_SourceandDestination_combobox()
         #self.update_cells()
 
+        
+
         self.tabWidget.setTabEnabled(1, True)
         self.tabWidget.setTabEnabled(2, True)
 
@@ -4269,7 +4278,53 @@ class Ui_MainWindow(object):
         
         # adding links to graph
         self.G.add_edges_from(list(Data["Links"].keys()))
+
+    # this method prepares JSON input for midgrooming also in provides shortest path of demands in list format
+    def prepare_input_for_Midgrooming(self, Graph, DemandIdList=None):
+        if DemandIdList is None:
+            input_data = {}
+            for cluster_id, cluster_object in self.network.PhysicalTopology.ClusterDict.items():
+                input_data[cluster_id] = {}
+                input_data[cluster_id]["Gateway"] = self.IdNodeMap[cluster_object.GatewayId]
+                input_data[cluster_id]["SubNodesNameList"] = list(map(lambda x: self.IdNodeMap[x], cluster_object.SubNodesId))
+                input_data[cluster_id]["Demands"] = {}
+                for DemandId in  cluster_object.Demands:
+                    Source = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Source]
+                    Destination = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Destination]
+                    Service_Dict = {}
+                    for id, service_object in self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict.items():
+                        Service_Dict[id] = service_object.Type
+                    
+                    input_data[cluster_id]["Demands"][DemandId] = {}
+                    input_data[cluster_id]["Demands"][DemandId]["Source"] = Source
+                    input_data[cluster_id]["Demands"][DemandId]["Destination"] = Destination
+                    input_data[cluster_id]["Demands"][DemandId]["Services"] = Service_Dict
+                    input_data[cluster_id]["Demands"][DemandId]["ShortestPath"] = nx.dijkstra_path(Graph, Source, Destination)
+
+            self.send_input_for_MidGrooming(input_data)
         
+        else:
+            Demands = {}
+            for DemandId in DemandIdList:
+                Source = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Source]
+                Destination = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Destination]
+                Service_Dict = {}
+                for id, service_object in self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict.items():
+                    Service_Dict[id] = service_object.Type
+                
+                Demands[DemandId] = {}
+                Demands[DemandId]["Source"] = Source
+                Demands[DemandId]["Destination"] = Destination
+                Demands[DemandId]["Services"] = Service_Dict
+                Demands[DemandId]["ShortestPath"] = nx.dijkstra_path(Graph, Source, Destination)
+
+            return Demands
+
+        
+    def send_input_for_MidGrooming(self, input_data):
+        self.webengine.page().runJavaScript(f"start_MidGrooming('{json.dumps(input_data)}')")
+    
+
     
     def Demand_Shelf_set(self):
         # TODO: add this method to Demand tab initializer
