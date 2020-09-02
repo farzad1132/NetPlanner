@@ -68,6 +68,7 @@ class WorkerSignals(QObject):
     error = Signal(tuple)
     result_RWA = Signal(object)
     result_Grooming = Signal(object, tuple)
+    Clustering_result = Signal(object)
 
 class Worker(QRunnable):
 
@@ -108,6 +109,20 @@ class Worker(QRunnable):
                 self.signals.result_Grooming.emit(obj, data)
             finally:
                 self.signals.finished.emit()
+        
+        elif self.Algorithm == "Clustering":
+            try:
+                net = Change_TM_acoordingTo_Clusters(self.netobj, self.MP1H_TH)
+            except:
+                print("Clustering Failed !!!")
+                traceback.print_exc()
+                exctype, value = sys.exc_info()[:2]
+                self.signals.error.emit((exctype, value, traceback.format_exc()))
+            else:
+                self.signals.Clustering_result.emit(net)
+            finally:
+                self.signals.finished.emit()
+
 
 
 class Backend_map(QObject):
@@ -5042,15 +5057,31 @@ class Ui_MainWindow(object):
     def grooming_procedure(self, MP1H_Threshold):
 
         self.clean_database_for_grooming()
+        worker = Worker(Change_TM_acoordingTo_Clusters, "Clustering", self.network, int(MP1H_Threshold))
+        worker.signals.Clustering_result.connect(self.Clustering_result_slot)
+        worker.signals.finished.connect(self.Clustering_finished_slot)
+        worker.signals.error.connect(self.Clustering_error_slot)
+        self.MP1H_TH = int(MP1H_Threshold)
 
-        worker = Worker(grooming_fun, "Grooming", self.network, int(MP1H_Threshold))
+        self.threadpool.start(worker)
+    
+    def Clustering_result_slot(self, netobj):
+        self.network = netobj
+
+        worker = Worker(grooming_fun, "Grooming", self.network, self.MP1H_TH)
         worker.signals.result_Grooming.connect(self.Grooming_Success_slot)
         worker.signals.error.connect(self.grooming_error_slot)
         worker.signals.finished.connect(self.finish_Grooming_slot)
 
         self.threadpool.start(worker)
     
+    @staticmethod
+    def Clustering_finished_slot():
+        print("Clustering Algorithm Finished\n")
 
+    @staticmethod
+    def Clustering_error_slot():
+        print("Grooming Algorithm Failed")
 
     def Grooming_Success_slot(self, netobj, result):
         Remain_lower100,full_mp2x_lines, half_mp2x_lines = result
@@ -5104,10 +5135,12 @@ class Ui_MainWindow(object):
 "    border-color: navy; /* make the default button prominent */\n"
 "}")
 
-    def finish_Grooming_slot(self):
+    @staticmethod
+    def finish_Grooming_slot():
         print("Grooming Algorithm Finished")
 
-    def grooming_error_slot(self):
+    @staticmethod
+    def grooming_error_slot():
         print("Grooming Algorithm Failed")
 
     def clean_database_for_grooming(self):

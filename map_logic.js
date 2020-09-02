@@ -279,7 +279,7 @@ function add_link(Source_loc, Destination_loc, source_name, destination_name) {
 
 function google_map_view_set(green, yellow, orange) {
     links_groupfeature.eachLayer(function (layer) {
-        link_key = get_name(event.layer);
+        link_key = get_name(layer);
         link_key = link_key.split("-");
         lambda_list = lambdas[link_key];
         Len = lambda_list.length;
