@@ -2077,6 +2077,8 @@ class Ui_MainWindow(object):
 
         self.SaveChanges_PushButton.clicked.connect(self.SaveChanges_button_fun)
 
+        self.MP1H_TH = None
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Form"))
@@ -2521,9 +2523,12 @@ class Ui_MainWindow(object):
             self.backend_map.LastGateWay = None
 
             self.Grooming_pushbutton.setEnabled(True)
-            Define_intra_cluster_demnad(self.network)
-            self.prepare_input_for_Midgrooming(self.G)
-            self.webengine.page().runJavaScript("add_start_mid_grooming_button()")
+
+            self.show_grooming_window()
+
+            #Define_intra_cluster_demnad(self.network)
+            #self.prepare_input_for_Midgrooming(self.G)
+            #self.webengine.page().runJavaScript("add_start_mid_grooming_button()")
 
     
     def SetNode_flag_javascript(self,text):
@@ -4303,6 +4308,10 @@ class Ui_MainWindow(object):
                 input_data[cluster_id]["Gateway"] = self.IdNodeMap[cluster_object.GatewayId]
                 input_data[cluster_id]["SubNodesNameList"] = list(map(lambda x: self.IdNodeMap[x], cluster_object.SubNodesId))
                 input_data[cluster_id]["Demands"] = {}
+                G = Graph
+                for node in Data["Nodes"]:
+                    if node not in input_data[cluster_id]["SubNodesNameList"] and node != input_data[cluster_id]["Gateway"]:
+                        G.remove_node(node)
                 for DemandId in  cluster_object.Demands:
                     Source = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Source]
                     Destination = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Destination]
@@ -4314,7 +4323,7 @@ class Ui_MainWindow(object):
                     input_data[cluster_id]["Demands"][DemandId]["Source"] = Source
                     input_data[cluster_id]["Demands"][DemandId]["Destination"] = Destination
                     input_data[cluster_id]["Demands"][DemandId]["Services"] = Service_Dict
-                    input_data[cluster_id]["Demands"][DemandId]["ShortestPath"] = nx.dijkstra_path(Graph, Source, Destination)
+                    input_data[cluster_id]["Demands"][DemandId]["ShortestPath"] = nx.dijkstra_path(G, Source, Destination)
 
             self.send_input_for_MidGrooming(input_data)
         
@@ -5046,34 +5055,54 @@ class Ui_MainWindow(object):
 
 
     
-    def grooming_button_fun(self):        
+    def show_grooming_window(self, flag=None):        
 
         self.groomingwindow_dialog = QtWidgets.QDialog()
         self.grooming_window_ui = Ui_grooming_window()
-        self.grooming_window_ui.setupUi(self.groomingwindow_dialog)
+        self.grooming_window_ui.setupUi(self.groomingwindow_dialog, flag)
         self.groomingwindow_dialog.show()
+
+    def grooming_button_fun(self):
+        if self.MP1H_TH is None:
+           self.show_grooming_window("Grooming")
+        else:
+            self.grooming_procedure() 
         
-
-    def grooming_procedure(self, MP1H_Threshold):
-
+    
+    def clustering_procedure(self, MP1H_TH):
+        self.MP1H_TH = int(MP1H_TH)
         self.clean_database_for_grooming()
-        worker = Worker(Change_TM_acoordingTo_Clusters, "Clustering", self.network, int(MP1H_Threshold))
+
+        worker = Worker(Change_TM_acoordingTo_Clusters, "Clustering", self.network, self.MP1H_TH)
         worker.signals.Clustering_result.connect(self.Clustering_result_slot)
         worker.signals.finished.connect(self.Clustering_finished_slot)
         worker.signals.error.connect(self.Clustering_error_slot)
-        self.MP1H_TH = int(MP1H_Threshold)
+
+        self.threadpool.start(worker)
+        
+
+    def grooming_procedure(self):
+
+        self.clean_database_for_grooming()
+        worker = Worker(grooming_fun, "Grooming", self.network, self.MP1H_TH)
+        worker.signals.result_Grooming.connect(self.Grooming_Success_slot)
+        worker.signals.error.connect(self.grooming_error_slot)
+        worker.signals.finished.connect(self.finish_Grooming_slot)
+
 
         self.threadpool.start(worker)
     
     def Clustering_result_slot(self, netobj):
         self.network = netobj
 
-        worker = Worker(grooming_fun, "Grooming", self.network, self.MP1H_TH)
-        worker.signals.result_Grooming.connect(self.Grooming_Success_slot)
-        worker.signals.error.connect(self.grooming_error_slot)
-        worker.signals.finished.connect(self.finish_Grooming_slot)
+        self.fill_basic_demandtabdatabase(self.network)
 
-        self.threadpool.start(worker)
+        # creating new 
+        self.create_new_demand_services(self.network)
+
+        Define_intra_cluster_demnad(self.network)
+        self.prepare_input_for_Midgrooming(self.G)
+        self.webengine.page().runJavaScript("add_start_mid_grooming_button()")
     
     @staticmethod
     def Clustering_finished_slot():

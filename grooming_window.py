@@ -13,10 +13,11 @@ bus = {}
 
 
 class Ui_grooming_window(object):
-    def setupUi(self, grooming_window):
+    def setupUi(self, grooming_window, Grooming_flag= None):
         
         # NOTE: added
         bus["grooming_window"] = grooming_window
+        self.Grooming_flag = Grooming_flag
         grooming_window.setObjectName("grooming_window")
         grooming_window.resize(603, 235)
         self.layoutWidget = QtWidgets.QWidget(grooming_window)
@@ -223,8 +224,12 @@ class Ui_grooming_window(object):
 
     def start_grooming_fun(self):
             MP1H_Threshold = str(self.MP1H_Threshold_combobox.currentText())
-            
-            Data["ui"].grooming_procedure(MP1H_Threshold)
+            if self.Grooming_flag is None:
+                Data["ui"].clustering_procedure(MP1H_Threshold)
+            else:
+                Data["ui"].MP1H_TH = int(MP1H_Threshold)
+                Data["ui"].grooming_procedure()
+
             bus["grooming_window"].close()
 
 
