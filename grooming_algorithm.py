@@ -61,12 +61,13 @@ def MP2X(Services_lower10):
     for j in range(1,max_number_device+1):
         prob +=lpSum(x[(i,j)] for i in range(1,NO_service_lower10+1) ) <=max_port,""
     
-    
+            
     import os
     cwd = os.getcwd()
     solverdir = 'cbc-2.7.5-win64\\bin\\cbc.exe'
     solverdir = os.path.join(cwd, solverdir)
     solver = COIN_CMD(path=solverdir)
+     
     #prob.writeLP("grooming.lp")
     prob.solve(solver)
     
@@ -433,7 +434,7 @@ def Change_TM_acoordingTo_Clusters( n, MP1H_Threshold, MP2X_Threshold=None):
                     n.add_lightpath(n.TrafficMatrix.DemandDict[i].Source, n.TrafficMatrix.DemandDict[i].Destination, 100, [n.TrafficMatrix.DemandDict[i].ServiceDict[j].Id], 100, i,ClusterNum=0)
                     LastId = n.Lightpath.ReferenceId -1
 #                    print(len(n.LightPathDict),"**")
-                    n.TrafficMatrix.DemandDict[i].ServiceDict[j].LightPathId=LastId
+#                    n.TrafficMatrix.DemandDict[i].ServiceDict[j].LightPathId=LastId
 #                    print(LastId,"***")
             if y:
                 service_lower10_SDH.append((i,y))
@@ -505,19 +506,20 @@ def Change_TM_acoordingTo_Clusters( n, MP1H_Threshold, MP2X_Threshold=None):
                     n.add_lightpath(n.TrafficMatrix.DemandDict[service_lower100[i][0]].Source, n.TrafficMatrix.DemandDict[service_lower100[i][0]].Destination, Capacity=cap, ServiceIdList=list_of_service, Type=typee, DemandId=service_lower100[i][0],ClusterNum=0)    
                     LastId = n.Lightpath.ReferenceId -1
 #                    print(LastId)
-                    for idd in list_of_service:
-                        if idd in n.TrafficMatrix.DemandDict[service_lower100[i][0]].ServiceDict:
-                           n.TrafficMatrix.DemandDict[service_lower100[i][0]].ServiceDict[idd].LightPathId= LastId
-                        if (service_lower100[i][0],idd) in n.TrafficMatrix.GroomOut10Dict:
-                            n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].LightPathId= LastId
-                            for sid in n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].ServiceIdList:
-                                n.TrafficMatrix.DemandDict[n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].DemandId].ServiceDict[sid].LightPathId= LastId
+#                    for idd in list_of_service:
+#                        if idd in n.TrafficMatrix.DemandDict[service_lower100[i][0]].ServiceDict:
+#                           n.TrafficMatrix.DemandDict[service_lower100[i][0]].ServiceDict[idd].LightPathId= LastId
+#                        if (service_lower100[i][0],idd) in n.TrafficMatrix.GroomOut10Dict:
+#                            n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].LightPathId= LastId
+#                            for sid in n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].ServiceIdList:
+#                                n.TrafficMatrix.DemandDict[n.TrafficMatrix.GroomOut10Dict[(service_lower100[i][0],idd)].DemandId].ServiceDict[sid].LightPathId= LastId
 #        print(remain_lower100_2)  
 #        print("***",n.TrafficMatrix.DemandDict[0].ServiceDict)
 #        print("***",n.TrafficMatrix.DemandDict[0].Source)
 #        print("***",n.TrafficMatrix.DemandDict[0].Destination)
                     
-        
+#        print("**",remain_lower100)
+#        print(service_lower100)
         remain_lower100_2_newV=[] 
         def changing_both_inC(Demandid,servId,BW):
             
@@ -699,9 +701,7 @@ def Change_TM_acoordingTo_Clusters( n, MP1H_Threshold, MP2X_Threshold=None):
                                 remain_lower100_2_newV.append((LastId,[(servId,BW)]))
                             n.TrafficMatrix.DemandDict[Demandid].ServiceDict.pop(servId)
                                 #                elif remain_lower100_2[i][1][j][0] in n.TrafficMatrix.GroomOut10Dict:
-
-        return n
-                 
+        return n     
             
         def changing_onlysrc_inC(Demandid,servId,BW):
 
@@ -1268,7 +1268,7 @@ def grooming_fun( n, MP1H_Threshold, MP2X_Threshold=None):
         remaining_service_lower10_dict={}
         groom_out10_list=[]
         remain_lower100=[]
-        print(MP2x_Dict)
+#        print(MP2x_Dict)
         for i in n.TrafficMatrix.DemandDict:
             y=[]
             z=[]
@@ -1486,10 +1486,10 @@ def Define_intra_cluster_demnad(n):
 
 if __name__ == "__main__":
 
-    with open('KermanObj.obj', 'rb') as handle:
+    with open('Kermanobj.obj', 'rb') as handle:
         n = pickle.load(handle)                   
     handle.close()
-
+#    print(n.TrafficMatrix.DemandDict[0].ServiceDict)
     x = 0
     for key, value in n.TrafficMatrix.DemandDict.items():
         for key1, value1 in value.ServiceDict.items():
@@ -1514,17 +1514,18 @@ if __name__ == "__main__":
 #    ans=PS6X(xxxxxxxxxx)
     
     n.PhysicalTopology.add_cluster(0, [1, 2, 3],'Red')
-    Define_intra_cluster_demnad(n)            #intra cluster matrix traffic
+
 #    print(n.TrafficMatrix.get_mid_grooming_serviceids())
     n.TrafficMatrix.DemandDict[0].add_mandatory_node(ServiceIdList= [0,1, 2], MandatoryNodesIdList=[1])
     print(n.TrafficMatrix.get_mid_grooming_serviceids())
-    ans=change_service_manually(n,{0: [0, 1, 2]})                #middle grooming
+#    ans=change_service_manually(n,{0: [0, 1, 2]})                #middle grooming
     Change_TM_acoordingTo_Clusters(n,10)         #clustering
-    grooming_fun(n,10)                           #final grooming
+    Define_intra_cluster_demnad(n)            #intra cluster matrix traffic
+#    ans=grooming_fun(n,10)                           #final grooming
 #    n.PhysicalTopology.add_cluster_demand(GatewayId= 2, Demands_list= [1, 5])
 #    print(n.TrafficMatrix.get_mid_grooming_serviceids())
 #    change_service_manually(n)
-#    grooming_fun(n,10)
+    grooming_fun(n,10)
 #    Change_TM_acoordingTo_Clusters(n,10)
     print("successful")
     

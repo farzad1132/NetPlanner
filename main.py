@@ -119,6 +119,7 @@ class Worker(QRunnable):
                 exctype, value = sys.exc_info()[:2]
                 self.signals.error.emit((exctype, value, traceback.format_exc()))
             else:
+                net.LightPathDict = {}
                 self.signals.Clustering_result.emit(net)
             finally:
                 self.signals.finished.emit()
@@ -4308,7 +4309,7 @@ class Ui_MainWindow(object):
                 input_data[cluster_id]["Gateway"] = self.IdNodeMap[cluster_object.GatewayId]
                 input_data[cluster_id]["SubNodesNameList"] = list(map(lambda x: self.IdNodeMap[x], cluster_object.SubNodesId))
                 input_data[cluster_id]["Demands"] = {}
-                G = Graph
+                G = copy.deepcopy(Graph)
                 for node in Data["Nodes"]:
                     if node not in input_data[cluster_id]["SubNodesNameList"] and node != input_data[cluster_id]["Gateway"]:
                         G.remove_node(node)
