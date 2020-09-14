@@ -5079,6 +5079,8 @@ class Ui_MainWindow(object):
         worker.signals.finished.connect(self.Clustering_finished_slot)
         worker.signals.error.connect(self.Clustering_error_slot)
 
+        self.Grooming_pushbutton.setDisabled(True)
+
         self.threadpool.start(worker)
         
 
@@ -5090,6 +5092,30 @@ class Ui_MainWindow(object):
         worker.signals.error.connect(self.grooming_error_slot)
         worker.signals.finished.connect(self.finish_Grooming_slot)
 
+        self.Grooming_pushbutton.setStyleSheet("QPushButton {\n"
+"    \n"
+"    \n"
+"    font: 75 10pt \"Bahnschrift Condensed\";\n"
+"    \n"
+"    border: 2px solid #8f8f91; min-width: 80px;\n"
+"    border-color: #EB8686; \n"
+"    border-radius: 25px;\n"
+"    background-color: gray; \n"
+"}\n"
+"\n"
+"QPushButton:pressed,hover {\n"
+"    background-color: #EB8686; \n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: #EB8686; \n"
+"}\n"
+"QPushButton:flat {\n"
+"    border: none; /* no border for a flat push button */\n"
+"}\n"
+"\n"
+"QPushButton:default {\n"
+"    border-color: navy; /* make the default button prominent */\n"
+"}")
 
         self.threadpool.start(worker)
     
@@ -5104,6 +5130,8 @@ class Ui_MainWindow(object):
         Define_intra_cluster_demnad(self.network)
         self.prepare_input_for_Midgrooming(self.G)
         self.webengine.page().runJavaScript("add_start_mid_grooming_button()")
+
+        self.Grooming_pushbutton.setDisabled(False)
     
     @staticmethod
     def Clustering_finished_slot():
