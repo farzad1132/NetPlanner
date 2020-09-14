@@ -3481,12 +3481,18 @@ class Ui_MainWindow(object):
                   ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"],
                   ["Quantity", "Granularity", "λ", "SLA"], ["Quantity", "Granularity", "λ", "SLA"]]
         
-        RefId = self.network.TrafficMatrix.Demand.DemandReferenceId
+        
         for Row in RowsNumber:
+            RefId = self.network.TrafficMatrix.Demand.DemandReferenceId
             #id = Data["General"]["DataSection"]["0"][Row]
             
             Source = Data["General"]["DataSection"]["1"][Row]
             Destination = Data["General"]["DataSection"]["2"][Row]
+            if Row in Data["General"]["DataSection"]["8"]:
+                Protection_Type = Data["General"]["DataSection"]["8"][Row]
+            else:
+                Protection_Type = "Protection"
+            DemandTabDataBase["ProtectionType"][RefId] = Protection_Type
             SourceId = int(self.NodeIdMap[Source])
             DestinationId = int(self.NodeIdMap[Destination])
 
@@ -5420,7 +5426,9 @@ class Ui_MainWindow(object):
                             History, Algorithm):
 
         network = self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm)
-        
+        for lightpath in network.LightPathDict.values():
+            demandid = lightpath.DemandId
+            lightpath.ProtectionType = DemandTabDataBase["ProtectionType"][demandid]
 
         self.clear_database_for_rwa()
         

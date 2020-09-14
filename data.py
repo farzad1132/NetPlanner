@@ -193,6 +193,8 @@ DemandTabDataBase["Shelf_Count"] = {}
 # format:
 #       { <SourceName>: <LastShelfNum> }
 
+DemandTabDataBase["ProtectionType"] = {}
+
 GroomingTabDataBase = {}
 GroomingTabDataBase["LightPathes"] = {}
 # format:
