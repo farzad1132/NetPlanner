@@ -195,6 +195,8 @@ DemandTabDataBase["Shelf_Count"] = {}
 
 DemandTabDataBase["ProtectionType"] = {}
 
+DemandTabDataBase["RestorationType"] = {}
+
 GroomingTabDataBase = {}
 GroomingTabDataBase["LightPathes"] = {}
 # format:

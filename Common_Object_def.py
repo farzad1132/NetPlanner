@@ -19,8 +19,8 @@ class Network:
         
         self.LightPathDict = {}
 
-    def put_params(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm = "Greedy"):
-        self.ParamsObj.set_params(merge, alpha, iterations, margin, processors, k , MaxNW, GroupSize, History, Algorithm)
+    def put_params(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm, k_Restoration, numRandomChoices):
+        self.ParamsObj.set_params(merge, alpha, iterations, margin, processors, k , MaxNW, GroupSize, History, Algorithm, k_Restoration, numRandomChoices)
 
     def add_lightpath(self, Source, Destination, Capacity, ServiceIdList, Type, DemandId,
      MandatoryNodesIdList = None, IgnoringNodesIdList = None, ClusterNum = None):
@@ -57,10 +57,12 @@ class Network:
         
     
     def put_results(self, id, WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p,
-                    SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p, ProtectionType):
+                    SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p, ProtectionType,restorationPathList,
+                    restorationPathRegenerators, restorationSNRs, restorationLengths,restorationFailedLinks):
         
         self.LightPathDict[id].set_results(WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p, SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p,
-                                            ProtectionType)
+                                            ProtectionType, restorationPathList,
+                                            restorationPathRegenerators, restorationSNRs, restorationLengths,restorationFailedLinks)
 
 
     class Topology:
@@ -168,7 +170,6 @@ class Network:
                 if Obj.GatewayId == GatewayId:
                     self.ClusterDict.pop(cluster_id)
                     break
-            
         def add_cluster_demand(self, GatewayId, Demands_list):
             id = None
             for cluster_id , Obj in self.ClusterDict.items():
@@ -310,7 +311,6 @@ class Network:
         def __init__(self):
             self.DemandDict = {}    # in { id : DemandObj } format
             self.GroomOut10Dict = {}            # format: { id: GroomOut10 object }
-            
         
         def add_demand(self, Source, Destination, Type):
             Id = self.GenerateDemandId()
@@ -324,8 +324,6 @@ class Network:
                     result[DemandId] = Service_list
             
             return result
-        
-
         def Generate_GroomOutId(self):
             self.Demand.ServiceReferencedId += 1
             return ( self.Demand.ServiceReferencedId - 1 )
@@ -365,7 +363,6 @@ class Network:
         def del_demand(self, Id):
             del self.DemandDict[Id]
 
-            
         
         def GenerateDemandId(self):
                 Network.Traffic.Demand.DemandReferenceId += 1
@@ -401,7 +398,7 @@ class Network:
                 self.Destination = Destination
                 self.Type = Type            # Type must be a string
                 self.ServiceDict = {}
-                self.Mid_Grooming_ServiceIds = []
+            
             
             
             class G_100:
@@ -417,7 +414,6 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
                     self.MandatoryNodesIdList = MandatoryNodesIdList
-
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
             
@@ -434,7 +430,6 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
                     self.MandatoryNodesIdList = MandatoryNodesIdList
-
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
 
@@ -452,7 +447,6 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
                     self.MandatoryNodesIdList = MandatoryNodesIdList
-
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
                 
@@ -472,7 +466,6 @@ class Network:
                     self.LightPathId = LightPathId
                     self.GroomOutId = GroomOutId
                     self.MandatoryNodesIdList = MandatoryNodesIdList
-
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
 
@@ -493,7 +486,6 @@ class Network:
                     self.LightPathId = LightPathId
                     self.GroomOutId = GroomOutId
                     self.MandatoryNodesIdList = MandatoryNodesIdList
-
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
 
@@ -512,7 +504,6 @@ class Network:
                     self.IgnoringNodes = IgnoringNodes
                     self.LightPathId = LightPathId
                     self.MandatoryNodesIdList = MandatoryNodesIdList
-
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
 
@@ -531,7 +522,6 @@ class Network:
                     self.LightPathId = LightPathId
                     self.GroomOutId = GroomOutId
                     self.MandatoryNodesIdList = MandatoryNodesIdList
-
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
 
@@ -553,7 +543,6 @@ class Network:
                     self.LightPathId = LightPathId
                     self.GroomOutId = GroomOutId
                     self.MandatoryNodesIdList = MandatoryNodesIdList
-
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
 
@@ -573,7 +562,6 @@ class Network:
                     self.LightPathId = LightPathId
                     self.GroomOutId = GroomOutId
                     self.MandatoryNodesIdList = MandatoryNodesIdList
-
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
 
@@ -593,7 +581,6 @@ class Network:
                     self.LightPathId = LightPathId
                     self.GroomOutId = GroomOutId
                     self.MandatoryNodesIdList = MandatoryNodesIdList
-
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
 
@@ -614,7 +601,6 @@ class Network:
                     self.LightPathId = LightPathId
                     self.GroomOutId = GroomOutId
                     self.MandatoryNodesIdList = MandatoryNodesIdList
-
                     self.OriginalSource = OriginalSource
                     self.OriginalDestination = OriginalDestination
 
@@ -633,16 +619,13 @@ class Network:
                         self.ServiceDict[id].MandatoryNodesIdList = list(MandatoryNodesIdList)
                     else:
                         print(f"service with id= {id} does not exist in demand with id= {self.Id} !")
-
-            
             def add_service(self, ServiceId, ServiceType, Sla, IgnoringNodes = None, WaveLength = None, Granularity = None, Granularity_vc12 = None,
             Granularity_vc4 = None, LightPathId = None, ServiceIdList = None, Capacity = None, MandatoryNodesIdList = None, OriginalSource = None, OriginalDestination = None, GroomOutId = None):
-
+                
                 if MandatoryNodesIdList is not None:
                     for id in MandatoryNodesIdList:
                         if id not in self.Mid_Grooming_ServiceIds:
                             self.Mid_Grooming_ServiceIds.append(id)
-
                 if ServiceType == "E1":
                     self.ServiceDict[ServiceId] = self.E1(ServiceId, Sla, self.Id, IgnoringNodes, LightPathId,
                     OriginalSource= OriginalSource,
@@ -732,7 +715,10 @@ class Network:
                            WaveLength = data['WaveLength'], RegeneratorNode_w = data['RegeneratorNode_w'],
                            RegeneratorNode_p = data['RegeneratorNode_p'], SNR_th = data['SNR_th'], 
                            LaunchPower = data['LaunchPower'], ModulationType = data['ModulationType'], SNR_w = data['SNR_w'],
-                           SNR_p = data['SNR_p'], ProtectionType = data['ProtectionType'], ClusterNum = data['ClusterNum'])
+                           SNR_p = data['SNR_p'], ProtectionType = data['ProtectionType'], ClusterNum = data['ClusterNum'],
+                           restorationType=data['restorationType'], restorationPathList=data['restorationPathList'],
+                           restorationPathRegenerators=data['restorationPathRegenerators'],restorationSNRs=data['restorationSNRs'],
+                           restorationLengths=data['restorationLengths'], restorationFailedLinks=data['restorationFailedLinks'])
             instance.__dict__['id'] = data['id']
             return instance
 
@@ -755,7 +741,8 @@ class Network:
         def __init__(self, Source, Destination, Capacity, ServiceIdList, Type,  DemandId, WorkingPath = None, ProtectionPath = None,
                         WaveLength = None, RegeneratorNode_w = None, RegeneratorNode_p = None, IgnoringNodesIdList = None,
                         SNR_th = None, LaunchPower = None, ModulationType = None, SNR_w = None, SNR_p = None, MandatoryNodesIdList = None,
-                        ProtectionType = None, ClusterNum = 0):
+                        ProtectionType = None, ClusterNum = 0, restorationType=None, restorationPathList=[],
+                        restorationPathRegenerators=[],restorationSNRs=[], restorationLengths=[], restorationFailedLinks=[]):
 
             self.id = Network.Lightpath.ReferenceId
             
@@ -779,9 +766,17 @@ class Network:
             self.IgnoringNodesIdList = IgnoringNodesIdList
             self.ProtectionType = ProtectionType
             self.ClusterNum = ClusterNum
+
+            self.restorationType = restorationType
+            self.restorationPathList = restorationPathList
+            self.restorationPathRegenerators = restorationPathRegenerators
+            self.restorationSNRs = restorationSNRs
+            self.restorationLengths = restorationLengths
+            self.restorationFailedLinks = restorationFailedLinks
         
         def set_results(self, WorkingPath, ProtectionPath, WaveLength, RegeneratorNode_w, RegeneratorNode_p,
-         SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p, ProtectionType):
+         SNR_th, LaunchPower, ModulationType, SNR_w, SNR_p, ProtectionType, restorationPathList, restorationPathRegenerators,
+         restorationSNRs,restorationLengths,restorationFailedLinks):
 
             self.WorkingPath = WorkingPath
             self.ProtectionPath = ProtectionPath
@@ -794,6 +789,12 @@ class Network:
             self.SNR_w = SNR_w
             self.SNR_p = SNR_p
             self.ProtectionType = ProtectionType
+
+            self.restorationPathList = restorationPathList
+            self.restorationPathRegenerators = restorationPathRegenerators
+            self.restorationSNRs = restorationSNRs
+            self.restorationLengths = restorationLengths
+            self.restorationFailedLinks = restorationFailedLinks
     
     class GroomOut100:
         
@@ -848,11 +849,12 @@ class Network:
             instance = cls(merge = data['merge'], alpha = data['alpha'], iterations = data['iterations'],
                            margin = data['margin'], processors = data['processors'], k = data['k'],
                            MaxNW = data['MaxNW'], Algorithm = data['Algorithm'], History = data['History'],
-                           GroupSize = data['GroupSize'])
+                           GroupSize = data['GroupSize'], k_restoration=data['k_restoration'],
+                           numRandomChoices=data['numRandomChoices'])
             return instance
 
         def __init__(self, merge = None, alpha = None, iterations = None, margin = None, processors = None, k = None, MaxNW = None,
-                    GroupSize = None, History = None, Algorithm = "Greedy"):
+                    GroupSize = None, History = None, Algorithm = "Greedy", k_restoration=None, numRandomChoices=None):
 
             self.merge = merge                  
             self.alpha = alpha                  
@@ -863,10 +865,14 @@ class Network:
             self.MaxNW = MaxNW
             self.GroupSize = GroupSize
             self.History = History
-            self.Algorithm = Algorithm                  
+            self.Algorithm = Algorithm   
+
+            self.k_restoration = k_restoration
+            self.numRandomChoices = numRandomChoices       
 
 
-        def set_params(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm):
+        def set_params(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm,
+                       k_restoration, numRandomChoices):
 
             self.merge = merge
             self.alpha = alpha
@@ -878,6 +884,9 @@ class Network:
             self.GroupSize = GroupSize
             self.History = History
             self.Algorithm = Algorithm
+
+            self.k_restoration = k_restoration
+            self.numRandomChoices = numRandomChoices   
     
     class Overall_Result:
         @classmethod
@@ -904,8 +913,6 @@ if __name__ == "__main__":
     n.PhysicalTopology.add_link(0,1,4)
     n.PhysicalTopology.add_link(1,2,1)
     n.PhysicalTopology.add_cluster(1,[2,0],"blue")
-    n.PhysicalTopology.add_cluster(2,[4,3],"red")
-    n.PhysicalTopology.del_cluster(1)
     print(n.PhysicalTopology.NodeDict[1].Neighbors)
     print("LinkDict: ",n.PhysicalTopology.LinkDict)
     print("NodeDict: ",n.PhysicalTopology.NodeDict)
@@ -920,7 +927,7 @@ if __name__ == "__main__":
     #       id in multiple demands
 
     ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2,)
+    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "100GE", 2)
 
     n.TrafficMatrix.add_demand("Tehran", "Shiraz", "")
     LastId = n.TrafficMatrix.Demand.DemandReferenceId - 1
@@ -934,10 +941,6 @@ if __name__ == "__main__":
 
     ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
     n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "10GE", 2)
-
-    ServiceId = n.TrafficMatrix.DemandDict[LastId].GenerateId()
-    n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "1GE", 2,
-                                                    GroomOutId= 1)
 
     ServiceId = n.TrafficMatrix.DemandDict[0].GenerateId()
     n.TrafficMatrix.DemandDict[LastId].add_service(ServiceId, "STM_64", 2)
@@ -996,19 +999,6 @@ if __name__ == "__main__":
                                     Capacity= 9.6,
                                     ServiceIdList= [1,5,9,4,2],
                                     LightPathId= 4)
-
-    n.PhysicalTopology.add_cluster_demand(GatewayId= 2,
-                                          Demands_list= [1, 5])
-
-
-    # adding mandatory node id list
-    n.TrafficMatrix.DemandDict[LastId].add_mandatory_node(ServiceIdList= [1, 5],
-                                                            MandatoryNodesIdList=[5])
-
-    # getting service and demand ids for mid grooming in dict format
-    # format:
-    #        { <DemandId> : <List of Service Ids>}
-    print(n.TrafficMatrix.get_mid_grooming_serviceids())
 
     # NOTE: Grooming Algorithm must return a Dictionary of paired GroomOut10's that belong to same MP2X in format bellow:
     # { <DemandId> : ( <GroomOut10Id_1>, <GroomOut10Id_2> ) }

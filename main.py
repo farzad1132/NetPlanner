@@ -31,6 +31,7 @@ from data import *
 from grooming_algorithm import grooming_fun, Define_intra_cluster_demnad, change_service_manually, Change_TM_acoordingTo_Clusters
 
 from ExportPhysicalTopology import Ui_Export_PT
+from excel_utils import export_excel
 
 from BLANK_Demand.BLANK_Demand import BLANK_Demand
 from MP2X_Demand.MP2X_L_Demand import MP2X_L_Demand
@@ -2130,7 +2131,7 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "Att. (dB/ Km )\n"
 "for Network Plan "))
         item = self.General_TM.horizontalHeaderItem(7)
-        item.setText(_translate("MainWindow", "Status"))
+        item.setText(_translate("MainWindow", "restorationType"))
         item = self.General_TM.horizontalHeaderItem(8)
         item.setText(_translate("MainWindow", "Protection_Type"))
         self.Traffic_matrix.setSortingEnabled(False)
@@ -2838,7 +2839,7 @@ class Ui_MainWindow(object):
 
                 handle.close()
                 header_list = ['ID', 'Source', 'Destination', 'Old\nCable\nType', 'Cable\nType', 'Distance\nReal\n(Km)',
-                            'Att. (dB/km)\nfor Network Plan\n(Option 1 or 2)', 'Status',"Protection_Type"]
+                            'Att. (dB/km)\nfor Network Plan\n(Option 1 or 2)', 'restorationType',"Protection_Type"]
 
                 j = -1
                 for i in header_list:
@@ -2898,267 +2899,18 @@ class Ui_MainWindow(object):
 
     def export_excel_fun(self):
         
-
-        def export_excel(filename, network, cluster_view = True):
-            """
-            filename: example.xlsx
-            NOTE: if filename is open executing this function will cause an error
-            network: an instance of Common_Object_def
-            """
-            sources = []
-            destinations = []
-            wavelengths = []
-            routed_types = []
-            worst_working_snrs = []
-            worst_protection_snrs = []
-            working_path = []
-            protection_path = []
-            working_regens = []
-            protection_regens = []
-            unprotected_indices = []
-            # Building required lists for different fields
-            for lightpath in network.LightPathDict.values():
-                sources.append(self.IdNodeMap[lightpath.Source])
-                destinations.append(self.IdNodeMap[lightpath.Destination])
-                wavelengths.append(lightpath.WaveLength)
-                routed_types.append(lightpath.Type)
-
-                working_path.append(list(map(lambda x: self.IdNodeMap[x], lightpath.WorkingPath)))
-                working_regens.append(lightpath.RegeneratorNode_w)
-                snr = lightpath.SNR_w[0]
-                for snr_temp in lightpath.SNR_w:
-                    if snr>snr_temp:
-                        snr = snr_temp
-                worst_working_snrs.append(snr)
-                try:
-                    snr = lightpath.SNR_p[0]
-                    for snr_temp in lightpath.SNR_p:
-                        if snr>snr_temp:
-                            snr = snr_temp
-                    worst_protection_snrs.append(snr)
-                    protection_path.append(list(map(lambda x: self.IdNodeMap[x], lightpath.ProtectionPath)))
-                    protection_regens.append(lightpath.RegeneratorNode_p)
-                except:
-                    worst_protection_snrs.append(None)
-                    protection_path.append([])
-                    protection_regens.append([])
-                    unprotected_indices.append(len(worst_protection_snrs))
-
-            dictionary = {
-            'Source Site' : sources,
-            'Destination Site' : destinations,
-            'Demand Type': routed_types,
-            'Wavelength': wavelengths,
-            'Working SNR': worst_working_snrs,
-            'Protection SNR': worst_protection_snrs,
-            'Working Path': working_path,
-            'Working Regenerators': working_regens,
-            'Protection Path': protection_path,
-            'Protection Regenerators': protection_regens}
-
-            df = pd.DataFrame(dictionary)
-            writer = pd.ExcelWriter(filename, engine='xlsxwriter')
-            df.to_excel(writer, sheet_name='Routed Demands')
-            workbook  = writer.book
-            worksheet = writer.sheets['Routed Demands']
-
-            
-
-            # Set column size (begininng, end, size)
-            center_format = workbook.add_format({'align': 'center', 'valign': 'vcenter'})
-            snr_format = workbook.add_format({'num_format': '0.00', 'align': 'center'})
-            worksheet.set_column(1, 2 , 17,center_format)
-            worksheet.set_column(3, 4 , 15,center_format)
-            worksheet.set_column(5, 6, 17,snr_format)
-            worksheet.set_column(7, 7, 40)
-            worksheet.set_column(8, 8, 20)
-            worksheet.set_column(9, 9, 45)
-            worksheet.set_column(10, 10, 20)
-
-            for index in unprotected_indices:
-                color = "#D1D1D1"
-                fmt = workbook.add_format()
-                fmt = workbook.add_format({'bg_color': color})
-                worksheet.set_row(index, cell_format = fmt)
-                fmt = workbook.add_format()
-                fmt = workbook.add_format({'align': 'center', 'bg_color': color})
-                worksheet.write('B'+str(index+1), dictionary['Source Site'][index-1], fmt)
-                worksheet.write('C'+str(index+1), dictionary['Destination Site'][index-1], fmt)
-                worksheet.write('D'+str(index+1), dictionary['Demand Type'][index-1], fmt)
-                worksheet.write('E'+str(index+1), dictionary['Wavelength'][index-1], fmt)
-            
-            # 3-color formatting for snrs
-            lightpath_number = len(network.LightPathDict.keys())
-            worksheet.conditional_format('F2:F' + str(lightpath_number+1), {'type': '3_color_scale'})
-            worksheet.conditional_format('G2:G' + str(lightpath_number+1), {'type': '3_color_scale'})
-            
-            # Set example specific text and color for some headers
-            color = "#FFC000"
-            fmt = workbook.add_format()
-            fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
-            worksheet.write('B1', 'Source Site', fmt)
-            worksheet.write('C1', 'Destination Site', fmt)
-            
-            color = "#FFFF64"
-            fmt = workbook.add_format()
-            fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
-            worksheet.write('H1', 'Working Path', fmt)
-            
-            color = "#64FF00"
-            fmt = workbook.add_format()
-            fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
-            worksheet.write('E1', 'Wavelength', fmt)
-
-            #### Link Stats #######
-            wavelength_number_on_links = []
-            all_link_states = []
-            for link in list(network.PhysicalTopology.LinkDict.keys()):
-                wavelength_number_on_links.append(len(network.PhysicalTopology.LinkDict[link].LinkState))
-                all_link_states.append(network.PhysicalTopology.LinkDict[link].LinkState)
-            dictionary2 = {
-            'Links' : list(map(lambda x : (self.IdNodeMap[x[0]], self.IdNodeMap[x[1]]), list(network.PhysicalTopology.LinkDict.keys()))),
-            'Used Wavelengths' : all_link_states,
-            'Wavelength Number': wavelength_number_on_links
-            }
-            link_number = len(list(network.PhysicalTopology.LinkDict.keys()))
-            df2 = pd.DataFrame(dictionary2)
-            df2.to_excel(writer, sheet_name='Link State')
-            worksheet2 = writer.sheets['Link State']
-            worksheet2.conditional_format('D2:D'+ str(link_number+1),  {'type': '3_color_scale',
-                                                'min_color': "green",
-                                                'mid_color': "yellow",
-                                                'max_color': "red"})
-            worksheet2.set_column(1, 1 , 12,center_format)
-            worksheet2.set_column(2, 2, 52)
-            worksheet2.set_column(3, 3, 18,center_format)
-
-            #### Node Stats #######
-            wavelength_number_on_nodes = []
-            all_node_states = []
-            for node in list(network.PhysicalTopology.NodeDict.keys()):
-                wavelength_number_on_nodes.append(len(network.PhysicalTopology.NodeDict[node].NodeState))
-                all_node_states.append(network.PhysicalTopology.NodeDict[node].NodeState)
-            dictionary3 = {
-            'Nodes' : list(map(lambda x : self.IdNodeMap[x], list(network.PhysicalTopology.NodeDict.keys()))),
-            'Used Wavelengths' : all_node_states,
-            'Wavelength Number': wavelength_number_on_nodes
-            }
-            node_number = len(list(network.PhysicalTopology.NodeDict.keys()))
-            df3 = pd.DataFrame(dictionary3)
-            df3.to_excel(writer, sheet_name='Node State')
-            worksheet3 = writer.sheets['Node State']
-            worksheet3.conditional_format('D2:D'+ str(node_number+1),  {'type': '3_color_scale',
-                                                'min_color': "green",
-                                                'mid_color': "yellow",
-                                                'max_color': "red"})
-            worksheet3.set_column(1, 1 , 12,center_format)
-            worksheet3.set_column(2, 2, 52)
-            worksheet3.set_column(3, 3, 18,center_format)
-            
-
-            if cluster_view:
-                for cluster_id in network.PhysicalTopology.ClusterDict.keys():
-                    sources = []
-                    destinations = []
-                    wavelengths = []
-                    routed_types = []
-                    worst_working_snrs = []
-                    worst_protection_snrs = []
-                    working_path = []
-                    protection_path = []
-                    working_regens = []
-                    protection_regens = []
-                    # Building required lists for different fields
-                    for lightpath in network.LightPathDict.values():
-                        if lightpath.ClusterNum == int(cluster_id):
-                            sources.append(self.IdNodeMap[lightpath.Source])
-                            destinations.append(self.IdNodeMap[lightpath.Destination])
-                            wavelengths.append(lightpath.WaveLength)
-                            routed_types.append(lightpath.Type)
-
-                            working_path.append(lightpath.WorkingPath)
-                            working_regens.append(lightpath.RegeneratorNode_w)
-                            snr = lightpath.SNR_w[0]
-                            for snr_temp in lightpath.SNR_w:
-                                if snr>snr_temp:
-                                    snr = snr_temp
-                            worst_working_snrs.append(snr)
-                            try:
-                                snr = lightpath.SNR_p[0]
-                                for snr_temp in lightpath.SNR_p:
-                                    if snr>snr_temp:
-                                        snr = snr_temp
-                                worst_protection_snrs.append(snr)
-                                protection_path.append(lightpath.ProtectionPath)
-                                protection_regens.append(lightpath.RegeneratorNode_p)
-                            except:
-                                worst_protection_snrs.append([])
-                                protection_path.append([])
-                                protection_regens.append([])
-                    if sources:
-                        dictionary4 = {
-                        'Source Site' : sources,
-                        'Destination Site' : destinations,
-                        'Demand Type': routed_types,
-                        'Wavelength': wavelengths,
-                        'Working SNR': worst_working_snrs,
-                        'Protection SNR': worst_protection_snrs,
-                        'Working Path': working_path,
-                        'Working Regenerators': working_regens,
-                        'Protection Path': protection_path,
-                        'Protection Regenerators': protection_regens}
-
-                        df4 = pd.DataFrame(dictionary4)
-                        df4.to_excel(writer, sheet_name='Cluster '+str(cluster_id))
-                        worksheet = writer.sheets['Cluster '+str(cluster_id)]
-                        # Set column size (begininng, end, size)
-                        center_format = workbook.add_format({'align': 'center', 'valign': 'vcenter'})
-                        snr_format = workbook.add_format({'num_format': '0.00', 'align': 'center'})
-                        worksheet.set_column(1, 2 , 17,center_format)
-                        worksheet.set_column(3, 4 , 15,center_format)
-                        worksheet.set_column(5, 6, 17,snr_format)
-                        worksheet.set_column(7, 7, 40)
-                        worksheet.set_column(8, 8, 20)
-                        worksheet.set_column(9, 9, 45)
-                        worksheet.set_column(10, 10, 20)
-
-                        # 3-color formatting for snrs
-                        lightpath_number = len(sources)
-                        worksheet.conditional_format('F2:F' + str(lightpath_number+1), {'type': '3_color_scale'})
-                        worksheet.conditional_format('G2:G' + str(lightpath_number+1), {'type': '3_color_scale'})
-                        
-                        # Set example specific text and color for some headers
-                        color = "#FFC000"
-                        fmt = workbook.add_format()
-                        fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
-                        worksheet.write('B1', 'Source Site', fmt)
-                        worksheet.write('C1', 'Destination Site', fmt)
-                        
-                        color = "#FFFF64"
-                        fmt = workbook.add_format()
-                        fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
-                        worksheet.write('H1', 'Working Path', fmt)
-                        
-                        color = "#64FF00"
-                        fmt = workbook.add_format()
-                        fmt = workbook.add_format({'align': 'center', 'bold': True, 'border': 1, 'bg_color': color})
-                        worksheet.write('E1', 'Wavelength', fmt)
-            writer.save()
-
         if hasattr(self, "RWA_Success"):
             if self.RWA_Success is True:
                 name = QFileDialog.getSaveFileName(MainWindow, "Save Result Excel", filter = "(*.xlsx)")
                 if name[0] != 0:
                     try:
                         if not Data["Clustering"]:
-                            export_excel(name[0], self.decoded_network)
+                            export_excel(name[0], self.decoded_network, self.IdNodeMap)
                         else:
-                            export_excel(name[0], self.decoded_network, True)
+                            export_excel(name[0], self.decoded_network, self.IdNodeMap, True)
                     except:
-                        pass        
-
-
-
+                        pass
+        
 
     def SaveTopology_fun(self):
         TSD = {}    # TSD: Topology Save Dictionary
@@ -3340,7 +3092,7 @@ class Ui_MainWindow(object):
     # MHA EDITION:
     def SaveTM_fun(self):
         header_list = ['ID', 'Source', 'Destination', 'Old\nCable\nType', 'Cable\nType', 'Distance\nReal\n(Km)',
-                         'Att. (dB/km)\nfor Network Plan\n(Option 1 or 2)', 'Status']
+                         'Att. (dB/km)\nfor Network Plan\n(Option 1 or 2)', 'restorationType']
         name = QFileDialog.getSaveFileName(MainWindow, "Save Traffic Matrix")
         if name[0] != 0:
             workbook = xlsxwriter.Workbook(name[0])
@@ -3491,8 +3243,14 @@ class Ui_MainWindow(object):
             if Row in Data["General"]["DataSection"]["8"]:
                 Protection_Type = Data["General"]["DataSection"]["8"][Row]
             else:
-                Protection_Type = "Protection"
+                Protection_Type = "1+1_NodeDisjoint"
             DemandTabDataBase["ProtectionType"][RefId] = Protection_Type
+
+            if Row in Data["General"]["DataSection"]["7"]:
+                RestorationType = Data["General"]["DataSection"]["7"][Row]
+            else:
+                RestorationType = "None"
+            DemandTabDataBase["RestorationType"][RefId] = RestorationType
             SourceId = int(self.NodeIdMap[Source])
             DestinationId = int(self.NodeIdMap[Destination])
 
@@ -5423,12 +5181,13 @@ class Ui_MainWindow(object):
 
 
     def RWA_procedure(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize,
-                            History, Algorithm):
+                            History, Algorithm, K_Restoration, numRandomChoices):
 
-        network = self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm)
+        network = self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm, K_Restoration, numRandomChoices)
         for lightpath in network.LightPathDict.values():
             demandid = lightpath.DemandId
             lightpath.ProtectionType = DemandTabDataBase["ProtectionType"][demandid]
+            lightpath.restorationType = DemandTabDataBase["RestorationType"][demandid]
 
         self.clear_database_for_rwa()
         
@@ -5504,7 +5263,7 @@ class Ui_MainWindow(object):
 
 
 
-    def insert_params_into_obj(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm):
+    def insert_params_into_obj(self, merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm, K_Restoration= None, numRandomChoices= None):
         CopyNetwork = copy.copy(self.network)
         CopyNetwork.put_params(merge= merge,
                                 alpha= alpha,
@@ -5515,7 +5274,9 @@ class Ui_MainWindow(object):
                                 MaxNW= MaxNW,
                                 GroupSize= GroupSize,
                                 History= History,
-                                Algorithm= Algorithm)
+                                Algorithm= Algorithm,
+                                k_Restoration= K_Restoration,
+                                numRandomChoices= numRandomChoices)
         
         self.MaxNW = MaxNW
         return CopyNetwork
@@ -5544,6 +5305,8 @@ class Ui_MainWindow(object):
                 obj_dict.update(obj.__dict__)
                 return obj_dict
         net = copy.copy(netobj)
+        
+        use_sockets = False
 
         # Convert keys to String
         tuple_keys = list(net.PhysicalTopology.LinkDict.keys())
@@ -5562,7 +5325,6 @@ class Ui_MainWindow(object):
         # assert False
         net.TrafficMatrix = None
         data = json.dumps(net,default=convert_to_dict,indent=4, sort_keys=True)
-
         # This line tests whether the JSON encoded common object is reconstructable!
         decoded_n = Network.from_json(json.loads(data)) 
         assert(isinstance(decoded_n, Network))
