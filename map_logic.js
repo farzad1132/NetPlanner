@@ -1506,22 +1506,33 @@ function start_MidGrooming(Input) {
     //console.log(MidGrooming_Input);
 }
 
+function close_mid_grooming(){
+    clusterDiv.remove();
+    btnDiv.remove();
+    div.remove();
+    closeBtnDiv.remove();
+}
+
 var nodeSelctMode = false;
+var clusterDiv = null;
+var btnDiv = null;
+var closeBtnDiv = null;
+var div = null;
 function generateUIPanels(clustersData) {
 
 
-    var div = document.createElement("div");
+    div = document.createElement("div");
     div.setAttribute("id", "cluster-panel");
 
     var tableWrapper = document.createElement("table");
     tableWrapper.setAttribute("class", "wrap d-flex flex-row");
 
-    var clusterDiv = document.createElement("div");
+    clusterDiv = document.createElement("div");
 
-    var btnDiv = document.createElement("div");
+    btnDiv = document.createElement("div");
     btnDiv.setAttribute("class", "d-flex flex-column");
 
-    var closeBtnDiv = document.createElement("div");
+    closeBtnDiv = document.createElement("div");
     closeBtnDiv.setAttribute("class", "");
 
     var clusterTableWrapper = document.createElement('div');
@@ -1815,5 +1826,6 @@ function refresh_mid_grooming_process(payload){
         console.log(DemandId);
         MidGrooming_Input[ClusterId]["Demands"][DemandId] = value;
     }
+    close_mid_grooming();
     generateUIPanels(MidGrooming_Input)
 }
