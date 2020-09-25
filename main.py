@@ -210,8 +210,9 @@ class Backend_map(QObject):
 
         print(res)
 
-        Demands = Data["ui"].prepare_input_for_Midgrooming(Data["ui"].G, res)
-        Data["ui"].webengine.page().runJavaScript(f"refresh_mid_grooming_process('{json.dumps(Demands)}')")
+        Demands, deleted_demands = Data["ui"].prepare_input_for_Midgrooming(Data["ui"].G, res)
+        package = {"Demands": Demands, "deleted_demands": deleted_demands}
+        Data["ui"].webengine.page().runJavaScript(f"refresh_mid_grooming_process('{json.dumps(package)}')")
 
 
 class Ui_MainWindow(object):
@@ -4094,20 +4095,24 @@ class Ui_MainWindow(object):
         
         else:
             Demands = {}
+            deleted_demands = []
             for DemandId in DemandIdList:
-                Source = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Source]
-                Destination = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Destination]
-                Service_Dict = {}
-                for id, service_object in self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict.items():
-                    Service_Dict[id] = service_object.Type
-                
-                Demands[DemandId] = {}
-                Demands[DemandId]["Source"] = Source
-                Demands[DemandId]["Destination"] = Destination
-                Demands[DemandId]["Services"] = Service_Dict
-                Demands[DemandId]["ShortestPath"] = nx.dijkstra_path(Graph, Source, Destination)
+                if DemandId in self.network.TrafficMatrix.DemandDict:
+                    Source = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Source]
+                    Destination = self.IdNodeMap[self.network.TrafficMatrix.DemandDict[DemandId].Destination]
+                    Service_Dict = {}
+                    for id, service_object in self.network.TrafficMatrix.DemandDict[DemandId].ServiceDict.items():
+                        Service_Dict[id] = service_object.Type
+                    
+                    Demands[DemandId] = {}
+                    Demands[DemandId]["Source"] = Source
+                    Demands[DemandId]["Destination"] = Destination
+                    Demands[DemandId]["Services"] = Service_Dict
+                    Demands[DemandId]["ShortestPath"] = nx.dijkstra_path(Graph, Source, Destination)
+                else:
+                    deleted_demands.append(DemandId)
 
-            return Demands
+            return Demands, deleted_demands
 
         
     def send_input_for_MidGrooming(self, input_data):
