@@ -2407,26 +2407,26 @@ class Ui_MainWindow(object):
         destination_index = index.index(Destination)
 
         node_color[source_index] = 'yellow'
-        node_size[source_index] = 17
+        node_size[source_index] = 20
 
         node_color[destination_index] = 'yellow'
-        node_size[destination_index] = 17
+        node_size[destination_index] = 20
 
         if WorkingRegeneratorsList is not None:
             for id in WorkingRegeneratorsList:
                 name = self.IdNodeMap[id]
-                node_index = index.index(node_index)
+                node_index = index.index(name)
 
                 node_color[node_index] = 'green'
-                node_size[node_index] = 13
+                node_size[node_index] = 17
         
         if ProtectionRegenaratorsList is not None:
             for id in ProtectionRegenaratorsList:
                 name = self.IdNodeMap[id]
-                node_index = index.index(node_index)
+                node_index = index.index(name)
 
                 node_color[node_index] = 'green'
-                node_size[node_index] = 13
+                node_size[node_index] = 17
 
 
         graph.node_renderer.data_source.data['node_color'] = node_color

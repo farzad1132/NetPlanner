@@ -28,7 +28,7 @@ def export_excel(filename, network, IdNodeMap, cluster_view = True):
         routed_types.append(lightpath.Type)
 
         working_path.append(list(map(lambda x: IdNodeMap[x], lightpath.WorkingPath)))
-        working_regens.append(lightpath.RegeneratorNode_w)
+        working_regens.append(list(map(lambda x : IdNodeMap[x], lightpath.RegeneratorNode_w)))
         snr = lightpath.SNR_w[0]
         for snr_temp in lightpath.SNR_w:
             if snr>snr_temp:
@@ -41,7 +41,7 @@ def export_excel(filename, network, IdNodeMap, cluster_view = True):
                     snr = snr_temp
             worst_protection_snrs.append(snr)
             protection_path.append(list(map(lambda x: IdNodeMap[x], lightpath.ProtectionPath)))
-            protection_regens.append(lightpath.RegeneratorNode_p)
+            protection_regens.append(list(map(lambda x : IdNodeMap[x], lightpath.RegeneratorNode_p)))
         except:
             worst_protection_snrs.append(None)
             protection_path.append([])
@@ -188,7 +188,7 @@ def export_excel(filename, network, IdNodeMap, cluster_view = True):
             second_failed_links.append('-')
 
             working_path.append(list(map(lambda x: IdNodeMap[x], lightpath.WorkingPath)))
-            working_regens.append(lightpath.RegeneratorNode_w)
+            working_regens.append(list(map(lambda x : IdNodeMap[x], lightpath.RegeneratorNode_w)))
             snr = lightpath.SNR_w[0]
             for snr_temp in lightpath.SNR_w:
                 if snr>snr_temp:
@@ -233,7 +233,7 @@ def export_excel(filename, network, IdNodeMap, cluster_view = True):
                         second_failed_links.append('all')
 
                         working_path.append(restoration_option)
-                        working_regens.append(lightpath.restorationPathRegenerators[restoration_id])
+                        working_regens.append(list(map(lambda x : IdNodeMap[x], lightpath.restorationPathRegenerators[restoration_id])))
                         worst_working_snrs.append(lightpath.restorationSNRs[restoration_id])
                         protection_path.append('-')
             else:
