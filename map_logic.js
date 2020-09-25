@@ -1681,9 +1681,9 @@ function generateDemandsTable(clusterID, data, table, serviceTable) {
     var tdData = tr.insertCell();
     tdData.setAttribute("class", "p-1");
     var tdCheck = tr.insertCell();
-    tdCheck.innerHTML = "Source";
+    tdCheck.innerHTML = "Destination";
     tdCheck.setAttribute("class", "p-1");
-    tdData.innerHTML = "Destination";
+    tdData.innerHTML = "Source";
 
     Object.keys(demands).forEach(key => {
         var tr = tbdy.insertRow();
@@ -1717,18 +1717,19 @@ function generateDemandsTable(clusterID, data, table, serviceTable) {
 
 function generateServicesTable(clusterID, demandID, data, table) {
     services = data[clusterID].Demands[demandID]["Services"];
+    console.log(Object.keys(services));
     //console.log("c ", clusterID, "d", demandID);
     table.innerHTML = "";
 
     var tbdy = document.createElement('tbody');
-    var tr = tbdy.insertRow();
+    /*var tr = tbdy.insertRow();
     tr.setAttribute("class", "bg-info");
     var tdData = tr.insertCell();
     tdData.setAttribute("class", "p-1");
     var tdCheck = tr.insertCell();
     tdCheck.innerHTML = "Checked";
     tdCheck.setAttribute("class", "p-1");
-    tdData.innerHTML = "Services";
+    tdData.innerHTML = "Services";*/
 
     Object.keys(services).forEach(key => {
         var tr = tbdy.insertRow();
@@ -1821,11 +1822,17 @@ function handleSelectedNode(e, checkedServices) {
 
 function refresh_mid_grooming_process(payload){
     console.log('getting ClusterId', ClusterId)
-    var payload = JSON.parse(payload)
+    var payload = JSON.parse(payload);
+    var d_demands = payload["deleted_demands"];
+    payload = payload["Demands"];
     for (let [DemandId, value] of Object.entries(payload)) {
         console.log(DemandId);
         MidGrooming_Input[ClusterId]["Demands"][DemandId] = value;
     }
+    for (i = 0; i< d_demands.length; i++) {
+        var demand = d_demands[i];
+        delete MidGrooming_Input[ClusterId]["Demands"][demand];
+    }
     close_mid_grooming();
-    generateUIPanels(MidGrooming_Input)
+    generateUIPanels(MidGrooming_Input);
 }
