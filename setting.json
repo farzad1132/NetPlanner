@@ -1,4 +1,4 @@
 {
-    "IP_Address_list":["http://192.168.2.72:5000/RWA/", "http://localhost:5000/RWA/", "http://192.168.7.20:5000/RWA/"],
-    "Selected_IP":1
+    "IP_Address_list":["http://192.168.7.20:8020/RWA/", "http://localhost:5000/RWA/", "http://192.168.7.20:5000/RWA/"],
+    "Selected_IP":0
 }
