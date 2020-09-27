@@ -4,7 +4,6 @@ from geopy.geocoders import Nominatim
 import folium
 import geocoder
 from data import Data
-from Node_View_Data import Panel_Data
 import os,sys
 
 
@@ -247,7 +246,7 @@ class Ui_add_node_window(object):
         self.add_node_button.setText(_translate("add_node_window", "Add Node"))
         self.cancel_button_2.setText(_translate("add_node_window", "Cancel"))
     
-    def find_cords(self):
+    """ def find_cords(self):
         text = self.place_name_edit.text()
         geolocator = Nominatim()
         location = geolocator.geocode(text)
@@ -280,7 +279,7 @@ class Ui_add_node_window(object):
 
         '''Data["Nodes"][str(Data["Last_Node_ID"]+1)] = {}
         Data["Nodes"][str(Data["Last_Node_ID"]+1)]["Name"] = self.place_name_edit.text()
-        Data["Nodes"][str(Data["Last_Node_ID"]+1)]["Coordinate"] = loc'''
+        Data["Nodes"][str(Data["Last_Node_ID"]+1)]["Coordinate"] = loc''' """
         
 
 

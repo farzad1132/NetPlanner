@@ -1,0 +1,9 @@
+prefix=/usr/home/svigerske/nbBuildDir/Cbc/releases-2.7.5-with-blas-BUILD-with-lapack-BUILD
+datadir=${prefix}/share/coin/Data/Sample
+
+Name: Sample
+Description: Sample models
+URL: https://projects.coin-or.org/svn/Data/Sample
+Version: 1.2.0
+Libs:
+Cflags:

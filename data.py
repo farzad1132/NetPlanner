@@ -17,9 +17,21 @@ Data["Last_Node_ID"] = 0
 Data["Last_Link_ID"] = 0
 Data["Nodes"] = {}  # TODO: write this parts structure
 Data["Links"] = {}  # TODO: write this parts structure
-Data["Grouping"] = {}
+
+Data["Clustering"] = {}
+# format :
+#          {<NodeName> : {"Color": <ColorName>, "Type" : <TypeName> , "SubNodes" : <SubNodesNameList> } }
 
 # keys are row numbers except nodes and links
+
+Data["error_in_TM"] = {}
+#   format:
+#   (<RowNumber> , <Column / ServiceType>, <GTM / TM>) : item
+
+# <RowNumber> : int ( keys in Data )
+# <Column / ServiceType>: str ( "0" to "8"  or  "STM_4" , ..)
+# <GTM / TM>: str ( "GTM" or "TM" )
+# item: QListWidgetItem
 
 Data["General"]["ColumnCount"] = 9
 Data["General"]["DataSection"] = {}
@@ -31,7 +43,7 @@ Data["General"]["DataSection"]["4"] = {}
 Data["General"]["DataSection"]["5"] = {}
 Data["General"]["DataSection"]["6"] = {}
 Data["General"]["DataSection"]["7"] = {}
-Data["General"]["DataSection"]["8"] = {} # 8: Degree
+Data["General"]["DataSection"]["8"] = {} # 8: Protection_Type
 
 Data["E1"]["ColumnCount"] = 2
 #Data["E1"]["RowCount"] = 20
@@ -132,17 +144,58 @@ Data["100GE"]["DataSection"]["SLA"]={}
 DemandTabDataBase = {}
 DemandTabDataBase["Source_Destination"] = {}
 # format:
-#       { source :  [ Destinations ]}
+#       { <ClickedNode> : {"Source": <SourceName>, "DestinationList : <DestinationList>"} }
 DemandTabDataBase["Services"] = {} # dynamic one : changes with user actions
 # format: 
-#       {(Tehran, karaj): { (1,3) : '[1 , 3] # 100G ' , ... }, ...}         (1 , 3) ---> 1 : Demand Id , 3 : Service Id
+#       {(Tehran, karaj): { (1,3) : <State> }, ...}         (1 , 3) ---> 1 : Demand Id , 3 : Service Id
+# this database just shows that witch services hasn't been assigned
+# State:
+#   0: means its has not been assigned
+#   1: mean it has been assigned
+
 DemandTabDataBase["Services_static"] = {}   # same as Services part but difference is that its not changing with user actions
+# format:
+#       { <SourceName> : { (<DemandId>, <ServiceId>) : QlistWidgetItem }}
+# QlistWidgetItem:
+#   text: Service Type
+#   data: {"DemandId": <DemandId>, "ServiceId": <ServiceId>}
+#   tooltip: "Source: {<Source>}\n Destination: {<Destination>}"
 DemandTabDataBase["Lightpathes"] = {}
 # format:
-#       {(Tehran, Karaj): [ Lightpath Id # 100GE , ...]}
+#       { (<SourceName>, <DestinationName>) : { <LightPathId> : QlistWidgetItem}}
+#   QlistWidgetItem:
+#   text: LightPath Type
+#   data: { "LightPathId": <LightPathId>, "Capacity": <Capacity> , "Type": <Type>, "Source": <SourceName>, "Destination": <DestinationName>, "PanelId": <PanelId>}
 DemandTabDataBase["Panels"] = {}
 # format:
 #       { Tehran:{1: MP2X, 2: MP1H, ..} , Karaj:{}, ...}
+
+DemandTabDataBase["GroomOut10"] = {}
+# format:
+#       { ( <SourceName> , <DestinationName> ) : { <GroomGou10_Id> : QlistWidgetItem } }
+#   QlistWidgetItem:
+#   text:  "GroomOut10"
+#   data:   { "GroomOut10Id": <GroomOutId>, "Capacity": <Capacity> , "Type": <Type>, "Source": <SourceName>, "Destination": <DestinationName>, "PanelId": <PanelId>, "DemandId": <DemandId>, "MP1H_Client_Id": (<MP1H Id>, <Client Id>)}
+
+DemandTabDataBase["GroomOut10_status"] = {}
+# format: 
+#       {(Tehran, karaj): { (1,3) : <State> }, ...}         (1 , 3) ---> 1 : Demand Id , 3 : GroomOut10Id
+# this database just shows that witch GroomOuts are connected to MP1H
+# State:
+#   0: not connected
+#   1: connected
+
+DemandTabDataBase["Failed_Demands"] = {}
+# format:
+#       { <SourceName> : <DestinationsList> }
+
+DemandTabDataBase["Shelf_Count"] = {}
+# format:
+#       { <SourceName>: <LastShelfNum> }
+
+DemandTabDataBase["ProtectionType"] = {}
+
+DemandTabDataBase["RestorationType"] = {}
 
 GroomingTabDataBase = {}
 GroomingTabDataBase["LightPathes"] = {}
@@ -155,10 +208,15 @@ GroomingTabDataBase["Panels"] = {}
 #       { <NodeName> : { ( <DegreeName>, <DegreeId> ): { <PanelId> : <PanelObject>}}}
 # <DegreeName> : by this Node LightPath exits from the Source
 
-GroomingTabDataBase["Links"] = {}
+GroomingTabDataBase["LinkState"] = {}
 # format:
 #       { ( <InNodeName> , <OutNodeName> ) : <LambdaList> }
 # <LambdaList> : list of lambda ids
+
+GroomingTabDataBase["NodeState"] = {}
+
+
+
 
 
 class MP2D_L:
@@ -172,7 +230,7 @@ class MP2D_L:
         self.LineCapacity = LineCapacity
 
     def del_client(self, ClientNum, LineCapacity):
-        self.self.ClientsCapacity[ClientNum] = 0
+        self.ClientsCapacity[ClientNum] = 0
         self.LineCapacity = LineCapacity
     
     def set_line_type(self, Type):
@@ -183,23 +241,59 @@ class MP2D_R:
         self.LeftId = LeftId
 
 class MP2X_L:
-    def __init__(self, ClientsType = [0 for i in range(16)], LinesCapacity = [0, 0]):
-        self.ClientsType = ClientsType
-        self.LinesCapacity = LinesCapacity
+    def __init__(self, ClientsCapacity = None, LinesCapacity = None, ServiceIdList = None, DemandIdList = None
+                    , LineIdList = None, Line_1_ServiceIdList = None, Line_2_ServiceIdList = None, Destination = None, DualPanelsId = None):
+
+        if ClientsCapacity is None:
+            self.ClientsCapacity = [0 for i in range(16)]
+        else:
+            self.ClientsCapacity = ClientsCapacity
+
+        if LinesCapacity is None:
+            self.LinesCapacity = [0, 0]
+        else:
+            self.LinesCapacity = LinesCapacity
     
-    def add_client(self, ClientNum, Type):
-        self.ClientsType[ClientNum] = Type
-    
-    def del_client(self, ClientNum):
-        self.ClientsType[ClientNum] = 0
+        if ServiceIdList is None:
+            self.ServiceIdList = [None for i in range(16)]
+        else:
+            self.ServiceIdList = ServiceIdList
+        
+        if DemandIdList is None:
+            self.DemandIdList = [None for i in range(16)]
+        else:
+            self.DemandIdList = DemandIdList
+        
+        if LineIdList is None:
+            self.LineIdList = [None for i in range(2)]
+        else:
+            self.LineIdList = LineIdList
+        
+        if Line_1_ServiceIdList is None:
+            self.Line_1_ServiceIdList = []
+        else:
+            self.Line_1_ServiceIdList = Line_1_ServiceIdList
+
+        if Line_2_ServiceIdList is None:
+            self.Line_2_ServiceIdList = []
+        else:
+            self.Line_2_ServiceIdList = Line_2_ServiceIdList
+        
+        self.Destination = Destination
+        self.DualPanelsId = DualPanelsId
 
 class MP2X_R:
-    def __init__(self, LeftId):
+    def __init__(self, LeftId, Destination, DualPanelsId):
         self.LeftId = LeftId
+        self.Destination = Destination
+        self.DualPanelsId = DualPanelsId
 
 class MP1H_L:
+
+    
+
     def __init__(self, ClientsCapacity = None, LineCapacity = 0, ServiceIdList = None, 
-    DemandIdList = None, LightPathId = None, LightPath_flag = 0):
+    DemandIdList = None, LightPathId = None, LightPath_flag = 0, Destination = None, DualPanelsId = None):
 
         if ClientsCapacity is None:
             self.ClientsCapacity = [0 for i in range(10)]
@@ -216,34 +310,34 @@ class MP1H_L:
         else:
             self.DemandIdList = DemandIdList
         
-
+        self.Destination = Destination
         self.LightPath_flag = LightPath_flag
         self.LightPathId = LightPathId
         self.LineCapacity = LineCapacity
+        self.DualPanelsId = DualPanelsId
     
-    def add_client(self, ClientNum, Type, LineCapacity):
-        # type can be 10GE or stm64
-        self.ClientsCapacity[ClientNum] = Type
-        self.LineCapacity = LineCapacity
     
-    def del_client(self, ClientNum, LineCapacity):
-        self.ClientsCapacity[ClientNum] = 0
-        self.LineCapacity = LineCapacity
 
 class MP1H_R:
-    def __init__(self, LeftId):
+    def __init__(self, LeftId, Destination, DualPanelsId):
+        self.Destination = Destination
         self.LeftId = LeftId
+        self.DualPanelsId = DualPanelsId
 
 class TP1H_L:
-    def __init__(self, DemandId = None, ServiceId = None, Line = 0, LightPathId = None):
+    def __init__(self, DemandId = None, ServiceId = None, Line = 0, LightPathId = None, Destination = None, DualPanelsId = None):
+        self.Destination = Destination
         self.LightPathId = LightPathId
         self.DemandId = DemandId
         self.ServiceId = ServiceId
         self.Line = Line
+        self.DualPanelsId = DualPanelsId
 
 class TP1H_R:
-    def __init__(self, LeftId):
+    def __init__(self, LeftId, Destination, DualPanelsId):
+        self.Destination = Destination
         self.LeftId = LeftId
+        self.DualPanelsId = DualPanelsId
 
 class SC:
     def __init__(self):

@@ -1,0 +1,10 @@
+prefix=/usr/home/svigerske/nbBuildDir/Cbc/releases-2.7.5-with-blas-BUILD-with-lapack-BUILD
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+
+Name: Blas
+Description: Basic linear algebra package
+URL: https://projects.coin-or.org/BuildTools
+Version: 1.2.0
+Libs: -L${libdir} -lcoinblas 
+Cflags:
