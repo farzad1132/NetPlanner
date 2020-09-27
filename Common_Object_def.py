@@ -398,6 +398,7 @@ class Network:
                 self.Destination = Destination
                 self.Type = Type            # Type must be a string
                 self.ServiceDict = {}
+                self.Mid_Grooming_ServiceIds = []
             
             
             

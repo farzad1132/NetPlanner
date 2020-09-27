@@ -1931,11 +1931,11 @@ class Ui_MainWindow(object):
 
         # NOTE: uncomment bellow if you want use console.log
 
-        class WebEnginePage(QWebEnginePage):
+        """ class WebEnginePage(QWebEnginePage):
             def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
                 print("javaScriptConsoleMessage: ", level, message, lineNumber, sourceID)
 
-        self.webengine.setPage(WebEnginePage(self.webengine))
+        self.webengine.setPage(WebEnginePage(self.webengine)) """
         backend_map = Backend_map(MainWindow)
         self.backend_map = backend_map
         channel = QWebChannel(MainWindow)
@@ -5191,8 +5191,12 @@ class Ui_MainWindow(object):
         network = self.insert_params_into_obj(merge, alpha, iterations, margin, processors, k, MaxNW, GroupSize, History, Algorithm, K_Restoration, numRandomChoices)
         for lightpath in network.LightPathDict.values():
             demandid = lightpath.DemandId
-            lightpath.ProtectionType = DemandTabDataBase["ProtectionType"][demandid]
-            lightpath.restorationType = DemandTabDataBase["RestorationType"][demandid]
+            if demandid not in DemandTabDataBase["ProtectionType"]:
+                lightpath.ProtectionType = "1+1"
+                lightpath.restorationType = "None"
+            else:
+                lightpath.ProtectionType = DemandTabDataBase["ProtectionType"][demandid]
+                lightpath.restorationType = DemandTabDataBase["RestorationType"][demandid]
 
         self.clear_database_for_rwa()
         
